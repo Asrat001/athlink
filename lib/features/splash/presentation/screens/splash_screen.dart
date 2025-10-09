@@ -174,7 +174,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: SvgPicture.asset(
-                              "assets/images/et_podcast.svg",
+                              "assets/images/athlink.svg",
                               semanticsLabel: 'ET Podcast Logo',
                               width: 60,
                               height: 60,

@@ -118,7 +118,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               SizedBox(height: 4,),
                               GestureDetector(
                                 onTap: (){
-                                  AppHelpers.showInfoToast(context, "Coming Soon");
+                                  context.go("/logo");
+                                  // AppHelpers.showInfoToast(context, "Coming Soon");
                                 },
                                 child: Align(
                                   alignment: Alignment.centerRight,

@@ -15,7 +15,7 @@ class LogoLabel extends StatelessWidget {
     return Text.rich(
       textAlign: align,
       TextSpan(
-        text: "ET-",
+        text: "Ath-",
         style:GoogleFonts.bebasNeue(
         color: Colors.white,
         fontSize: context.isTablet ? 60 : size,
@@ -23,7 +23,7 @@ class LogoLabel extends StatelessWidget {
       ),
         children: [
           TextSpan(
-            text: "Podcast",
+            text: "Link",
             style:GoogleFonts.bebasNeue(
               fontSize: context.isTablet ? 60 : size,
               fontWeight: FontWeight.w700,

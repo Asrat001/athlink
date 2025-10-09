@@ -7,8 +7,8 @@ import 'app.dart';
 import 'observers.dart';
 
 void main() {
+  serviceLocator();
   final router=sl<AppRouter>().router;
-
   runApp(ProviderScope(
     observers: [
       Observers(),

@@ -21,24 +21,19 @@ class MainScreen extends StatelessWidget {
         ),
         items: [
           BottomNavigationBarItem(
-            label: 'Explore',
+            label: 'Dashboard',
             icon: SvgPicture.asset("assets/images/home.svg", color: Colors.grey.shade300),
             activeIcon: SvgPicture.asset("assets/images/home.svg", color: AppColors.primary),
           ),
           BottomNavigationBarItem(
-            label: 'Radios',
+            label: 'Feed',
             icon: SvgPicture.asset("assets/images/radio.svg", color: Colors.grey.shade300),
             activeIcon: SvgPicture.asset("assets/images/radio.svg", color: AppColors.primary),
           ),
           BottomNavigationBarItem(
-            label: 'Kids',
+            label: 'WatchList',
             icon: SvgPicture.asset("assets/images/kids.svg", color: Colors.grey.shade300),
             activeIcon: SvgPicture.asset("assets/images/kids.svg", color: AppColors.primary),
-          ),
-          BottomNavigationBarItem(
-            label: 'Search',
-            icon: SvgPicture.asset("assets/images/search.svg", color: Colors.grey.shade300),
-            activeIcon: SvgPicture.asset("assets/images/search.svg", color: AppColors.primary),
           ),
           BottomNavigationBarItem(
             label: 'Profile',

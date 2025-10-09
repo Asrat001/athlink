@@ -11,6 +11,7 @@ import '../features/main/error_screen.dart';
 import '../features/main/main_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';
+import '../features/splash/presentation/screens/logo_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 import '../shared/handlers/app_router_observer.dart';
 
@@ -34,6 +35,10 @@ class AppRouter  {
       GoRoute(
         path: Routes.onBoardingRouteName,
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: "/logo",
+        builder: (context, state) => const LogoScreen(),
       ),
       GoRoute(
         path: Routes.registerRouteName,

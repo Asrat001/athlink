@@ -68,7 +68,7 @@ class RegisterScreen extends ConsumerWidget {
                           children: [
                             LogoLabel(size: 50, align: TextAlign.center),
                             Text(
-                              "Explore and Discover Your Favorite Podcast , Radios And More  All in  One Place",
+                              "Explore and Discover Your Favorite Athlete , Brands And More  All in  One Place",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.6),
