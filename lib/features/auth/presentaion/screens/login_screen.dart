@@ -1,4 +1,3 @@
-
 import 'package:athlink/features/auth/presentaion/providers/login/login_provider.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/extensions/media_query_extension.dart';
@@ -6,7 +5,6 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../shared/utils/app_helpers.dart';
 import '../../../../shared/utils/validators_utils.dart';
 import '../../../../shared/widgets/forms/google_sign_in_button.dart';
 import '../../../../shared/widgets/forms/input_field.dart';
@@ -14,7 +12,6 @@ import '../../../../shared/widgets/forms/rounded_button.dart';
 import '../../../../shared/widgets/logo_label.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-
   const LoginScreen({super.key});
 
   @override
@@ -22,7 +19,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
@@ -34,24 +30,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void login() async{
+  void login() async {
     if (_formKey.currentState!.validate()) {
-    final provider= ref.read(loginProvider.notifier);
-    await provider.login(
-      email: _emailController.text.trim(),
-      password: _nameController.text.trim(),
-      context: context,
-    );
+      final provider = ref.read(loginProvider.notifier);
+      await provider.login(
+        email: _emailController.text.trim(),
+        password: _nameController.text.trim(),
+        context: context,
+      );
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
-
     final loginSate = ref.watch(loginProvider);
 
     return Scaffold(
@@ -75,8 +66,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             spacing: 6,
                             children: [
-                              const LogoLabel(size: 50, align: TextAlign.center),
-                               Text(
+                              const LogoLabel(
+                                size: 50,
+                                align: TextAlign.center,
+                              ),
+                              Text(
                                 "Welcome Back , We Missed You  💚 ",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -95,12 +89,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icons.email,
                                   color: Colors.white70,
                                 ),
-                                errorStyle: TextStyle(
-                                  color: Colors.red[300]
-                                ),
+                                errorStyle: TextStyle(color: Colors.red[300]),
                                 validator: Validators.email,
                               ),
-                              SizedBox(height: 6,),
+                              SizedBox(height: 6),
                               RoundedTextFormField(
                                 textInputType: TextInputType.visiblePassword,
                                 controller: _nameController,
@@ -110,33 +102,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   Icons.password,
                                   color: Colors.white70,
                                 ),
-                                errorStyle: TextStyle(
-                                    color: Colors.red[300]
-                                ),
+                                errorStyle: TextStyle(color: Colors.red[300]),
                                 validator: Validators.password,
                               ),
-                              SizedBox(height: 4,),
+                              SizedBox(height: 4),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   context.go("/logo");
                                   // AppHelpers.showInfoToast(context, "Coming Soon");
                                 },
                                 child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: Text("Forgot Your Password ? ",
-                                    style: TextStyle(color: Colors.grey.shade400,fontSize: 12.0),
-
+                                  child: Text(
+                                    "Forgot Your Password ? ",
+                                    style: TextStyle(
+                                      color: Colors.grey.shade400,
+                                      fontSize: 12.0,
+                                    ),
                                   ),
                                 ),
                               ),
                               SizedBox(height: context.isTablet ? 16 : 12),
                               RoundedButton(
-                                onPressed: () =>  {
-                                  login(),
-                                },
+                                onPressed: () => {login()},
                                 submitting: loginSate.isLoading,
                                 label: "Sign In",
-                                padding: 16,
+                                // padding: 16,
                               ),
                               SizedBox(height: context.isTablet ? 16 : 12),
                               const Text(
@@ -153,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               GoogleSignInButton(onPressed: () {}, padding: 16),
                               SizedBox(height: context.isTablet ? 16 : 12),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   context.push(Routes.registerRouteName);
                                 },
                                 child: Text.rich(
@@ -163,13 +154,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     children: [
                                       TextSpan(
                                         text: "Register ",
-                                        style: TextStyle(color: AppColors.primary)
-                                      )
-                                    ]
-
-                                  )
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),

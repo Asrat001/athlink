@@ -1,6 +1,6 @@
-
 import 'package:athlink/features/auth/presentaion/screens/login_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
+import 'package:athlink/features/auth/presentaion/screens/select_sport_screen.dart';
 import 'package:athlink/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:athlink/features/feed/presentation/screens/home/home_screen.dart';
 import 'package:athlink/features/watchlist/presentation/screens/watch_list_screen.dart';
@@ -15,18 +15,17 @@ import '../features/splash/presentation/screens/logo_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 import '../shared/handlers/app_router_observer.dart';
 
-
-
-
-class AppRouter  {
+class AppRouter {
   final bool isFirstTimeUser;
   AppRouter(this.isFirstTimeUser);
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
- late final GoRouter router = GoRouter(
+  late final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
     observers: [AppRouterObserver()],
     navigatorKey: navigatorKey,
-    initialLocation:!isFirstTimeUser?Routes.splashRouteName:Routes.onBoardingRouteName,
+    initialLocation: !isFirstTimeUser
+        ? Routes.splashRouteName
+        : Routes.onBoardingRouteName,
     routes: [
       GoRoute(
         path: Routes.splashRouteName,
@@ -36,66 +35,63 @@ class AppRouter  {
         path: Routes.onBoardingRouteName,
         builder: (context, state) => const OnboardingScreen(),
       ),
-      GoRoute(
-        path: "/logo",
-        builder: (context, state) => const LogoScreen(),
-      ),
+      GoRoute(path: "/logo", builder: (context, state) => const LogoScreen()),
       GoRoute(
         path: Routes.registerRouteName,
-        builder: (context, state) =>  RegisterScreen(),
+        builder: (context, state) => RegisterScreen(),
+      ),
+      GoRoute(
+        path: Routes.selectSportScreen,
+        builder: (context, state) => SelectSportScreen(),
       ),
       GoRoute(
         path: Routes.loginRouteName,
-        builder: (context, state) =>  LoginScreen(),
+        builder: (context, state) => LoginScreen(),
       ),
 
-     StatefulShellRoute.indexedStack(
-       builder: (context, state, navigationShell) => MainScreen(navigationShell: navigationShell),
-         branches: [
-           StatefulShellBranch(
-             routes: [
-               GoRoute(
-                 path: Routes.dashBoardRouteName,
-                 builder: (context, state) => const DashboardScreen(),
-               ),
-             ],
-           ),
-           StatefulShellBranch(
-             routes: [
-               GoRoute(
-                 path: Routes.feedRouteName,
-                 builder: (context, state) => const FeedScreen(),
-               ),
-             ],
-           ),
-           StatefulShellBranch(
-             routes: [
-               GoRoute(
-                 path: Routes.watchListRouteName,
-                 builder: (context, state) =>  WatchListScreen(),
-               ),
-             ],
-           ),
-           StatefulShellBranch(
-             routes: [
-               GoRoute(
-                 path: Routes.profileRouteName,
-                 builder: (context, state) => const ProfileScreen(),
-               ),
-             ],
-           ),
-         ]
-     )
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            MainScreen(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.dashBoardRouteName,
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.feedRouteName,
+                builder: (context, state) => const FeedScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.watchListRouteName,
+                builder: (context, state) => WatchListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.profileRouteName,
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
-    errorBuilder: (context, state) => ErrorScreen(errorMessage: state.error.toString()),
+    errorBuilder: (context, state) =>
+        ErrorScreen(errorMessage: state.error.toString()),
     redirect: (context, state) {
-
-     return null;
+      return null;
     },
-
-
-
   );
-
-
 }
