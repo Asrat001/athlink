@@ -1,3 +1,4 @@
+import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SocialLoginButton extends StatelessWidget {
@@ -18,9 +19,9 @@ class SocialLoginButton extends StatelessWidget {
     required this.text,
     required this.icon,
     required this.onPressed,
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black,
-    this.borderColor = const Color(0xFFE0E0E0),
+    this.backgroundColor = AppColors.white,
+    this.textColor = AppColors.black,
+    this.borderColor = AppColors.socialButtonBorder,
     this.hasBorder = true,
     this.height = 65,
     this.borderRadius = 20,

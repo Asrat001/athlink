@@ -1,6 +1,7 @@
 import 'package:athlink/features/auth/presentaion/providers/register/register_provider.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/validators_utils.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
 import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
 import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
@@ -26,6 +27,8 @@ class RegisterScreen extends ConsumerWidget {
   final _confirmPasswordController = TextEditingController();
 
   void register(WidgetRef ref, BuildContext context) async {
+    context.push(Routes.selectSportScreen);
+    return;
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(registartionProvider.notifier);
       await provider.register(
@@ -35,6 +38,10 @@ class RegisterScreen extends ConsumerWidget {
         context: context,
       );
     }
+  }
+
+  String? _confirmPasswordValidator(String? value) {
+    return Validators.confirmPassword(value, _passwordController.text);
   }
 
   @override
@@ -52,7 +59,7 @@ class RegisterScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: CustomAppBar(title: "ATHLINK"),
       body: SafeArea(
         child: Center(
@@ -73,95 +80,11 @@ class RegisterScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           spacing: 6,
                           children: [
-                            // LogoLabel(size: 50, align: TextAlign.center),
-                            // Text(
-                            //   "Explore and Discover Your Favorite Athlete , Brands And More  All in  One Place",
-                            //   textAlign: TextAlign.center,
-                            //   style: TextStyle(
-                            //     color: Colors.white.withOpacity(0.6),
-                            //     fontSize: context.isTablet ? 18 : 16,
-                            //     height: 1.5,
-                            //     fontWeight: FontWeight.w300,
-                            //   ),
-                            // ),
-                            // SizedBox(height: context.isTablet ? 8 : 10),
-                            // RoundedTextFormField(
-                            //   textInputType: TextInputType.text,
-                            //   controller: _nameController,
-                            //   hintText: "Name",
-                            //   prefixIcon: Icon(
-                            //     Icons.person,
-                            //     color: Colors.white70,
-                            //   ),
-                            //   validator: Validators.requiredField,
-                            // ),
-                            // SizedBox(height: context.isTablet ? 8 : 10),
-                            // RoundedTextFormField(
-                            //   textInputType: TextInputType.emailAddress,
-                            //   controller: _emailController,
-                            //   hintText: "Email",
-                            //   prefixIcon: Icon(
-                            //     Icons.email,
-                            //     color: Colors.white70,
-                            //   ),
-                            //   validator: Validators.email,
-                            // ),
-                            // SizedBox(height: context.isTablet ? 8 : 10),
-                            // RoundedTextFormField(
-                            //   textInputType: TextInputType.visiblePassword,
-                            //   controller: _passwordController,
-                            //   hintText: "Password",
-                            //   enableObscureTextToggle: true,
-                            //   prefixIcon: Icon(
-                            //     Icons.password,
-                            //     color: Colors.white70,
-                            //   ),
-                            //   validator: Validators.password,
-                            // ),
-                            // SizedBox(height: context.isTablet ? 16 : 12),
-                            // RoundedButton(
-                            //   onPressed: () => {register(ref, context)},
-                            //   submitting: loginSate.isLoading,
-                            //   label: "Sign In",
-                            //   padding: 16,
-                            // ),
-                            // SizedBox(height: context.isTablet ? 16 : 12),
-                            // Text(
-                            //   "OR",
-                            //   textAlign: TextAlign.center,
-                            //   style: TextStyle(
-                            //     decoration: TextDecoration.underline,
-                            //     decorationStyle: TextDecorationStyle.solid,
-                            //     decorationColor: Colors.white70,
-                            //     decorationThickness: 2,
-                            //   ),
-                            // ),
-                            // SizedBox(height: context.isTablet ? 16 : 12),
-                            // GoogleSignInButton(onPressed: () {}, padding: 16),
-                            // SizedBox(height: context.isTablet ? 16 : 12),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     context.push(Routes.loginRouteName);
-                            //   },
-                            //   child: Text.rich(
-                            //     textAlign: TextAlign.center,
-                            //     TextSpan(
-                            //       text: "You Already  Have An Account ? ",
-                            //       children: [
-                            //         TextSpan(
-                            //           text: "Login",
-                            //           style: TextStyle(
-                            //             color: AppColors.primary,
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
                             CustomText(
                               title: "Sign Up",
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
+                              textColor: AppColors.textPrimary,
                             ),
 
                             SizedBox(height: 10),
@@ -170,19 +93,28 @@ class RegisterScreen extends ConsumerWidget {
                               label: "Company Name",
                               icon: Image.asset("assets/images/company.png"),
                               controller: _nameController,
+                              validator: (value) => Validators.requiredField(
+                                value,
+                                fieldName: "Company name",
+                              ),
                             ),
 
                             SizedBox(height: 10),
-                            CustomEmailField(controller: _emailController),
+                            CustomEmailField(
+                              controller: _emailController,
+                              validator: Validators.email,
+                            ),
                             SizedBox(height: 10),
                             CustomPasswordField(
                               controller: _passwordController,
                               label: "Password",
+                              validator: Validators.password,
                             ),
                             SizedBox(height: 10),
                             CustomPasswordField(
                               label: "Confirm Password",
                               controller: _confirmPasswordController,
+                              validator: _confirmPasswordValidator,
                             ),
 
                             SizedBox(height: 20),
@@ -191,16 +123,15 @@ class RegisterScreen extends ConsumerWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               borderRadius: BorderRadius.circular(20),
-                              backgroundColor: Colors.black,
+                              backgroundColor: AppColors.buttonBackground,
                               padding: EdgeInsets.symmetric(
                                 vertical: 20,
                                 horizontal: 10,
                               ),
                               label: "Sign Up",
-                              onPressed: () {
-                                context.push(Routes.selectSportScreen);
-                              },
+                              onPressed: () => register(ref, context),
                               width: double.infinity,
+                              submitting: loginSate.isLoading,
                             ),
 
                             SizedBox(height: 15),
@@ -211,15 +142,17 @@ class RegisterScreen extends ConsumerWidget {
                                 CustomText(
                                   title: 'Already have an account?  ',
                                   fontWeight: FontWeight.w300,
-                                  textColor: Colors.grey[600],
+                                  textColor: AppColors.textSecondary,
                                   fontSize: 16,
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    context.push(Routes.loginRouteName);
+                                  },
                                   child: Text(
                                     'Login',
                                     style: GoogleFonts.roboto(
-                                      color: AppColors.black,
+                                      color: AppColors.textPrimary,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline,
@@ -234,7 +167,7 @@ class RegisterScreen extends ConsumerWidget {
                             Row(
                               children: [
                                 const Expanded(
-                                  child: Divider(color: Colors.grey),
+                                  child: Divider(color: AppColors.divider),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -242,12 +175,12 @@ class RegisterScreen extends ConsumerWidget {
                                   ),
                                   child: CustomText(
                                     title: "OR",
-                                    textColor: Colors.grey,
+                                    textColor: AppColors.textGrey,
                                     fontSize: 14,
                                   ),
                                 ),
                                 const Expanded(
-                                  child: Divider(color: Colors.grey),
+                                  child: Divider(color: AppColors.divider),
                                 ),
                               ],
                             ),
@@ -259,6 +192,9 @@ class RegisterScreen extends ConsumerWidget {
                               icon: Image.asset(
                                 "assets/images/google_icon.png",
                               ),
+                              backgroundColor: AppColors.socialButtonBackground,
+                              textColor: AppColors.socialButtonText,
+                              borderColor: AppColors.socialButtonBorder,
                             ),
                             SizedBox(height: 10),
                             SocialLoginButton(
@@ -272,9 +208,9 @@ class RegisterScreen extends ConsumerWidget {
                             CustomText(
                               textAlign: TextAlign.center,
                               title:
-                                  'By signing up, you agree to Athlink\'s Terms & Privacylicy',
+                                  'By signing up, you agree to Athlink\'s Terms & Privacy Policy',
                               fontWeight: FontWeight.w300,
-                              textColor: Colors.grey[600],
+                              textColor: AppColors.textSecondary,
                               fontSize: 16,
                             ),
                           ],

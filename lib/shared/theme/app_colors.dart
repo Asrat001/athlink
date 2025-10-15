@@ -18,4 +18,25 @@ class AppColors {
 
   /// Extra Light grey color
   static const Color extraLightGrey = Color(0xffE1E8ED);
+
+  /// Grey colors used in the RegisterScreen
+  static const Color grey600 = Color(0xFF757575);
+  static const Color grey = Color(0xFF9E9E9E);
+
+  /// Background colors
+  static const Color scaffoldBackground = Color(0xffffffff);
+  static const Color buttonBackground = Color(0xff000000);
+
+  /// Social login button colors
+  static const Color socialButtonBorder = Color(0xFFE0E0E0);
+  static const Color socialButtonBackground = Color(0xffffffff);
+  static const Color socialButtonText = Color(0xff000000);
+
+  /// Text colors
+  static const Color textPrimary = Color(0xff14171A);
+  static const Color textSecondary = Color(0xFF757575);
+  static const Color textGrey = Color(0xFF757575);
+
+  /// Divider color
+  static const Color divider = Color(0xFFE0E0E0);
 }

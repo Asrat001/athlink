@@ -1,15 +1,17 @@
 import 'package:athlink/features/auth/presentaion/providers/login/login_provider.dart';
 import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/extensions/media_query_extension.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/validators_utils.dart';
+import 'package:athlink/shared/widgets/custom_app_bar.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
+import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
+import 'package:athlink/shared/widgets/forms/rounded_button.dart';
+import 'package:athlink/shared/widgets/forms/social_login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../shared/utils/validators_utils.dart';
-import '../../../../shared/widgets/forms/google_sign_in_button.dart';
-import '../../../../shared/widgets/forms/input_field.dart';
-import '../../../../shared/widgets/forms/rounded_button.dart';
-import '../../../../shared/widgets/logo_label.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -21,21 +23,21 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  final _nameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
-    _nameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void login() async {
+  void login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(loginProvider.notifier);
       await provider.login(
         email: _emailController.text.trim(),
-        password: _nameController.text.trim(),
+        password: _passwordController.text.trim(),
         context: context,
       );
     }
@@ -43,11 +45,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final loginSate = ref.watch(loginProvider);
+    final loginState = ref.watch(loginProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
+      // appBar: const CustomAppBar(title: "ATHLINK"),
       body: PopScope(
-        canPop: !loginSate.isLoading,
+        canPop: !loginState.isLoading,
         child: SafeArea(
           child: Center(
             child: LayoutBuilder(
@@ -56,110 +60,167 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 400),
                     child: IgnorePointer(
-                      ignoring: loginSate.isLoading,
+                      ignoring: loginState.isLoading,
                       child: Form(
                         key: _formKey,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             spacing: 6,
                             children: [
-                              const LogoLabel(
-                                size: 50,
-                                align: TextAlign.center,
+                              CustomText(
+                                title: "Login",
+                                fontSize: 32,
+                                fontWeight: FontWeight.w700,
+                                textColor: AppColors.textPrimary,
                               ),
-                              Text(
-                                "Welcome Back , We Missed You  💚 ",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.6),
-                                  fontSize: context.isTablet ? 18 : 16,
-                                  height: 1.5,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                              SizedBox(height: context.isTablet ? 28 : 24),
-                              RoundedTextFormField(
-                                textInputType: TextInputType.emailAddress,
+
+                              const SizedBox(height: 20),
+
+                              // Email Field
+                              CustomEmailField(
                                 controller: _emailController,
-                                hintText: "Email",
-                                prefixIcon: const Icon(
-                                  Icons.email,
-                                  color: Colors.white70,
-                                ),
-                                errorStyle: TextStyle(color: Colors.red[300]),
                                 validator: Validators.email,
                               ),
-                              SizedBox(height: 6),
-                              RoundedTextFormField(
-                                textInputType: TextInputType.visiblePassword,
-                                controller: _nameController,
-                                enableObscureTextToggle: true,
-                                hintText: "Password",
-                                prefixIcon: const Icon(
-                                  Icons.password,
-                                  color: Colors.white70,
-                                ),
-                                errorStyle: TextStyle(color: Colors.red[300]),
-                                validator: Validators.password,
+
+                              const SizedBox(height: 10),
+
+                              // Password Field
+                              CustomPasswordField(
+                                controller: _passwordController,
+                                label: "Password",
+                                validator: Validators.requiredField,
                               ),
-                              SizedBox(height: 4),
-                              GestureDetector(
-                                onTap: () {
-                                  context.go("/logo");
-                                  // AppHelpers.showInfoToast(context, "Coming Soon");
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "Forgot Your Password ? ",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade400,
-                                      fontSize: 12.0,
+
+                              const SizedBox(height: 8),
+
+                              // CustomText(title: "")
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 14,
+                                      color: AppColors.textSecondary,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: context.isTablet ? 16 : 12),
-                              RoundedButton(
-                                onPressed: () => {login()},
-                                submitting: loginSate.isLoading,
-                                label: "Sign In",
-                                // padding: 16,
-                              ),
-                              SizedBox(height: context.isTablet ? 16 : 12),
-                              const Text(
-                                "OR",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationStyle: TextDecorationStyle.solid,
-                                  decorationColor: Colors.white70,
-                                  decorationThickness: 2,
-                                ),
-                              ),
-                              SizedBox(height: context.isTablet ? 16 : 12),
-                              GoogleSignInButton(onPressed: () {}, padding: 16),
-                              SizedBox(height: context.isTablet ? 16 : 12),
-                              GestureDetector(
-                                onTap: () {
-                                  context.push(Routes.registerRouteName);
-                                },
-                                child: Text.rich(
-                                  textAlign: TextAlign.center,
-                                  TextSpan(
-                                    text: "Don't  Have An Account ? ",
                                     children: [
+                                      const TextSpan(
+                                        text:
+                                            "Use the email you signed up with\n\n",
+                                      ),
+
                                       TextSpan(
-                                        text: "Register ",
-                                        style: TextStyle(
-                                          color: AppColors.primary,
+                                        text: "Forgot password? ",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: "Resend",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.textPrimary,
                                         ),
                                       ),
                                     ],
                                   ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Login Button
+                              RoundedButton(
+                                label: "Log in",
+                                onPressed: () => login(context),
+                                width: double.infinity,
+                                backgroundColor: Colors.black,
+
+                                submitting: loginState.isLoading,
+                                fontWeight: FontWeight.bold,
+                                borderRadius: BorderRadius.circular(20),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 18,
+                                ),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Signup redirect
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomText(
+                                    title: "Don't have an account? ",
+                                    fontWeight: FontWeight.w300,
+                                    textColor: AppColors.textSecondary,
+                                    fontSize: 16,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        context.push(Routes.registerRouteName),
+                                    child: Text(
+                                      'Sign up',
+                                      style: GoogleFonts.roboto(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // OR Divider
+                              Row(
+                                children: [
+                                  const Expanded(
+                                    child: Divider(color: AppColors.divider),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: CustomText(
+                                      title: "OR",
+                                      textColor: AppColors.textGrey,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    child: Divider(color: AppColors.divider),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Social Login Buttons
+                              SocialLoginButton(
+                                onPressed: () {},
+                                text: "Continue with Google",
+                                icon: Image.asset(
+                                  "assets/images/google_icon.png",
+                                  width: 24,
+                                ),
+                                backgroundColor:
+                                    AppColors.socialButtonBackground,
+                                textColor: AppColors.socialButtonText,
+                                borderColor: AppColors.socialButtonBorder,
+                              ),
+                              const SizedBox(height: 10),
+                              SocialLoginButton(
+                                onPressed: () {},
+                                text: "Continue with Apple",
+                                icon: Image.asset(
+                                  "assets/images/apple_icon.png",
+                                  width: 24,
                                 ),
                               ),
                             ],

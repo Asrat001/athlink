@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:athlink/shared/theme/app_colors.dart';
 
 class CustomPasswordField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
   double labelFontSize;
 
   CustomPasswordField({
@@ -11,6 +13,7 @@ class CustomPasswordField extends StatefulWidget {
     required this.label,
     required this.controller,
     this.labelFontSize = 12,
+    this.validator,
   });
 
   @override
@@ -22,24 +25,25 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
       obscureText: _obscure,
-      style: GoogleFonts.roboto(color: Colors.black),
+      validator: widget.validator,
+      style: GoogleFonts.roboto(color: AppColors.black),
       decoration: InputDecoration(
         labelText: widget.label,
-        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[600]),
+        prefixIcon: Icon(Icons.lock_outline, color: AppColors.grey),
         suffixIcon: IconButton(
           icon: Icon(
             _obscure
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
-            color: Colors.grey[600],
+            color: AppColors.grey,
           ),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
         labelStyle: GoogleFonts.roboto(
-          color: Colors.grey[600],
+          color: AppColors.grey,
           fontSize: widget.labelFontSize,
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -48,11 +52,19 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.grey[400]!),
+          borderSide: BorderSide(color: AppColors.lightGrey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.grey[800]!, width: 1.5),
+          borderSide: BorderSide(color: AppColors.black, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: AppColors.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),
     );

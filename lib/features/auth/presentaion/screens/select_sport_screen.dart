@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
+import 'package:athlink/shared/theme/app_colors.dart';
 
 class SelectSportScreen extends StatefulWidget {
   const SelectSportScreen({super.key});
@@ -47,35 +48,37 @@ class _SelectSportScreenState extends State<SelectSportScreen> {
         crossAxisCount * itemWidth + (crossAxisCount - 1) * spacing;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: const CustomAppBar(title: "ATHLINK"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              // const SizedBox(height: 16),
               const CustomText(
                 title: "Select Sports",
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
+                textColor: AppColors.black,
               ),
               const SizedBox(height: 12),
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: AppColors.lightGrey),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: TextFormField(
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                  style: const TextStyle(fontSize: 16, color: AppColors.black),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Search",
+                    hintStyle: TextStyle(color: AppColors.grey),
                     icon: Image.asset(
                       "assets/images/search.png",
                       width: 20,
                       height: 20,
+                      color: AppColors.grey,
                     ),
                   ),
                 ),
@@ -86,7 +89,7 @@ class _SelectSportScreenState extends State<SelectSportScreen> {
                 title:
                     "Choose the sport categories you want to sponsor the most.",
                 textAlign: TextAlign.center,
-                textColor: Colors.grey,
+                textColor: AppColors.grey,
                 fontSize: 14,
               ),
               const SizedBox(height: 20),
@@ -109,14 +112,14 @@ class _SelectSportScreenState extends State<SelectSportScreen> {
                                 width: itemWidth,
                                 height: itemHeight,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: Colors.grey.shade300,
+                                    color: AppColors.extraLightGrey,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withValues(alpha: 0.1),
+                                      color: AppColors.black.withOpacity(0.1),
                                       spreadRadius: 2,
                                       blurRadius: 5,
                                     ),
@@ -133,9 +136,9 @@ class _SelectSportScreenState extends State<SelectSportScreen> {
                                     const SizedBox(height: 8),
                                     CustomText(
                                       title: _sports[i]["name"]!,
-
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
+                                      textColor: AppColors.black,
                                     ),
                                   ],
                                 ),

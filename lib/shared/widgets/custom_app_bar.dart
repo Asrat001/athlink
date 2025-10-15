@@ -1,3 +1,5 @@
+import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -23,14 +25,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
 
             // Centered title
-            Text(
-              title.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.5,
-                color: Colors.black,
-              ),
+            CustomText(
+              title: title.toUpperCase(),
+
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              textColor: AppColors.black,
             ),
 
             // Placeholder to center the title
