@@ -1,3 +1,5 @@
+import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -124,7 +126,13 @@ class RoundedButton extends StatelessWidget {
                 children: [
                   icon!,
                   SizedBox(width: iconGap),
-                  Text(label, style: defaultTextStyle),
+                  CustomText(
+                    title: label,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight,
+                    letterSpacing: letterSpacing,
+                    textColor: foregroundColor ?? AppColors.white,
+                  ),
                 ],
               )
             : Text(label, style: defaultTextStyle),
