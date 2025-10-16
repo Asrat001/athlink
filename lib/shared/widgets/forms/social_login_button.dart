@@ -58,7 +58,6 @@ class SocialLoginButton extends StatelessWidget {
             SizedBox(width: spacing),
             CustomText(
               title: text,
-
               textColor: textColor,
               fontSize: 16,
               fontWeight: FontWeight.w500,

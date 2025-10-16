@@ -87,8 +87,7 @@ class RegisterScreen extends ConsumerWidget {
                               textColor: AppColors.textPrimary,
                             ),
 
-                            SizedBox(height: 5),
-
+                            SizedBox(height: 3),
                             CustomTextField(
                               label: "Company Name",
                               icon: Image.asset("assets/images/company.png"),
@@ -99,25 +98,25 @@ class RegisterScreen extends ConsumerWidget {
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 3),
                             CustomEmailField(
                               controller: _emailController,
                               validator: Validators.email,
                             ),
-                            SizedBox(height: 5),
+                            SizedBox(height: 3),
                             CustomPasswordField(
                               controller: _passwordController,
                               label: "Password",
                               validator: Validators.password,
                             ),
-                            SizedBox(height: 5),
+                            SizedBox(height: 3),
                             CustomPasswordField(
                               label: "Confirm Password",
                               controller: _confirmPasswordController,
                               validator: _confirmPasswordValidator,
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 7),
 
                             RoundedButton(
                               fontSize: 14,
@@ -134,7 +133,7 @@ class RegisterScreen extends ConsumerWidget {
                               submitting: loginSate.isLoading,
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 7),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +184,7 @@ class RegisterScreen extends ConsumerWidget {
                               ],
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 7),
                             SocialLoginButton(
                               onPressed: () {},
                               text: "Continue with Google",
@@ -196,14 +195,14 @@ class RegisterScreen extends ConsumerWidget {
                               textColor: AppColors.socialButtonText,
                               borderColor: AppColors.socialButtonBorder,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 7),
                             SocialLoginButton(
                               onPressed: () {},
                               text: "Continue with Apple",
                               icon: Image.asset("assets/images/apple_icon.png"),
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 7),
 
                             CustomText(
                               textAlign: TextAlign.center,
