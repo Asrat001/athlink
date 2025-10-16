@@ -82,12 +82,12 @@ class RegisterScreen extends ConsumerWidget {
                           children: [
                             CustomText(
                               title: "Sign Up",
-                              fontSize: 32,
+                              fontSize: 25,
                               fontWeight: FontWeight.w700,
                               textColor: AppColors.textPrimary,
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
 
                             CustomTextField(
                               label: "Company Name",
@@ -99,34 +99,34 @@ class RegisterScreen extends ConsumerWidget {
                               ),
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             CustomEmailField(
                               controller: _emailController,
                               validator: Validators.email,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             CustomPasswordField(
                               controller: _passwordController,
                               label: "Password",
                               validator: Validators.password,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
                             CustomPasswordField(
                               label: "Confirm Password",
                               controller: _confirmPasswordController,
                               validator: _confirmPasswordValidator,
                             ),
 
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
 
                             RoundedButton(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(50),
                               backgroundColor: AppColors.buttonBackground,
                               padding: EdgeInsets.symmetric(
-                                vertical: 20,
-                                horizontal: 10,
+                                vertical: 14,
+                                // horizontal: 10,
                               ),
                               label: "Sign Up",
                               onPressed: () => register(ref, context),
@@ -134,7 +134,7 @@ class RegisterScreen extends ConsumerWidget {
                               submitting: loginSate.isLoading,
                             ),
 
-                            SizedBox(height: 15),
+                            SizedBox(height: 10),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -143,7 +143,7 @@ class RegisterScreen extends ConsumerWidget {
                                   title: 'Already have an account?  ',
                                   fontWeight: FontWeight.w300,
                                   textColor: AppColors.textSecondary,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -151,9 +151,9 @@ class RegisterScreen extends ConsumerWidget {
                                   },
                                   child: Text(
                                     'Login',
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.textPrimary,
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline,
                                     ),
@@ -162,7 +162,7 @@ class RegisterScreen extends ConsumerWidget {
                               ],
                             ),
 
-                            SizedBox(height: 15),
+                            SizedBox(height: 10),
 
                             Row(
                               children: [
@@ -185,7 +185,7 @@ class RegisterScreen extends ConsumerWidget {
                               ],
                             ),
 
-                            SizedBox(height: 15),
+                            SizedBox(height: 10),
                             SocialLoginButton(
                               onPressed: () {},
                               text: "Continue with Google",
@@ -211,7 +211,7 @@ class RegisterScreen extends ConsumerWidget {
                                   'By signing up, you agree to Athlink\'s Terms & Privacy Policy',
                               fontWeight: FontWeight.w300,
                               textColor: AppColors.textSecondary,
-                              fontSize: 16,
+                              fontSize: 12,
                             ),
                           ],
                         ),

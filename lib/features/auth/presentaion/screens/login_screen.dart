@@ -101,7 +101,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 alignment: Alignment.centerLeft,
                                 child: RichText(
                                   text: TextSpan(
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: AppColors.textSecondary,
                                     ),
@@ -130,7 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 15),
 
                               // Login Button
                               RoundedButton(
@@ -143,11 +143,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 fontWeight: FontWeight.bold,
                                 borderRadius: BorderRadius.circular(20),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 18,
+                                  vertical: 14,
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // Signup redirect
                               Row(
@@ -157,14 +157,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     title: "Don't have an account? ",
                                     fontWeight: FontWeight.w300,
                                     textColor: AppColors.textSecondary,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                   GestureDetector(
                                     onTap: () =>
                                         context.push(Routes.registerRouteName),
                                     child: Text(
                                       'Sign up',
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.inter(
                                         color: AppColors.textPrimary,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -175,7 +175,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ],
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // OR Divider
                               Row(
@@ -199,7 +199,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ],
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // Social Login Buttons
                               SocialLoginButton(

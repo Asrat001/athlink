@@ -6,6 +6,7 @@ class CustomPasswordField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  double? borderRadius;
   double labelFontSize;
 
   CustomPasswordField({
@@ -13,6 +14,7 @@ class CustomPasswordField extends StatefulWidget {
     required this.label,
     required this.controller,
     this.labelFontSize = 12,
+    this.borderRadius = 50,
     this.validator,
   });
 
@@ -29,7 +31,7 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
       controller: widget.controller,
       obscureText: _obscure,
       validator: widget.validator,
-      style: GoogleFonts.roboto(color: AppColors.black),
+      style: GoogleFonts.inter(color: AppColors.black),
       decoration: InputDecoration(
         labelText: widget.label,
         prefixIcon: Icon(Icons.lock_outline, color: AppColors.grey),
@@ -42,28 +44,28 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
           ),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
-        labelStyle: GoogleFonts.roboto(
+        labelStyle: GoogleFonts.inter(
           color: AppColors.grey,
           fontSize: widget.labelFontSize,
         ),
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
+          vertical: 14,
           horizontal: 16,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(color: AppColors.lightGrey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(color: AppColors.black, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(widget.borderRadius!),
           borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),

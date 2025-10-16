@@ -1,4 +1,5 @@
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class SocialLoginButton extends StatelessWidget {
@@ -23,8 +24,8 @@ class SocialLoginButton extends StatelessWidget {
     this.textColor = AppColors.black,
     this.borderColor = AppColors.socialButtonBorder,
     this.hasBorder = true,
-    this.height = 65,
-    this.borderRadius = 20,
+    this.height = 50,
+    this.borderRadius = 50,
     this.iconSize = 24,
     this.spacing = 12,
   });
@@ -55,14 +56,12 @@ class SocialLoginButton extends StatelessWidget {
           children: [
             SizedBox(width: iconSize, height: iconSize, child: icon),
             SizedBox(width: spacing),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Roboto',
-              ),
+            CustomText(
+              title: text,
+
+              textColor: textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ],
         ),

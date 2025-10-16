@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final double labelFontSize;
+  double? borderRadius;
 
   CustomTextField({
     super.key,
@@ -18,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     this.labelFontSize = 12,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.borderRadius = 50,
   });
 
   @override
@@ -26,33 +28,33 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
-      style: GoogleFonts.roboto(color: AppColors.black),
+      style: GoogleFonts.inter(color: AppColors.black),
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: icon,
-        labelStyle: GoogleFonts.roboto(
+        labelStyle: GoogleFonts.inter(
           color: AppColors.grey,
           fontSize: labelFontSize,
         ),
         filled: false,
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
+          vertical: 14,
           horizontal: 16,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius!),
           borderSide: BorderSide(color: AppColors.lightGrey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius!),
           borderSide: BorderSide(color: AppColors.black, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius!),
           borderSide: BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius!),
           borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),

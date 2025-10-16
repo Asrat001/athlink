@@ -1,7 +1,6 @@
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RoundedButton extends StatelessWidget {
   const RoundedButton({
@@ -20,7 +19,7 @@ class RoundedButton extends StatelessWidget {
     this.elevation,
     this.fontSize = 14,
     this.fontWeight = FontWeight.w500,
-    this.fontFamily = 'Roboto',
+
     this.letterSpacing,
     this.height,
     this.width,
@@ -43,7 +42,6 @@ class RoundedButton extends StatelessWidget {
   final double? elevation;
   final double fontSize;
   final FontWeight fontWeight;
-  final String fontFamily;
   final double? letterSpacing;
   final double? height;
   final double? width;
@@ -54,12 +52,6 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final defaultTextStyle = GoogleFonts.roboto(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      letterSpacing: letterSpacing,
-      color: foregroundColor ?? theme.colorScheme.onPrimary,
-    );
 
     return Container(
       margin: margin,
@@ -84,7 +76,7 @@ class RoundedButton extends StatelessWidget {
               return disabledForegroundColor ??
                   theme.colorScheme.onSurface.withOpacity(0.38);
             }
-            return foregroundColor ?? theme.colorScheme.onPrimary;
+            return foregroundColor ?? AppColors.white;
           }),
           padding: WidgetStateProperty.all(padding),
           elevation: WidgetStateProperty.all(elevation),
@@ -135,7 +127,13 @@ class RoundedButton extends StatelessWidget {
                   ),
                 ],
               )
-            : Text(label, style: defaultTextStyle),
+            : CustomText(
+                title: label,
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                letterSpacing: letterSpacing,
+                textColor: foregroundColor ?? AppColors.white,
+              ),
       ),
     );
   }

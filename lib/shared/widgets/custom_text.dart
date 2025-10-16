@@ -36,7 +36,7 @@ class CustomText extends StatelessWidget {
       overflow: textOverflow,
       maxLines: maxLines, // null means unlimited lines
       textAlign: centerText == true ? TextAlign.center : textAlign,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         letterSpacing: letterSpacing,
         fontSize: fontSize ?? 12,
         fontWeight: fontWeight ?? FontWeight.bold,
@@ -97,7 +97,7 @@ class CustomClippedText extends StatelessWidget {
       overflow: textOverflow,
       maxLines: maxLines, // null means unlimited lines
       textAlign: centerText == true ? TextAlign.center : textAlign,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         letterSpacing: letterSpacing,
         fontSize: fontSize ?? 12,
         fontWeight: fontWeight ?? FontWeight.bold,

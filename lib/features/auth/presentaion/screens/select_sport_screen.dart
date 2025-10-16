@@ -49,7 +49,7 @@ class _SelectSportScreenState extends State<SelectSportScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: const CustomAppBar(title: "ATHLINK"),
+      appBar: CustomAppBar(title: "ATHLINK", showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

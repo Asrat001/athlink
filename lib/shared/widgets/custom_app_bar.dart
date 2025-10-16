@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBack;
+  bool showBackButton = true;
 
-  const CustomAppBar({super.key, required this.title, this.onBack});
+  CustomAppBar({
+    super.key,
+    required this.title,
+    this.onBack,
+    this.showBackButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +23,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              icon: Image.asset('assets/images/back.png'),
-              onPressed: onBack ?? () => Navigator.pop(context),
-              padding: const EdgeInsets.only(left: 12, right: 12),
-              constraints: const BoxConstraints(),
-            ),
+            showBackButton
+                ? IconButton(
+                    icon: Image.asset('assets/images/back.png'),
+                    onPressed: onBack ?? () => Navigator.pop(context),
+                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    constraints: const BoxConstraints(),
+                  )
+                : SizedBox(),
 
             // Centered title
             CustomText(
