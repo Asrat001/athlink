@@ -6,18 +6,23 @@ import 'package:athlink/shared/handlers/api_response.dart';
 import '../../../../shared/handlers/network_exceptions.dart';
 import '../datasource/authentication_remote_data_source.dart';
 
-
 class AuthenticationRepositoryImpl implements IAuthenticationRepository {
   final AuthenticationRemoteDataSource remoteDataSource;
   AuthenticationRepositoryImpl({required this.remoteDataSource});
 
-
   @override
-  Future<ApiResponse<LoginResponse>> signInWithEmailAndPassword({required String email, required String password}) async {
-    try{
-     final response=await remoteDataSource.login(email: email, password: password);
+  Future<ApiResponse<LoginResponse>> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await remoteDataSource.login(
+        email: email,
+        password: password,
+      );
       return ApiResponse.success(data: response);
-    }catch(e){
+    } catch (e) {
+      log("Login error: $e");
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -29,15 +34,22 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
   }
 
   @override
-  Future<ApiResponse<LoginResponse>> signUpWithEmailAndPassword({required String email, required String password,required String name})async {
-    try{
-      final response=await remoteDataSource.register(email: email, password: password, name: name);
-      log("User registered: ${response.user.email}");
+  Future<ApiResponse<User>> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    try {
+      final response = await remoteDataSource.register(
+        name: name,
+        email: email,
+        password: password,
+      );
+      
       return ApiResponse.success(data: response);
-    }catch(e){
+    } catch (e) {
       log("Registration error: $e");
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
-  // Implementation of the authentication repository
 }

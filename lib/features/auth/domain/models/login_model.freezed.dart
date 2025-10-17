@@ -305,7 +305,7 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 mixin _$User {
 
-@JsonKey(name: "_id") String get id; String get name; String get email; String get role; DateTime get createdAt; String get refreshToken;
+@JsonKey(name: "_id") String get id; String get name; String get email; String get role;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -318,16 +318,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,createdAt,refreshToken);
+int get hashCode => Object.hash(runtimeType,id,name,email,role);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, email: $email, role: $role, createdAt: $createdAt, refreshToken: $refreshToken)';
+  return 'User(id: $id, name: $name, email: $email, role: $role)';
 }
 
 
@@ -338,7 +338,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String name, String email, String role, DateTime createdAt, String refreshToken
+@JsonKey(name: "_id") String id, String name, String email, String role
 });
 
 
@@ -355,14 +355,12 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? createdAt = null,Object? refreshToken = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -448,10 +446,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role,  DateTime createdAt,  String refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that.refreshToken);case _:
+return $default(_that.id,_that.name,_that.email,_that.role);case _:
   return orElse();
 
 }
@@ -469,10 +467,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role,  DateTime createdAt,  String refreshToken)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that.refreshToken);case _:
+return $default(_that.id,_that.name,_that.email,_that.role);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -489,10 +487,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role,  DateTime createdAt,  String refreshToken)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String name,  String email,  String role)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that.refreshToken);case _:
+return $default(_that.id,_that.name,_that.email,_that.role);case _:
   return null;
 
 }
@@ -504,15 +502,13 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.createdAt,_that
 @JsonSerializable()
 
 class _User implements User {
-  const _User({@JsonKey(name: "_id") required this.id, required this.name, required this.email, required this.role, required this.createdAt, required this.refreshToken});
+  const _User({@JsonKey(name: "_id") required this.id, required this.name, required this.email, required this.role});
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override@JsonKey(name: "_id") final  String id;
 @override final  String name;
 @override final  String email;
 @override final  String role;
-@override final  DateTime createdAt;
-@override final  String refreshToken;
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
@@ -527,16 +523,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,createdAt,refreshToken);
+int get hashCode => Object.hash(runtimeType,id,name,email,role);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, email: $email, role: $role, createdAt: $createdAt, refreshToken: $refreshToken)';
+  return 'User(id: $id, name: $name, email: $email, role: $role)';
 }
 
 
@@ -547,7 +543,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String name, String email, String role, DateTime createdAt, String refreshToken
+@JsonKey(name: "_id") String id, String name, String email, String role
 });
 
 
@@ -564,14 +560,12 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? createdAt = null,Object? refreshToken = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,}) {
   return _then(_User(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

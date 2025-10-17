@@ -1,4 +1,3 @@
-
 import 'package:athlink/features/auth/presentaion/providers/register/state/register_state.dart';
 import 'package:athlink/shared/handlers/api_response.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,31 +10,63 @@ import '../../../domain/repository/authentication_repository.dart';
 
 class RegisterStateNotifier extends StateNotifier<RegisterState> {
   final IAuthenticationRepository _authenticationRepository;
-  RegisterStateNotifier(this._authenticationRepository) : super(RegisterState());
+  RegisterStateNotifier(this._authenticationRepository)
+    : super(RegisterState());
 
-  Future<void>register({required String email, required String password,required String name,required BuildContext context }) async {
+  Future<void> register({
+    required String email,
+    required String password,
+    required String name,
+    required BuildContext context,
+  }) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if(connected){
-      state = state.copyWith(isLoading: true);
-      final response = await _authenticationRepository.signUpWithEmailAndPassword(email: email, password: password,name: name);
-      response.when(
-        success: (data) {
-          state = state.copyWith(isLoading: false,errorMessage: null, isSuccess: true);
-        },
-        failure: (error) {
-          state = state.copyWith(isLoading: false, isSuccess: false, errorMessage: error.toString());
-          if(context.mounted){
-            AppHelpers.showErrorFlash(context, NetworkExceptions.getErrorMessage(error));
-          }
-        },
-      );
-    }else{
-      if(context.mounted){
-        AppHelpers.showErrorFlash(context, "You are currently offline ,Please check your internet connection");
+    if (!connected) {
+      if (context.mounted) {
+        AppHelpers.showErrorFlash(
+          context,
+          "You are currently offline, Please check your internet connection",
+        );
       }
+      return;
     }
+
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+    );
+
+    final response = await _authenticationRepository.signUpWithEmailAndPassword(
+      email: email,
+      password: password,
+      name: name,
+    );
+
+    response.when(
+      success: (data) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: null,
+          isSuccess: true,
+        );
+      },
+      failure: (error) {
+        state = state.copyWith(
+          isLoading: false,
+          isSuccess: false,
+          errorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+        if (context.mounted) {
+          AppHelpers.showErrorFlash(
+            context,
+            NetworkExceptions.getErrorMessage(error),
+          );
+        }
+      },
+    );
   }
 
-
-
+  void resetState() {
+    state = RegisterState();
+  }
 }

@@ -23,10 +23,9 @@ abstract class User with _$User {
     required String name,
     required String email,
     required String role,
-    required DateTime createdAt,
-    required String refreshToken,
+    // required DateTime createdAt,
+    // required String refreshToken,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
 }

@@ -27,8 +27,6 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   name: json['name'] as String,
   email: json['email'] as String,
   role: json['role'] as String,
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  refreshToken: json['refreshToken'] as String,
 );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
@@ -36,6 +34,4 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'name': instance.name,
   'email': instance.email,
   'role': instance.role,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'refreshToken': instance.refreshToken,
 };

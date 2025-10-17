@@ -7,12 +7,11 @@ abstract class IAuthenticationRepository {
     required String password,
   });
 
-  Future<ApiResponse<LoginResponse>> signUpWithEmailAndPassword({
+  Future<ApiResponse<User>> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
   });
 
   Future<void> signOut();
-
 }

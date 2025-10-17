@@ -17,18 +17,23 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/utils/app_helpers.dart';
 import '../providers/register/state/register_state.dart';
 
-class RegisterScreen extends ConsumerWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   RegisterScreen({super.key});
+
+  @override
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  void register(WidgetRef ref, BuildContext context) async {
-    context.push(Routes.selectSportScreen);
-    return;
+  bool _autoValidate = false;
+
+  void register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(registartionProvider.notifier);
       await provider.register(
@@ -37,6 +42,11 @@ class RegisterScreen extends ConsumerWidget {
         password: _passwordController.text.trim(),
         context: context,
       );
+    } else {
+      // Enable auto validation after first failed attempt
+      setState(() {
+        _autoValidate = true;
+      });
     }
   }
 
@@ -45,16 +55,41 @@ class RegisterScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    // Reset state when screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(registartionProvider.notifier).resetState();
+    });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final loginSate = ref.watch(registartionProvider);
-    ref.listen<RegisterState>(registartionProvider, (previous, next) {
-      if (next.isSuccess) {
+    final registerState = ref.watch(registartionProvider);
+
+    // State listener for handling success and errors
+    ref.listen<RegisterState>(registartionProvider, (previous, current) {
+      if (current.isSuccess) {
         AppHelpers.showSuccessToast(
           context,
           "Registration Successful, Please Login",
         );
-        context.push(Routes.loginRouteName);
+        // Navigate to login after a short delay to show the toast
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (context.mounted) {
+            context.push(Routes.loginRouteName);
+          }
+        });
       }
     });
 
@@ -69,9 +104,12 @@ class RegisterScreen extends ConsumerWidget {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 400),
                   child: IgnorePointer(
-                    ignoring: loginSate.isLoading,
+                    ignoring: registerState.isLoading,
                     child: Form(
                       key: _formKey,
+                      autovalidateMode: _autoValidate
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled,
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16.0),
@@ -123,14 +161,13 @@ class RegisterScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                               borderRadius: BorderRadius.circular(50),
                               backgroundColor: AppColors.buttonBackground,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 14,
-                                // horizontal: 10,
-                              ),
-                              label: "Sign Up",
-                              onPressed: () => register(ref, context),
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              label: registerState.isLoading
+                                  ? "Creating Account..."
+                                  : "Sign Up",
+                              onPressed: () => register(context),
                               width: double.infinity,
-                              submitting: loginSate.isLoading,
+                              submitting: registerState.isLoading,
                             ),
 
                             SizedBox(height: 7),
