@@ -30,12 +30,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     padding: const EdgeInsets.only(left: 12, right: 12),
                     constraints: const BoxConstraints(),
                   )
-                : SizedBox(),
+                : SizedBox(width: 50),
 
             // Centered title
             CustomText(
               title: title.toUpperCase(),
-
               fontSize: 22,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.5,

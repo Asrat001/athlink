@@ -1,3 +1,6 @@
+import 'package:athlink/features/sports/data/datasource/sports_remote_data_source.dart';
+import 'package:athlink/features/sports/data/repository/sports_repository_impl.dart';
+import 'package:athlink/features/sports/domain/repository/sports_repository.dart';
 import 'package:athlink/routes/app_route.dart';
 import 'package:athlink/shared/handlers/dio_client.dart';
 import 'package:athlink/shared/services/internet_connection_service.dart';
@@ -12,23 +15,32 @@ import 'features/auth/domain/repository/authentication_repository.dart';
 GetIt sl = GetIt.instance;
 
 Future<void> serviceLocator({String prefixBox = ''}) async {
-
   //helper class
   sl.registerSingleton<ImagePalette>(ImagePalette());
   sl.registerSingleton<DioHttpClient>(DioHttpClient());
-  final localStorageService= LocalStorageService();
+  final localStorageService = LocalStorageService();
   sl.registerLazySingleton<LocalStorageService>(() => localStorageService);
-  sl.registerSingleton<AppRouter>(AppRouter(localStorageService.getIsDoneOnboarding()));
+  sl.registerSingleton<AppRouter>(
+    AppRouter(localStorageService.getIsDoneOnboarding()),
+  );
   sl.registerSingleton<AppConnectivity>(AppConnectivity());
   sl.registerSingleton<TokenRefreshService>(TokenRefreshService());
 
-
   //data sources
-  sl.registerSingleton<AuthenticationRemoteDataSource>(AuthenticationRemoteDataSource(sl<DioHttpClient>()));
+  sl.registerSingleton<AuthenticationRemoteDataSource>(
+    AuthenticationRemoteDataSource(sl<DioHttpClient>()),
+  );
+  sl.registerSingleton<SportsRemoteDataSource>(
+    SportsRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
-  sl.registerSingleton<IAuthenticationRepository>(AuthenticationRepositoryImpl(remoteDataSource: sl<AuthenticationRemoteDataSource>()));
-
-
-
+  sl.registerSingleton<IAuthenticationRepository>(
+    AuthenticationRepositoryImpl(
+      remoteDataSource: sl<AuthenticationRemoteDataSource>(),
+    ),
+  );
+  sl.registerSingleton<ISportsRepository>(
+    SportsRepositoryImpl(remoteDataSource: sl<SportsRemoteDataSource>()),
+  );
 }

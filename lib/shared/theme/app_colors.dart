@@ -6,6 +6,7 @@ class AppColors {
 
   /// App secondary color
   static const Color error = Color(0xffFC698C);
+  static const Color success = Color(0xff00C851);
 
   /// App black color
   static const Color black = Color(0xff14171A);

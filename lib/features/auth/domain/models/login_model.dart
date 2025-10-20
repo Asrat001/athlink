@@ -6,7 +6,6 @@ part 'login_model.g.dart';
 @freezed
 abstract class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
-    required String message,
     required User user,
     required String accessToken,
     required String refreshToken,
@@ -20,7 +19,7 @@ abstract class LoginResponse with _$LoginResponse {
 abstract class User with _$User {
   const factory User({
     @JsonKey(name: "_id") required String id,
-    required String name,
+     String? name,
     required String email,
     required String role,
     // required DateTime createdAt,

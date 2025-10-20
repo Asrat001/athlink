@@ -34,6 +34,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _autoValidate = false;
 
   void register(BuildContext context) async {
+    // context.push(Routes.selectSportScreen);
+    // return;
+
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(registartionProvider.notifier);
       await provider.register(
@@ -43,7 +46,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         context: context,
       );
     } else {
-      // Enable auto validation after first failed attempt
       setState(() {
         _autoValidate = true;
       });
@@ -80,14 +82,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // State listener for handling success and errors
     ref.listen<RegisterState>(registartionProvider, (previous, current) {
       if (current.isSuccess) {
-        AppHelpers.showSuccessToast(
-          context,
-          "Registration Successful, Please Login",
-        );
-        // Navigate to login after a short delay to show the toast
         Future.delayed(const Duration(milliseconds: 1500), () {
           if (context.mounted) {
-            context.push(Routes.loginRouteName);
+            context.push(
+              Routes.verifyOtpRouteName,
+              extra: {
+                'email': _emailController.text.trim(),
+                "purpose": "registration",
+              },
+            );
           }
         });
       }

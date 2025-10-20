@@ -156,7 +156,6 @@ class LocalStorageService {
 
   /// Set user data - accepts UserData object and handles JSON encoding
   Future<void> setUserData(User userData) async {
-    debugPrint("setting user name at set user : ${userData.name}");
     if (_preferences == null) {
       return;
     }
@@ -196,4 +195,3 @@ class LocalStorageService {
     await _preferences?.remove(LocalStorageKey.userData);
   }
 }
-

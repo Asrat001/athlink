@@ -1,5 +1,7 @@
+import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,43 +15,53 @@ class ProfileScreen extends StatelessWidget {
           'Profile',
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-        bottom:PreferredSize(
-            preferredSize: Size(double.infinity,150),
-            child: Column(
-              children: [
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Color(0xFF4A704A),
-                    child: Icon(Icons.person, size: 50, color: Colors.white),
-                  ),
+        bottom: PreferredSize(
+          preferredSize: Size(double.infinity, 150),
+          child: Column(
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Color(0xFF4A704A),
+                  child: Icon(Icons.person, size: 50, color: Colors.white),
                 ),
-                SizedBox(height: 10),
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Ethan Carter',
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Ethan Carter',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        'Premium',
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                    ),
+                    Text(
+                      'Premium',
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 10),
-              ],
-            )
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
       body: LayoutBuilder(
-        builder: (context,constraint) {
+        builder: (context, constraint) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 4.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 4.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -100,11 +112,21 @@ class ProfileScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
+                  ListTile(
+                    onTap: () {
+                      GoRouter.of(context).go(Routes.loginRouteName);
+                    },
+                    leading: Icon(Icons.logout, color: Colors.white),
+                    title: Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

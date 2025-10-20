@@ -1,8 +1,11 @@
+import 'package:athlink/features/auth/presentaion/screens/forgot_password_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/login_screen.dart';
+import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/select_sport_screen.dart';
+import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
 import 'package:athlink/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:athlink/features/feed/presentation/screens/home/home_screen.dart';
+import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.dart';
 import 'package:athlink/features/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +42,32 @@ class AppRouter {
       GoRoute(
         path: Routes.registerRouteName,
         builder: (context, state) => RegisterScreen(),
+      ),
+      GoRoute(
+        path: Routes.forgotPasswordRouteName,
+        builder: (context, state) => ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: Routes.verifyOtpRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String>?;
+          return VerifyOTPScreen(
+            email: extra?['email'] ?? '',
+            purpose: extra?['purpose'] ?? 'verification',
+          );
+        },
+      ),
+
+      GoRoute(
+        path: Routes.resetPasswordRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String>?;
+          return ResetPasswordScreen(
+            email: extra?['email'] ?? '',
+            token: extra?['token'] ?? '',
+            otp: extra?['otp'] ?? '',
+          );
+        },
       ),
       GoRoute(
         path: Routes.selectSportScreen,

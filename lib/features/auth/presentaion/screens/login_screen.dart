@@ -8,6 +8,7 @@ import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
 import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:athlink/shared/widgets/forms/social_login_button.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -119,6 +120,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         ),
                                       ),
                                       TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            context.push(
+                                              Routes.forgotPasswordRouteName,
+                                            );
+                                          },
                                         text: "Resend",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
