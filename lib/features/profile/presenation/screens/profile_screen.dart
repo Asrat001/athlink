@@ -1,133 +1,214 @@
-import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/theme/app_colors.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TransformationController _transformationController =
+      TransformationController();
+
+  final List<String> athleteImages = List.generate(
+    20,
+    (i) => "https://picsum.photos/200?random=${i + 1}",
+  );
+
+  @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          'Profile',
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size(double.infinity, 150),
-          child: Column(
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Color(0xFF4A704A),
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
+      backgroundColor: Colors.grey[100],
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            // ---------------- Header Section ---------------- //
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 240,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.white, Color(0xFFE6E9EF)],
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      'Ethan Carter',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                Positioned(
+                  top: 40,
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          "https://picsum.photos/400/300",
+                          height: 110,
+                          width: 110,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Premium',
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 16,
+                      const SizedBox(height: 10),
+                      const Text(
+                        "SP Sport Agency",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                  ],
+                      const Text(
+                        "Los Angeles, CA",
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraint) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 4.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10),
-                  Text(
-                    'Your Library',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.queue_music, color: Colors.white),
-                    title: Text(
-                      'My Playlists',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.download, color: Colors.white),
-                    title: Text(
-                      'Downloaded Episodes',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Settings',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.settings, color: Colors.white),
-                    title: Text(
-                      'Settings',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.workspace_premium, color: Colors.white),
-                    title: Text(
-                      'Subscription',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.help, color: Colors.white),
-                    title: Text(
-                      'Help & Support',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      GoRouter.of(context).go(Routes.loginRouteName);
-                    },
-                    leading: Icon(Icons.logout, color: Colors.white),
-                    title: Text(
-                      'Logout',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // ---------------- Stats Section ---------------- //
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                _StatItem(value: "15+", label: "Sponsorship Campaigns"),
+                _StatItem(value: "50+", label: "Athletes Represented"),
+                _StatItem(value: "100+", label: "Global Partners"),
+              ],
+            ),
+            const SizedBox(height: 30),
+
+            // ---------------- Description ---------------- //
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
+                "We specialize in football, athletics, and racket sports, helping companies find the "
+                "right talent for their campaigns.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[700], fontSize: 16),
               ),
             ),
-          );
-        },
+            const SizedBox(height: 40),
+
+            // ---------------- Title ---------------- //
+            const Text(
+              "Athletes Sponsored",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ---------------- Apple Watch Grid ---------------- //
+            SizedBox(
+              height: size.height * 0.6,
+              child: InteractiveViewer(
+                transformationController: _transformationController,
+                boundaryMargin: const EdgeInsets.all(200),
+                minScale: 0.8,
+                maxScale: 2.5,
+                child: Center(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+                      final height = constraints.maxHeight;
+
+                      final radius = min(width, height) / 2.2;
+                      final centerX = width / 2;
+                      final centerY = height / 2;
+
+                      return Stack(
+                        children: [
+                          for (int i = 0; i < athleteImages.length; i++)
+                            _buildCircularItem(
+                              i,
+                              athleteImages.length,
+                              radius,
+                              centerX,
+                              centerY,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 80),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildCircularItem(
+    int index,
+    int total,
+    double radius,
+    double cx,
+    double cy,
+  ) {
+    // Create a spiral-like circular grid layout
+    final angle = (index / total) * 2 * pi;
+    final ring = (index ~/ 6); // which ring the item belongs to
+    final rowRadius = radius * (0.3 + 0.15 * ring);
+    final x = cx + rowRadius * cos(angle);
+    final y = cy + rowRadius * sin(angle);
+
+    // Scale items near center
+    final dist = sqrt(pow(x - cx, 2) + pow(y - cy, 2));
+    final maxDist = radius;
+    final scale = 1.2 - (dist / maxDist) * 0.6; // closer = bigger
+
+    return Positioned(
+      left: x - 40,
+      top: y - 40,
+      child: Transform.scale(
+        scale: scale,
+        child: CircleAvatar(
+          radius: 40,
+          backgroundImage: NetworkImage(athleteImages[index]),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final String value;
+  final String label;
+  const _StatItem({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
+      ],
     );
   }
 }
