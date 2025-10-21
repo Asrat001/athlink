@@ -4,7 +4,8 @@ import 'package:athlink/shared/theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
-  final Widget icon;
+  final Widget? icon;
+  int? maxLines;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
@@ -14,17 +15,19 @@ class CustomTextField extends StatelessWidget {
   CustomTextField({
     super.key,
     required this.label,
-    required this.icon,
+    this.icon,
     required this.controller,
     this.labelFontSize = 12,
     this.keyboardType = TextInputType.text,
     this.validator,
     this.borderRadius = 50,
+    this.maxLines = 1,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLines: maxLines,
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,

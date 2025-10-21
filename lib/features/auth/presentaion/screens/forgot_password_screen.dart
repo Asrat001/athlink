@@ -134,7 +134,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             RoundedButton(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              borderRadius: BorderRadius.circular(50),
+
                               backgroundColor: AppColors.buttonBackground,
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               label: forgotPasswordState.isLoading

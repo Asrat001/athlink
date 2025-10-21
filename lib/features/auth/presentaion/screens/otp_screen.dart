@@ -195,7 +195,6 @@ class _VerifyOTPScreenState extends ConsumerState<VerifyOTPScreen> {
                           RoundedButton(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            borderRadius: BorderRadius.circular(50),
                             backgroundColor: AppColors.buttonBackground,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             label: otpState.isLoading

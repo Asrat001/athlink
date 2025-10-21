@@ -173,7 +173,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             RoundedButton(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              borderRadius: BorderRadius.circular(50),
                               backgroundColor: AppColors.buttonBackground,
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               label: resetPasswordState.isLoading

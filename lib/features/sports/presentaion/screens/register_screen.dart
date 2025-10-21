@@ -159,7 +159,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             RoundedButton(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              borderRadius: BorderRadius.circular(50),
                               backgroundColor: AppColors.buttonBackground,
                               padding: EdgeInsets.symmetric(vertical: 14),
                               label: registerState.isLoading

@@ -2,7 +2,6 @@ import 'package:athlink/features/auth/presentaion/providers/login/login_provider
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/validators_utils.dart';
-import 'package:athlink/shared/widgets/custom_app_bar.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
 import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
@@ -141,7 +140,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                                 submitting: loginState.isLoading,
                                 fontWeight: FontWeight.bold,
-                                borderRadius: BorderRadius.circular(20),
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 14,
                                 ),

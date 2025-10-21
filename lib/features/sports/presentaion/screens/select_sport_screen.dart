@@ -383,7 +383,6 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                   padding: const EdgeInsets.only(bottom: 20, top: 10),
                   child: Center(
                     child: RoundedButton(
-                      borderRadius: BorderRadius.circular(50),
                       width: MediaQuery.of(context).size.width * 0.5,
                       label: sportSelectionState.isLoading
                           ? "Submitting..."

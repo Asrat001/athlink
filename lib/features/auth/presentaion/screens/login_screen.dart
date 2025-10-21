@@ -148,7 +148,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                                 submitting: loginState.isLoading,
                                 fontWeight: FontWeight.bold,
-                                borderRadius: BorderRadius.circular(20),
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 14,
                                 ),

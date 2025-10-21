@@ -29,18 +29,17 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
     required BuildContext context,
   }) async {
     final token = state.token;
-    if (token == null) return;
 
-    final connected = await sl<AppConnectivity>().connectivity();
-    if (!connected) {
-      if (context.mounted) {
-        AppHelpers.showErrorFlash(
-          context,
-          "You are currently offline, Please check your internet connection",
-        );
-      }
-      return;
-    }
+    // final connected = await sl<AppConnectivity>().connectivity();
+    // if (!connected) {
+    //   if (context.mounted) {
+    //     AppHelpers.showErrorFlash(
+    //       context,
+    //       "You are currently offline, Please check your internet connection",
+    //     );
+    //   }
+    //   return;
+    // }
 
     state = state.copyWith(
       isLoading: true,
@@ -49,7 +48,7 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
     );
 
     final response = await _authenticationRepository.resetPassword(
-      token: token,
+      token: token ?? "",
       password: password,
       otp: otp,
     );

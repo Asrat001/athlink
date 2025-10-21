@@ -3,7 +3,7 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  const RoundedButton({
+  RoundedButton({
     super.key,
     required this.label,
     required this.onPressed,
@@ -14,7 +14,7 @@ class RoundedButton extends StatelessWidget {
     this.foregroundColor,
     this.disabledBackgroundColor,
     this.disabledForegroundColor,
-    this.borderRadius,
+    this.borderRadius = 50,
     this.borderSide,
     this.elevation,
     this.fontSize = 14,
@@ -37,7 +37,7 @@ class RoundedButton extends StatelessWidget {
   final Color? foregroundColor;
   final Color? disabledBackgroundColor;
   final Color? disabledForegroundColor;
-  final BorderRadius? borderRadius;
+  final double borderRadius;
   final BorderSide? borderSide;
   final double? elevation;
   final double fontSize;
@@ -51,8 +51,6 @@ class RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
       margin: margin,
       height: height,
@@ -65,16 +63,16 @@ class RoundedButton extends StatelessWidget {
           ) {
             if (states.contains(WidgetState.disabled)) {
               return disabledBackgroundColor ??
-                  theme.colorScheme.onSurface.withOpacity(0.12);
+                  AppColors.grey.withValues(alpha: .12);
             }
-            return backgroundColor ?? theme.colorScheme.primary;
+            return backgroundColor ?? AppColors.primary;
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color?>((
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.disabled)) {
               return disabledForegroundColor ??
-                  theme.colorScheme.onSurface.withOpacity(0.38);
+                  AppColors.white.withValues(alpha: .38);
             }
             return foregroundColor ?? AppColors.white;
           }),
@@ -82,7 +80,7 @@ class RoundedButton extends StatelessWidget {
           elevation: WidgetStateProperty.all(elevation),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(borderRadius),
               side: borderSide ?? BorderSide.none,
             ),
           ),
@@ -90,12 +88,14 @@ class RoundedButton extends StatelessWidget {
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.pressed)) {
-              return (foregroundColor ?? theme.colorScheme.onPrimary)
-                  .withOpacity(0.1);
+              return (foregroundColor ?? AppColors.white).withValues(
+                alpha: 0.1,
+              );
             }
             if (states.contains(WidgetState.hovered)) {
-              return (foregroundColor ?? theme.colorScheme.onPrimary)
-                  .withOpacity(0.04);
+              return (foregroundColor ?? AppColors.white).withValues(
+                alpha: 0.04,
+              );
             }
             return null;
           }),
@@ -107,7 +107,7 @@ class RoundedButton extends StatelessWidget {
                   width: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: foregroundColor ?? theme.colorScheme.onPrimary,
+                    color: foregroundColor ?? AppColors.white,
                   ),
                 ),
               )
