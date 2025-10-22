@@ -229,155 +229,160 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 80),
-          const CustomText(
-            title: 'SP Sport Agency',
-
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            textColor: AppColors.black,
-          ),
-          const SizedBox(height: 12),
-
-          _addressWidget(),
-
-          const SizedBox(height: 30),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(
+      children: [
+        SizedBox(height: 80),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: _buildQuestionBox(
-                    title: "How many",
-                    subtitle: "Sponsorship Campaigns did you organize?",
-                    controller: _campaignController,
-                    editable: _editCampaign,
-                    focusNode: _campaignFocus,
-                    onTap: () {
-                      setState(() => _editCampaign = true);
-                      Future.delayed(const Duration(milliseconds: 80), () {
-                        FocusScope.of(context).requestFocus(_campaignFocus);
-                      });
-                    },
+              const CustomText(
+                title: 'SP Sport Agency',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.black,
+              ),
+              const SizedBox(height: 12),
+
+              _addressWidget(),
+
+              const SizedBox(height: 30),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _buildQuestionBox(
+                        title: "How many",
+                        subtitle: "Sponsorship Campaigns did you organize?",
+                        controller: _campaignController,
+                        editable: _editCampaign,
+                        focusNode: _campaignFocus,
+                        onTap: () {
+                          setState(() => _editCampaign = true);
+                          Future.delayed(const Duration(milliseconds: 80), () {
+                            FocusScope.of(context).requestFocus(_campaignFocus);
+                          });
+                        },
+                      ),
+                    ),
                   ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _buildQuestionBox(
+                        title: "How many",
+                        subtitle: "Athletes Represented you so far?",
+                        controller: _athletesController,
+                        editable: _editAthletes,
+                        focusNode: _athletesFocus,
+                        onTap: () {
+                          setState(() => _editAthletes = true);
+                          Future.delayed(const Duration(milliseconds: 80), () {
+                            FocusScope.of(context).requestFocus(_athletesFocus);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _buildQuestionBox(
+                        title: "How many",
+                        subtitle: "Global Partners do you have?",
+                        controller: _partnersController,
+                        editable: _editPartners,
+                        focusNode: _partnersFocus,
+                        onTap: () {
+                          setState(() => _editPartners = true);
+                          Future.delayed(const Duration(milliseconds: 80), () {
+                            FocusScope.of(context).requestFocus(_partnersFocus);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: CustomText(
+                  title: "Athletes Sponsored",
+
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  textColor: AppColors.black,
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: _buildQuestionBox(
-                    title: "How many",
-                    subtitle: "Athletes Represented you so far?",
-                    controller: _athletesController,
-                    editable: _editAthletes,
-                    focusNode: _athletesFocus,
-                    onTap: () {
-                      setState(() => _editAthletes = true);
-                      Future.delayed(const Duration(milliseconds: 80), () {
-                        FocusScope.of(context).requestFocus(_athletesFocus);
-                      });
-                    },
+              const SizedBox(height: 10),
+
+              // Image upload section
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: _selectedImage == null
+                          ? const Icon(
+                              Icons.image_outlined,
+                              color: Colors.grey,
+                              size: 40,
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: _buildQuestionBox(
-                    title: "How many",
-                    subtitle: "Global Partners do you have?",
-                    controller: _partnersController,
-                    editable: _editPartners,
-                    focusNode: _partnersFocus,
-                    onTap: () {
-                      setState(() => _editPartners = true);
-                      Future.delayed(const Duration(milliseconds: 80), () {
-                        FocusScope.of(context).requestFocus(_partnersFocus);
-                      });
-                    },
-                  ),
-                ),
+              const SizedBox(height: 12),
+
+              CustomTextField(
+                label: "Enter Name of Athlete",
+                borderRadius: 10,
+                controller: _athleteNameController,
+                // decoration: _inputDecoration(hint: 'Enter name of athlete'),
+              ),
+
+              const SizedBox(height: 20),
+
+              CustomTextField(
+                controller: _descriptionController,
+                maxLines: 4,
+                borderRadius: 10,
+                label: 'Add a short description about your company',
+              ),
+
+              const SizedBox(height: 30),
+
+              RoundedButton(
+                label: "Save",
+                onPressed: () {},
+                width: double.infinity,
+                height: 60,
               ),
             ],
           ),
-
-          const SizedBox(height: 30),
-
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: CustomText(
-              title: "Athletes Sponsored",
-
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              textColor: AppColors.black,
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // Image upload section
-          Row(
-            children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: _selectedImage == null
-                      ? const Icon(
-                          Icons.image_outlined,
-                          color: Colors.grey,
-                          size: 40,
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_selectedImage!, fit: BoxFit.cover),
-                        ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          CustomTextField(
-            label: "Enter Name of Athlete",
-            borderRadius: 10,
-            controller: _athleteNameController,
-            // decoration: _inputDecoration(hint: 'Enter name of athlete'),
-          ),
-
-          const SizedBox(height: 20),
-
-          CustomTextField(
-            controller: _descriptionController,
-            maxLines: 4,
-            borderRadius: 10,
-            label: 'Add a short description about your company',
-          ),
-
-          const SizedBox(height: 30),
-
-          RoundedButton(
-            label: "Save",
-            onPressed: () {},
-            width: double.infinity,
-            height: 60,
-            borderRadius: 5,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

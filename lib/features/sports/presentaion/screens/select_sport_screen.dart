@@ -6,6 +6,7 @@ import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
+import 'package:athlink/shared/widgets/text_with_fixed_width.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -174,11 +175,12 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                     },
                   ),
                   const SizedBox(height: 6),
-                  CustomText(
+                  TextWithFixedWidth(
                     textAlign: TextAlign.center,
-                    title: sport.name,
+                    text: sport.name,
                     fontWeight: FontWeight.w600,
                     fontSize: isSelected ? 10 : 12,
+                    numOfCharacters: 15,
                     textColor: isSelected
                         ? AppColors.primary
                         : AppColors.textPrimary,

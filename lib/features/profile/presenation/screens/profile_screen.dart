@@ -1,9 +1,14 @@
 import 'dart:math';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/profile_edit_page.dart';
+import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -111,66 +116,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
     "Nelly Korda",
   ];
 
-  Widget _buildStatItem(String count, String label) {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            count,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color(0xFF6A6A6A), // Grey text color
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper method to build the header section with the image and logo
   Widget _buildHeader(BuildContext context) {
     const double bannerHeight = 250;
     const double logoCircleRadius = 50;
-    const double logoOffset = logoCircleRadius * 1.2; // Adjusted overlap
+    const double logoOffset = logoCircleRadius * 1.2;
 
     return Stack(
-      clipBehavior: Clip.none, // Allows the logo to overflow the container
+      clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        // 1. Grey Background Banner (The image background)
         Container(
           height: bannerHeight,
-          decoration: const BoxDecoration(
-            color: Color(0xFFE5E5E5), // Light grey
-          ),
+          decoration: const BoxDecoration(color: AppColors.extraLightGrey),
         ),
 
-        // 2. Profile Image Placeholder (Woman with soccer ball)
-        // **NOTE**: Replace with your actual Image.asset or Image.network
         Positioned.fill(
           child: Opacity(
             opacity: 0.9,
             child: Image.network(
-              "https://picsum.photos/400/300", // Placeholder URL
+              "https://picsum.photos/400/300",
               fit: BoxFit.cover,
               alignment: Alignment.topCenter,
             ),
           ),
         ),
 
-        // 3. Edit Icon (Pencil)
         Positioned(
           bottom: 5,
           right: 20,
@@ -180,40 +150,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 isEditMode = !isEditMode;
               });
             },
-            child: SvgPicture.asset(
-              "assets/images/edit.svg",
-              width: 24,
-              height: 24,
+            child: CircleAvatar(
+              backgroundColor: AppColors.white,
+              child: SvgPicture.asset(
+                "assets/images/edit.svg",
+                width: 24,
+                height: 24,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 50,
+          right: 20,
+          child: InkWell(
+            onTap: () {
+              final storageService = sl<LocalStorageService>();
+              storageService.deleteAccessToken();
+              storageService.deleteUserData();
+              GoRouter.of(context).go(Routes.loginRouteName);
+            },
+            child: CircleAvatar(
+              backgroundColor: AppColors.white,
+              child: Icon(Icons.logout, color: AppColors.black),
             ),
           ),
         ),
 
-        // 4. Video Play/Pause Icon Placeholder
         Positioned(
-          bottom: 110, // Positioned near the center of the image
+          bottom: 110,
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: AppColors.white.withValues(
+                alpha: 0.7,
+              ), // Fixed method name
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.play_arrow, color: Colors.black, size: 20),
+            child: const Icon(
+              Icons.play_arrow,
+              color: AppColors.black,
+              size: 20,
+            ),
           ),
         ),
 
-        // 5. Logo Circle (The 'QUARTZ' logo) - Overlaps banner and content
         Positioned(
-          bottom: -logoOffset, // Negative offset for overlap
+          bottom: -15,
           child: Container(
             width: logoCircleRadius * 2,
             height: logoCircleRadius * 2,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(color: Colors.white, width: 7),
+              color: AppColors.white,
+              border: Border.all(color: AppColors.white, width: 7),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: AppColors.textGrey, // Used textGrey for shadow
                   blurRadius: 10,
                   offset: Offset(0, 4),
                 ),
@@ -252,13 +245,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           title: "Sp Sport Agency",
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          textColor: Colors.black,
+                          textColor: AppColors.black,
                         ),
                         CustomText(
                           title: "Los Angeles, CA",
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          textColor: Colors.grey,
+                          textColor: AppColors.textGrey,
                         ),
                         SizedBox(height: 30),
                         IntrinsicHeight(
@@ -272,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               const VerticalDivider(
-                                color: Color(0xFFDCDCDC),
+                                color: AppColors.divider,
                                 thickness: 1,
                                 indent: 10,
                                 endIndent: 10,
@@ -284,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               const VerticalDivider(
-                                color: Color(0xFFDCDCDC),
+                                color: AppColors.divider,
                                 thickness: 1,
                                 indent: 10,
                                 endIndent: 10,
@@ -309,7 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 "We specialize in football, athletics, and racket sports, helping companies find the "
                                 "right talent for their campaigns.",
                             textAlign: TextAlign.center,
-                            textColor: Colors.grey[700],
+                            textColor: AppColors.textSecondary,
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
                           ),
@@ -321,9 +314,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(width: 24),
                             const CustomText(
                               title: "Athletes Sponsored",
-
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              textColor: AppColors.textPrimary,
                             ),
                           ],
                         ),
@@ -550,51 +543,37 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
     final int row = index ~/ columns;
     final int col = index % columns;
 
-    // Base grid position
     final double baseX = col * (itemSize + spacing);
     final double baseY = row * (itemSize + spacing);
 
-    // Circular container bounds
     final double containerWidth = MediaQuery.of(context).size.width - 20;
     final double containerHeight = 360;
     final double containerRadius = min(containerWidth, containerHeight) / 2;
 
-    // Item center in scroll space
     final double itemCenterX = baseX + itemSize / 2;
     final double itemCenterY = baseY + itemSize / 2;
 
-    // Circular container center
     final double containerCenterX = _horizontalOffset + containerWidth / 2;
     final double containerCenterY = _verticalOffset + containerHeight / 2;
 
-    // Distance from container center
     final double deltaX = itemCenterX - containerCenterX;
     final double deltaY = itemCenterY - containerCenterY;
     final double distance = sqrt(deltaX * deltaX + deltaY * deltaY);
 
-    // Check if item is within circular bounds
     final bool isWithinCircle = distance <= containerRadius;
 
     if (!isWithinCircle) {
       return const SizedBox.shrink();
     }
 
-    // Smooth animation values
     final double normalizedDistance = distance / containerRadius;
 
-    // Enhanced scaling - much larger center items
     final double scale = widget.athleteImages.length <= 4
-        ? 1.8 -
-              (normalizedDistance * 0.8) // Larger scale for few athletes
-        : 1.4 - (normalizedDistance * 0.8); // Normal scale for many athletes
+        ? 1.8 - (normalizedDistance * 0.8)
+        : 1.4 - (normalizedDistance * 0.8);
 
-    // Smooth opacity
     final double opacity = 1.0 - (normalizedDistance * 0.4);
 
-    // Calculate angle for directional effects
-    final double angle = atan2(deltaY, deltaX);
-
-    // Enhanced 3D effects that respond to direction
     final double rotationX = -deltaY / 600;
     final double rotationY = deltaX / 600;
     final double translateZ = (1 - normalizedDistance) * 40;
@@ -623,20 +602,20 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(itemSize / 2),
                 onTap: () => _showAthleteDetail(index),
-                splashColor: Colors.blue.withOpacity(0.3),
-                highlightColor: Colors.blue.withOpacity(0.2),
+                splashColor: AppColors.primary.withValues(alpha: 0.3),
+                highlightColor: AppColors.primary.withValues(alpha: 0.2),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 150),
                   curve: Curves.easeOut,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.8),
+                      color: AppColors.white.withValues(alpha: 0.8),
                       width: 2.0,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.withOpacity(0.4 * scale),
+                        color: AppColors.primary.withValues(alpha: 0.4 * scale),
                         blurRadius: 20 * scale,
                         spreadRadius: 3 * scale,
                       ),
@@ -656,7 +635,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                             return Container(
                               width: itemSize,
                               height: itemSize,
-                              color: Colors.grey[300],
+                              color: AppColors.lightGrey,
                               child: Center(
                                 child: CircularProgressIndicator(
                                   value:
@@ -664,6 +643,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                                       ? loadingProgress.cumulativeBytesLoaded /
                                             loadingProgress.expectedTotalBytes!
                                       : null,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             );
@@ -672,10 +652,10 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                             return Container(
                               width: itemSize,
                               height: itemSize,
-                              color: Colors.grey[300],
+                              color: AppColors.lightGrey,
                               child: Icon(
                                 Icons.person,
-                                color: Colors.grey[600],
+                                color: AppColors.grey,
                                 size: itemSize * 0.5,
                               ),
                             );
@@ -690,7 +670,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.7),
+                                AppColors.black.withValues(alpha: 0.7),
                               ],
                             ),
                           ),
@@ -706,7 +686,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                               Text(
                                 widget.athleteNames[index].split(' ').first,
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontSize: max(10 * scale, 10),
                                   fontWeight: FontWeight.w600,
                                   height: 1.1,
@@ -719,7 +699,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                                 Text(
                                   widget.athleteNames[index].split(' ').last,
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                     fontSize: max(9 * scale, 9),
                                     fontWeight: FontWeight.w500,
                                     height: 1.1,
@@ -754,7 +734,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.7,
             decoration: BoxDecoration(
-              color: Colors.grey[900],
+              color: AppColors.black,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(40),
                 topRight: Radius.circular(40),
@@ -767,7 +747,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                   width: 60,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: Colors.grey[600],
+                    color: AppColors.grey,
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
@@ -780,7 +760,10 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.blue, width: 3),
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 3,
+                          ),
                         ),
                         child: ClipOval(
                           child: Image.network(
@@ -788,10 +771,10 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
-                                color: Colors.grey[300],
+                                color: AppColors.lightGrey,
                                 child: Icon(
                                   Icons.person,
-                                  color: Colors.grey[600],
+                                  color: AppColors.grey,
                                   size: 50,
                                 ),
                               );
@@ -803,7 +786,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                       Text(
                         widget.athleteNames[index],
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.w600,
                         ),
@@ -812,7 +795,10 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                       SizedBox(height: 10),
                       Text(
                         "Professional Athlete",
-                        style: TextStyle(color: Colors.blue[200], fontSize: 18),
+                        style: TextStyle(
+                          color: AppColors.lightGrey,
+                          fontSize: 18,
+                        ),
                       ),
                       SizedBox(height: 20),
                       Padding(
@@ -820,7 +806,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                         child: Text(
                           "Sponsored by SP Sport Agency. Tap anywhere to close.",
                           style: TextStyle(
-                            color: Colors.grey[400],
+                            color: AppColors.textGrey,
                             fontSize: 16,
                           ),
                           textAlign: TextAlign.center,
@@ -856,7 +842,7 @@ class _StatItem extends StatelessWidget {
             textAlign: TextAlign.center,
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            textColor: Colors.black,
+            textColor: AppColors.black,
           ),
           const SizedBox(height: 4),
           CustomText(
@@ -865,7 +851,7 @@ class _StatItem extends StatelessWidget {
             textAlign: TextAlign.center,
 
             fontSize: 13,
-            textColor: Colors.grey[600],
+            textColor: AppColors.grey,
             fontWeight: FontWeight.w300,
           ),
         ],

@@ -10,35 +10,34 @@ import 'package:image_picker/image_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PostFeedSection extends StatelessWidget {
-  const PostFeedSection({super.key});
+  PostFeedSection({super.key});
+
+  final List<Map<String, dynamic>> posts = [
+    {
+      'title': 'Brand Ambassador Deal',
+      'subtitle':
+          'Track and field athletes aged 18 - 21, with social media presence.',
+      'price': '500',
+      'duration': '6',
+      'agency': 'SP Sport Agency',
+      'location': 'Los Angeles, CA',
+      'image':
+          'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800',
+    },
+    {
+      'title': 'Endorsement Opportunity',
+      'subtitle': 'Basketball athletes aged 20 - 25 with community engagement.',
+      'price': '800',
+      'duration': '3',
+      'agency': 'Prime Sports',
+      'location': 'New York, NY',
+      'image':
+          'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=800',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> posts = [
-      {
-        'title': 'Brand Ambassador Deal',
-        'subtitle':
-            'Track and field athletes aged 18 - 21, with social media presence.',
-        'price': '500',
-        'duration': '6',
-        'agency': 'SP Sport Agency',
-        'location': 'Los Angeles, CA',
-        'image':
-            'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800',
-      },
-      {
-        'title': 'Endorsement Opportunity',
-        'subtitle':
-            'Basketball athletes aged 20 - 25 with community engagement.',
-        'price': '800',
-        'duration': '3',
-        'agency': 'Prime Sports',
-        'location': 'New York, NY',
-        'image':
-            'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=800',
-      },
-    ];
-
     return Container(
       color: AppColors.lightGrey.withValues(alpha: .2),
       child: Column(
@@ -49,7 +48,7 @@ class PostFeedSection extends StatelessWidget {
               children: [
                 Expanded(child: CustomText(title: "Posts", fontSize: 20)),
                 IconButton(
-                  icon: Icon(Icons.add, size: 30),
+                  icon: Icon(Icons.add, size: 30, color: AppColors.black),
                   onPressed: () {
                     _openCreateJobModal(context);
                   },
@@ -171,21 +170,20 @@ class _PostCard extends StatelessWidget {
                   title: title,
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  textColor: Colors.black,
+                  textColor: AppColors.black,
                 ),
                 const SizedBox(height: 6),
 
                 /// Subtitle
                 CustomText(
                   title: subtitle,
-
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   textColor: AppColors.grey,
                 ),
                 const SizedBox(height: 12),
 
-                Divider(color: Colors.grey.shade300, thickness: 1),
+                Divider(color: AppColors.divider, thickness: 1),
 
                 const SizedBox(height: 8),
 
@@ -202,7 +200,7 @@ class _PostCard extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 10),
-                Divider(color: Colors.grey.shade300, thickness: 1),
+                Divider(color: AppColors.divider, thickness: 1),
                 const SizedBox(height: 10),
 
                 /// Agency Info
@@ -218,14 +216,14 @@ class _PostCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.lightBlue.shade200,
+                                color: AppColors.lightGrey,
                                 width: 2.0,
                               ),
                             ),
                             padding: const EdgeInsets.all(2.0),
                             child: CircleAvatar(
                               radius: 30,
-                              backgroundColor: Colors.black,
+                              backgroundColor: AppColors.black,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
                                 child: Image.network(
@@ -244,11 +242,10 @@ class _PostCard extends StatelessWidget {
                               width: 14,
                               height: 14,
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: AppColors.success,
                                 shape: BoxShape.circle,
-
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   width: 2.0,
                                 ),
                               ),
@@ -263,7 +260,6 @@ class _PostCard extends StatelessWidget {
                       children: [
                         CustomText(
                           title: agency,
-
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                           textColor: AppColors.black,
@@ -271,7 +267,6 @@ class _PostCard extends StatelessWidget {
                         const SizedBox(height: 2),
                         CustomText(
                           title: location,
-
                           textColor: AppColors.grey,
                           fontWeight: FontWeight.w300,
                           fontSize: 12,
@@ -313,13 +308,13 @@ class _InfoItem extends StatelessWidget {
 
           fontSize: 16,
           fontWeight: FontWeight.w700,
-          textColor: Color(0xFF0C2031),
+          textColor: AppColors.primary,
         ),
         const SizedBox(height: 4),
         CustomText(
           title: label,
           fontSize: 12,
-          textColor: Colors.grey,
+          textColor: AppColors.grey,
           fontWeight: FontWeight.w300,
         ),
       ],
@@ -332,7 +327,7 @@ class _DividerLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 50, color: Colors.grey.shade300);
+    return Container(width: 1, height: 50, color: AppColors.grey);
   }
 }
 
@@ -340,7 +335,7 @@ void _openCreateJobModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.white,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
@@ -404,7 +399,6 @@ class _CreateJobModalState extends State<_CreateJobModal>
                       'assets/images/step-back.svg',
                       width: 24,
                       height: 24,
-                      // color: AppColors.black,
                     ),
                     onPressed: _previousPage,
                   )
@@ -430,9 +424,9 @@ class _CreateJobModalState extends State<_CreateJobModal>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildStepCircle(1, isActive: _currentPage == 0),
+                _buildStepCircle(1, isActive: true),
                 const SizedBox(width: 8),
-                Container(width: 40, height: 2, color: Colors.grey.shade300),
+                Container(width: 40, height: 2, color: AppColors.divider),
                 const SizedBox(width: 8),
                 _buildStepCircle(2, isActive: _currentPage == 1),
               ],
@@ -445,43 +439,18 @@ class _CreateJobModalState extends State<_CreateJobModal>
               child: PageView(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
-                children: [_StepOne(), _StepTwo()],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Bottom buttons
-            if (_currentPage == 0)
-              Align(
-                alignment: Alignment.bottomRight,
-                child: RoundedButton(
-                  label: "Next",
-                  height: 40,
-                  width: 100,
-                  onPressed: _nextPage,
-                ),
-              )
-            else
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RoundedButton(
-                    label: "Cancel",
-                    height: 48,
-                    width: 140,
-                    // bgColor: Colors.grey.shade200,
-                    // textColor: Colors.black87,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  RoundedButton(
-                    label: "Post",
-                    height: 48,
-                    width: 140,
-                    onPressed: () {},
+                  _StepOne(onNext: _nextPage),
+                  _StepTwo(
+                    onPost: () {
+                      // Handle post logic here
+                      Navigator.pop(context);
+                    },
+                    onCancel: () => Navigator.pop(context),
                   ),
                 ],
               ),
+            ),
           ],
         ),
       ),
@@ -494,13 +463,13 @@ class _CreateJobModalState extends State<_CreateJobModal>
       height: 32,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF0C2031) : Colors.grey.shade300,
+        color: isActive ? AppColors.primary : AppColors.extraLightGrey,
         shape: BoxShape.circle,
       ),
       child: Text(
         '$step',
         style: TextStyle(
-          color: isActive ? Colors.white : Colors.black54,
+          color: isActive ? AppColors.white : AppColors.textSecondary,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -508,9 +477,10 @@ class _CreateJobModalState extends State<_CreateJobModal>
   }
 }
 
-// 🧩 Step 1 UI
 class _StepOne extends StatelessWidget {
-  _StepOne();
+  final VoidCallback onNext;
+
+  _StepOne({required this.onNext});
 
   List<String> sportCategories = [
     "Football",
@@ -529,12 +499,20 @@ class _StepOne extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const CustomText(title: "Job Title", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Job Title",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         _inputField("e.g. Football Sponsorship Opportunity"),
         const SizedBox(height: 16),
 
-        const CustomText(title: "Category", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Category",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
 
         SizedBox(
@@ -542,7 +520,7 @@ class _StepOne extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               child: _chip(sportCategories[index]),
             ),
             itemCount: sportCategories.length,
@@ -551,19 +529,45 @@ class _StepOne extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-        const CustomText(title: "Location", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Location",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         _inputField("e.g. Paris, France"),
         const SizedBox(height: 16),
 
-        const CustomText(title: "Description", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Description",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         _inputField("Write a detailed description...", maxLines: 4),
         const SizedBox(height: 16),
 
-        const CustomText(title: "Budget Range", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Budget Range",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         _inputField("e.g. \$5,000 - \$20,000"),
+
+        // Next button as part of the scrollable content
+        const SizedBox(height: 30),
+        Align(
+          alignment: Alignment.centerRight,
+          child: RoundedButton(
+            label: "Next",
+            height: 40,
+            width: 100,
+            borderRadius: 10,
+            onPressed: onNext,
+          ),
+        ),
+        const SizedBox(height: 20), // Extra padding at bottom
       ],
     );
   }
@@ -571,13 +575,12 @@ class _StepOne extends StatelessWidget {
   Widget _inputField(String hint, {int maxLines = 1}) {
     return TextField(
       maxLines: maxLines,
-      style: const TextStyle(fontSize: 14, color: AppColors.black),
+      style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
-
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: const TextStyle(color: AppColors.textGrey),
         filled: true,
-        fillColor: Colors.grey.shade100,
+        fillColor: AppColors.extraLightGrey.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -588,7 +591,7 @@ class _StepOne extends StatelessWidget {
 
   Widget _chip(String label) {
     return Chip(
-      label: Text(label),
+      label: Text(label, style: const TextStyle(color: AppColors.textPrimary)),
       backgroundColor: AppColors.extraLightGrey,
       side: BorderSide(color: AppColors.extraLightGrey),
       labelStyle: const TextStyle(fontWeight: FontWeight.w500),
@@ -596,9 +599,11 @@ class _StepOne extends StatelessWidget {
   }
 }
 
-// 🧩 Step 2 UI
 class _StepTwo extends StatefulWidget {
-  const _StepTwo();
+  final VoidCallback onPost;
+  final VoidCallback onCancel;
+
+  const _StepTwo({required this.onPost, required this.onCancel});
 
   @override
   State<_StepTwo> createState() => _StepTwoState();
@@ -692,7 +697,11 @@ class _StepTwoState extends State<_StepTwo> {
 
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -701,7 +710,11 @@ class _StepTwoState extends State<_StepTwo> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const CustomText(title: "Add Media", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Add Media",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -736,7 +749,11 @@ class _StepTwoState extends State<_StepTwo> {
         ],
 
         const SizedBox(height: 16),
-        const CustomText(title: "Timeline", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Timeline",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -747,9 +764,36 @@ class _StepTwoState extends State<_StepTwo> {
         ),
         const SizedBox(height: 16),
 
-        const CustomText(title: "Requirements", fontWeight: FontWeight.w600),
+        const CustomText(
+          title: "Requirements",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
         const SizedBox(height: 8),
         _inputField("Write a detailed description...", maxLines: 4),
+
+        // Cancel and Post buttons as part of the scrollable content
+        const SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            RoundedButton(
+              label: "Cancel",
+              height: 48,
+              width: MediaQuery.of(context).size.width * .43,
+              borderRadius: 10,
+              onPressed: widget.onCancel,
+            ),
+            RoundedButton(
+              label: "Post",
+              height: 48,
+              borderRadius: 10,
+              width: MediaQuery.of(context).size.width * .43,
+              onPressed: widget.onPost,
+            ),
+          ],
+        ),
+        const SizedBox(height: 20), // Extra padding at bottom
       ],
     );
   }
@@ -767,11 +811,8 @@ class _StepTwoState extends State<_StepTwo> {
       child: Container(
         height: 90,
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
+          color: AppColors.white,
+          border: Border.all(color: AppColors.success.withValues(alpha: .3)),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Stack(
@@ -801,10 +842,14 @@ class _StepTwoState extends State<_StepTwo> {
                 child: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: const BoxDecoration(
-                    color: Colors.green,
+                    color: AppColors.success,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.check, color: Colors.white, size: 12),
+                  child: const Icon(
+                    Icons.check,
+                    color: AppColors.white,
+                    size: 12,
+                  ),
                 ),
               ),
 
@@ -818,38 +863,17 @@ class _StepTwoState extends State<_StepTwo> {
                   child: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
-                      color: Colors.red,
+                      color: AppColors.error,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.close,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 12,
                     ),
                   ),
                 ),
               ),
-
-            // File type badge
-            Positioned(
-              bottom: 4,
-              right: 4,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  isImage ? 'IMAGE' : 'VIDEO',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -857,17 +881,18 @@ class _StepTwoState extends State<_StepTwo> {
   }
 
   Widget _buildPlaceholderIcon(IconData icon) {
-    return Center(child: Icon(icon, color: Colors.grey.shade400, size: 40));
+    return Center(child: Icon(icon, color: AppColors.lightGrey, size: 40));
   }
 
   Widget _inputField(String hint, {int maxLines = 1}) {
     return TextField(
       maxLines: maxLines,
+      style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: const TextStyle(color: AppColors.textGrey),
         filled: true,
-        fillColor: Colors.grey.shade100,
+        fillColor: AppColors.extraLightGrey.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -932,13 +957,13 @@ class _FileInfoItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: AppColors.extraLightGrey,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: AppColors.divider),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blue, size: 20),
+          Icon(icon, color: AppColors.primary, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -949,12 +974,16 @@ class _FileInfoItem extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   '$type • $size',
-                  style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
