@@ -3,41 +3,69 @@ import 'package:athlink/shared/theme/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'app_colors.dart';
 
 class AppTheme {
-  static ThemeData get darkTheme {
+  /// 🌞 Light Theme
+  static ThemeData get lightTheme {
     return ThemeData(
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
+      useMaterial3: true,
       fontFamily: AppTextStyles.fontFamily,
       primaryColor: AppColors.primary,
-      colorScheme: const ColorScheme.dark(
+      scaffoldBackgroundColor: AppColors.white,
+
+      colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         secondary: AppColors.lightGrey,
         error: AppColors.error,
-        surface: AppColors.black,
+        surface: AppColors.white,
       ),
-      // backgroundColor: AppColors.black,
-      scaffoldBackgroundColor: AppColors.white,
+
       textTheme: GoogleFonts.archivoTextTheme(
-          TextThemes.darkTextTheme
+        TextThemes.darkTextTheme,
+      ).apply(
+        bodyColor: Colors.black,
+        displayColor: Colors.black,
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white, // ✅ visible text color
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+      ),
+
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        elevation: 6,
+        type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.lightGrey,
-        selectedIconTheme:IconThemeData(
-            color: AppColors.primary
-        ) ,
-        unselectedIconTheme: IconThemeData(
-            color: AppColors.lightGrey
-        ),
+        selectedIconTheme: IconThemeData(color: AppColors.primary),
+        unselectedIconTheme: IconThemeData(color: AppColors.lightGrey),
+        showUnselectedLabels: true,
       ),
-      primaryTextTheme: TextThemes.primaryTextTheme,
-      appBarTheme:  AppBarTheme(
+
+      appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.white,
-        scrolledUnderElevation: 0.0,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+        ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: AppColors.white,
           statusBarIconBrightness: Brightness.dark,
@@ -48,58 +76,70 @@ class AppTheme {
     );
   }
 
-  /// Light theme data of the app
-  static ThemeData get lightTheme {
+  /// 🌚 Dark Theme
+  static ThemeData get darkTheme {
     return ThemeData(
-      brightness: Brightness.light,
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      fontFamily: AppTextStyles.fontFamily,
       primaryColor: AppColors.primary,
-      textTheme: GoogleFonts.archivoTextTheme(
-        TextThemes.darkTextTheme
-      ),
-      primaryTextTheme: TextThemes.primaryTextTheme,
-      colorScheme: const ColorScheme.light(
+      scaffoldBackgroundColor: AppColors.black,
+
+      colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.lightGrey,
         error: AppColors.error,
-      ),
-      appBarTheme:  AppBarTheme(
-        backgroundColor: AppColors.white,
-        scrolledUnderElevation: 0.0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.white,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: AppColors.white,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
+        surface: AppColors.black,
       ),
 
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        elevation: 6,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.white,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.lightGrey,
-        selectedIconTheme:IconThemeData(
-          color: AppColors.primary
-        ) ,
-        unselectedIconTheme: IconThemeData(
-          color: AppColors.lightGrey
-        ),
-        showUnselectedLabels: true,
+      textTheme: GoogleFonts.archivoTextTheme(
+        TextThemes.darkTextTheme,
+      ).apply(
+        bodyColor: Colors.white,
+        displayColor: Colors.white,
       ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
+          foregroundColor: Colors.white, // ✅ always visible
           elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
           ),
         ),
       ),
 
-      scaffoldBackgroundColor: AppColors.white,
-      useMaterial3: true,
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.black,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.lightGrey,
+        selectedIconTheme: IconThemeData(color: AppColors.primary),
+        unselectedIconTheme: IconThemeData(color: AppColors.lightGrey),
+      ),
+
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.black,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.black,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: AppColors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+      ),
     );
   }
 }
