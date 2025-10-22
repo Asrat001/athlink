@@ -1,4 +1,4 @@
-package com.example.athlink
+package com.akilo.athlink
 
 import io.flutter.embedding.android.FlutterActivity
 

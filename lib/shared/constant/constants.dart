@@ -116,7 +116,7 @@ final List<RatioStation> fakeDataList = [
 //hashmethod
 
 //// base url
-const String cBaseUrl = 'https://podcast.greentechafrica.et/api';
+const String cBaseUrl = 'http://139.59.141.150:4000/api/v1/';
 
 
 

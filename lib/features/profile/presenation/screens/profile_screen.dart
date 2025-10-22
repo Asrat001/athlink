@@ -1,110 +1,82 @@
-import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:athlink/features/auth/presentaion/providers/login/login_provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Access the login provider safely
+
+
+    // Get screen size to make layout adaptive
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          'Profile',
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        bottom:PreferredSize(
-            preferredSize: Size(double.infinity,150),
-            child: Column(
-              children: [
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Color(0xFF4A704A),
-                    child: Icon(Icons.person, size: 50, color: Colors.white),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Ethan Carter',
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Premium',
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-              ],
-            )
-        ),
+        title: const Text('Profile'),
+        centerTitle: true,
       ),
-      body: LayoutBuilder(
-        builder: (context,constraint) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 4.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10),
-                  Text(
-                    'Your Library',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.queue_music, color: Colors.white),
-                    title: Text(
-                      'My Playlists',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.download, color: Colors.white),
-                    title: Text(
-                      'Downloaded Episodes',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Settings',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.settings, color: Colors.white),
-                    title: Text(
-                      'Settings',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.workspace_premium, color: Colors.white),
-                    title: Text(
-                      'Subscription',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.help, color: Colors.white),
-                    title: Text(
-                      'Help & Support',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+      body: Center(
+        child: SingleChildScrollView(
+          // scrollable to prevent clipping on small screens
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Header Text
+              Text(
+                'Welcome to your Profile',
+                style: TextStyle(
+                  fontSize: size.width * 0.06, // adaptive font size
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-          );
-        }
+              SizedBox(height: size.height * 0.05),
+
+              // Logout Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: (){
+                    ref.read(loginProvider.notifier).signOut(context);
+                  },
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.02,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: size.height * 0.03),
+
+              // Optional info section
+              Text(
+                'You are logged in.',
+                style: TextStyle(
+                  fontSize: size.width * 0.045,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

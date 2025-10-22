@@ -86,6 +86,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: AppBar(),
       body: Stack(
         children: [
           Container(
@@ -94,9 +95,9 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppColors.black,
-                  AppColors.black.withOpacity(0.7),
-                  AppColors.black.withOpacity(0.4),
+                  AppColors.white,
+                  AppColors.white.withOpacity(0.7),
+                  AppColors.white.withOpacity(0.4),
                 ],
               ),
             ),
@@ -174,8 +175,8 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: SvgPicture.asset(
-                              "assets/images/athlink.svg",
-                              semanticsLabel: 'ET Podcast Logo',
+                              "assets/images/atlink_logo.svg",
+                              semanticsLabel: ' Logo',
                               width: 60,
                               height: 60,
                             ),
@@ -241,7 +242,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                   child: Column(
                     children: [
                       Text(
-                        'ET-Podcast , From ITech Team',
+                        'ATHLINK',
                         style: GoogleFonts.bebasNeue(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -252,7 +253,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Simplifying the way interact with your fev podcast in Ethiopia',
+                        'Simplifying the way interact with your fev Athlete and Brands',
                         style: GoogleFonts.bebasNeue(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,

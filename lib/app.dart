@@ -16,7 +16,6 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // FlutterNativeSplash.remove();
     // final themeMode = ref.watch(appThemeProvider);
-
     return MaterialApp.router(
       title: 'Flutter TDD',
       theme: AppTheme.lightTheme.copyWith(

@@ -32,7 +32,7 @@ class SocialLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: height,
+      height: 50,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -42,7 +42,7 @@ class SocialLoginButton extends StatelessWidget {
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(50),
             side: hasBorder
                 ? BorderSide(color: borderColor, width: 1)
                 : BorderSide.none,

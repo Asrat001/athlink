@@ -8,7 +8,6 @@ import 'observers.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   serviceLocator();
-
   final router = sl<AppRouter>().router;
   runApp(
     ProviderScope(

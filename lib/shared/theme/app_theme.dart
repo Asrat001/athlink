@@ -19,12 +19,12 @@ class AppTheme {
         surface: AppColors.black,
       ),
       // backgroundColor: AppColors.black,
-      scaffoldBackgroundColor: AppColors.black,
+      scaffoldBackgroundColor: AppColors.white,
       textTheme: GoogleFonts.archivoTextTheme(
           TextThemes.darkTextTheme
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.white,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.lightGrey,
         selectedIconTheme:IconThemeData(
@@ -35,10 +35,15 @@ class AppTheme {
         ),
       ),
       primaryTextTheme: TextThemes.primaryTextTheme,
-      appBarTheme: const AppBarTheme(
-        elevation: 0,
-        backgroundColor: AppColors.black,
-        titleTextStyle: AppTextStyles.h1,
+      appBarTheme:  AppBarTheme(
+        backgroundColor: AppColors.white,
+        scrolledUnderElevation: 0.0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: AppColors.white,
+          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: AppColors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
       ),
     );
   }
@@ -58,19 +63,20 @@ class AppTheme {
         error: AppColors.error,
       ),
       appBarTheme:  AppBarTheme(
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.white,
         scrolledUnderElevation: 0.0,
         systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: AppColors.black,
-          statusBarIconBrightness: Brightness.light,
-          systemNavigationBarColor: AppColors.black,
+          statusBarColor: AppColors.white,
+          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: AppColors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
         ),
       ),
 
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 6,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.white,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.lightGrey,
         selectedIconTheme:IconThemeData(
@@ -91,7 +97,8 @@ class AppTheme {
           ),
         ),
       ),
-      scaffoldBackgroundColor: AppColors.black.withOpacity(0.45),
+
+      scaffoldBackgroundColor: AppColors.white,
       useMaterial3: true,
     );
   }

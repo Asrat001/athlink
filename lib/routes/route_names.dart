@@ -3,10 +3,15 @@ class Routes {
   static const String loginRouteName = '/login';
   static String registerRouteName = '/register';
   static String selectSportScreen = '/select-sport-screen';
+  static String forgotPasswordRouteName = '/forgot-password';
+  static String resetPasswordRouteName = '/reset-password';
+  static String verifyOtpRouteName = '/verify-otp';
+
+
 
   //main
   static String mainRouteName = '/main';
-  static String feedRouteName = '/feed';
+  static String feedRouteName = '/manage';
   static String dashBoardRouteName = '/dashboard';
   static String watchListRouteName = '/watchlist';
   static String profileRouteName = '/profile';

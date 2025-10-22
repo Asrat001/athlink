@@ -8,6 +8,9 @@ abstract class RegisterState with _$RegisterState {
   const factory RegisterState({
     @Default(false) bool isLoading,
     @Default(false) bool isSuccess,
+    @Default(false) bool isSocialSignIn,
+    @Default(true) bool isNewUser,
+    @Default(null)
     String? errorMessage,
 })= _RegisterState;
 

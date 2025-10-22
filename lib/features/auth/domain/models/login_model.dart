@@ -19,14 +19,15 @@ abstract class LoginResponse with _$LoginResponse {
 @freezed
 abstract class User with _$User {
   const factory User({
-    @JsonKey(name: "_id") required String id,
+    @JsonKey(name: "_id")
+    required String id,
+    @JsonKey(defaultValue: "")
     required String name,
     required String email,
     required String role,
-    required DateTime createdAt,
-    required String refreshToken,
+    @JsonKey(defaultValue: false, name: "is_new_user")
+    required bool isNewUser
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
 }

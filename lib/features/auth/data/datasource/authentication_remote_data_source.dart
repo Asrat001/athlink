@@ -2,6 +2,8 @@ import 'package:athlink/features/auth/domain/models/login_model.dart';
 import 'package:athlink/shared/handlers/dio_client.dart';
 import 'package:athlink/shared/repository/base_repository.dart';
 
+import '../../domain/models/registration_response.dart';
+
 class AuthenticationRemoteDataSource extends BaseRepository {
 final DioHttpClient _httpClient;
 AuthenticationRemoteDataSource( this._httpClient);
@@ -22,22 +24,88 @@ AuthenticationRemoteDataSource( this._httpClient);
     );
   }
 
-  Future<LoginResponse>register({required String name, required String email, required String password}) async {
+Future<LoginResponse>loginWithGoogle({required String idToken}) async {
+  return await safeApiCall(
+      path: "/auth/sign_in_with_google",
+      apiCall: () async {
+        return await _httpClient.client(requireAuth: false).post(
+          "/auth/sign_in_with_google",
+          data: {
+            "idToken": idToken,
+          },
+        );
+      },
+      fromData: (data)=> LoginResponse.fromJson(data)
+  );
+}
+
+
+  Future<RegistrationResponse>register({required String name, required String email, required String password}) async {
     return await safeApiCall(
         path: "/auth/register",
         apiCall: () async {
           return await _httpClient.client(requireAuth: false).post(
             "/auth/register",
             data: {
-              "name": name,
               "email": email,
               "password": password,
             },
           );
         },
-        fromData: (data)=> LoginResponse.fromJson(data)
+        fromData: (data)=>RegistrationResponse.fromJson(data)
     );
   }
+
+Future<bool> forgotPassword({required String email}) async {
+  return await safeApiCall(
+    path: "/auth/forgot-password",
+    apiCall: () async {
+      return await _httpClient
+          .client(requireAuth: false)
+          .post(
+        "/auth/forgot-password",
+        data: {
+          "email": email,
+        }
+      );
+    },
+    fromData: (data) => true
+  );
+}
+
+Future<bool> resetPassword({required String password,required String otp}) async {
+  return await safeApiCall(
+      path: "/auth/reset-password",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: false)
+            .post(
+            "/auth/forgot-password",
+            queryParameters: { 'otp': otp},
+            data: {
+              'password': password
+            }
+        );
+      },
+      fromData: (data) => true
+  );
+}
+
+Future<LoginResponse> verifyAccount({required String otp}) async {
+  return await safeApiCall(
+    path: "/auth/verify-email",
+    apiCall: () async {
+      return await _httpClient
+          .client(requireAuth: false)
+          .get(
+        "/auth/verify-email",
+        queryParameters: {'otp': int.tryParse(otp) ?? otp},
+      );
+    },
+    fromData: (data) => LoginResponse.fromJson(data),
+  );
+}
+
 
 
 

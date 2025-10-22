@@ -27,7 +27,7 @@ class SplashNotifier extends StateNotifier<SplashState> {
     if (context.mounted) {
       if (userData!=null && accessToken != null) {
         // User is authenticated, go to main screens
-        context.go(Routes.mainRouteName);
+        context.go(Routes.dashBoardRouteName);
       } else {
         // User is guest or not authenticated, allow guest access to main screens may be i i liked
         context.go(Routes.loginRouteName);

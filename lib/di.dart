@@ -1,5 +1,6 @@
 import 'package:athlink/routes/app_route.dart';
 import 'package:athlink/shared/handlers/dio_client.dart';
+import 'package:athlink/shared/services/google_sign_in_service.dart';
 import 'package:athlink/shared/services/internet_connection_service.dart';
 import 'package:athlink/shared/services/local_storage_service.dart';
 import 'package:athlink/shared/services/token_refreshe_service.dart';
@@ -8,6 +9,9 @@ import 'package:get_it/get_it.dart';
 import 'features/auth/data/datasource/authentication_remote_data_source.dart';
 import 'features/auth/data/repository/authentication_repository_impl.dart';
 import 'features/auth/domain/repository/authentication_repository.dart';
+import 'features/sports/data/datasource/sport_remote_data_source.dart';
+import 'features/sports/data/respository/sports_repository_impl.dart';
+import 'features/sports/domain/repository/sports_repository.dart';
 
 GetIt sl = GetIt.instance;
 
@@ -21,14 +25,20 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<AppRouter>(AppRouter(localStorageService.getIsDoneOnboarding()));
   sl.registerSingleton<AppConnectivity>(AppConnectivity());
   sl.registerSingleton<TokenRefreshService>(TokenRefreshService());
+  sl.registerSingleton<GoogleAuthService>(GoogleAuthService());
 
 
   //data sources
   sl.registerSingleton<AuthenticationRemoteDataSource>(AuthenticationRemoteDataSource(sl<DioHttpClient>()));
+  sl.registerSingleton<SportsRemoteDataSource>(
+    SportsRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
-  sl.registerSingleton<IAuthenticationRepository>(AuthenticationRepositoryImpl(remoteDataSource: sl<AuthenticationRemoteDataSource>()));
-
+  sl.registerSingleton<IAuthenticationRepository>(AuthenticationRepositoryImpl(remoteDataSource: sl<AuthenticationRemoteDataSource>(),googleAuthService: sl<GoogleAuthService>()));
+  sl.registerSingleton<ISportsRepository>(
+    SportsRepositoryImpl(remoteDataSource: sl<SportsRemoteDataSource>()),
+  );
 
 
 }
