@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RegisterState {
 
- bool get isLoading; bool get isSuccess; String? get errorMessage;
+ bool get isLoading; bool get isSuccess; bool get isSocialSignIn; bool get isNewUser; String? get errorMessage;
 /// Create a copy of RegisterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $RegisterStateCopyWith<RegisterState> get copyWith => _$RegisterStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isSocialSignIn, isSocialSignIn) || other.isSocialSignIn == isSocialSignIn)&&(identical(other.isNewUser, isNewUser) || other.isNewUser == isNewUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,isSocialSignIn,isNewUser,errorMessage);
 
 @override
 String toString() {
-  return 'RegisterState(isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage)';
+  return 'RegisterState(isLoading: $isLoading, isSuccess: $isSuccess, isSocialSignIn: $isSocialSignIn, isNewUser: $isNewUser, errorMessage: $errorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $RegisterStateCopyWith<$Res>  {
   factory $RegisterStateCopyWith(RegisterState value, $Res Function(RegisterState) _then) = _$RegisterStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, bool isSuccess, String? errorMessage
+ bool isLoading, bool isSuccess, bool isSocialSignIn, bool isNewUser, String? errorMessage
 });
 
 
@@ -62,10 +62,12 @@ class _$RegisterStateCopyWithImpl<$Res>
 
 /// Create a copy of RegisterState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isSuccess = null,Object? isSocialSignIn = null,Object? isNewUser = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
+as bool,isSocialSignIn: null == isSocialSignIn ? _self.isSocialSignIn : isSocialSignIn // ignore: cast_nullable_to_non_nullable
+as bool,isNewUser: null == isNewUser ? _self.isNewUser : isNewUser // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -152,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  bool isSocialSignIn,  bool isNewUser,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RegisterState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isSuccess,_that.isSocialSignIn,_that.isNewUser,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -173,10 +175,10 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  bool isSocialSignIn,  bool isNewUser,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _RegisterState():
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isSuccess,_that.isSocialSignIn,_that.isNewUser,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +195,10 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isSuccess,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isSuccess,  bool isSocialSignIn,  bool isNewUser,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _RegisterState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isSuccess,_that.isSocialSignIn,_that.isNewUser,_that.errorMessage);case _:
   return null;
 
 }
@@ -208,12 +210,14 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage);case _:
 
 
 class _RegisterState extends RegisterState {
-  const _RegisterState({this.isLoading = false, this.isSuccess = false, this.errorMessage}): super._();
+  const _RegisterState({this.isLoading = false, this.isSuccess = false, this.isSocialSignIn = false, this.isNewUser = false, this.errorMessage = null}): super._();
   
 
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  bool isSuccess;
-@override final  String? errorMessage;
+@override@JsonKey() final  bool isSocialSignIn;
+@override@JsonKey() final  bool isNewUser;
+@override@JsonKey() final  String? errorMessage;
 
 /// Create a copy of RegisterState
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +229,16 @@ _$RegisterStateCopyWith<_RegisterState> get copyWith => __$RegisterStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isSocialSignIn, isSocialSignIn) || other.isSocialSignIn == isSocialSignIn)&&(identical(other.isNewUser, isNewUser) || other.isNewUser == isNewUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,isSocialSignIn,isNewUser,errorMessage);
 
 @override
 String toString() {
-  return 'RegisterState(isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage)';
+  return 'RegisterState(isLoading: $isLoading, isSuccess: $isSuccess, isSocialSignIn: $isSocialSignIn, isNewUser: $isNewUser, errorMessage: $errorMessage)';
 }
 
 
@@ -245,7 +249,7 @@ abstract mixin class _$RegisterStateCopyWith<$Res> implements $RegisterStateCopy
   factory _$RegisterStateCopyWith(_RegisterState value, $Res Function(_RegisterState) _then) = __$RegisterStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, bool isSuccess, String? errorMessage
+ bool isLoading, bool isSuccess, bool isSocialSignIn, bool isNewUser, String? errorMessage
 });
 
 
@@ -262,10 +266,12 @@ class __$RegisterStateCopyWithImpl<$Res>
 
 /// Create a copy of RegisterState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isSuccess = null,Object? isSocialSignIn = null,Object? isNewUser = null,Object? errorMessage = freezed,}) {
   return _then(_RegisterState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
+as bool,isSocialSignIn: null == isSocialSignIn ? _self.isSocialSignIn : isSocialSignIn // ignore: cast_nullable_to_non_nullable
+as bool,isNewUser: null == isNewUser ? _self.isNewUser : isNewUser // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

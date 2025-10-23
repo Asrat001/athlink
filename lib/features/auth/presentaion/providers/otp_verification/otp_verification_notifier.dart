@@ -1,6 +1,4 @@
-// features/auth/presentation/providers/otp_verification/otp_verification_provider.dart
 import 'dart:async';
-
 import 'package:athlink/features/auth/presentaion/providers/otp_verification/state/otp_verification_state.dart';
 import 'package:athlink/shared/handlers/api_response.dart';
 import 'package:athlink/shared/services/local_storage_service.dart';
@@ -10,6 +8,8 @@ import 'package:athlink/di.dart';
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/handlers/network_exceptions.dart';
+
+import '../../../../../shared/services/internet_connection_service.dart';
 
 class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
   final IAuthenticationRepository _authenticationRepository;
@@ -51,7 +51,7 @@ class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
       isSuccess: false,
     );
 
-    final response = await _authenticationRepository.verifyOtp(otp: otp);
+    final response = await _authenticationRepository.verifyAccount(otp: otp);
     final storageService = sl<LocalStorageService>();
     response.when(
       success: (data) async {
@@ -63,7 +63,6 @@ class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
           isSuccess: true,
           errorMessage: null,
         );
-
         if (context.mounted) {
           AppHelpers.showSuccessToast(context, "OTP verified successfully");
         }

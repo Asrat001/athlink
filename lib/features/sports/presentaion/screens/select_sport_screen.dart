@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:athlink/features/sports/domain/models/sport_model.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
@@ -161,8 +162,10 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                 children: [
                   // You can use sport.icon if available in your model
                   // For now using a placeholder, replace with actual icon from API
-                  Image.asset(
-                    "assets/images/${sport.name.toLowerCase()}.png", // Adjust based on your asset structure
+                  Image.network(
+                    sport.icon == null
+                        ? ""
+                        : "$fileBaseUrl${sport.icon}", // Adjust based on your asset structure
                     width: isSelected ? 28 : 35,
                     height: isSelected ? 28 : 35,
                     errorBuilder: (context, error, stackTrace) {

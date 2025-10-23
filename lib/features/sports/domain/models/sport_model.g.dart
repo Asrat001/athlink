@@ -9,6 +9,7 @@ part of 'sport_model.dart';
 _Sport _$SportFromJson(Map<String, dynamic> json) => _Sport(
   id: json['_id'] as String,
   name: json['name'] as String,
+  icon: json['icon'] as String?,
   isVisible: json['isVisible'] as bool,
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -18,6 +19,7 @@ _Sport _$SportFromJson(Map<String, dynamic> json) => _Sport(
 Map<String, dynamic> _$SportToJson(_Sport instance) => <String, dynamic>{
   '_id': instance.id,
   'name': instance.name,
+  'icon': instance.icon,
   'isVisible': instance.isVisible,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),

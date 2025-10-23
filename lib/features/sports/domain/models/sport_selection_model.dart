@@ -1,4 +1,3 @@
-// features/auth/domain/models/sport_selection_model.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'sport_selection_model.freezed.dart';

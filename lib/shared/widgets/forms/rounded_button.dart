@@ -21,8 +21,8 @@ class RoundedButton extends StatelessWidget {
     this.fontWeight = FontWeight.w500,
 
     this.letterSpacing,
-    this.height,
-    this.width,
+    this.height = 45,
+    this.width = double.infinity,
     this.icon,
     this.iconGap = 8.0,
     this.alignment = MainAxisAlignment.center,

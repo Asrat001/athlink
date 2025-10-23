@@ -3,8 +3,7 @@ import 'package:athlink/features/auth/presentaion/screens/login_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
-import 'package:athlink/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:athlink/features/feed/presentation/screens/home/home_screen.dart';
+import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
 import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.dart';
 import 'package:athlink/features/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/route_names.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/main/error_screen.dart';
 import '../features/main/main_screen.dart';
+import '../features/manage/presentation/screens/home/home_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';
@@ -26,9 +26,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     observers: [AppRouterObserver()],
     navigatorKey: navigatorKey,
-    initialLocation: !isFirstTimeUser
-        ? Routes.splashRouteName
-        : Routes.onBoardingRouteName,
+    initialLocation: Routes.splashRouteName,
     routes: [
       GoRoute(
         path: Routes.splashRouteName,
@@ -77,7 +75,36 @@ class AppRouter {
         path: Routes.loginRouteName,
         builder: (context, state) => LoginScreen(),
       ),
+      GoRoute(
+        path: Routes.loginRouteName,
+        builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: Routes.forgotPasswordRouteName,
+        builder: (context, state) => ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: Routes.verifyOtpRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String>?;
+          return VerifyOTPScreen(
+            email: extra?['email'] ?? '',
+            purpose: extra?['purpose'] ?? 'verification',
+          );
+        },
+      ),
 
+      GoRoute(
+        path: Routes.resetPasswordRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String>?;
+          return ResetPasswordScreen(
+            email: extra?['email'] ?? '',
+            token: extra?['token'] ?? '',
+            otp: extra?['otp'] ?? '',
+          );
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             MainScreen(navigationShell: navigationShell),
@@ -86,7 +113,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: Routes.dashBoardRouteName,
-                builder: (context, state) => const DashboardScreen(),
+                builder: (context, state) => const HomeFeedScreen(),
               ),
             ],
           ),
@@ -94,7 +121,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: Routes.feedRouteName,
-                builder: (context, state) => const FeedScreen(),
+                builder: (context, state) => const ManageScreen(),
               ),
             ],
           ),
@@ -106,6 +133,7 @@ class AppRouter {
               ),
             ],
           ),
+
           StatefulShellBranch(
             routes: [
               GoRoute(

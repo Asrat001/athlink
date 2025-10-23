@@ -302,7 +302,7 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 mixin _$User {
 
-@JsonKey(name: "_id") String get id; String? get name; String get email; String get role;
+@JsonKey(name: "_id") String get id;@JsonKey(defaultValue: "") String get name; String get email; String get role;@JsonKey(defaultValue: false, name: "is_new_user") bool get isNewUser;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,16 +315,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.isNewUser, isNewUser) || other.isNewUser == isNewUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,isNewUser);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, email: $email, role: $role)';
+  return 'User(id: $id, name: $name, email: $email, role: $role, isNewUser: $isNewUser)';
 }
 
 
@@ -335,7 +335,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String? name, String email, String role
+@JsonKey(name: "_id") String id,@JsonKey(defaultValue: "") String name, String email, String role,@JsonKey(defaultValue: false, name: "is_new_user") bool isNewUser
 });
 
 
@@ -352,13 +352,14 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? email = null,Object? role = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? isNewUser = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isNewUser: null == isNewUser ? _self.isNewUser : isNewUser // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -443,10 +444,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String? name,  String email,  String role)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id, @JsonKey(defaultValue: "")  String name,  String email,  String role, @JsonKey(defaultValue: false, name: "is_new_user")  bool isNewUser)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.isNewUser);case _:
   return orElse();
 
 }
@@ -464,10 +465,10 @@ return $default(_that.id,_that.name,_that.email,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String? name,  String email,  String role)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id, @JsonKey(defaultValue: "")  String name,  String email,  String role, @JsonKey(defaultValue: false, name: "is_new_user")  bool isNewUser)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.id,_that.name,_that.email,_that.role);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.isNewUser);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -484,10 +485,10 @@ return $default(_that.id,_that.name,_that.email,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String? name,  String email,  String role)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id, @JsonKey(defaultValue: "")  String name,  String email,  String role, @JsonKey(defaultValue: false, name: "is_new_user")  bool isNewUser)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.isNewUser);case _:
   return null;
 
 }
@@ -499,13 +500,14 @@ return $default(_that.id,_that.name,_that.email,_that.role);case _:
 @JsonSerializable()
 
 class _User implements User {
-  const _User({@JsonKey(name: "_id") required this.id, this.name, required this.email, required this.role});
+  const _User({@JsonKey(name: "_id") required this.id, @JsonKey(defaultValue: "") required this.name, required this.email, required this.role, @JsonKey(defaultValue: false, name: "is_new_user") required this.isNewUser});
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override@JsonKey(name: "_id") final  String id;
-@override final  String? name;
+@override@JsonKey(defaultValue: "") final  String name;
 @override final  String email;
 @override final  String role;
+@override@JsonKey(defaultValue: false, name: "is_new_user") final  bool isNewUser;
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
@@ -520,16 +522,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.isNewUser, isNewUser) || other.isNewUser == isNewUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,isNewUser);
 
 @override
 String toString() {
-  return 'User(id: $id, name: $name, email: $email, role: $role)';
+  return 'User(id: $id, name: $name, email: $email, role: $role, isNewUser: $isNewUser)';
 }
 
 
@@ -540,7 +542,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String? name, String email, String role
+@JsonKey(name: "_id") String id,@JsonKey(defaultValue: "") String name, String email, String role,@JsonKey(defaultValue: false, name: "is_new_user") bool isNewUser
 });
 
 
@@ -557,13 +559,14 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? email = null,Object? role = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? isNewUser = null,}) {
   return _then(_User(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isNewUser: null == isNewUser ? _self.isNewUser : isNewUser // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

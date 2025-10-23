@@ -8,7 +8,7 @@
 PRODUCT_NAME = athlink
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.athlink
+PRODUCT_BUNDLE_IDENTIFIER = com.akilo.athlink
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.

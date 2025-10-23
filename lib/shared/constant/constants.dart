@@ -135,7 +135,8 @@ final List<RatioStation> fakeDataList = [
 //hashmethod
 
 //// base url
-const String cBaseUrl = 'http://139.59.141.150:4000/api/v1';
+const String cBaseUrl = 'http://139.59.141.150:4000/api/v1/';
+const String fileBaseUrl = 'http://139.59.141.150:4000';
 
 // List Items
 const double cListItemPadding = 18.0;

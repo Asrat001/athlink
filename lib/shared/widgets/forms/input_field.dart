@@ -78,9 +78,10 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
       keyboardType: widget.textInputType,
       minLines: widget.minLines,
       maxLines: widget.maxLines,
-      style: customTheme.textTheme.bodyMedium,
+      style: customTheme.textTheme.bodyMedium?.copyWith(
+        color: Colors.grey.shade600
+      ),
       textInputAction: widget.textInputAction,
-
       obscureText: obscuringText,
       enableSuggestions: widget.enableObscureTextToggle ? false : true,
       autocorrect: widget.enableObscureTextToggle ? false : true,
@@ -91,10 +92,12 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: customTheme.textTheme.bodySmall?.copyWith(
-          color: Colors.white70
+          color: Colors.grey.shade600
         ),
         labelText: widget.labelText,
-        labelStyle: customTheme.textTheme.bodySmall,
+        labelStyle: customTheme.textTheme.bodySmall?.copyWith(
+            color: Colors.grey.shade600
+        ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(cBorderRadius),
@@ -102,7 +105,7 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.radius ?? 4),
-          borderSide: BorderSide(color:Colors.grey.shade800, width: 1),
+          borderSide: BorderSide(color:Colors.grey.shade400, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.radius ?? 4),
@@ -123,7 +126,7 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
           vertical: 16.0,
         ),
         filled: true,
-        fillColor: Colors.black,
+        fillColor: Colors.white,
         counterText: widget.counterText,
         errorText: widget.errorText,
         errorStyle: widget.errorStyle,
@@ -150,7 +153,7 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
               icon: AnimatedSwitcher(
                 duration: cFastAnimationDuration,
                 child: Icon(
-                  color: Colors.white70,
+                  color: Colors.grey.shade500,
                   obscuringText
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,

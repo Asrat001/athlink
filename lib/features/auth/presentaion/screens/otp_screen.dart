@@ -1,15 +1,15 @@
-import 'package:athlink/features/auth/presentaion/providers/otp_verification/otp_verification_provider.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/widgets/custom_app_bar.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
+
+import '../providers/otp_verification/otp_verification_provider..dart';
 
 class VerifyOTPScreen extends ConsumerStatefulWidget {
   final String email;
@@ -90,11 +90,7 @@ class _VerifyOTPScreenState extends ConsumerState<VerifyOTPScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
-      appBar: CustomAppBar(
-        title: "ATHLINK",
-        showBackButton: true,
-        onBack: () => context.pop(),
-      ),
+      appBar: AppBar(title: Text("ATHLINK")),
       body: SafeArea(
         child: Center(
           child: LayoutBuilder(
@@ -193,15 +189,12 @@ class _VerifyOTPScreenState extends ConsumerState<VerifyOTPScreen> {
 
                           // Verify Button
                           RoundedButton(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            backgroundColor: AppColors.buttonBackground,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                             height: 45,
+                              width: double.infinity,
                             label: otpState.isLoading
                                 ? "Verifying..."
                                 : "Verify Code",
                             onPressed: () => _verifyOTP(context),
-                            width: double.infinity,
                             submitting: otpState.isLoading,
                           ),
 

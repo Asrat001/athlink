@@ -48,7 +48,6 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
     );
 
     final response = await _authenticationRepository.resetPassword(
-      token: token ?? "",
       password: password,
       otp: otp,
     );
@@ -62,7 +61,7 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
         );
 
         if (context.mounted) {
-          AppHelpers.showSuccessToast(context, data.message);
+          AppHelpers.showSuccessToast(context, "Password reset successful");
         }
       },
       failure: (error) {
