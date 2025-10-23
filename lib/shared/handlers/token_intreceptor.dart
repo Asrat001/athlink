@@ -10,12 +10,15 @@ class TokenInterceptor extends Interceptor {
   final bool requireAuth;
   final Dio dio;
 
-
   TokenInterceptor({required this.requireAuth, required this.dio});
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    final String? accessToken = await sl<LocalStorageService>().getAccessToken();
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final String? accessToken = await sl<LocalStorageService>()
+        .getAccessToken();
     if (requireAuth && accessToken != null) {
       options.headers.addAll({'Authorization': 'Bearer $accessToken'});
     }

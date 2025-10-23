@@ -16,8 +16,10 @@ class AppRouterObserver extends NavigatorObserver {
   void _setStatusBar() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.black,
-        statusBarBrightness: Brightness.light,
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
   }
