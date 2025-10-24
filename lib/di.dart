@@ -1,3 +1,9 @@
+import 'package:athlink/features/profile/data/datasource/job_post_remote_datasource.dart';
+import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
+import 'package:athlink/features/profile/data/repository/job_post_repository_impl.dart';
+import 'package:athlink/features/profile/data/repository/profile_repository_impl.dart';
+import 'package:athlink/features/profile/domain/repository/job_post_repository.dart';
+import 'package:athlink/features/profile/domain/repository/profile_repository.dart';
 import 'package:athlink/features/sports/data/datasource/sports_remote_data_source.dart';
 import 'package:athlink/features/sports/domain/repository/sports_repository.dart';
 import 'package:athlink/routes/app_route.dart';
@@ -35,6 +41,12 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<SportsRemoteDataSource>(
     SportsRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<ProfileRemoteDataSource>(
+    ProfileRemoteDataSource(sl<DioHttpClient>()),
+  );
+  sl.registerSingleton<JobPostRemoteDataSource>(
+    JobPostRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -45,5 +57,11 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<ISportsRepository>(
     SportsRepositoryImpl(remoteDataSource: sl<SportsRemoteDataSource>()),
+  );
+  sl.registerSingleton<ProfileRepository>(
+    ProfileRepositoryImpl(sl<ProfileRemoteDataSource>()),
+  );
+  sl.registerSingleton<JobPostRepository>(
+    JobPostRepositoryImpl(sl<JobPostRemoteDataSource>()),
   );
 }

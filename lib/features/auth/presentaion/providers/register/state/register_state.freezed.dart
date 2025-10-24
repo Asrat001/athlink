@@ -210,7 +210,7 @@ return $default(_that.isLoading,_that.isSuccess,_that.isSocialSignIn,_that.isNew
 
 
 class _RegisterState extends RegisterState {
-  const _RegisterState({this.isLoading = false, this.isSuccess = false, this.isSocialSignIn = false, this.isNewUser = false, this.errorMessage = null}): super._();
+  const _RegisterState({this.isLoading = false, this.isSuccess = false, this.isSocialSignIn = false, this.isNewUser = true, this.errorMessage = null}): super._();
   
 
 @override@JsonKey() final  bool isLoading;

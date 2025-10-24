@@ -1,25 +1,37 @@
 import 'dart:math';
 import 'package:athlink/di.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/profile_edit_page.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/services/local_storage_service.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final TransformationController _transformationController =
       TransformationController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch profile data when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileProvider.notifier).getProfile();
+    });
+  }
 
   final List<String> athleteImages = List.generate(
     75,
@@ -116,10 +128,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     "Nelly Korda",
   ];
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(
+    BuildContext context,
+    String? bannerUrl,
+    String? profileImageUrl,
+  ) {
     const double bannerHeight = 250;
     const double logoCircleRadius = 50;
-    const double logoOffset = logoCircleRadius * 1.2;
+
+    final String fullBannerUrl = UrlHelper.getFullImageUrl(bannerUrl);
+    final String fullProfileUrl = UrlHelper.getFullImageUrl(profileImageUrl);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -133,11 +151,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Positioned.fill(
           child: Opacity(
             opacity: 0.9,
-            child: Image.network(
-              "https://picsum.photos/400/300",
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-            ),
+            child: fullBannerUrl.isNotEmpty
+                ? Image.network(
+                    fullBannerUrl,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(color: AppColors.extraLightGrey);
+                    },
+                  )
+                : Container(color: AppColors.extraLightGrey),
           ),
         ),
 
@@ -214,10 +237,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(logoCircleRadius),
-              child: Image.asset(
-                'assets/images/on1.jpg', // Replace with your logo asset path
-                fit: BoxFit.cover,
-              ),
+              child: fullProfileUrl.isNotEmpty
+                  ? Image.network(
+                      fullProfileUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: AppColors.extraLightGrey,
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                            color: AppColors.grey,
+                          ),
+                        );
+                      },
+                    )
+                  : Image.asset('assets/images/on1.jpg', fit: BoxFit.cover),
             ),
           ),
         ),
@@ -227,28 +262,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileProvider);
+    final profileUser = profileState.profileUser;
+    final sponsorProfile = profileUser?.sponsorProfile;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            _buildHeader(context),
+      body: profileState.isLoading && profileUser == null
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  _buildHeader(
+                    context,
+                    sponsorProfile?.bannerImageUrl,
+                    sponsorProfile?.profileImageUrl,
+                  ),
 
-            isEditMode
-                ? ProfileEditPage()
-                : Container(
+                  isEditMode
+                      ? ProfileEditPage()
+                      : Container(
                     child: Column(
                       children: [
                         const SizedBox(height: 80),
                         CustomText(
-                          title: "Sp Sport Agency",
+                          title: sponsorProfile?.name ?? "Sp Sport Agency",
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           textColor: AppColors.black,
                         ),
                         CustomText(
-                          title: "Los Angeles, CA",
+                          title: sponsorProfile?.address ?? "Los Angeles, CA",
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           textColor: AppColors.textGrey,
@@ -260,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Expanded(
                                 child: _StatItem(
-                                  value: "15+",
+                                  value: "${sponsorProfile?.stats.sponsorshipCampaigns ?? 0}",
                                   label: "Sponsorship Campaigns",
                                 ),
                               ),
@@ -272,7 +317,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Expanded(
                                 child: _StatItem(
-                                  value: "50+",
+                                  value: "${sponsorProfile?.stats.athletesSponsored ?? 0}",
                                   label: "Athletes Represented",
                                 ),
                               ),
@@ -284,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Expanded(
                                 child: _StatItem(
-                                  value: "100+",
+                                  value: "${sponsorProfile?.stats.globalPartners ?? 0}",
                                   label: "Global Partners",
                                 ),
                               ),
@@ -295,12 +340,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 30),
 
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                          ),
                           child: CustomText(
-                            title:
+                            title: sponsorProfile?.description ??
                                 "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
-                                "We specialize in football, athletics, and racket sports, helping companies find the "
-                                "right talent for their campaigns.",
+                                    "We specialize in football, athletics, and racket sports, helping companies find the "
+                                    "right talent for their campaigns.",
                             textAlign: TextAlign.center,
                             textColor: AppColors.textSecondary,
                             fontWeight: FontWeight.w300,
@@ -334,11 +381,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-            PostFeedSection(),
-            // PostCardPage(),
-          ],
-        ),
-      ),
+                  PostFeedSection(
+                    jobPosts: sponsorProfile?.jobPosts,
+                    sponsorProfile: sponsorProfile,
+                    profileUser: profileUser,
+                  ),
+                  // PostCardPage(),
+                ],
+              ),
+            ),
     );
   }
 }
