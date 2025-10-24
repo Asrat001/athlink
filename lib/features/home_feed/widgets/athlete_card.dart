@@ -3,11 +3,6 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:flutter/material.dart';
-import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 class AthleteCard extends StatelessWidget {
   final String name;
   final String club;
@@ -271,7 +266,7 @@ class AthleteDetailOverlay extends StatelessWidget {
               Positioned.fill(
                 child: Image.asset(
                   "assets/images/athlete.png",
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
 
