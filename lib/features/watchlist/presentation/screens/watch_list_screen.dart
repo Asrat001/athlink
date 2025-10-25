@@ -189,8 +189,8 @@ class _WatchListScreenState extends State<WatchListScreen>
                                     SlidableAction(
                                       onPressed: (_) =>
                                           _handleAction(index, "mute"),
-                                      foregroundColor: AppColors.muteAction,
-                                      backgroundColor: AppColors.lightMute,
+                                      // foregroundColor: AppColors.muteAction,
+                                      // backgroundColor: AppColors.lightMute,
                                       icon: Icons.notifications_off_outlined,
                                     ),
                                     SlidableAction(
