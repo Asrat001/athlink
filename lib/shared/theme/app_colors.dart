@@ -6,6 +6,7 @@ class AppColors {
 
   /// App secondary color
   static const Color error = Color(0xffFC698C);
+  static const Color red = Colors.red;
   static const Color success = Color(0xff00C851);
   static const Color transparent = Colors.transparent;
 
@@ -41,4 +42,15 @@ class AppColors {
 
   /// Divider color
   static const Color divider = Color(0xFFE0E0E0);
+
+  static const Color lightBackground = Color(0xFFF5F5F5);
+  static const Color muteAction = Color.fromARGB(
+    255,
+    22,
+    164,
+    155,
+  ); // Cyan color for mute
+  static const Color buttonGrey = Color(0xFF9E9E9E); // Grey for cancel button
+  static const Color lightMute = Color(0xFFE1F5FE); // Light cyan background
+  static const Color lightError = Color(0xFFFFEBEE); // Light red background
 }

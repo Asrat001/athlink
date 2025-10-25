@@ -1,3 +1,6 @@
+// ignore: library_prefixes
+import 'dart:math' as Math;
+
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -64,6 +67,53 @@ class _FilterBarState extends State<FilterBar> {
     final size = renderBox.size;
     final screenSize = MediaQuery.of(context).size;
 
+    // Calculate the intrinsic width needed for the dropdown content
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
+
+    double maxTextWidth = 0;
+    for (final option in options) {
+      textPainter.text = TextSpan(
+        text: option,
+        style: const TextStyle(fontSize: 14),
+      );
+      textPainter.layout();
+      maxTextWidth = Math.max(maxTextWidth, textPainter.width);
+    }
+
+    final intrinsicWidth = 20 + 6 + maxTextWidth + 20;
+    final minWidth = 120.0;
+    final requiredWidth = Math.max(intrinsicWidth, minWidth);
+
+    final availableRight = screenSize.width - position.dx - 16;
+    final availableLeft = position.dx - 16;
+
+    double leftPosition;
+    double containerWidth;
+
+    if (availableRight >= requiredWidth) {
+      // Enough space on the right - position normally
+      leftPosition = position.dx;
+      containerWidth = requiredWidth;
+    } else if (availableLeft >= requiredWidth) {
+      // Not enough space on right, but enough on left - shift to left
+      leftPosition = position.dx - (requiredWidth - size.width);
+      containerWidth = requiredWidth;
+    } else if (availableRight + availableLeft >= requiredWidth) {
+      // Can fit if we use both sides (edge case)
+      leftPosition = 16; // Minimum margin
+      containerWidth = screenSize.width - 32; // Full width minus margins
+    } else {
+      // Very constrained space - use maximum available width
+      leftPosition = 16;
+      containerWidth = screenSize.width - 32;
+    }
+
+    // Ensure the dropdown stays within screen bounds
+    leftPosition = leftPosition.clamp(
+      8.0,
+      screenSize.width - containerWidth - 8,
+    );
+
     _overlayEntry = OverlayEntry(
       builder: (_) => Stack(
         children: [
@@ -75,88 +125,74 @@ class _FilterBarState extends State<FilterBar> {
             ),
           ),
           Positioned(
-            left: position.dx,
+            left: leftPosition,
             top: position.dy + size.height + 8,
             child: Material(
               color: AppColors.transparent,
               child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: screenSize.width - position.dx - 16,
-                  minWidth: 120,
-                ),
+                width: containerWidth,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.grey.withValues(alpha: 0.3),
-                  ),
+                  border: Border.all(color: AppColors.grey.withOpacity(0.3)),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.black.withValues(alpha: 0.08),
+                      color: AppColors.black.withOpacity(0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: IntrinsicWidth(
-                  child: StatefulBuilder(
-                    builder: (context, setOverlayState) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: options.map((opt) {
-                          final selected =
-                              _selectedOptions[title]?.contains(opt) ?? false;
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              _toggleOption(title, opt);
-                              setOverlayState(() {});
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4.0,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: Checkbox(
-                                      value: selected,
-                                      onChanged: (_) {
-                                        _toggleOption(title, opt);
-                                        setOverlayState(() {});
-                                      },
-                                      activeColor: AppColors.primary,
-                                      checkColor: AppColors.white,
-                                      side: BorderSide(
-                                        color: AppColors.grey,
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Flexible(
-                                    child: Text(
-                                      opt,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: AppColors.textPrimary,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: options.map((opt) {
+                    final selected =
+                        _selectedOptions[title]?.contains(opt) ?? false;
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        _toggleOption(title, opt);
+                        _refreshOverlay(context, key, title, options);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Checkbox(
+                                value: selected,
+                                onChanged: (_) {
+                                  _toggleOption(title, opt);
+                                  _refreshOverlay(context, key, title, options);
+                                },
+                                activeColor: AppColors.primary,
+                                checkColor: AppColors.white,
+                                side: BorderSide(
+                                  color: AppColors.grey,
+                                  width: 1,
+                                ),
                               ),
                             ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                opt,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.textPrimary,
+                                ),
+                                // No overflow - text will wrap if needed
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -168,14 +204,26 @@ class _FilterBarState extends State<FilterBar> {
     overlay.insert(_overlayEntry!);
   }
 
+  void _refreshOverlay(
+    BuildContext context,
+    GlobalKey key,
+    String title,
+    List<String> options,
+  ) {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _showDropdown(context, key, title, options);
+  }
+
   void _toggleOption(String filterTitle, String option) {
-    _selectedOptions[filterTitle] ??= <String>{};
-    if (_selectedOptions[filterTitle]!.contains(option)) {
-      _selectedOptions[filterTitle]!.remove(option);
-    } else {
-      _selectedOptions[filterTitle]!.add(option);
-    }
-    setState(() {});
+    setState(() {
+      _selectedOptions[filterTitle] ??= <String>{};
+      if (_selectedOptions[filterTitle]!.contains(option)) {
+        _selectedOptions[filterTitle]!.remove(option);
+      } else {
+        _selectedOptions[filterTitle]!.add(option);
+      }
+    });
   }
 
   void _closeDropdown() {
@@ -217,7 +265,7 @@ class _FilterBarState extends State<FilterBar> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.black.withValues(alpha: 0.05),
+                    color: AppColors.black.withOpacity(0.05),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
