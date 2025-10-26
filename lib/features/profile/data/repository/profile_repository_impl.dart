@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
@@ -18,6 +19,29 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return ApiResponse.success(data: response);
     } catch (e) {
       log("Get profile error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResponse<UpdateSponsorProfileResponse>> updateSponsorProfile({
+    String? name,
+    String? description,
+    String? address,
+    File? profileImage,
+    File? bannerImage,
+  }) async {
+    try {
+      final response = await _remoteDataSource.updateSponsorProfile(
+        name: name,
+        description: description,
+        address: address,
+        profileImage: profileImage,
+        bannerImage: bannerImage,
+      );
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Update sponsor profile error: $e");
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }

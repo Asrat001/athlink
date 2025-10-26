@@ -5,4 +5,11 @@ abstract class JobPostRepository {
   Future<ApiResponse<CreateJobPostResponse>> createJobPost(
     JobPostRequest request,
   );
+
+  Future<ApiResponse<UpdateJobPostResponse>> updateJobPost(
+    String jobId,
+    UpdateJobPostRequest request,
+  );
+
+  Future<ApiResponse<DeleteJobPostResponse>> deleteJobPost(String jobId);
 }

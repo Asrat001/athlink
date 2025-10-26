@@ -151,3 +151,41 @@ Map<String, dynamic> _$TimelineToJson(_Timeline instance) => <String, dynamic>{
   'startDate': instance.startDate?.toIso8601String(),
   'endDate': instance.endDate?.toIso8601String(),
 };
+
+_UpdateSponsorProfileResponse _$UpdateSponsorProfileResponseFromJson(
+  Map<String, dynamic> json,
+) => _UpdateSponsorProfileResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+  sponsorProfile: UpdatedSponsorProfile.fromJson(
+    json['sponsorProfile'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$UpdateSponsorProfileResponseToJson(
+  _UpdateSponsorProfileResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'sponsorProfile': instance.sponsorProfile,
+};
+
+_UpdatedSponsorProfile _$UpdatedSponsorProfileFromJson(
+  Map<String, dynamic> json,
+) => _UpdatedSponsorProfile(
+  name: json['name'] as String,
+  description: json['description'] as String,
+  address: json['address'] as String,
+  profileImageUrl: json['profileImageUrl'] as String,
+  bannerImageUrl: json['bannerImageUrl'] as String,
+);
+
+Map<String, dynamic> _$UpdatedSponsorProfileToJson(
+  _UpdatedSponsorProfile instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'description': instance.description,
+  'address': instance.address,
+  'profileImageUrl': instance.profileImageUrl,
+  'bannerImageUrl': instance.bannerImageUrl,
+};

@@ -47,3 +47,59 @@ Map<String, dynamic> _$CreateJobPostResponseToJson(
   'message': instance.message,
   'jobPost': instance.jobPost,
 };
+
+_UpdateJobPostRequest _$UpdateJobPostRequestFromJson(
+  Map<String, dynamic> json,
+) => _UpdateJobPostRequest(
+  title: json['title'] as String?,
+  sportId: json['sport_id'] as String?,
+  location: json['location'] as String?,
+  description: json['description'] as String?,
+  timelineStart: json['timelineStart'] as String?,
+  timelineEnd: json['timelineEnd'] as String?,
+  requirements: json['requirements'] as String?,
+  media: (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
+);
+
+Map<String, dynamic> _$UpdateJobPostRequestToJson(
+  _UpdateJobPostRequest instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'sport_id': instance.sportId,
+  'location': instance.location,
+  'description': instance.description,
+  'timelineStart': instance.timelineStart,
+  'timelineEnd': instance.timelineEnd,
+  'requirements': instance.requirements,
+  'media': instance.media,
+};
+
+_UpdateJobPostResponse _$UpdateJobPostResponseFromJson(
+  Map<String, dynamic> json,
+) => _UpdateJobPostResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+  jobPost: json['jobPost'] as Map<String, dynamic>?,
+);
+
+Map<String, dynamic> _$UpdateJobPostResponseToJson(
+  _UpdateJobPostResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'jobPost': instance.jobPost,
+};
+
+_DeleteJobPostResponse _$DeleteJobPostResponseFromJson(
+  Map<String, dynamic> json,
+) => _DeleteJobPostResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+);
+
+Map<String, dynamic> _$DeleteJobPostResponseToJson(
+  _DeleteJobPostResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+};

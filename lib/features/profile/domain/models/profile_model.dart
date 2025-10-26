@@ -106,11 +106,35 @@ abstract class JobPost with _$JobPost {
 
 @freezed
 abstract class Timeline with _$Timeline {
-  const factory Timeline({
-    DateTime? startDate,
-    DateTime? endDate,
-  }) = _Timeline;
+  const factory Timeline({DateTime? startDate, DateTime? endDate}) = _Timeline;
 
   factory Timeline.fromJson(Map<String, dynamic> json) =>
       _$TimelineFromJson(json);
+}
+
+@freezed
+abstract class UpdateSponsorProfileResponse
+    with _$UpdateSponsorProfileResponse {
+  const factory UpdateSponsorProfileResponse({
+    required bool success,
+    required String message,
+    required UpdatedSponsorProfile sponsorProfile,
+  }) = _UpdateSponsorProfileResponse;
+
+  factory UpdateSponsorProfileResponse.fromJson(Map<String, dynamic> json) =>
+      _$UpdateSponsorProfileResponseFromJson(json);
+}
+
+@freezed
+abstract class UpdatedSponsorProfile with _$UpdatedSponsorProfile {
+  const factory UpdatedSponsorProfile({
+    required String name,
+    required String description,
+    required String address,
+    required String profileImageUrl,
+    required String bannerImageUrl,
+  }) = _UpdatedSponsorProfile;
+
+  factory UpdatedSponsorProfile.fromJson(Map<String, dynamic> json) =>
+      _$UpdatedSponsorProfileFromJson(json);
 }

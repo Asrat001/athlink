@@ -23,4 +23,31 @@ class JobPostRepositoryImpl implements JobPostRepository {
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
+  @override
+  Future<ApiResponse<UpdateJobPostResponse>> updateJobPost(
+    String jobId,
+    UpdateJobPostRequest request,
+  ) async {
+    try {
+      final response = await _remoteDataSource.updateJobPost(jobId, request);
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Update job post error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResponse<DeleteJobPostResponse>> deleteJobPost(
+    String jobId,
+  ) async {
+    try {
+      final response = await _remoteDataSource.deleteJobPost(jobId);
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Delete job post error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
 }

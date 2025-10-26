@@ -371,10 +371,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
         if (!athletesBySport.containsKey(sportName)) {
           athletesBySport[sportName] = [];
         }
-        athletesBySport[sportName]!.add({
-          'athlete': athlete,
-          'sport': sport,
-        });
+        athletesBySport[sportName]!.add({'athlete': athlete, 'sport': sport});
       }
     }
 
@@ -412,7 +409,8 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
 
                   // Use athlete profile data or fallback to athlete data
                   final profile = athlete.athleteProfile;
-                  final name = profile?.name ?? athlete.name ?? 'Unknown Athlete';
+                  final name =
+                      profile?.name ?? athlete.name ?? 'Unknown Athlete';
                   final age = profile?.age?.toString() ?? '0';
                   final position = profile?.position ?? 'Position';
 
