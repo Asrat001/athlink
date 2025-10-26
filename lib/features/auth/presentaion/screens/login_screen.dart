@@ -5,22 +5,14 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/validators_utils.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
-import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:athlink/shared/widgets/forms/social_login_button.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../shared/utils/validators_utils.dart';
-import '../../../../shared/widgets/custom_app_bar.dart';
-import '../../../../shared/widgets/custom_text.dart';
 import '../../../../shared/widgets/forms/input_field.dart';
-import '../../../../shared/widgets/forms/rounded_button.dart';
-import '../../../../shared/widgets/forms/social_login_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
