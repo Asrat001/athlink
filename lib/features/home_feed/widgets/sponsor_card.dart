@@ -33,7 +33,7 @@ class SponsorCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 140,
+            height: 130,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -43,7 +43,7 @@ class SponsorCard extends StatelessWidget {
                   ),
                   child: Image.network(
                     imageUrl,
-                    height: 120,
+                    height: 110,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
@@ -51,24 +51,23 @@ class SponsorCard extends StatelessWidget {
 
                 // Circular Logo Overlay - Centered perfectly
                 Positioned(
-                  bottom:
-                      -30, // Positioned to center the logo between image and content
+                  bottom: -30,
                   left: 0,
                   right: 0,
                   child: Container(
-                    height: 80,
-                    width: 80,
+                    height: 70,
+                    width: 70,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.black,
-                      border: Border.all(color: AppColors.white, width: 4),
+                      border: Border.all(color: AppColors.white, width: 3),
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       "P",
                       style: TextStyle(
                         color: AppColors.white,
-                        fontSize: 42,
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -78,9 +77,7 @@ class SponsorCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(
-            height: 38,
-          ), // Reduced spacing since logo is now properly positioned
+          const SizedBox(height: 30),
           // Name
           Text(
             name,
@@ -101,11 +98,11 @@ class SponsorCard extends StatelessWidget {
             style: TextStyle(fontSize: 13, color: AppColors.grey),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Buttons Row
           Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

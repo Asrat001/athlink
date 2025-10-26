@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.akilo.athlink"
     compileSdk = flutter.compileSdkVersion
-        ndkVersion = "29.0.14206865" //"29.0.13113456 rc1"
+    ndkVersion = "29.0.14206865" //"29.0.13113456 rc1"
     // ndkVersion = flutter.ndkVersion
 
     compileOptions {

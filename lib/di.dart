@@ -1,3 +1,6 @@
+import 'package:athlink/features/home_feed/data/datasource/feed_remote_datasource.dart';
+import 'package:athlink/features/home_feed/data/repository/feed_repository_impl.dart';
+import 'package:athlink/features/home_feed/domain/repository/feed_repository.dart';
 import 'package:athlink/features/profile/data/datasource/job_post_remote_datasource.dart';
 import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:athlink/features/profile/data/repository/job_post_repository_impl.dart';
@@ -47,6 +50,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<JobPostRemoteDataSource>(
     JobPostRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<FeedRemoteDataSource>(
+    FeedRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -63,5 +69,8 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<JobPostRepository>(
     JobPostRepositoryImpl(sl<JobPostRemoteDataSource>()),
+  );
+  sl.registerSingleton<FeedRepository>(
+    FeedRepositoryImpl(sl<FeedRemoteDataSource>()),
   );
 }
