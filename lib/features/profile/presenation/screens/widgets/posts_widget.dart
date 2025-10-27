@@ -36,6 +36,18 @@ class PostFeedSection extends StatelessWidget {
     },
   ];
 
+  void _openCreateJobModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => const CreateJobModal(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -331,26 +343,14 @@ class _DividerLine extends StatelessWidget {
   }
 }
 
-void _openCreateJobModal(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (_) => const _CreateJobModal(),
-  );
-}
-
-class _CreateJobModal extends StatefulWidget {
-  const _CreateJobModal();
+class CreateJobModal extends StatefulWidget {
+  const CreateJobModal({super.key});
 
   @override
-  State<_CreateJobModal> createState() => _CreateJobModalState();
+  State<CreateJobModal> createState() => CreateJobModalState();
 }
 
-class _CreateJobModalState extends State<_CreateJobModal>
+class CreateJobModalState extends State<CreateJobModal>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentPage = 0;

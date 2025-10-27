@@ -87,7 +87,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+      backgroundColor: AppColors.greyScaffoldBackground,
       body: SafeArea(
         child: Column(
           children: [

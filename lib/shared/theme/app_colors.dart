@@ -39,9 +39,11 @@ class AppColors {
   static const Color textPrimary = Color(0xff14171A);
   static const Color textSecondary = Color(0xFF757575);
   static const Color textGrey = Color(0xFF757575);
+  static const Color blue = Color(0xFF143BFA);
 
   /// Divider color
   static const Color divider = Color(0xFFE0E0E0);
+  static const greyScaffoldBackground = Color.fromARGB(255, 245, 245, 245);
 
   static const Color lightBackground = Color(0xFFF5F5F5);
   static const Color muteAction = Color.fromARGB(
