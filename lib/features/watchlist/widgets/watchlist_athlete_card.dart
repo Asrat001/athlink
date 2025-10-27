@@ -61,7 +61,7 @@ class WatchlistAthleteCard extends StatelessWidget {
 
                   Positioned(
                     top: 0,
-                    right: 0,
+                    left: 0,
                     child: ClipOval(
                       child: Image.asset(
                         "assets/images/flag.png",
@@ -74,7 +74,7 @@ class WatchlistAthleteCard extends StatelessWidget {
 
                   Positioned(
                     right: 0,
-                    top: 50,
+                    top: 10,
                     child: Column(
                       children: [
                         Stack(
@@ -298,7 +298,7 @@ class AthleteDetailOverlay extends StatelessWidget {
               Positioned(
                 top: 0,
                 left: 0,
-                right: 0,
+                // right: 0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
