@@ -25,163 +25,159 @@ class WatchlistAthleteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _showAthleteOverlay(context),
-      child: Container(
-        margin: const EdgeInsets.only(right: 20),
-        child: Column(
-          children: [
-            Container(
-              height: 240,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.grey, // Replaced with AppColors.grey
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withValues(
-                      alpha: 0.05,
-                    ), // Using AppColors.black
-                    offset: const Offset(0, 3),
-                    blurRadius: 8,
+      child: Column(
+        children: [
+          Container(
+            height: 240,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.grey, // Replaced with AppColors.grey
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withValues(
+                    alpha: 0.05,
+                  ), // Using AppColors.black
+                  offset: const Offset(0, 3),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            // padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: Image.asset(
+                    "assets/images/athlete.png",
+                    height: 220,
+                    width: MediaQuery.of(context).size.width - 200,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
+                ),
+
+                Positioned(
+                  top: 15,
+                  left: 15,
+                  child: ClipOval(
                     child: Image.asset(
-                      "assets/images/athlete.png",
-                      height: 220,
-                      width: MediaQuery.of(context).size.width - 200,
-                      fit: BoxFit.fill,
+                      "assets/images/flag.png",
+                      height: 30,
+                      width: 30,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
 
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/images/flag.png",
-                        height: 30,
-                        width: 30,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
-                    right: 0,
-                    top: 10,
-                    child: Column(
-                      children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            _iconButton(Icons.star_border),
-                            Positioned(
-                              right: 0,
-                              top: -5,
-                              child: Container(
-                                height: 22,
-                                width: 22,
-                                decoration: const BoxDecoration(
+                Positioned(
+                  right: 15,
+                  top: 25,
+                  child: Column(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          _iconButton(Icons.star_border),
+                          Positioned(
+                            right: 0,
+                            top: -5,
+                            child: Container(
+                              height: 22,
+                              width: 22,
+                              decoration: const BoxDecoration(
+                                color: AppColors.error, // Using AppColors.error
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                rating.toString(),
+                                style: const TextStyle(
                                   color:
-                                      AppColors.error, // Using AppColors.error
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  rating.toString(),
-                                  style: const TextStyle(
-                                    color: AppColors
-                                        .white, // Using AppColors.white
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      AppColors.white, // Using AppColors.white
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        _iconButton(Icons.bookmark_border),
-                        const SizedBox(height: 12),
-                        _iconButton(Icons.favorite_border),
-                        const SizedBox(height: 12),
-                        _iconButton(Icons.share),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _iconButton(Icons.bookmark_border),
+                      const SizedBox(height: 12),
+                      _iconButton(Icons.favorite_border),
+                      const SizedBox(height: 12),
+                      _iconButton(Icons.share),
+                    ],
                   ),
+                ),
 
-                  Positioned(
-                    right: 50,
-                    bottom: 10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 5),
-                        CustomText(
-                          title: name,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          textColor: AppColors.white, // Using AppColors.white
-                        ),
-                        const SizedBox(height: 5),
-                        CustomText(
-                          title: club,
-                          fontSize: 14,
-                          textColor: AppColors.white, // Using AppColors.white
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.3,
-                        ),
-                        const SizedBox(height: 5),
-                        CustomText(
-                          title: 'Age : $age',
-                          fontSize: 13,
-                          textColor: AppColors.white, // Using AppColors.white
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ],
-                    ),
+                Positioned(
+                  right: 50,
+                  bottom: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 5),
+                      CustomText(
+                        title: name,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        textColor: AppColors.white, // Using AppColors.white
+                      ),
+                      const SizedBox(height: 5),
+                      CustomText(
+                        title: club,
+                        fontSize: 14,
+                        textColor: AppColors.white, // Using AppColors.white
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.3,
+                      ),
+                      const SizedBox(height: 5),
+                      CustomText(
+                        title: 'Age : $age',
+                        fontSize: 13,
+                        textColor: AppColors.white, // Using AppColors.white
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            // const SizedBox(height: 5),
-            // SizedBox(
-            //   width: 300,
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       CustomText(
-            //         title: "Athlete Ambassador ready",
-            //         fontSize: 11,
-            //         fontWeight: FontWeight.w500,
-            //         textColor:
-            //             AppColors.textPrimary, // Using AppColors.textPrimary
-            //       ),
-            //       const SizedBox(height: 4),
-            //       CustomText(
-            //         title: "23k Followers",
-            //         fontSize: 11,
-            //         fontWeight: FontWeight.w500,
-            //         textColor: AppColors.grey, // Using AppColors.grey
-            //       ),
-            //       const SizedBox(height: 4),
-            //       CustomText(
-            //         title: "5 jobs done",
-            //         fontSize: 11,
-            //         fontWeight: FontWeight.w500,
-            //         textColor: AppColors.grey, // Using AppColors.grey
-            //       ),
-            //     ],
-            //   ),
-            // ),
-          ],
-        ),
+          ),
+          // const SizedBox(height: 5),
+          // SizedBox(
+          //   width: 300,
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       CustomText(
+          //         title: "Athlete Ambassador ready",
+          //         fontSize: 11,
+          //         fontWeight: FontWeight.w500,
+          //         textColor:
+          //             AppColors.textPrimary, // Using AppColors.textPrimary
+          //       ),
+          //       const SizedBox(height: 4),
+          //       CustomText(
+          //         title: "23k Followers",
+          //         fontSize: 11,
+          //         fontWeight: FontWeight.w500,
+          //         textColor: AppColors.grey, // Using AppColors.grey
+          //       ),
+          //       const SizedBox(height: 4),
+          //       CustomText(
+          //         title: "5 jobs done",
+          //         fontSize: 11,
+          //         fontWeight: FontWeight.w500,
+          //         textColor: AppColors.grey, // Using AppColors.grey
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
     );
   }
