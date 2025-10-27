@@ -30,7 +30,7 @@ class WatchlistAthleteCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 280,
+              height: 240,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.grey, // Replaced with AppColors.grey
@@ -53,7 +53,7 @@ class WatchlistAthleteCard extends StatelessWidget {
                     left: 0,
                     child: Image.asset(
                       "assets/images/athlete.png",
-                      height: 280,
+                      height: 220,
                       width: MediaQuery.of(context).size.width - 200,
                       fit: BoxFit.fill,
                     ),
@@ -65,8 +65,8 @@ class WatchlistAthleteCard extends StatelessWidget {
                     child: ClipOval(
                       child: Image.asset(
                         "assets/images/flag.png",
-                        height: 37,
-                        width: 37,
+                        height: 30,
+                        width: 30,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -188,8 +188,8 @@ class WatchlistAthleteCard extends StatelessWidget {
 
   Widget _iconButton(IconData icon) {
     return Container(
-      height: 40,
-      width: 40,
+      height: 30,
+      width: 30,
       decoration: BoxDecoration(
         color: AppColors.white.withValues(alpha: 0.4), // Using AppColors.white
         shape: BoxShape.circle,
@@ -197,7 +197,7 @@ class WatchlistAthleteCard extends StatelessWidget {
       child: Icon(
         icon,
         color: AppColors.white,
-        size: 22,
+        size: 18,
       ), // Using AppColors.white
     );
   }

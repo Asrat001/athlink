@@ -38,6 +38,24 @@ class _WatchListScreenState extends State<WatchListScreen>
       "image":
           "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
     },
+    {
+      "name": "David Shuan",
+      "club": "King Box Club",
+      "age": "21",
+      "flag":
+          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
+      "image":
+          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
+    },
+    {
+      "name": "David Shuan",
+      "club": "King Box Club",
+      "age": "21",
+      "flag":
+          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
+      "image":
+          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
+    },
   ];
 
   void _handleAction(int index, String type) {
