@@ -5,7 +5,9 @@ import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-enum JobsView { listing, applicants }
+/// ManageScreen with in-tab replacement navigation (no route pushes).
+/// Uses state machine [JobsSectionState] to swap content inside the Jobs tab.
+enum JobsSectionState { listing, applicants, jobDetail, baDetail }
 
 enum ApplicantTab { newApplicants, invitees }
 
@@ -17,31 +19,38 @@ class ManageScreen extends StatefulWidget {
 }
 
 class _ManageScreenState extends State<ManageScreen> {
-  // Dummy jobs (same as yours)
+  // -------------------- Dummy data --------------------
   final List<Map<String, dynamic>> jobs = const [
     {
+      "id": "job_brand_1",
+      "type": "brand", // brand -> Brand Ambassador flow
       "agencyLogo":
           "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
       "agencyName": "SP Sport Agency",
       "location": "Los Angeles, CA",
       "price": "500\$/m",
-      "title": "Ambassador Deal",
+      "title": "Brand Ambassador Deal",
       "tags": ["#Social Media Post", "#Model", "#Event speaker", "#Poster Ad"],
       "notifications": 9,
+      "description":
+          "Track and field athletes aged 18 - 21, with social media presence. This is a full time job for 6 months.",
     },
     {
+      "id": "job_hire_1",
+      "type": "hiring", // hiring -> normal applicants -> job detail
       "agencyLogo":
           "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
       "agencyName": "Quartz",
       "location": "New York, NY",
       "price": "750\$/m",
-      "title": "Brand Ambassador Deal",
+      "title": "Ambassador Deal",
       "tags": ["#Reel", "#Model", "#Ambassador"],
       "notifications": 2,
+      "description":
+          "Short-term ambassador role for content creation and local events. 3 months.",
     },
   ];
 
-  // Dummy applicants
   final List<Map<String, dynamic>> newApplicants = [
     {
       "name": "Mariya Osteen",
@@ -92,11 +101,14 @@ class _ManageScreenState extends State<ManageScreen> {
     },
   ];
 
-  // UI state
-  JobsView currentView = JobsView.listing;
-  int? selectedJobIndex;
-  ApplicantTab activeApplicantTab = ApplicantTab.newApplicants;
+  final List<Map<String, dynamic>> sponsorships = [];
 
+  JobsSectionState jobsState = JobsSectionState.listing;
+  ApplicantTab activeApplicantTab = ApplicantTab.newApplicants;
+  int? selectedJobIndex;
+  JobsSectionState? previousJobsState;
+
+  // -------------------- Helpers --------------------
   void _openCreateJobModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -109,18 +121,41 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  void _showApplicantsForJob(int index) {
+  /// When a job is tapped from listing: if type == 'brand' show BA request
+  /// else navigate to applicants (hiring flow).
+  void _showJobFromListing(int index) {
     setState(() {
       selectedJobIndex = index;
-      currentView = JobsView.applicants;
-      activeApplicantTab = ApplicantTab.newApplicants;
+
+      previousJobsState = jobsState;
+      jobsState = JobsSectionState.applicants;
     });
   }
 
-  void _backToListing() {
+  /// when View detail clicked inside applicants/baRequest header:
+  /// open detail view for the selected job (choose BA detail or generic job detail).
+  void _openDetailForSelectedJob() {
+    if (selectedJobIndex == null) return;
+    final job = jobs[selectedJobIndex!];
     setState(() {
-      currentView = JobsView.listing;
-      selectedJobIndex = null;
+      previousJobsState = jobsState;
+      if (job['type'] == 'brand') {
+        jobsState = JobsSectionState.baDetail;
+      } else {
+        jobsState = JobsSectionState.jobDetail;
+      }
+    });
+  }
+
+  void _jobsBack() {
+    setState(() {
+      if (previousJobsState != null) {
+        jobsState = previousJobsState!;
+      } else {
+        jobsState = JobsSectionState.listing;
+      }
+      if (jobsState == JobsSectionState.listing) selectedJobIndex = null;
+      previousJobsState = null;
     });
   }
 
@@ -149,8 +184,7 @@ class _ManageScreenState extends State<ManageScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
                         children: [
-                          // if you have svg assets, keep these; else replace with Icon(Icons.search)
-                          // SvgPicture.asset('assets/images/search.svg'),
+                          // Replace with Svg if available
                           const Icon(Icons.search, color: AppColors.lightGrey),
                           const SizedBox(width: 8),
                           Expanded(
@@ -182,6 +216,7 @@ class _ManageScreenState extends State<ManageScreen> {
         ),
         body: Column(
           children: [
+            // Tab bar (remains visible always)
             Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -212,13 +247,20 @@ class _ManageScreenState extends State<ManageScreen> {
               ),
             ),
 
-            // Main content: either Jobs listing or Applicants view
+            // TabBarView - first is Jobs content (this changes its inner content),
+            // second is Sponsorship content.
             Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: currentView == JobsView.listing
-                    ? _buildJobsContent(context)
-                    : _buildApplicantsContent(context),
+              child: TabBarView(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 260),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    child: _jobsBodyForState(context),
+                  ),
+                  // Sponsorship tab
+                  _buildSponsorshipContent(context),
+                ],
               ),
             ),
           ],
@@ -227,11 +269,35 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  // ---------------- Jobs Listing ----------------
-  Widget _buildJobsContent(BuildContext context) {
-    if (jobs.isEmpty) {
-      return _buildEmptyJobs(context);
+  Widget _jobsBodyForState(BuildContext context) {
+    switch (jobsState) {
+      case JobsSectionState.listing:
+        return KeyedSubtree(
+          key: const ValueKey('jobs_listing'),
+          child: _jobsListing(context),
+        );
+      case JobsSectionState.applicants:
+        return KeyedSubtree(
+          key: const ValueKey('jobs_applicants'),
+          child: _applicantsView(context),
+        );
+
+      case JobsSectionState.jobDetail:
+        return KeyedSubtree(
+          key: const ValueKey('job_detail'),
+          child: _jobDetailView(context),
+        );
+      case JobsSectionState.baDetail:
+        return KeyedSubtree(
+          key: const ValueKey('ba_detail'),
+          child: _brandAmbassadorDetailView(context),
+        );
     }
+  }
+
+  // -------------------- Listing --------------------
+  Widget _jobsListing(BuildContext context) {
+    if (jobs.isEmpty) return _buildEmptyJobs(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -256,9 +322,7 @@ class _ManageScreenState extends State<ManageScreen> {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () {
-                  _openCreateJobModal(context);
-                },
+                onTap: () => _openCreateJobModal(context),
                 child: const Icon(
                   Icons.add,
                   size: 26,
@@ -274,7 +338,7 @@ class _ManageScreenState extends State<ManageScreen> {
             children: List.generate(
               jobs.length,
               (index) => GestureDetector(
-                onTap: () => _showApplicantsForJob(index),
+                onTap: () => _showJobFromListing(index),
                 child: _jobCard(jobs[index]),
               ),
             ),
@@ -316,7 +380,6 @@ class _ManageScreenState extends State<ManageScreen> {
           // header row
           Row(
             children: [
-              // avatar with ring + online dot
               SizedBox(
                 width: 70,
                 height: 70,
@@ -383,12 +446,13 @@ class _ManageScreenState extends State<ManageScreen> {
           CustomText(
             title: job["price"],
             fontWeight: FontWeight.w700,
-            fontSize: 20,
+            fontSize: 18,
           ),
+          const SizedBox(height: 6),
           CustomText(
             title: job["title"],
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: 20,
           ),
 
           const SizedBox(height: 12),
@@ -402,7 +466,7 @@ class _ManageScreenState extends State<ManageScreen> {
                 .map<Widget>(
                   (tag) => CustomText(
                     title: tag,
-                    fontSize: 14,
+                    fontSize: 12,
                     textColor: AppColors.blue,
                   ),
                 )
@@ -414,7 +478,7 @@ class _ManageScreenState extends State<ManageScreen> {
             children: const [
               Icon(Icons.share_outlined, size: 22, color: AppColors.lightGrey),
               SizedBox(width: 30),
-              Icon(Icons.favorite, size: 22, color: Colors.red),
+              Icon(Icons.favorite, size: 22, color: AppColors.red),
               SizedBox(width: 30),
               Icon(Icons.bookmark_border, size: 22, color: AppColors.lightGrey),
             ],
@@ -468,13 +532,14 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  // ---------------- Applicants view ----------------
-  Widget _buildApplicantsContent(BuildContext context) {
+  // -------------------- Applicants view --------------------
+  Widget _applicantsView(BuildContext context) {
     final job = jobs[selectedJobIndex ?? 0];
+
     return Column(
       key: const ValueKey('applicants_view'),
       children: [
-        // top header card (job summary + back)
+        // header (job summary with back arrow and view detail)
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -491,39 +556,39 @@ class _ManageScreenState extends State<ManageScreen> {
           ),
           child: Row(
             children: [
-              // back arrow
+              // back arrow (Material style - user requested B)
               GestureDetector(
-                onTap: _backToListing,
+                onTap: _jobsBack,
                 child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
               ),
               const SizedBox(width: 12),
-              // logo
               CircleAvatar(
                 radius: 22,
-                backgroundImage: NetworkImage(job["agencyLogo"]),
+                backgroundImage: AssetImage("assets/images/on1.jpg"),
               ),
               const SizedBox(width: 12),
-              // title + view detail
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      title: job["title"],
+                      title: job["agencyName"],
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
-                    const SizedBox(height: 4),
-                    CustomText(
-                      title: 'View detail',
-                      fontSize: 14,
-                      textColor: AppColors.primary.withOpacity(0.85),
+                    GestureDetector(
+                      onTap: _openDetailForSelectedJob,
+                      child: CustomText(
+                        title: 'View detail',
+                        fontSize: 14,
+                        textColor: AppColors.primary,
+                      ),
                     ),
                   ],
                 ),
               ),
 
-              // badge
+              const SizedBox(width: 8),
               if (job["notifications"] != null)
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -533,13 +598,6 @@ class _ManageScreenState extends State<ManageScreen> {
                   decoration: BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.red.withOpacity(0.18),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
                   ),
                   child: CustomText(
                     title: job["notifications"].toString(),
@@ -552,7 +610,7 @@ class _ManageScreenState extends State<ManageScreen> {
           ),
         ),
 
-        // segmented tabs: New applicants | Invitees
+        // segmented tabs
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
           child: Row(
@@ -564,7 +622,7 @@ class _ManageScreenState extends State<ManageScreen> {
           ),
         ),
 
-        // applicant list (only this area scrolls)
+        // list of applicants (scrolls independently)
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -588,13 +646,222 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
+  // -------------------- Job detail --------------------
+  /// Generic job detail (hiring flow)
+  Widget _jobDetailView(BuildContext context) {
+    final job = jobs[selectedJobIndex ?? 0];
+    return SingleChildScrollView(
+      key: const ValueKey('job_detail_view'),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // header row: back + logo + agency name + location
+          Row(
+            children: [
+              GestureDetector(
+                onTap: _jobsBack,
+                child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
+              ),
+              const SizedBox(width: 12),
+              CircleAvatar(
+                radius: 22,
+                backgroundImage: NetworkImage(job["agencyLogo"]),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      title: job["agencyName"],
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                    CustomText(
+                      title: job["location"],
+                      fontSize: 14,
+                      textColor: AppColors.grey,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+
+          CustomText(
+            title: job["title"],
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            textColor: AppColors.black,
+          ),
+          const SizedBox(height: 12),
+          CustomText(
+            title: job["description"] ?? '',
+            fontSize: 14,
+            textColor: AppColors.grey,
+          ),
+          const SizedBox(height: 18),
+
+          Row(
+            children: [
+              CustomText(
+                title: 'Payment',
+                fontSize: 14,
+                textColor: AppColors.grey,
+              ),
+              const SizedBox(width: 12),
+              CustomText(
+                title: job["price"].toString().replaceAll('/m', ''),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              CustomText(
+                title: 'Time line',
+                fontSize: 14,
+                textColor: AppColors.grey,
+              ),
+              const SizedBox(width: 12),
+              CustomText(
+                title: '3 months',
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ],
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _brandAmbassadorDetailView(BuildContext context) {
+    final job = jobs[selectedJobIndex ?? 0];
+
+    return SingleChildScrollView(
+      key: const ValueKey('ba_detail_view'),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * .6,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundImage: AssetImage("assets/images/on1.jpg"),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        title: job["agencyName"],
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                      CustomText(
+                        title: job["location"],
+                        fontSize: 14,
+                        textColor: AppColors.grey,
+                      ),
+                    ],
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: _jobsBack,
+                  child: const Icon(Icons.arrow_back, color: AppColors.black),
+                ),
+                const SizedBox(width: 12),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Title
+            CustomText(
+              title: job["title"],
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              textColor: AppColors.black,
+            ),
+            const SizedBox(height: 12),
+
+            // Description paragraph (matching the screenshot spacing)
+            CustomText(
+              title: job["description"] ?? '',
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              textColor: AppColors.grey,
+            ),
+            const SizedBox(height: 18),
+
+            // Payment & timeline row (pixel aligned)
+            Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: CustomText(
+                    title: 'Payment',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    textColor: AppColors.grey,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                CustomText(
+                  title: job["price"].toString().replaceAll('/m', ''),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  textColor: AppColors.grey,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: CustomText(
+                    title: 'Time line',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    textColor: AppColors.grey,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                CustomText(
+                  title: '6 months',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  textColor: AppColors.grey,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // -------------------- Helper widgets --------------------
   Widget _applicantTabButton(ApplicantTab tab, String label) {
     final isActive = activeApplicantTab == tab;
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() => activeApplicantTab = tab);
-        },
+        onTap: () => setState(() => activeApplicantTab = tab),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
@@ -616,41 +883,30 @@ class _ManageScreenState extends State<ManageScreen> {
 
   Widget _applicantCard(Map<String, dynamic> data) {
     return Container(
-      height: 120,
+      height: 170,
       decoration: BoxDecoration(
+        color: AppColors.grey.withValues(alpha: .5),
         borderRadius: BorderRadius.circular(18),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.grey.shade200, Colors.grey.shade300],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Stack(
         children: [
           // main row
           Row(
             children: [
-              // large illustration on left
-              Container(
-                width: 120,
-                height: 120,
-                padding: const EdgeInsets.all(8),
+              SizedBox(
+                width: 140,
+                height: 170,
+                // padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(18),
                     bottomLeft: Radius.circular(18),
                   ),
-                  child: Image.network(
-                    data["image"],
-                    fit: BoxFit.cover,
-                    height: 120,
+                  child: Image.asset(
+                    "assets/images/athlete.png",
+                    fit: BoxFit.fill,
+                    height: 150,
+                    width: 140,
                   ),
                 ),
               ),
@@ -667,34 +923,32 @@ class _ManageScreenState extends State<ManageScreen> {
                     children: [
                       CustomText(
                         title: data["name"],
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        textColor: AppColors.black,
+                        textColor: AppColors.white,
                       ),
                       const SizedBox(height: 4),
                       CustomText(
                         title: data["club"],
-                        fontSize: 13,
-                        textColor: AppColors.grey,
+                        fontSize: 12,
+                        textColor: AppColors.white.withValues(alpha: .85),
                       ),
                       const SizedBox(height: 6),
                       CustomText(
                         title: 'Age : ${data["age"]}',
                         fontSize: 12,
-                        textColor: AppColors.grey,
+                        textColor: AppColors.white.withValues(alpha: .85),
                       ),
                       const SizedBox(height: 8),
-                      // rating row + send button
                       Row(
                         children: [
-                          // stars (simple representation)
                           Row(
                             children: List.generate(
                               5,
                               (i) => const Icon(
                                 Icons.star,
                                 size: 16,
-                                color: Colors.amber,
+                                color: AppColors.amber,
                               ),
                             ),
                           ),
@@ -702,22 +956,20 @@ class _ManageScreenState extends State<ManageScreen> {
                           CustomText(
                             title: '(${data["reviews"]})',
                             fontSize: 12,
-                            textColor: AppColors.grey,
-                          ),
-                          const Spacer(),
-                          RoundedButton(
-                            label: 'Send proposal',
-                            onPressed: () {
-                              // action
-                            },
-                            height: 36,
-                            width: 140,
-                            borderRadius: 20,
-                            backgroundColor: AppColors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            textColor: AppColors.white,
                           ),
                         ],
+                      ),
+                      SizedBox(height: 10),
+                      RoundedButton(
+                        label: 'Send proposal',
+                        onPressed: () {},
+                        height: 36,
+                        width: 140,
+                        borderRadius: 20,
+                        backgroundColor: AppColors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ],
                   ),
@@ -732,8 +984,8 @@ class _ManageScreenState extends State<ManageScreen> {
             right: 12,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                data["countryFlag"],
+              child: Image.asset(
+                "assets/images/flag.png",
                 height: 28,
                 width: 28,
                 fit: BoxFit.cover,
@@ -741,6 +993,58 @@ class _ManageScreenState extends State<ManageScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Sponsorship tab
+  Widget _buildSponsorshipContent(BuildContext context) {
+    if (sponsorships.isEmpty) {
+      return _buildEmptySponsorships(context);
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: sponsorships
+            .map(
+              (s) => Container(
+                padding: const EdgeInsets.all(12),
+                child: CustomText(title: s['brandName'] ?? 'Sponsor'),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _buildEmptySponsorships(BuildContext context) {
+    final double appBarHeight =
+        AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
+    const double tabBarHeight = 48;
+    final double viewportHeight =
+        MediaQuery.of(context).size.height - appBarHeight - tabBarHeight;
+
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: viewportHeight),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: viewportHeight * 0.25),
+              const Center(
+                child: CustomText(
+                  title: 'You didn\'t sponsored yet',
+                  textColor: AppColors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

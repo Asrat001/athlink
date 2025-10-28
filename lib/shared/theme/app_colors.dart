@@ -40,6 +40,7 @@ class AppColors {
   static const Color textSecondary = Color(0xFF757575);
   static const Color textGrey = Color(0xFF757575);
   static const Color blue = Color(0xFF143BFA);
+  static const Color greyBackground = Color(0xFFE5E7EB);
 
   /// Divider color
   static const Color divider = Color(0xFFE0E0E0);
@@ -52,6 +53,8 @@ class AppColors {
     164,
     155,
   ); // Cyan color for mute
+
+  static const Color amber = Colors.amber;
   static const Color buttonGrey = Color(0xFF9E9E9E); // Grey for cancel button
   static const Color lightMute = Color(0xFFE1F5FE); // Light cyan background
   static const Color lightError = Color(0xFFFFEBEE); // Light red background
