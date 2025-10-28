@@ -22,6 +22,7 @@ class AppColors {
 
   /// Extra Light grey color
   static const Color extraLightGrey = Color(0xffE1E8ED);
+  static const Color lightBlue = Color(0xff4DB5FF);
 
   /// Grey colors used in the RegisterScreen
   static const Color grey600 = Color(0xFF757575);

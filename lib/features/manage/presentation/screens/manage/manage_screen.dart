@@ -1,4 +1,5 @@
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -102,7 +103,26 @@ class _ManageScreenState extends State<ManageScreen> {
     },
   ];
 
-  final List<Map<String, dynamic>> sponsorships = [];
+  final List<Map<String, dynamic>> sponsorships = [
+    {
+      "name": "Mariya Osteen",
+      "club": "NY Woman’s Flag Football",
+      "age": "21",
+      "rating": "4.9",
+      "flag":
+          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
+      "image": "https://i.ibb.co/WDrV1nV/girl-athlete.png",
+    },
+    {
+      "name": "Helen Moore",
+      "club": "NY Woman’s Flag Football",
+      "age": "21",
+      "rating": "4.7",
+      "flag":
+          "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg",
+      "image": "https://i.ibb.co/WDrV1nV/girl-athlete.png",
+    },
+  ];
 
   JobsSectionState jobsState = JobsSectionState.listing;
   ApplicantTab activeApplicantTab = ApplicantTab.newApplicants;
@@ -122,8 +142,6 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  /// When a job is tapped from listing: if type == 'brand' show BA request
-  /// else navigate to applicants (hiring flow).
   void _showJobFromListing(int index) {
     setState(() {
       selectedJobIndex = index;
@@ -260,7 +278,11 @@ class _ManageScreenState extends State<ManageScreen> {
                     child: _jobsBodyForState(context),
                   ),
                   // Sponsorship tab
-                  _buildSponsorshipContent(context),
+                  SponsorshipSection(
+                    activeCount: 1,
+                    closedCount: 0,
+                    sponsorships: sponsorships,
+                  ),
                 ],
               ),
             ),
@@ -533,14 +555,12 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  // -------------------- Applicants view --------------------
   Widget _applicantsView(BuildContext context) {
     final job = jobs[selectedJobIndex ?? 0];
 
     return Column(
       key: const ValueKey('applicants_view'),
       children: [
-        // header (job summary with back arrow and view detail)
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -1017,58 +1037,6 @@ class _ManageScreenState extends State<ManageScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  // Sponsorship tab
-  Widget _buildSponsorshipContent(BuildContext context) {
-    if (sponsorships.isEmpty) {
-      return _buildEmptySponsorships(context);
-    }
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: sponsorships
-            .map(
-              (s) => Container(
-                padding: const EdgeInsets.all(12),
-                child: CustomText(title: s['brandName'] ?? 'Sponsor'),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-
-  Widget _buildEmptySponsorships(BuildContext context) {
-    final double appBarHeight =
-        AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
-    const double tabBarHeight = 48;
-    final double viewportHeight =
-        MediaQuery.of(context).size.height - appBarHeight - tabBarHeight;
-
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: viewportHeight),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: viewportHeight * 0.25),
-              const Center(
-                child: CustomText(
-                  title: 'You didn\'t sponsored yet',
-                  textColor: AppColors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
