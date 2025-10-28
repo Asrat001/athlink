@@ -62,12 +62,12 @@ abstract class SportCategory with _$SportCategory {
 @freezed
 abstract class SponsorProfile with _$SponsorProfile {
   const factory SponsorProfile({
-    required Stats stats,
-    required String address,
-    required String bannerImageUrl,
-    required String description,
-    required String name,
-    required String profileImageUrl,
+    @Default(Stats()) Stats stats,
+    @Default('') String address,
+    @Default('') String bannerImageUrl,
+    @Default('') String description,
+    @Default('') String name,
+    @Default('') String profileImageUrl,
     @Default([]) List<JobPost> jobPosts,
   }) = _SponsorProfile;
 

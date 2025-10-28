@@ -1396,15 +1396,15 @@ return $default(_that.stats,_that.address,_that.bannerImageUrl,_that.description
 @JsonSerializable()
 
 class _SponsorProfile implements SponsorProfile {
-  const _SponsorProfile({required this.stats, required this.address, required this.bannerImageUrl, required this.description, required this.name, required this.profileImageUrl, final  List<JobPost> jobPosts = const []}): _jobPosts = jobPosts;
+  const _SponsorProfile({this.stats = const Stats(), this.address = '', this.bannerImageUrl = '', this.description = '', this.name = '', this.profileImageUrl = '', final  List<JobPost> jobPosts = const []}): _jobPosts = jobPosts;
   factory _SponsorProfile.fromJson(Map<String, dynamic> json) => _$SponsorProfileFromJson(json);
 
-@override final  Stats stats;
-@override final  String address;
-@override final  String bannerImageUrl;
-@override final  String description;
-@override final  String name;
-@override final  String profileImageUrl;
+@override@JsonKey() final  Stats stats;
+@override@JsonKey() final  String address;
+@override@JsonKey() final  String bannerImageUrl;
+@override@JsonKey() final  String description;
+@override@JsonKey() final  String name;
+@override@JsonKey() final  String profileImageUrl;
  final  List<JobPost> _jobPosts;
 @override@JsonKey() List<JobPost> get jobPosts {
   if (_jobPosts is EqualUnmodifiableListView) return _jobPosts;

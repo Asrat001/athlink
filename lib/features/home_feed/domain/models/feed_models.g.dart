@@ -76,6 +76,21 @@ Map<String, dynamic> _$SponsorToJson(_Sponsor instance) => <String, dynamic>{
   'sport': instance.sport,
 };
 
+_Achievement _$AchievementFromJson(Map<String, dynamic> json) => _Achievement(
+  name: json['name'] as String?,
+  rank: json['rank'] as String?,
+  difficulty: json['difficulty'] as String?,
+  score: (json['score'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$AchievementToJson(_Achievement instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'rank': instance.rank,
+      'difficulty': instance.difficulty,
+      'score': instance.score,
+    };
+
 _AthleteProfile _$AthleteProfileFromJson(Map<String, dynamic> json) =>
     _AthleteProfile(
       name: json['name'] as String?,
@@ -84,6 +99,11 @@ _AthleteProfile _$AthleteProfileFromJson(Map<String, dynamic> json) =>
       position: json['position'] as String?,
       level: json['level'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
+      achievements:
+          (json['achievements'] as List<dynamic>?)
+              ?.map((e) => Achievement.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$AthleteProfileToJson(_AthleteProfile instance) =>
@@ -94,6 +114,7 @@ Map<String, dynamic> _$AthleteProfileToJson(_AthleteProfile instance) =>
       'position': instance.position,
       'level': instance.level,
       'rating': instance.rating,
+      'achievements': instance.achievements,
     };
 
 _Athlete _$AthleteFromJson(Map<String, dynamic> json) => _Athlete(

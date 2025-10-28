@@ -66,6 +66,19 @@ abstract class Sponsor with _$Sponsor {
 }
 
 @freezed
+abstract class Achievement with _$Achievement {
+  const factory Achievement({
+    String? name,
+    String? rank,
+    String? difficulty,
+    int? score,
+  }) = _Achievement;
+
+  factory Achievement.fromJson(Map<String, dynamic> json) =>
+      _$AchievementFromJson(json);
+}
+
+@freezed
 abstract class AthleteProfile with _$AthleteProfile {
   const factory AthleteProfile({
     String? name,
@@ -74,6 +87,7 @@ abstract class AthleteProfile with _$AthleteProfile {
     String? position,
     String? level,
     double? rating,
+    @Default([]) List<Achievement> achievements,
   }) = _AthleteProfile;
 
   factory AthleteProfile.fromJson(Map<String, dynamic> json) =>

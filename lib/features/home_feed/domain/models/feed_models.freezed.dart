@@ -1445,9 +1445,281 @@ $SponsorProfileCopyWith<$Res>? get sponsorProfile {
 
 
 /// @nodoc
+mixin _$Achievement {
+
+ String? get name; String? get rank; String? get difficulty; int? get score;
+/// Create a copy of Achievement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AchievementCopyWith<Achievement> get copyWith => _$AchievementCopyWithImpl<Achievement>(this as Achievement, _$identity);
+
+  /// Serializes this Achievement to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Achievement&&(identical(other.name, name) || other.name == name)&&(identical(other.rank, rank) || other.rank == rank)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.score, score) || other.score == score));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,rank,difficulty,score);
+
+@override
+String toString() {
+  return 'Achievement(name: $name, rank: $rank, difficulty: $difficulty, score: $score)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AchievementCopyWith<$Res>  {
+  factory $AchievementCopyWith(Achievement value, $Res Function(Achievement) _then) = _$AchievementCopyWithImpl;
+@useResult
+$Res call({
+ String? name, String? rank, String? difficulty, int? score
+});
+
+
+
+
+}
+/// @nodoc
+class _$AchievementCopyWithImpl<$Res>
+    implements $AchievementCopyWith<$Res> {
+  _$AchievementCopyWithImpl(this._self, this._then);
+
+  final Achievement _self;
+  final $Res Function(Achievement) _then;
+
+/// Create a copy of Achievement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? rank = freezed,Object? difficulty = freezed,Object? score = freezed,}) {
+  return _then(_self.copyWith(
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,rank: freezed == rank ? _self.rank : rank // ignore: cast_nullable_to_non_nullable
+as String?,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
+as String?,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [Achievement].
+extension AchievementPatterns on Achievement {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Achievement value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Achievement() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Achievement value)  $default,){
+final _that = this;
+switch (_that) {
+case _Achievement():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Achievement value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Achievement() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? rank,  String? difficulty,  int? score)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Achievement() when $default != null:
+return $default(_that.name,_that.rank,_that.difficulty,_that.score);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? rank,  String? difficulty,  int? score)  $default,) {final _that = this;
+switch (_that) {
+case _Achievement():
+return $default(_that.name,_that.rank,_that.difficulty,_that.score);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? rank,  String? difficulty,  int? score)?  $default,) {final _that = this;
+switch (_that) {
+case _Achievement() when $default != null:
+return $default(_that.name,_that.rank,_that.difficulty,_that.score);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _Achievement implements Achievement {
+  const _Achievement({this.name, this.rank, this.difficulty, this.score});
+  factory _Achievement.fromJson(Map<String, dynamic> json) => _$AchievementFromJson(json);
+
+@override final  String? name;
+@override final  String? rank;
+@override final  String? difficulty;
+@override final  int? score;
+
+/// Create a copy of Achievement
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AchievementCopyWith<_Achievement> get copyWith => __$AchievementCopyWithImpl<_Achievement>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AchievementToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Achievement&&(identical(other.name, name) || other.name == name)&&(identical(other.rank, rank) || other.rank == rank)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.score, score) || other.score == score));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,rank,difficulty,score);
+
+@override
+String toString() {
+  return 'Achievement(name: $name, rank: $rank, difficulty: $difficulty, score: $score)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AchievementCopyWith<$Res> implements $AchievementCopyWith<$Res> {
+  factory _$AchievementCopyWith(_Achievement value, $Res Function(_Achievement) _then) = __$AchievementCopyWithImpl;
+@override @useResult
+$Res call({
+ String? name, String? rank, String? difficulty, int? score
+});
+
+
+
+
+}
+/// @nodoc
+class __$AchievementCopyWithImpl<$Res>
+    implements _$AchievementCopyWith<$Res> {
+  __$AchievementCopyWithImpl(this._self, this._then);
+
+  final _Achievement _self;
+  final $Res Function(_Achievement) _then;
+
+/// Create a copy of Achievement
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? rank = freezed,Object? difficulty = freezed,Object? score = freezed,}) {
+  return _then(_Achievement(
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,rank: freezed == rank ? _self.rank : rank // ignore: cast_nullable_to_non_nullable
+as String?,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
+as String?,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$AthleteProfile {
 
- String? get name; String? get profileImageUrl; int? get age; String? get position; String? get level; double? get rating;
+ String? get name; String? get profileImageUrl; int? get age; String? get position; String? get level; double? get rating; List<Achievement> get achievements;
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1460,16 +1732,16 @@ $AthleteProfileCopyWith<AthleteProfile> get copyWith => _$AthleteProfileCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&const DeepCollectionEquality().equals(other.achievements, achievements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating);
+int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,const DeepCollectionEquality().hash(achievements));
 
 @override
 String toString() {
-  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating)';
+  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, achievements: $achievements)';
 }
 
 
@@ -1480,7 +1752,7 @@ abstract mixin class $AthleteProfileCopyWith<$Res>  {
   factory $AthleteProfileCopyWith(AthleteProfile value, $Res Function(AthleteProfile) _then) = _$AthleteProfileCopyWithImpl;
 @useResult
 $Res call({
- String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating
+ String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, List<Achievement> achievements
 });
 
 
@@ -1497,7 +1769,7 @@ class _$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? achievements = null,}) {
   return _then(_self.copyWith(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
@@ -1505,7 +1777,8 @@ as String?,age: freezed == age ? _self.age : age // ignore: cast_nullable_to_non
 as int?,position: freezed == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,achievements: null == achievements ? _self.achievements : achievements // ignore: cast_nullable_to_non_nullable
+as List<Achievement>,
   ));
 }
 
@@ -1590,10 +1863,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  List<Achievement> achievements)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.achievements);case _:
   return orElse();
 
 }
@@ -1611,10 +1884,10 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  List<Achievement> achievements)  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile():
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.achievements);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1631,10 +1904,10 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  List<Achievement> achievements)?  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.achievements);case _:
   return null;
 
 }
@@ -1646,7 +1919,7 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 @JsonSerializable()
 
 class _AthleteProfile implements AthleteProfile {
-  const _AthleteProfile({this.name, this.profileImageUrl, this.age, this.position, this.level, this.rating});
+  const _AthleteProfile({this.name, this.profileImageUrl, this.age, this.position, this.level, this.rating, final  List<Achievement> achievements = const []}): _achievements = achievements;
   factory _AthleteProfile.fromJson(Map<String, dynamic> json) => _$AthleteProfileFromJson(json);
 
 @override final  String? name;
@@ -1655,6 +1928,13 @@ class _AthleteProfile implements AthleteProfile {
 @override final  String? position;
 @override final  String? level;
 @override final  double? rating;
+ final  List<Achievement> _achievements;
+@override@JsonKey() List<Achievement> get achievements {
+  if (_achievements is EqualUnmodifiableListView) return _achievements;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_achievements);
+}
+
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
@@ -1669,16 +1949,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&const DeepCollectionEquality().equals(other._achievements, _achievements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating);
+int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,const DeepCollectionEquality().hash(_achievements));
 
 @override
 String toString() {
-  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating)';
+  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, achievements: $achievements)';
 }
 
 
@@ -1689,7 +1969,7 @@ abstract mixin class _$AthleteProfileCopyWith<$Res> implements $AthleteProfileCo
   factory _$AthleteProfileCopyWith(_AthleteProfile value, $Res Function(_AthleteProfile) _then) = __$AthleteProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating
+ String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, List<Achievement> achievements
 });
 
 
@@ -1706,7 +1986,7 @@ class __$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? achievements = null,}) {
   return _then(_AthleteProfile(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
@@ -1714,7 +1994,8 @@ as String?,age: freezed == age ? _self.age : age // ignore: cast_nullable_to_non
 as int?,position: freezed == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,achievements: null == achievements ? _self._achievements : achievements // ignore: cast_nullable_to_non_nullable
+as List<Achievement>,
   ));
 }
 

@@ -68,6 +68,32 @@ class WatchlistNotifier extends StateNotifier<WatchlistState> {
     );
   }
 
+  Future<bool> deleteAthleteFromWatchlist({
+    required String athleteId,
+  }) async {
+    developer.log('WatchlistNotifier: Removing athlete $athleteId from watchlist...');
+
+    final response = await _watchlistRepository.deleteAthleteFromWatchlist(
+      athleteId: athleteId,
+    );
+
+    return response.when(
+      success: (data) {
+        developer.log(
+            'WatchlistNotifier: Successfully removed athlete from watchlist');
+        // Refresh the watchlist after removing
+        getWatchlist();
+        return true;
+      },
+      failure: (error) {
+        final errorMsg = NetworkExceptions.getErrorMessage(error);
+        developer.log('WatchlistNotifier: Error removing from watchlist - $errorMsg');
+        state = state.copyWith(errorMessage: errorMsg);
+        return false;
+      },
+    );
+  }
+
   void resetState() {
     state = WatchlistState.initial();
   }

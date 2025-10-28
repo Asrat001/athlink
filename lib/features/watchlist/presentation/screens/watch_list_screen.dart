@@ -86,9 +86,10 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
     final watchlist = watchlistState.watchlistData?.watchlist ?? [];
 
     developer.log(
-        'WatchListScreen: isLoading=${watchlistState.isLoading}, '
-        'hasError=${watchlistState.errorMessage != null}, '
-        'itemCount=${watchlist.length}');
+      'WatchListScreen: isLoading=${watchlistState.isLoading}, '
+      'hasError=${watchlistState.errorMessage != null}, '
+      'itemCount=${watchlist.length}',
+    );
 
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
@@ -126,191 +127,203 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
               child: watchlistState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : watchlistState.errorMessage != null
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.error_outline,
-                                color: AppColors.error,
-                                size: 48,
-                              ),
-                              const SizedBox(height: 16),
-                              CustomText(
-                                title: watchlistState.errorMessage!,
-                                textColor: AppColors.error,
-                                fontSize: 14,
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  ref
-                                      .read(watchlistProvider.notifier)
-                                      .getWatchlist();
-                                },
-                                child: const Text('Retry'),
-                              ),
-                            ],
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.error,
+                            size: 48,
                           ),
-                        )
-                      : watchlist.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.bookmark_border,
-                                    color: AppColors.grey,
-                                    size: 64,
+                          const SizedBox(height: 16),
+                          CustomText(
+                            title: watchlistState.errorMessage!,
+                            textColor: AppColors.error,
+                            fontSize: 14,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(watchlistProvider.notifier)
+                                  .getWatchlist();
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : watchlist.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.bookmark_border,
+                            color: AppColors.grey,
+                            size: 64,
+                          ),
+                          const SizedBox(height: 16),
+                          CustomText(
+                            title: 'No athletes in your watchlist',
+                            textColor: AppColors.textGrey,
+                            fontSize: 16,
+                          ),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        await ref
+                            .read(watchlistProvider.notifier)
+                            .getWatchlist();
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: List.generate(watchlist.length, (index) {
+                            final item = watchlist[index];
+                            final athlete = item.athlete;
+                            final isActive = activeActionIndex == index;
+                            final action = activeActionType;
+
+                            if (athlete == null) return const SizedBox();
+
+                            return AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 350),
+                              switchInCurve: Curves.easeInOut,
+                              switchOutCurve: Curves.easeInOut,
+                              transitionBuilder: (child, animation) {
+                                final fadeAnimation = CurvedAnimation(
+                                  parent: animation,
+                                  curve: const Interval(
+                                    0.0,
+                                    1.0,
+                                    curve: Curves.easeInOutCubic,
                                   ),
-                                  const SizedBox(height: 16),
-                                  CustomText(
-                                    title: 'No athletes in your watchlist',
-                                    textColor: AppColors.textGrey,
-                                    fontSize: 16,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : RefreshIndicator(
-                              onRefresh: () async {
-                                await ref
-                                    .read(watchlistProvider.notifier)
-                                    .getWatchlist();
-                              },
-                              child: SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  children:
-                                      List.generate(watchlist.length, (index) {
-                                    final item = watchlist[index];
-                                    final athlete = item.athlete;
-                                    final isActive = activeActionIndex == index;
-                                    final action = activeActionType;
+                                );
 
-                                    if (athlete == null) return const SizedBox();
-
-                                    return AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 350),
-                                      switchInCurve: Curves.easeInOut,
-                                      switchOutCurve: Curves.easeInOut,
-                                      transitionBuilder: (child, animation) {
-                                        final fadeAnimation = CurvedAnimation(
-                                          parent: animation,
-                                          curve: const Interval(
-                                            0.0,
-                                            1.0,
-                                            curve: Curves.easeInOutCubic,
-                                          ),
-                                        );
-
-                                        final slideAnimation =
-                                            Tween<Offset>(
-                                          begin: const Offset(0, 0.08),
-                                          end: Offset.zero,
-                                        ).animate(
-                                          CurvedAnimation(
-                                            parent: animation,
-                                            curve: const Interval(
-                                              0.15,
-                                              1.0,
-                                              curve: Curves.easeOutCubic,
-                                            ),
-                                          ),
-                                        );
-
-                                        final scaleAnimation =
-                                            Tween<double>(begin: 0.98, end: 1.0)
-                                                .animate(
-                                          CurvedAnimation(
-                                            parent: animation,
-                                            curve: Curves.easeOutBack,
-                                          ),
-                                        );
-
-                                        return FadeTransition(
-                                          opacity: fadeAnimation,
-                                          child: SlideTransition(
-                                            position: slideAnimation,
-                                            child: ScaleTransition(
-                                              scale: scaleAnimation,
-                                              child: child,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: isActive
-                                          ? _buildConfirmationCard(
-                                              index, item, action, watchlist)
-                                          : Padding(
-                                              key: ValueKey("card_$index"),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 10.0,
-                                              ),
-                                              child: Slidable(
-                                                key: ValueKey(index),
-                                                endActionPane: ActionPane(
-                                                  motion: const ScrollMotion(),
-                                                  extentRatio: 0.5,
-                                                  children: [
-                                                    SlidableAction(
-                                                      onPressed: (_) =>
-                                                          _handleAction(
-                                                              index, "mute"),
-                                                      icon: Icons
-                                                          .notifications_off_outlined,
-                                                    ),
-                                                    SlidableAction(
-                                                      onPressed: (_) =>
-                                                          _handleAction(
-                                                              index, "delete"),
-                                                      backgroundColor:
-                                                          AppColors.lightError,
-                                                      foregroundColor:
-                                                          AppColors.error,
-                                                      icon: Icons.delete_outline,
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: WatchlistAthleteCard(
-                                                  key: ValueKey(athlete.id),
-                                                  name: athlete.athleteProfile
-                                                          ?.name ??
-                                                      athlete.name ??
-                                                      'Unknown',
-                                                  club: athlete.sport
-                                                          .isNotEmpty
-                                                      ? athlete
-                                                              .sport.first.name ??
-                                                          'Unknown Sport'
-                                                      : 'Unknown Sport',
-                                                  age: athlete.athleteProfile
-                                                          ?.age
-                                                          .toString() ??
-                                                      'N/A',
-                                                  flag: athlete.sport.isNotEmpty
-                                                      ? '$fileBaseUrl${athlete.sport.first.icon}'
-                                                      : '',
-                                                  image: athlete.athleteProfile
-                                                              ?.profileImageUrl !=
-                                                          null
-                                                      ? '$fileBaseUrl${athlete.athleteProfile?.profileImageUrl}'
-                                                      : '',
-                                                  rating: athlete.athleteProfile
-                                                          ?.rating ??
-                                                      0.0,
-                                                ),
-                                              ),
-                                            ),
+                                final slideAnimation =
+                                    Tween<Offset>(
+                                      begin: const Offset(0, 0.08),
+                                      end: Offset.zero,
+                                    ).animate(
+                                      CurvedAnimation(
+                                        parent: animation,
+                                        curve: const Interval(
+                                          0.15,
+                                          1.0,
+                                          curve: Curves.easeOutCubic,
+                                        ),
+                                      ),
                                     );
-                                  }),
-                                ),
-                              ),
-                            ),
+
+                                final scaleAnimation =
+                                    Tween<double>(
+                                      begin: 0.98,
+                                      end: 1.0,
+                                    ).animate(
+                                      CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeOutBack,
+                                      ),
+                                    );
+
+                                return FadeTransition(
+                                  opacity: fadeAnimation,
+                                  child: SlideTransition(
+                                    position: slideAnimation,
+                                    child: ScaleTransition(
+                                      scale: scaleAnimation,
+                                      child: child,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: isActive
+                                  ? _buildConfirmationCard(
+                                      index,
+                                      item,
+                                      action,
+                                      watchlist,
+                                    )
+                                  : Padding(
+                                      key: ValueKey("card_$index"),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0,
+                                      ),
+                                      child: Slidable(
+                                        key: ValueKey(index),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          extentRatio: 0.5,
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (_) =>
+                                                  _handleAction(index, "mute"),
+                                              icon: Icons
+                                                  .notifications_off_outlined,
+                                            ),
+                                            SlidableAction(
+                                              onPressed: (_) => _handleAction(
+                                                index,
+                                                "delete",
+                                              ),
+                                              backgroundColor:
+                                                  AppColors.lightError,
+                                              foregroundColor: AppColors.error,
+                                              icon: Icons.delete_outline,
+                                            ),
+                                          ],
+                                        ),
+                                        child: WatchlistAthleteCard(
+                                          key: ValueKey(athlete.id),
+                                          athleteId: athlete.id,
+                                          name:
+                                              athlete.athleteProfile?.name ??
+                                              athlete.name ??
+                                              'Unknown',
+                                          club: athlete.sport.isNotEmpty
+                                              ? athlete.sport.first.name ??
+                                                    'Unknown Sport'
+                                              : 'Unknown Sport',
+                                          age:
+                                              athlete.athleteProfile?.age
+                                                  .toString() ??
+                                              'N/A',
+                                          flag: athlete.sport.isNotEmpty
+                                              ? '$fileBaseUrl${athlete.sport.first.icon}'
+                                              : '',
+                                          image:
+                                              athlete
+                                                      .athleteProfile
+                                                      ?.profileImageUrl !=
+                                                  null
+                                              ? '$fileBaseUrl${athlete.athleteProfile?.profileImageUrl}'
+                                              : '',
+                                          rating:
+                                              athlete.athleteProfile?.rating ??
+                                              0.0,
+                                          achievements:
+                                              athlete
+                                                  .athleteProfile
+                                                  ?.achievements ??
+                                              [],
+                                          position: athlete.athleteProfile?.position,
+                                          level: athlete.athleteProfile?.level,
+                                          sportCategory: athlete.sport.isNotEmpty
+                                              ? athlete.sport.first.name
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),

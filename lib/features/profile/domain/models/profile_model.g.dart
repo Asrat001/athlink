@@ -76,12 +76,14 @@ Map<String, dynamic> _$SportCategoryToJson(_SportCategory instance) =>
 
 _SponsorProfile _$SponsorProfileFromJson(Map<String, dynamic> json) =>
     _SponsorProfile(
-      stats: Stats.fromJson(json['stats'] as Map<String, dynamic>),
-      address: json['address'] as String,
-      bannerImageUrl: json['bannerImageUrl'] as String,
-      description: json['description'] as String,
-      name: json['name'] as String,
-      profileImageUrl: json['profileImageUrl'] as String,
+      stats: json['stats'] == null
+          ? const Stats()
+          : Stats.fromJson(json['stats'] as Map<String, dynamic>),
+      address: json['address'] as String? ?? '',
+      bannerImageUrl: json['bannerImageUrl'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      profileImageUrl: json['profileImageUrl'] as String? ?? '',
       jobPosts:
           (json['jobPosts'] as List<dynamic>?)
               ?.map((e) => JobPost.fromJson(e as Map<String, dynamic>))

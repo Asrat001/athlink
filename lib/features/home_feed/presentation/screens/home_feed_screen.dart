@@ -322,7 +322,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: sponsors.length,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         itemBuilder: (context, index) {
           final sponsor = sponsors[index];
           // Get sports as category (use first sport or "Multiple Sports")
@@ -413,6 +413,8 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
                       profile?.name ?? athlete.name ?? 'Unknown Athlete';
                   final age = profile?.age?.toString() ?? '0';
                   final position = profile?.position ?? 'Position';
+                  final level = profile?.level;
+                  final sportCategory = sport.name;
 
                   // Get image URL
                   final imageUrl = profile?.profileImageUrl != null
@@ -424,12 +426,20 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
                       ? '$fileBaseUrl${sport.icon}'
                       : 'https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg';
 
+                  // Get achievements from athlete profile
+                  final achievements = profile?.achievements ?? [];
+
                   return AthleteCard(
+                    athleteId: athlete.id,
                     name: name,
                     club: position,
                     age: age,
                     flag: flagUrl,
                     image: imageUrl,
+                    achievements: achievements,
+                    position: position,
+                    level: level,
+                    sportCategory: sportCategory,
                   );
                 },
               ),
