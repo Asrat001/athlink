@@ -9,6 +9,9 @@ import 'package:athlink/features/profile/domain/repository/job_post_repository.d
 import 'package:athlink/features/profile/domain/repository/profile_repository.dart';
 import 'package:athlink/features/sports/data/datasource/sports_remote_data_source.dart';
 import 'package:athlink/features/sports/domain/repository/sports_repository.dart';
+import 'package:athlink/features/watchlist/data/datasource/watchlist_remote_datasource.dart';
+import 'package:athlink/features/watchlist/data/repository/watchlist_repository_impl.dart';
+import 'package:athlink/features/watchlist/domain/repository/watchlist_repository.dart';
 import 'package:athlink/routes/app_route.dart';
 import 'package:athlink/shared/handlers/dio_client.dart';
 import 'package:athlink/shared/services/google_sign_in_service.dart';
@@ -53,6 +56,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<FeedRemoteDataSource>(
     FeedRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<WatchlistRemoteDataSource>(
+    WatchlistRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -72,5 +78,8 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<FeedRepository>(
     FeedRepositoryImpl(sl<FeedRemoteDataSource>()),
+  );
+  sl.registerSingleton<WatchlistRepository>(
+    WatchlistRepositoryImpl(sl<WatchlistRemoteDataSource>()),
   );
 }

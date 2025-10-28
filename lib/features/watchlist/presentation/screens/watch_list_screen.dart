@@ -1,62 +1,38 @@
+import 'package:athlink/features/watchlist/domain/models/watchlist_models.dart';
+import 'package:athlink/features/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:athlink/features/watchlist/widgets/watchlist_athlete_card.dart';
 import 'package:athlink/features/home_feed/widgets/filter_drop_downs.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:developer' as developer;
 
-class WatchListScreen extends StatefulWidget {
+class WatchListScreen extends ConsumerStatefulWidget {
   const WatchListScreen({super.key});
 
   @override
-  State<WatchListScreen> createState() => _WatchListScreenState();
+  ConsumerState<WatchListScreen> createState() => _WatchListScreenState();
 }
 
-class _WatchListScreenState extends State<WatchListScreen>
+class _WatchListScreenState extends ConsumerState<WatchListScreen>
     with SingleTickerProviderStateMixin {
   bool isFilterOpen = false;
   int? activeActionIndex;
   String? activeActionType; // "delete" or "mute"
 
-  final players = [
-    {
-      "name": "Mariya Osteen",
-      "club": "NY Woman's Flag Football",
-      "age": "21",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-woman-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--lady-girl-cartoon-character-illustrations-5652139.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Fetch watchlist data when screen loads
+    Future.microtask(() {
+      developer.log('Fetching watchlist data...');
+      ref.read(watchlistProvider.notifier).getWatchlist();
+    });
+  }
 
   void _handleAction(int index, String type) {
     setState(() {
@@ -72,7 +48,7 @@ class _WatchListScreenState extends State<WatchListScreen>
     });
   }
 
-  void _confirmAction(int index) async {
+  void _confirmAction(int index, List<WatchlistItem> watchlist) async {
     final isDelete = activeActionType == "delete";
 
     if (isDelete) {
@@ -81,11 +57,16 @@ class _WatchListScreenState extends State<WatchListScreen>
         activeActionType = "deleting";
       });
       await Future.delayed(const Duration(milliseconds: 300));
+
+      // TODO: Call API to delete from backend
+      // For now, just update local state
       setState(() {
-        players.removeAt(index);
         activeActionIndex = null;
         activeActionType = null;
       });
+
+      // Refresh the list after deletion
+      ref.read(watchlistProvider.notifier).getWatchlist();
     } else {
       // Mute: just revert after delay
       setState(() {
@@ -101,6 +82,14 @@ class _WatchListScreenState extends State<WatchListScreen>
 
   @override
   Widget build(BuildContext context) {
+    final watchlistState = ref.watch(watchlistProvider);
+    final watchlist = watchlistState.watchlistData?.watchlist ?? [];
+
+    developer.log(
+        'WatchListScreen: isLoading=${watchlistState.isLoading}, '
+        'hasError=${watchlistState.errorMessage != null}, '
+        'itemCount=${watchlist.length}');
+
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       body: SafeArea(
@@ -134,106 +123,194 @@ class _WatchListScreenState extends State<WatchListScreen>
               ),
 
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: List.generate(players.length, (index) {
-                    final player = players[index];
-                    final isActive = activeActionIndex == index;
-                    final action = activeActionType;
-
-                    return AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 350),
-                      switchInCurve: Curves.easeInOut,
-                      switchOutCurve: Curves.easeInOut,
-                      transitionBuilder: (child, animation) {
-                        final fadeAnimation = CurvedAnimation(
-                          parent: animation,
-                          curve: const Interval(
-                            0.0,
-                            1.0,
-                            curve: Curves.easeInOutCubic,
+              child: watchlistState.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : watchlistState.errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: AppColors.error,
+                                size: 48,
+                              ),
+                              const SizedBox(height: 16),
+                              CustomText(
+                                title: watchlistState.errorMessage!,
+                                textColor: AppColors.error,
+                                fontSize: 14,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () {
+                                  ref
+                                      .read(watchlistProvider.notifier)
+                                      .getWatchlist();
+                                },
+                                child: const Text('Retry'),
+                              ),
+                            ],
                           ),
-                        );
+                        )
+                      : watchlist.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.bookmark_border,
+                                    color: AppColors.grey,
+                                    size: 64,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  CustomText(
+                                    title: 'No athletes in your watchlist',
+                                    textColor: AppColors.textGrey,
+                                    fontSize: 16,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : RefreshIndicator(
+                              onRefresh: () async {
+                                await ref
+                                    .read(watchlistProvider.notifier)
+                                    .getWatchlist();
+                              },
+                              child: SingleChildScrollView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Column(
+                                  children:
+                                      List.generate(watchlist.length, (index) {
+                                    final item = watchlist[index];
+                                    final athlete = item.athlete;
+                                    final isActive = activeActionIndex == index;
+                                    final action = activeActionType;
 
-                        final slideAnimation =
-                            Tween<Offset>(
-                              begin: const Offset(0, 0.08),
-                              end: Offset.zero,
-                            ).animate(
-                              CurvedAnimation(
-                                parent: animation,
-                                curve: const Interval(
-                                  0.15,
-                                  1.0,
-                                  curve: Curves.easeOutCubic,
+                                    if (athlete == null) return const SizedBox();
+
+                                    return AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 350),
+                                      switchInCurve: Curves.easeInOut,
+                                      switchOutCurve: Curves.easeInOut,
+                                      transitionBuilder: (child, animation) {
+                                        final fadeAnimation = CurvedAnimation(
+                                          parent: animation,
+                                          curve: const Interval(
+                                            0.0,
+                                            1.0,
+                                            curve: Curves.easeInOutCubic,
+                                          ),
+                                        );
+
+                                        final slideAnimation =
+                                            Tween<Offset>(
+                                          begin: const Offset(0, 0.08),
+                                          end: Offset.zero,
+                                        ).animate(
+                                          CurvedAnimation(
+                                            parent: animation,
+                                            curve: const Interval(
+                                              0.15,
+                                              1.0,
+                                              curve: Curves.easeOutCubic,
+                                            ),
+                                          ),
+                                        );
+
+                                        final scaleAnimation =
+                                            Tween<double>(begin: 0.98, end: 1.0)
+                                                .animate(
+                                          CurvedAnimation(
+                                            parent: animation,
+                                            curve: Curves.easeOutBack,
+                                          ),
+                                        );
+
+                                        return FadeTransition(
+                                          opacity: fadeAnimation,
+                                          child: SlideTransition(
+                                            position: slideAnimation,
+                                            child: ScaleTransition(
+                                              scale: scaleAnimation,
+                                              child: child,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: isActive
+                                          ? _buildConfirmationCard(
+                                              index, item, action, watchlist)
+                                          : Padding(
+                                              key: ValueKey("card_$index"),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10.0,
+                                              ),
+                                              child: Slidable(
+                                                key: ValueKey(index),
+                                                endActionPane: ActionPane(
+                                                  motion: const ScrollMotion(),
+                                                  extentRatio: 0.5,
+                                                  children: [
+                                                    SlidableAction(
+                                                      onPressed: (_) =>
+                                                          _handleAction(
+                                                              index, "mute"),
+                                                      icon: Icons
+                                                          .notifications_off_outlined,
+                                                    ),
+                                                    SlidableAction(
+                                                      onPressed: (_) =>
+                                                          _handleAction(
+                                                              index, "delete"),
+                                                      backgroundColor:
+                                                          AppColors.lightError,
+                                                      foregroundColor:
+                                                          AppColors.error,
+                                                      icon: Icons.delete_outline,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: WatchlistAthleteCard(
+                                                  key: ValueKey(athlete.id),
+                                                  name: athlete.athleteProfile
+                                                          ?.name ??
+                                                      athlete.name ??
+                                                      'Unknown',
+                                                  club: athlete.sport
+                                                          .isNotEmpty
+                                                      ? athlete
+                                                              .sport.first.name ??
+                                                          'Unknown Sport'
+                                                      : 'Unknown Sport',
+                                                  age: athlete.athleteProfile
+                                                          ?.age
+                                                          .toString() ??
+                                                      'N/A',
+                                                  flag: athlete.sport.isNotEmpty
+                                                      ? '$fileBaseUrl${athlete.sport.first.icon}'
+                                                      : '',
+                                                  image: athlete.athleteProfile
+                                                              ?.profileImageUrl !=
+                                                          null
+                                                      ? '$fileBaseUrl${athlete.athleteProfile?.profileImageUrl}'
+                                                      : '',
+                                                  rating: athlete.athleteProfile
+                                                          ?.rating ??
+                                                      0.0,
+                                                ),
+                                              ),
+                                            ),
+                                    );
+                                  }),
                                 ),
                               ),
-                            );
-
-                        final scaleAnimation =
-                            Tween<double>(begin: 0.98, end: 1.0).animate(
-                              CurvedAnimation(
-                                parent: animation,
-                                curve: Curves.easeOutBack,
-                              ),
-                            );
-
-                        return FadeTransition(
-                          opacity: fadeAnimation,
-                          child: SlideTransition(
-                            position: slideAnimation,
-                            child: ScaleTransition(
-                              scale: scaleAnimation,
-                              child: child,
                             ),
-                          ),
-                        );
-                      },
-                      child: isActive
-                          ? _buildConfirmationCard(index, player, action)
-                          : Padding(
-                              key: ValueKey("card_$index"),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10.0,
-                              ),
-                              child: Slidable(
-                                key: ValueKey(index),
-                                endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  extentRatio: 0.5,
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (_) =>
-                                          _handleAction(index, "mute"),
-                                      // foregroundColor: AppColors.muteAction,
-                                      // backgroundColor: AppColors.lightMute,
-                                      icon: Icons.notifications_off_outlined,
-                                    ),
-                                    SlidableAction(
-                                      onPressed: (_) =>
-                                          _handleAction(index, "delete"),
-                                      backgroundColor: AppColors.lightError,
-                                      foregroundColor: AppColors.error,
-                                      icon: Icons.delete_outline,
-                                    ),
-                                  ],
-                                ),
-                                child: WatchlistAthleteCard(
-                                  key: ValueKey(player["name"]),
-                                  name: player["name"]!,
-                                  club: player["club"]!,
-                                  age: player["age"]!,
-                                  flag: player["flag"]!,
-                                  image: player["image"]!,
-                                ),
-                              ),
-                            ),
-                    );
-                  }),
-                ),
-              ),
             ),
           ],
         ),
@@ -243,6 +320,9 @@ class _WatchListScreenState extends State<WatchListScreen>
 
   // -------------------------- HEADER --------------------------
   Widget _buildHeader() {
+    final watchlistState = ref.watch(watchlistProvider);
+    final count = watchlistState.watchlistData?.count ?? 0;
+
     return Container(
       color: AppColors.lightBackground,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -304,7 +384,7 @@ class _WatchListScreenState extends State<WatchListScreen>
           Row(
             children: [
               CustomText(
-                title: "Watchlist Athletes",
+                title: "Watchlist Athletes ($count)",
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 textColor: AppColors.textPrimary,
@@ -318,11 +398,13 @@ class _WatchListScreenState extends State<WatchListScreen>
 
   Widget _buildConfirmationCard(
     int index,
-    Map<String, String> player,
+    WatchlistItem item,
     String? actionType,
+    List<WatchlistItem> watchlist,
   ) {
     final isDelete = actionType == "delete" || actionType == "deleting";
-    final isMute = actionType == "mute" || actionType == "muting";
+    final athleteName =
+        item.athlete?.athleteProfile?.name ?? item.athlete?.name ?? 'Unknown';
 
     final bgColor = isDelete ? AppColors.lightError : AppColors.lightMute;
     final textColor = isDelete ? AppColors.red : AppColors.muteAction;
@@ -356,7 +438,7 @@ class _WatchListScreenState extends State<WatchListScreen>
                   ),
                 ),
                 TextSpan(
-                  text: player['name'],
+                  text: athleteName,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -389,7 +471,7 @@ class _WatchListScreenState extends State<WatchListScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () => _confirmAction(index),
+                  onPressed: () => _confirmAction(index, watchlist),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: textColor,
                     foregroundColor: AppColors.white,
