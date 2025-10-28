@@ -1437,4 +1437,550 @@ $WatchlistItemCopyWith<$Res>? get watchlistEntry {
 }
 }
 
+
+/// @nodoc
+mixin _$UpdateWatchlistNotesResponse {
+
+ bool get success; String get message; Map<String, dynamic>? get watchlistEntry;
+/// Create a copy of UpdateWatchlistNotesResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateWatchlistNotesResponseCopyWith<UpdateWatchlistNotesResponse> get copyWith => _$UpdateWatchlistNotesResponseCopyWithImpl<UpdateWatchlistNotesResponse>(this as UpdateWatchlistNotesResponse, _$identity);
+
+  /// Serializes this UpdateWatchlistNotesResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateWatchlistNotesResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.watchlistEntry, watchlistEntry));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,const DeepCollectionEquality().hash(watchlistEntry));
+
+@override
+String toString() {
+  return 'UpdateWatchlistNotesResponse(success: $success, message: $message, watchlistEntry: $watchlistEntry)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UpdateWatchlistNotesResponseCopyWith<$Res>  {
+  factory $UpdateWatchlistNotesResponseCopyWith(UpdateWatchlistNotesResponse value, $Res Function(UpdateWatchlistNotesResponse) _then) = _$UpdateWatchlistNotesResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, Map<String, dynamic>? watchlistEntry
+});
+
+
+
+
+}
+/// @nodoc
+class _$UpdateWatchlistNotesResponseCopyWithImpl<$Res>
+    implements $UpdateWatchlistNotesResponseCopyWith<$Res> {
+  _$UpdateWatchlistNotesResponseCopyWithImpl(this._self, this._then);
+
+  final UpdateWatchlistNotesResponse _self;
+  final $Res Function(UpdateWatchlistNotesResponse) _then;
+
+/// Create a copy of UpdateWatchlistNotesResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? watchlistEntry = freezed,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,watchlistEntry: freezed == watchlistEntry ? _self.watchlistEntry : watchlistEntry // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [UpdateWatchlistNotesResponse].
+extension UpdateWatchlistNotesResponsePatterns on UpdateWatchlistNotesResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UpdateWatchlistNotesResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UpdateWatchlistNotesResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UpdateWatchlistNotesResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  Map<String, dynamic>? watchlistEntry)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse() when $default != null:
+return $default(_that.success,_that.message,_that.watchlistEntry);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  Map<String, dynamic>? watchlistEntry)  $default,) {final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse():
+return $default(_that.success,_that.message,_that.watchlistEntry);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  Map<String, dynamic>? watchlistEntry)?  $default,) {final _that = this;
+switch (_that) {
+case _UpdateWatchlistNotesResponse() when $default != null:
+return $default(_that.success,_that.message,_that.watchlistEntry);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _UpdateWatchlistNotesResponse implements UpdateWatchlistNotesResponse {
+  const _UpdateWatchlistNotesResponse({this.success = false, this.message = '', final  Map<String, dynamic>? watchlistEntry}): _watchlistEntry = watchlistEntry;
+  factory _UpdateWatchlistNotesResponse.fromJson(Map<String, dynamic> json) => _$UpdateWatchlistNotesResponseFromJson(json);
+
+@override@JsonKey() final  bool success;
+@override@JsonKey() final  String message;
+ final  Map<String, dynamic>? _watchlistEntry;
+@override Map<String, dynamic>? get watchlistEntry {
+  final value = _watchlistEntry;
+  if (value == null) return null;
+  if (_watchlistEntry is EqualUnmodifiableMapView) return _watchlistEntry;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+
+/// Create a copy of UpdateWatchlistNotesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateWatchlistNotesResponseCopyWith<_UpdateWatchlistNotesResponse> get copyWith => __$UpdateWatchlistNotesResponseCopyWithImpl<_UpdateWatchlistNotesResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$UpdateWatchlistNotesResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateWatchlistNotesResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other._watchlistEntry, _watchlistEntry));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,const DeepCollectionEquality().hash(_watchlistEntry));
+
+@override
+String toString() {
+  return 'UpdateWatchlistNotesResponse(success: $success, message: $message, watchlistEntry: $watchlistEntry)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateWatchlistNotesResponseCopyWith<$Res> implements $UpdateWatchlistNotesResponseCopyWith<$Res> {
+  factory _$UpdateWatchlistNotesResponseCopyWith(_UpdateWatchlistNotesResponse value, $Res Function(_UpdateWatchlistNotesResponse) _then) = __$UpdateWatchlistNotesResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, Map<String, dynamic>? watchlistEntry
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdateWatchlistNotesResponseCopyWithImpl<$Res>
+    implements _$UpdateWatchlistNotesResponseCopyWith<$Res> {
+  __$UpdateWatchlistNotesResponseCopyWithImpl(this._self, this._then);
+
+  final _UpdateWatchlistNotesResponse _self;
+  final $Res Function(_UpdateWatchlistNotesResponse) _then;
+
+/// Create a copy of UpdateWatchlistNotesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? watchlistEntry = freezed,}) {
+  return _then(_UpdateWatchlistNotesResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,watchlistEntry: freezed == watchlistEntry ? _self._watchlistEntry : watchlistEntry // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$DeleteWatchlistResponse {
+
+ bool get success; String get message; String? get athleteId;
+/// Create a copy of DeleteWatchlistResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DeleteWatchlistResponseCopyWith<DeleteWatchlistResponse> get copyWith => _$DeleteWatchlistResponseCopyWithImpl<DeleteWatchlistResponse>(this as DeleteWatchlistResponse, _$identity);
+
+  /// Serializes this DeleteWatchlistResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteWatchlistResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,athleteId);
+
+@override
+String toString() {
+  return 'DeleteWatchlistResponse(success: $success, message: $message, athleteId: $athleteId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DeleteWatchlistResponseCopyWith<$Res>  {
+  factory $DeleteWatchlistResponseCopyWith(DeleteWatchlistResponse value, $Res Function(DeleteWatchlistResponse) _then) = _$DeleteWatchlistResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, String? athleteId
+});
+
+
+
+
+}
+/// @nodoc
+class _$DeleteWatchlistResponseCopyWithImpl<$Res>
+    implements $DeleteWatchlistResponseCopyWith<$Res> {
+  _$DeleteWatchlistResponseCopyWithImpl(this._self, this._then);
+
+  final DeleteWatchlistResponse _self;
+  final $Res Function(DeleteWatchlistResponse) _then;
+
+/// Create a copy of DeleteWatchlistResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? athleteId = freezed,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,athleteId: freezed == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [DeleteWatchlistResponse].
+extension DeleteWatchlistResponsePatterns on DeleteWatchlistResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DeleteWatchlistResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DeleteWatchlistResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DeleteWatchlistResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  String? athleteId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse() when $default != null:
+return $default(_that.success,_that.message,_that.athleteId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  String? athleteId)  $default,) {final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse():
+return $default(_that.success,_that.message,_that.athleteId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  String? athleteId)?  $default,) {final _that = this;
+switch (_that) {
+case _DeleteWatchlistResponse() when $default != null:
+return $default(_that.success,_that.message,_that.athleteId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _DeleteWatchlistResponse implements DeleteWatchlistResponse {
+  const _DeleteWatchlistResponse({this.success = false, this.message = '', this.athleteId});
+  factory _DeleteWatchlistResponse.fromJson(Map<String, dynamic> json) => _$DeleteWatchlistResponseFromJson(json);
+
+@override@JsonKey() final  bool success;
+@override@JsonKey() final  String message;
+@override final  String? athleteId;
+
+/// Create a copy of DeleteWatchlistResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteWatchlistResponseCopyWith<_DeleteWatchlistResponse> get copyWith => __$DeleteWatchlistResponseCopyWithImpl<_DeleteWatchlistResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$DeleteWatchlistResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteWatchlistResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,athleteId);
+
+@override
+String toString() {
+  return 'DeleteWatchlistResponse(success: $success, message: $message, athleteId: $athleteId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteWatchlistResponseCopyWith<$Res> implements $DeleteWatchlistResponseCopyWith<$Res> {
+  factory _$DeleteWatchlistResponseCopyWith(_DeleteWatchlistResponse value, $Res Function(_DeleteWatchlistResponse) _then) = __$DeleteWatchlistResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, String? athleteId
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteWatchlistResponseCopyWithImpl<$Res>
+    implements _$DeleteWatchlistResponseCopyWith<$Res> {
+  __$DeleteWatchlistResponseCopyWithImpl(this._self, this._then);
+
+  final _DeleteWatchlistResponse _self;
+  final $Res Function(_DeleteWatchlistResponse) _then;
+
+/// Create a copy of DeleteWatchlistResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? athleteId = freezed,}) {
+  return _then(_DeleteWatchlistResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,athleteId: freezed == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 // dart format on

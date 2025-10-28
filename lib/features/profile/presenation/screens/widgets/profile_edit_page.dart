@@ -244,11 +244,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 textColor: AppColors.black,
               ),
               const SizedBox(height: 12),
-
               _addressWidget(),
-
               const SizedBox(height: 30),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -261,12 +258,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         controller: _campaignController,
                         editable: _editCampaign,
                         focusNode: _campaignFocus,
-                        onTap: () {
-                          setState(() => _editCampaign = true);
-                          Future.delayed(const Duration(milliseconds: 80), () {
-                            FocusScope.of(context).requestFocus(_campaignFocus);
-                          });
-                        },
+                        onTap: () {},
+                        // onTap: () {
+                        //   setState(() => _editCampaign = true);
+                        //   Future.delayed(const Duration(milliseconds: 80), () {
+                        //     FocusScope.of(context).requestFocus(_campaignFocus);
+                        //   });
+                        // },
                       ),
                     ),
                   ),
@@ -279,12 +277,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         controller: _athletesController,
                         editable: _editAthletes,
                         focusNode: _athletesFocus,
-                        onTap: () {
-                          setState(() => _editAthletes = true);
-                          Future.delayed(const Duration(milliseconds: 80), () {
-                            FocusScope.of(context).requestFocus(_athletesFocus);
-                          });
-                        },
+                        onTap: () {},
+                        // onTap: () {
+                        //   setState(() => _editAthletes = true);
+                        //   Future.delayed(const Duration(milliseconds: 80), () {
+                        //     FocusScope.of(context).requestFocus(_athletesFocus);
+                        //   });
+                        // },
                       ),
                     ),
                   ),
@@ -297,33 +296,29 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         controller: _partnersController,
                         editable: _editPartners,
                         focusNode: _partnersFocus,
-                        onTap: () {
-                          setState(() => _editPartners = true);
-                          Future.delayed(const Duration(milliseconds: 80), () {
-                            FocusScope.of(context).requestFocus(_partnersFocus);
-                          });
-                        },
+                        onTap: () {},
+                        // onTap: () {
+                        //   setState(() => _editPartners = true);
+                        //   Future.delayed(const Duration(milliseconds: 80), () {
+                        //     FocusScope.of(context).requestFocus(_partnersFocus);
+                        //   });
+                        // },
                       ),
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 30),
-
               const Align(
                 alignment: Alignment.centerLeft,
                 child: CustomText(
                   title: "Athletes Sponsored",
-
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   textColor: AppColors.black,
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Image upload section
               Row(
                 children: [
                   GestureDetector(
@@ -354,25 +349,19 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 ],
               ),
               const SizedBox(height: 12),
-
               CustomTextField(
                 label: "Enter Name of Athlete",
                 borderRadius: 10,
                 controller: _athleteNameController,
-                // decoration: _inputDecoration(hint: 'Enter name of athlete'),
               ),
-
               const SizedBox(height: 20),
-
               CustomTextField(
                 controller: _descriptionController,
                 maxLines: 4,
                 borderRadius: 10,
                 label: 'Add a short description about your company',
               ),
-
               const SizedBox(height: 30),
-
               RoundedButton(
                 label: "Save",
                 onPressed: () {},

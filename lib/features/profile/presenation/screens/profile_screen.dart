@@ -283,104 +283,112 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   isEditMode
                       ? ProfileEditPage()
                       : Container(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 80),
-                        CustomText(
-                          title: sponsorProfile?.name ?? "Sp Sport Agency",
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          textColor: AppColors.black,
-                        ),
-                        CustomText(
-                          title: sponsorProfile?.address ?? "Los Angeles, CA",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          textColor: AppColors.textGrey,
-                        ),
-                        SizedBox(height: 30),
-                        IntrinsicHeight(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: _StatItem(
-                                  value: "${sponsorProfile?.stats.sponsorshipCampaigns ?? 0}",
-                                  label: "Sponsorship Campaigns",
+                              const SizedBox(height: 80),
+                              CustomText(
+                                title:
+                                    sponsorProfile?.name ?? "Sp Sport Agency",
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                textColor: AppColors.black,
+                              ),
+                              CustomText(
+                                title:
+                                    sponsorProfile?.address ??
+                                    "Los Angeles, CA",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                textColor: AppColors.textGrey,
+                              ),
+                              SizedBox(height: 30),
+                              IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.sponsorshipCampaigns ?? 0}",
+                                        label: "Sponsorship Campaigns",
+                                      ),
+                                    ),
+                                    const VerticalDivider(
+                                      color: AppColors.divider,
+                                      thickness: 1,
+                                      indent: 10,
+                                      endIndent: 10,
+                                    ),
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.athletesSponsored ?? 0}",
+                                        label: "Athletes Represented",
+                                      ),
+                                    ),
+                                    const VerticalDivider(
+                                      color: AppColors.divider,
+                                      thickness: 1,
+                                      indent: 10,
+                                      endIndent: 10,
+                                    ),
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.globalPartners ?? 0}",
+                                        label: "Global Partners",
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const VerticalDivider(
-                                color: AppColors.divider,
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              Expanded(
-                                child: _StatItem(
-                                  value: "${sponsorProfile?.stats.athletesSponsored ?? 0}",
-                                  label: "Athletes Represented",
+
+                              const SizedBox(height: 30),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
+                                child: CustomText(
+                                  title:
+                                      sponsorProfile?.description ??
+                                      "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
+                                          "We specialize in football, athletics, and racket sports, helping companies find the "
+                                          "right talent for their campaigns.",
+                                  textAlign: TextAlign.center,
+                                  textColor: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const VerticalDivider(
-                                color: AppColors.divider,
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
+                              const SizedBox(height: 20),
+
+                              Row(
+                                children: [
+                                  SizedBox(width: 24),
+                                  const CustomText(
+                                    title: "Athletes Sponsored",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    textColor: AppColors.textPrimary,
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                child: _StatItem(
-                                  value: "${sponsorProfile?.stats.globalPartners ?? 0}",
-                                  label: "Global Partners",
+                              const SizedBox(height: 10),
+
+                              SizedBox(
+                                height: 400,
+                                child: AthletesSponsored3d(
+                                  athleteImages: athleteImages,
+                                  athleteNames: athleteNames,
                                 ),
                               ),
+
+                              const SizedBox(height: 80),
                             ],
                           ),
                         ),
-
-                        const SizedBox(height: 30),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                          ),
-                          child: CustomText(
-                            title: sponsorProfile?.description ??
-                                "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
-                                    "We specialize in football, athletics, and racket sports, helping companies find the "
-                                    "right talent for their campaigns.",
-                            textAlign: TextAlign.center,
-                            textColor: AppColors.textSecondary,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        Row(
-                          children: [
-                            SizedBox(width: 24),
-                            const CustomText(
-                              title: "Athletes Sponsored",
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              textColor: AppColors.textPrimary,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-
-                        SizedBox(
-                          height: 400,
-                          child: AthletesSponsored3d(
-                            athleteImages: athleteImages,
-                            athleteNames: athleteNames,
-                          ),
-                        ),
-
-                        const SizedBox(height: 80),
-                      ],
-                    ),
-                  ),
                   PostFeedSection(
                     jobPosts: sponsorProfile?.jobPosts,
                     sponsorProfile: sponsorProfile,

@@ -87,3 +87,35 @@ Map<String, dynamic> _$AddWatchlistResponseToJson(
   'message': instance.message,
   'watchlistEntry': instance.watchlistEntry,
 };
+
+_UpdateWatchlistNotesResponse _$UpdateWatchlistNotesResponseFromJson(
+  Map<String, dynamic> json,
+) => _UpdateWatchlistNotesResponse(
+  success: json['success'] as bool? ?? false,
+  message: json['message'] as String? ?? '',
+  watchlistEntry: json['watchlistEntry'] as Map<String, dynamic>?,
+);
+
+Map<String, dynamic> _$UpdateWatchlistNotesResponseToJson(
+  _UpdateWatchlistNotesResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'watchlistEntry': instance.watchlistEntry,
+};
+
+_DeleteWatchlistResponse _$DeleteWatchlistResponseFromJson(
+  Map<String, dynamic> json,
+) => _DeleteWatchlistResponse(
+  success: json['success'] as bool? ?? false,
+  message: json['message'] as String? ?? '',
+  athleteId: json['athleteId'] as String?,
+);
+
+Map<String, dynamic> _$DeleteWatchlistResponseToJson(
+  _DeleteWatchlistResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'athleteId': instance.athleteId,
+};

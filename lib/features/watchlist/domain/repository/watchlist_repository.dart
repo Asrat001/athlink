@@ -8,4 +8,13 @@ abstract class WatchlistRepository {
     required String athleteId,
     String? notes,
   });
+
+  Future<ApiResponse<UpdateWatchlistNotesResponse>> updateWatchlistNotes({
+    required String athleteId,
+    required String notes,
+  });
+
+  Future<ApiResponse<DeleteWatchlistResponse>> deleteAthleteFromWatchlist({
+    required String athleteId,
+  });
 }

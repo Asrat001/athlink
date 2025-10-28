@@ -68,3 +68,31 @@ abstract class AddWatchlistResponse with _$AddWatchlistResponse {
   factory AddWatchlistResponse.fromJson(Map<String, dynamic> json) =>
       _$AddWatchlistResponseFromJson(json);
 }
+
+@freezed
+abstract class UpdateWatchlistNotesResponse
+    with _$UpdateWatchlistNotesResponse {
+  const factory UpdateWatchlistNotesResponse({
+    @Default(false) bool success,
+    @Default('') String message,
+    Map<String, dynamic>? watchlistEntry,
+  }) = _UpdateWatchlistNotesResponse;
+
+  factory UpdateWatchlistNotesResponse.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWatchlistNotesResponseFromJson(json);
+}
+
+@freezed
+abstract class DeleteWatchlistResponse with _$DeleteWatchlistResponse {
+  const factory DeleteWatchlistResponse({
+    @Default(false) bool success,
+    @Default('') String message,
+    String? athleteId,
+  }) = _DeleteWatchlistResponse;
+
+  factory DeleteWatchlistResponse.fromJson(Map<String, dynamic> json) =>
+      _$DeleteWatchlistResponseFromJson(json);
+}
+
+//update note for watchlist
+// /sponsors/watchlist/{athleteId}

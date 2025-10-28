@@ -26,15 +26,43 @@ class WatchlistRemoteDataSource extends BaseRepository {
     return await safeApiCall(
       path: "/sponsors/watchlist",
       apiCall: () async {
-        return await _httpClient.client(requireAuth: true).post(
-          "/sponsors/watchlist",
-          data: {
-            "athleteId": athleteId,
-            if (notes != null) "notes": notes,
-          },
-        );
+        return await _httpClient
+            .client(requireAuth: true)
+            .post(
+              "/sponsors/watchlist",
+              data: {"athleteId": athleteId, if (notes != null) "notes": notes},
+            );
       },
       fromData: (data) => AddWatchlistResponse.fromJson(data),
+    );
+  }
+
+  Future<UpdateWatchlistNotesResponse> updateWatchlistNotes({
+    required String athleteId,
+    required String notes,
+  }) async {
+    return await safeApiCall(
+      path: "/sponsors/watchlist/$athleteId",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .put("/sponsors/watchlist/$athleteId", data: {"notes": notes});
+      },
+      fromData: (data) => UpdateWatchlistNotesResponse.fromJson(data),
+    );
+  }
+
+  Future<DeleteWatchlistResponse> deleteAthleteFromWatchlist({
+    required String athleteId,
+  }) async {
+    return await safeApiCall(
+      path: "/sponsors/watchlist/$athleteId",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .delete("/sponsors/watchlist/$athleteId");
+      },
+      fromData: (data) => DeleteWatchlistResponse.fromJson(data),
     );
   }
 }

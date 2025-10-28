@@ -37,4 +37,36 @@ class WatchlistRepositoryImpl implements WatchlistRepository {
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
+  @override
+  Future<ApiResponse<UpdateWatchlistNotesResponse>> updateWatchlistNotes({
+    required String athleteId,
+    required String notes,
+  }) async {
+    try {
+      final response = await _remoteDataSource.updateWatchlistNotes(
+        athleteId: athleteId,
+        notes: notes,
+      );
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Update watchlist notes error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResponse<DeleteWatchlistResponse>> deleteAthleteFromWatchlist({
+    required String athleteId,
+  }) async {
+    try {
+      final response = await _remoteDataSource.deleteAthleteFromWatchlist(
+        athleteId: athleteId,
+      );
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Delete athlete from watchlist error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
 }
