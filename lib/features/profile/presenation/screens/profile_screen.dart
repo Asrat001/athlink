@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -24,6 +26,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final TransformationController _transformationController =
       TransformationController();
 
+  File? _bannerImage;
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +37,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileProvider.notifier).getProfile();
     });
+  }
+
+  Future<void> _pickBannerImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _bannerImage = File(picked.path));
+    }
+  }
+
+  Future<void> _pickProfileImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _profileImage = File(picked.path));
+    }
   }
 
   final List<String> athleteImages = List.generate(
@@ -151,16 +171,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         Positioned.fill(
           child: Opacity(
             opacity: 0.9,
-            child: fullBannerUrl.isNotEmpty
-                ? Image.network(
-                    fullBannerUrl,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(color: AppColors.extraLightGrey);
-                    },
-                  )
-                : Container(color: AppColors.extraLightGrey),
+            child: InkWell(
+              onTap: isEditMode ? _pickBannerImage : null,
+              child: _bannerImage != null
+                  ? Image.file(
+                      _bannerImage!,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    )
+                  : fullBannerUrl.isNotEmpty
+                  ? Image.network(
+                      fullBannerUrl,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(color: AppColors.extraLightGrey);
+                      },
+                    )
+                  : Container(color: AppColors.extraLightGrey),
+            ),
           ),
         ),
 
@@ -237,22 +266,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(logoCircleRadius),
-              child: fullProfileUrl.isNotEmpty
-                  ? Image.network(
-                      fullProfileUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: AppColors.extraLightGrey,
-                          child: Icon(
-                            Icons.person,
-                            size: 40,
-                            color: AppColors.grey,
-                          ),
-                        );
-                      },
-                    )
-                  : Image.asset('assets/images/on1.jpg', fit: BoxFit.cover),
+              child: InkWell(
+                onTap: isEditMode ? _pickProfileImage : null,
+                child: _profileImage != null
+                    ? Image.file(
+                        _profileImage!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.extraLightGrey,
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: AppColors.grey,
+                            ),
+                          );
+                        },
+                      )
+                    : fullProfileUrl.isNotEmpty
+                    ? Image.network(
+                        fullProfileUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.extraLightGrey,
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: AppColors.grey,
+                            ),
+                          );
+                        },
+                      )
+                    : Image.asset('assets/images/on1.jpg', fit: BoxFit.cover),
+              ),
             ),
           ),
         ),
