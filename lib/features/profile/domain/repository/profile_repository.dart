@@ -7,7 +7,7 @@ abstract class ProfileRepository {
   Future<ApiResponse<ProfileResponse>> getProfile();
 
   Future<ApiResponse<UpdateSponsorProfileResponse>> updateSponsorProfile({
-    String? name,
+    String name,
     String? description,
     String? address,
     File? profileImage,

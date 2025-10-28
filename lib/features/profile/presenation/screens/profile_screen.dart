@@ -148,6 +148,54 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     "Nelly Korda",
   ];
 
+  Future<void> _handleProfileSave(
+    String name,
+    String? description,
+    String? address,
+    File? profileImage,
+    File? bannerImage,
+  ) async {
+    // Call the update API
+    final success = await ref
+        .read(profileProvider.notifier)
+        .updateSponsorProfile(
+          name: name,
+          description: description,
+          address: address,
+          profileImage: profileImage,
+          bannerImage: bannerImage,
+        );
+
+    if (success) {
+      // Exit edit mode and clear local images after successful save
+      if (mounted) {
+        setState(() {
+          isEditMode = false;
+          _profileImage = null;
+          _bannerImage = null;
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      // Show error message
+      if (mounted) {
+        final errorMessage =
+            ref.read(profileProvider).errorMessage ??
+            'Failed to update profile';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   Widget _buildHeader(
     BuildContext context,
     String? bannerUrl,
@@ -328,7 +376,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
 
                   isEditMode
-                      ? ProfileEditPage()
+                      ? ProfileEditPage(
+                          sponsorProfile: sponsorProfile,
+                          profileImage: _profileImage,
+                          bannerImage: _bannerImage,
+                          onSave: _handleProfileSave,
+                        )
                       : Container(
                           child: Column(
                             children: [

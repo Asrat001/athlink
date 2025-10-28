@@ -20,7 +20,7 @@ class PostFeedSection extends StatelessWidget {
   final SponsorProfile? sponsorProfile;
   final ProfileUser? profileUser;
 
-  PostFeedSection({
+  const PostFeedSection({
     super.key,
     this.jobPosts,
     this.sponsorProfile,
@@ -260,12 +260,12 @@ class _PostCard extends StatelessWidget {
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) {
-                                          return Icon(
-                                            Icons.business,
-                                            size: 30,
-                                            color: AppColors.grey,
-                                          );
-                                        },
+                                              return Icon(
+                                                Icons.business,
+                                                size: 30,
+                                                color: AppColors.grey,
+                                              );
+                                            },
                                       )
                                     : Icon(
                                         Icons.business,
@@ -522,7 +522,8 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
     final jobPostState = ref.read(jobPostProvider);
     if (jobPostState.isSuccess) {
       _showSuccessSnackbar(
-          jobPostState.successMessage ?? 'Job post created successfully!');
+        jobPostState.successMessage ?? 'Job post created successfully!',
+      );
       // Refresh profile to get updated job posts
       ref.read(profileProvider.notifier).getProfile();
       Navigator.pop(context);
@@ -571,8 +572,9 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
                     size: 24,
                     color: AppColors.grey,
                   ),
-                  onPressed:
-                      jobPostState.isLoading ? null : () => Navigator.pop(context),
+                  onPressed: jobPostState.isLoading
+                      ? null
+                      : () => Navigator.pop(context),
                 ),
               ],
             ),
@@ -711,8 +713,10 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. Football Sponsorship Opportunity",
-            controller: titleController),
+        _inputField(
+          "e.g. Football Sponsorship Opportunity",
+          controller: titleController,
+        ),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -768,8 +772,11 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("Write a detailed description...",
-            maxLines: 4, controller: descriptionController),
+        _inputField(
+          "Write a detailed description...",
+          maxLines: 4,
+          controller: descriptionController,
+        ),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -797,8 +804,11 @@ class _StepOne extends StatelessWidget {
     );
   }
 
-  Widget _inputField(String hint,
-      {int maxLines = 1, TextEditingController? controller}) {
+  Widget _inputField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -816,8 +826,7 @@ class _StepOne extends StatelessWidget {
     );
   }
 
-  Widget _chip(String label,
-      {bool isSelected = false, VoidCallback? onTap}) {
+  Widget _chip(String label, {bool isSelected = false, VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Chip(
@@ -827,8 +836,9 @@ class _StepOne extends StatelessWidget {
             color: isSelected ? AppColors.white : AppColors.textPrimary,
           ),
         ),
-        backgroundColor:
-            isSelected ? AppColors.primary : AppColors.extraLightGrey,
+        backgroundColor: isSelected
+            ? AppColors.primary
+            : AppColors.extraLightGrey,
         side: BorderSide(
           color: isSelected ? AppColors.primary : AppColors.extraLightGrey,
         ),
@@ -1140,8 +1150,11 @@ class _StepTwoState extends State<_StepTwo> {
     return Center(child: Icon(icon, color: AppColors.lightGrey, size: 40));
   }
 
-  Widget _inputField(String hint,
-      {int maxLines = 1, TextEditingController? controller}) {
+  Widget _inputField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
