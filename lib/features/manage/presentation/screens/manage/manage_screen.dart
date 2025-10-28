@@ -1,3 +1,4 @@
+import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -637,7 +638,7 @@ class _ManageScreenState extends State<ManageScreen> {
                     activeApplicantTab == ApplicantTab.newApplicants
                     ? newApplicants[idx]
                     : invitees[idx];
-                return _applicantCard(applicant);
+                return _applicantCard(applicant, context);
               },
             ),
           ),
@@ -856,7 +857,6 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  // -------------------- Helper widgets --------------------
   Widget _applicantTabButton(ApplicantTab tab, String label) {
     final isActive = activeApplicantTab == tab;
     return Expanded(
@@ -881,118 +881,143 @@ class _ManageScreenState extends State<ManageScreen> {
     );
   }
 
-  Widget _applicantCard(Map<String, dynamic> data) {
-    return Container(
-      height: 170,
-      decoration: BoxDecoration(
-        color: AppColors.grey.withValues(alpha: .5),
-        borderRadius: BorderRadius.circular(18),
+  void _showAthleteOverlay(
+    BuildContext context,
+    Map<String, dynamic> applicantData,
+  ) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        barrierDismissible: true,
+        opaque: false,
+        barrierColor: AppColors.transparent,
+        pageBuilder: (_, __, ___) =>
+            ApplicantDetail(applicantData: applicantData),
+        transitionsBuilder: (_, anim, __, child) {
+          return FadeTransition(opacity: anim, child: child);
+        },
       ),
-      child: Stack(
-        children: [
-          // main row
-          Row(
-            children: [
-              SizedBox(
-                width: 140,
-                height: 170,
-                // padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(18),
-                    bottomLeft: Radius.circular(18),
-                  ),
-                  child: Image.asset(
-                    "assets/images/athlete.png",
-                    fit: BoxFit.fill,
-                    height: 150,
-                    width: 140,
+    );
+  }
+
+  Widget _applicantCard(Map<String, dynamic> data, BuildContext context) {
+    return InkWell(
+      onTap: () {
+        _showAthleteOverlay(context, data);
+      },
+      child: Container(
+        height: 170,
+        decoration: BoxDecoration(
+          color: AppColors.grey.withValues(alpha: .5),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Stack(
+          children: [
+            // main row
+            Row(
+              children: [
+                SizedBox(
+                  width: 140,
+                  height: 170,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
+                    ),
+                    child: Image.asset(
+                      "assets/images/athlete.png",
+                      fit: BoxFit.fill,
+                      height: 150,
+                      width: 140,
+                    ),
                   ),
                 ),
-              ),
 
-              // content area
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 14,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        title: data["name"],
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        textColor: AppColors.white,
-                      ),
-                      const SizedBox(height: 4),
-                      CustomText(
-                        title: data["club"],
-                        fontSize: 12,
-                        textColor: AppColors.white.withValues(alpha: .85),
-                      ),
-                      const SizedBox(height: 6),
-                      CustomText(
-                        title: 'Age : ${data["age"]}',
-                        fontSize: 12,
-                        textColor: AppColors.white.withValues(alpha: .85),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Row(
-                            children: List.generate(
-                              5,
-                              (i) => const Icon(
-                                Icons.star,
-                                size: 16,
-                                color: AppColors.amber,
+                // content area
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 14,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: data["name"],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          textColor: AppColors.white,
+                        ),
+                        const SizedBox(height: 4),
+                        CustomText(
+                          title: data["club"],
+                          fontSize: 12,
+                          textColor: AppColors.white.withValues(alpha: .85),
+                        ),
+                        const SizedBox(height: 6),
+                        CustomText(
+                          title: 'Age : ${data["age"]}',
+                          fontSize: 12,
+                          textColor: AppColors.white.withValues(alpha: .85),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Row(
+                              children: List.generate(
+                                5,
+                                (i) => Icon(
+                                  Icons.star,
+                                  size: 16,
+                                  color: i < (data["rating"] ?? 0).floor()
+                                      ? AppColors.amber
+                                      : AppColors.amber.withOpacity(0.3),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          CustomText(
-                            title: '(${data["reviews"]})',
-                            fontSize: 12,
-                            textColor: AppColors.white,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      RoundedButton(
-                        label: 'Send proposal',
-                        onPressed: () {},
-                        height: 36,
-                        width: 140,
-                        borderRadius: 20,
-                        backgroundColor: AppColors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ],
+                            const SizedBox(width: 8),
+                            CustomText(
+                              title: '(${data["reviews"]})',
+                              fontSize: 12,
+                              textColor: AppColors.white,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        RoundedButton(
+                          label: 'Send proposal',
+                          onPressed: () {},
+                          height: 36,
+                          width: 140,
+                          borderRadius: 20,
+                          backgroundColor: AppColors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          // country flag top-right
-          Positioned(
-            top: 10,
-            right: 12,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                "assets/images/flag.png",
-                height: 28,
-                width: 28,
-                fit: BoxFit.cover,
+            // country flag top-right
+            Positioned(
+              top: 10,
+              right: 12,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  "assets/images/flag.png",
+                  height: 28,
+                  width: 28,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

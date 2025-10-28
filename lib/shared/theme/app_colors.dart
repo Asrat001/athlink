@@ -8,6 +8,7 @@ class AppColors {
   static const Color error = Color(0xffFC698C);
   static const Color red = Colors.red;
   static const Color success = Color(0xff00C851);
+  static const Color lightGreen = Color(0xff17FF22);
   static const Color transparent = Colors.transparent;
 
   /// App black color
