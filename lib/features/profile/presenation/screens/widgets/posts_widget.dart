@@ -416,6 +416,10 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
   Uint8List? _imageBytes;
   Uint8List? _videoThumbnail;
 
+  // Dates
+  DateTime? _startDate;
+  DateTime? _endDate;
+
   @override
   void initState() {
     super.initState();
@@ -477,6 +481,15 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
     );
   }
 
+  String? _formatDateForApi(DateTime? date) {
+    if (date == null) return null;
+    // Format as YYYY-MM-DD (e.g., 2023-06-01)
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
   Future<void> _submitJobPost() async {
     // Validate required fields
     if (_titleController.text.trim().isEmpty) {
@@ -493,7 +506,7 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
       mediaFiles.add(_selectedVideo!.path);
     }
 
-    // Create request
+    // Create request with properly formatted dates
     final request = JobPostRequest(
       title: _titleController.text.trim(),
       sportId: _selectedSportId,
@@ -503,12 +516,12 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
       description: _descriptionController.text.trim().isNotEmpty
           ? _descriptionController.text.trim()
           : null,
-      timelineStart: _startDateController.text.trim().isNotEmpty
-          ? _startDateController.text.trim()
-          : null,
-      timelineEnd: _endDateController.text.trim().isNotEmpty
-          ? _endDateController.text.trim()
-          : null,
+      timelineStart: _formatDateForApi(
+        _startDate,
+      ), // Use DateTime instead of text
+      timelineEnd: _formatDateForApi(
+        _endDate,
+      ), // Use DateTime instead of text
       requirements: _requirementsController.text.trim().isNotEmpty
           ? _requirementsController.text.trim()
           : null,
@@ -624,6 +637,8 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
                     selectedVideo: _selectedVideo,
                     imageBytes: _imageBytes,
                     videoThumbnail: _videoThumbnail,
+                    startDate: _startDate,
+                    endDate: _endDate,
                     onImageSelected: (image, bytes) {
                       setState(() {
                         _selectedImage = image;
@@ -646,6 +661,20 @@ class _CreateJobModalState extends ConsumerState<_CreateJobModal>
                       setState(() {
                         _selectedVideo = null;
                         _videoThumbnail = null;
+                      });
+                    },
+                    onStartDateSelected: (date) {
+                      setState(() {
+                        _startDate = date;
+                        _startDateController.text =
+                            '${date.day}/${date.month}/${date.year}';
+                      });
+                    },
+                    onEndDateSelected: (date) {
+                      setState(() {
+                        _endDate = date;
+                        _endDateController.text =
+                            '${date.day}/${date.month}/${date.year}';
                       });
                     },
                     isLoading: jobPostState.isLoading,
@@ -858,10 +887,14 @@ class _StepTwo extends StatefulWidget {
   final File? selectedVideo;
   final Uint8List? imageBytes;
   final Uint8List? videoThumbnail;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final Function(File image, Uint8List bytes) onImageSelected;
   final Function(File video, Uint8List? thumbnail) onVideoSelected;
   final VoidCallback onImageRemoved;
   final VoidCallback onVideoRemoved;
+  final Function(DateTime date) onStartDateSelected;
+  final Function(DateTime date) onEndDateSelected;
   final bool isLoading;
 
   const _StepTwo({
@@ -874,10 +907,14 @@ class _StepTwo extends StatefulWidget {
     required this.selectedVideo,
     required this.imageBytes,
     required this.videoThumbnail,
+    required this.startDate,
+    required this.endDate,
     required this.onImageSelected,
     required this.onVideoSelected,
     required this.onImageRemoved,
     required this.onVideoRemoved,
+    required this.onStartDateSelected,
+    required this.onEndDateSelected,
     required this.isLoading,
   });
 
@@ -887,6 +924,56 @@ class _StepTwo extends StatefulWidget {
 
 class _StepTwoState extends State<_StepTwo> {
   final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickStartDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: widget.startDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      widget.onStartDateSelected(picked);
+    }
+  }
+
+  Future<void> _pickEndDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: widget.endDate ?? widget.startDate ?? DateTime.now(),
+      firstDate: widget.startDate ?? DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      widget.onEndDateSelected(picked);
+    }
+  }
 
   Future<void> _pickImage() async {
     try {
@@ -1010,16 +1097,18 @@ class _StepTwoState extends State<_StepTwo> {
         Row(
           children: [
             Expanded(
-              child: _inputField(
+              child: _dateField(
                 "Start Date",
                 controller: widget.startDateController,
+                onTap: _pickStartDate,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _inputField(
+              child: _dateField(
                 "End Date",
                 controller: widget.endDateController,
+                onTap: _pickEndDate,
               ),
             ),
           ],
@@ -1167,6 +1256,38 @@ class _StepTwoState extends State<_StepTwo> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _dateField(
+    String hint, {
+    required TextEditingController controller,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AbsorbPointer(
+        child: TextField(
+          controller: controller,
+          readOnly: true,
+          style: const TextStyle(color: AppColors.textPrimary),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.textGrey),
+            filled: true,
+            fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            suffixIcon: const Icon(
+              Icons.calendar_today,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
         ),
       ),
     );
