@@ -39,7 +39,7 @@ class PostFeedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final posts = jobPosts ?? [];
-    final agencyName = sponsorProfile?.name ?? 'SP Sport Agency';
+    final agencyName = sponsorProfile?.name ?? 'No name set';
     final agencyImageUrl = sponsorProfile?.profileImageUrl;
 
     return Container(

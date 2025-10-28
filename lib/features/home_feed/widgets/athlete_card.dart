@@ -53,9 +53,11 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
     final watchlist = watchlistState.watchlistData?.watchlist ?? [];
 
     if (widget.athleteId != null) {
-      _isInWatchlist = watchlist.any(
-        (item) => item.athlete?.id == widget.athleteId,
-      );
+      setState(() {
+        _isInWatchlist = watchlist.any(
+          (item) => item.athlete?.id == widget.athleteId,
+        );
+      });
     }
   }
 
@@ -121,10 +123,10 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showAthleteOverlay(context),
-      child: Container(
-        margin: const EdgeInsets.only(right: 20),
+    return Container(
+      margin: const EdgeInsets.only(right: 20),
+      child: GestureDetector(
+        onTap: () => _showAthleteOverlay(context),
         child: Column(
           children: [
             Container(

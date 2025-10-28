@@ -387,16 +387,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             children: [
                               const SizedBox(height: 80),
                               CustomText(
-                                title:
-                                    sponsorProfile?.name ?? "Sp Sport Agency",
+                                title: sponsorProfile?.name ?? "No name set",
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 textColor: AppColors.black,
                               ),
                               CustomText(
-                                title:
-                                    sponsorProfile?.address ??
-                                    "Los Angeles, CA",
+                                title: sponsorProfile?.address ?? "No address set",
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 textColor: AppColors.textGrey,
@@ -451,11 +448,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   horizontal: 24,
                                 ),
                                 child: CustomText(
-                                  title:
-                                      sponsorProfile?.description ??
-                                      "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
-                                          "We specialize in football, athletics, and racket sports, helping companies find the "
-                                          "right talent for their campaigns.",
+                                  title: sponsorProfile?.description ?? "No description set",
                                   textAlign: TextAlign.center,
                                   textColor: AppColors.textSecondary,
                                   fontWeight: FontWeight.w300,

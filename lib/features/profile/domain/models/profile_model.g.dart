@@ -19,14 +19,16 @@ _ProfileUser _$ProfileUserFromJson(Map<String, dynamic> json) => _ProfileUser(
   id: json['_id'] as String,
   email: json['email'] as String,
   role: json['role'] as String,
-  authProvider: json['authProvider'] as String,
-  isEmailVerified: json['isEmailVerified'] as bool,
-  sport: (json['sport'] as List<dynamic>)
-      .map((e) => ProfileSport.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  authProvider: json['authProvider'] as String? ?? 'google',
+  isEmailVerified: json['isEmailVerified'] as bool? ?? false,
+  sport:
+      (json['sport'] as List<dynamic>?)
+          ?.map((e) => ProfileSport.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
-  version: (json['__v'] as num).toInt(),
+  version: (json['__v'] as num?)?.toInt() ?? 0,
   googleId: json['googleId'] as String?,
   sponsorProfile: json['sponsorProfile'] == null
       ? null
@@ -119,13 +121,14 @@ _JobPost _$JobPostFromJson(Map<String, dynamic> json) => _JobPost(
   timeline: Timeline.fromJson(json['timeline'] as Map<String, dynamic>),
   title: json['title'] as String,
   category: json['sport_id'] as String,
-  location: json['location'] as String,
-  description: json['description'] as String,
-  requirements: json['requirements'] as String,
+  location: json['location'] as String? ?? '',
+  description: json['description'] as String? ?? '',
+  requirements: json['requirements'] as String? ?? '',
   createdAt: DateTime.parse(json['createdAt'] as String),
   mediaUrls:
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
+  applicants: json['applicants'] as List<dynamic>? ?? const [],
 );
 
 Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
@@ -138,6 +141,7 @@ Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
   'requirements': instance.requirements,
   'createdAt': instance.createdAt.toIso8601String(),
   'mediaUrls': instance.mediaUrls,
+  'applicants': instance.applicants,
 };
 
 _Timeline _$TimelineFromJson(Map<String, dynamic> json) => _Timeline(

@@ -18,6 +18,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     response.when(
       success: (data) {
+        print('✅ Profile loaded successfully');
+        print('   Name: ${data.user.sponsorProfile?.name}');
+        print('   Description: ${data.user.sponsorProfile?.description}');
+        print('   Address: ${data.user.sponsorProfile?.address}');
         state = state.copyWith(
           isLoading: false,
           isSuccess: true,
@@ -26,6 +30,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         );
       },
       failure: (error) {
+        print('❌ Profile load failed: ${NetworkExceptions.getErrorMessage(error)}');
         state = state.copyWith(
           isLoading: false,
           isSuccess: false,
@@ -42,6 +47,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     File? profileImage,
     File? bannerImage,
   }) async {
+    print('📝 Updating profile with: name=$name, desc=$description, addr=$address');
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _profileRepository.updateSponsorProfile(
@@ -53,17 +59,16 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
 
     return response.when(
-      success: (data) {
+      success: (data) async {
+        print('✅ Profile update successful: ${data.message}');
         // Refresh profile data after successful update
-        getProfile();
-        state = state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          errorMessage: null,
-        );
+        await getProfile();
+        // Don't overwrite state here - getProfile() already sets it correctly
+        print('✅ Profile refresh completed');
         return true;
       },
       failure: (error) {
+        print('❌ Profile update failed: ${NetworkExceptions.getErrorMessage(error)}');
         state = state.copyWith(
           isLoading: false,
           isSuccess: false,

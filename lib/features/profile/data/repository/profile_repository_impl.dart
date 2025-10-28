@@ -15,10 +15,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<ApiResponse<ProfileResponse>> getProfile() async {
     try {
+      log("📡 Fetching profile from API...");
       final response = await _remoteDataSource.getProfile();
+      log("✅ Profile API response received");
+      log("   User ID: ${response.user.id}");
+      log("   Email: ${response.user.email}");
+      log("   Role: ${response.user.role}");
+      log("   Sponsor Profile: ${response.user.sponsorProfile?.name ?? 'null'}");
       return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Get profile error: $e");
+    } catch (e, stackTrace) {
+      log("❌ Get profile error: $e");
+      log("   Stack trace: $stackTrace");
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
