@@ -379,20 +379,20 @@ void _openCreateJobModal(BuildContext context, List<ProfileSport> sports) {
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
-    builder: (_) => _CreateJobModal(sports: sports),
+    builder: (_) => CreateJobModal(sports: sports),
   );
 }
 
-class _CreateJobModal extends ConsumerStatefulWidget {
+class CreateJobModal extends ConsumerStatefulWidget {
   final List<ProfileSport> sports;
 
-  const _CreateJobModal({required this.sports});
+  const CreateJobModal({required this.sports});
 
   @override
-  ConsumerState<_CreateJobModal> createState() => _CreateJobModalState();
+  ConsumerState<CreateJobModal> createState() => _CreateJobModalState();
 }
 
-class _CreateJobModalState extends ConsumerState<_CreateJobModal>
+class _CreateJobModalState extends ConsumerState<CreateJobModal>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentPage = 0;
@@ -1385,3 +1385,5 @@ class _FileInfoItem extends StatelessWidget {
     );
   }
 }
+
+
