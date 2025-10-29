@@ -1,6 +1,7 @@
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,14 +18,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          letterSpacing: 1.4,
-        ),
+      leading: InkWell(
+        onTap: () {
+          GoRouter.of(context).pop();
+        },
+        child: Icon(Icons.arrow_back),
+      ),
+      title: CustomText(
+        title: title,
+
+        textColor: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        letterSpacing: 1.4,
       ),
       centerTitle: true,
     );

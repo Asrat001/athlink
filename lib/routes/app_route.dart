@@ -4,6 +4,7 @@ import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
 import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
+import 'package:athlink/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.dart';
 import 'package:athlink/features/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/route_names.dart';
@@ -70,6 +71,10 @@ class AppRouter {
       GoRoute(
         path: Routes.selectSportScreen,
         builder: (context, state) => SelectSportScreen(),
+      ),
+      GoRoute(
+        path: Routes.notificationScreen,
+        builder: (context, state) => NotificationsScreen(),
       ),
       GoRoute(
         path: Routes.loginRouteName,

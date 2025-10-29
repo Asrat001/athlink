@@ -14,4 +14,5 @@ class Routes {
   static String watchListRouteName = '/watchlist';
   static String profileRouteName = '/profile';
   static String splashRouteName = '/splash';
+  static String notificationScreen = "/notification-screen";
 }
