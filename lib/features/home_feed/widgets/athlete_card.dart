@@ -2,36 +2,131 @@ import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:athlink/features/watchlist/presentation/providers/watchlist_provider.dart';
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 
-import 'package:flutter/material.dart';
-import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-class AthleteCard extends StatelessWidget {
+class AthleteCard extends ConsumerStatefulWidget {
+  final String? athleteId;
   final String name;
   final String club;
   final String age;
   final String flag;
   final String image;
   final double rating;
+  final List<Achievement> achievements;
+  final String? position;
+  final String? level;
+  final String? sportCategory;
 
   const AthleteCard({
     super.key,
+    this.athleteId,
     required this.name,
     required this.club,
     required this.age,
     required this.flag,
     required this.image,
     this.rating = 4.9,
+    this.achievements = const [],
+    this.position,
+    this.level,
+    this.sportCategory,
   });
 
   @override
+  ConsumerState<AthleteCard> createState() => _AthleteCardState();
+}
+
+class _AthleteCardState extends ConsumerState<AthleteCard> {
+  bool _isInWatchlist = false;
+  bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkWatchlistStatus();
+  }
+
+  void _checkWatchlistStatus() {
+    final watchlistState = ref.read(watchlistProvider);
+    final watchlist = watchlistState.watchlistData?.watchlist ?? [];
+
+    if (widget.athleteId != null) {
+      setState(() {
+        _isInWatchlist = watchlist.any(
+          (item) => item.athlete?.id == widget.athleteId,
+        );
+      });
+    }
+  }
+
+  Future<void> _handleBookmarkPress() async {
+    if (widget.athleteId == null || _isProcessing) return;
+
+    setState(() => _isProcessing = true);
+
+    try {
+      if (_isInWatchlist) {
+        // Remove from watchlist
+        final success = await ref
+            .read(watchlistProvider.notifier)
+            .deleteAthleteFromWatchlist(athleteId: widget.athleteId!);
+
+        if (success && mounted) {
+          setState(() {
+            _isInWatchlist = false;
+            _isProcessing = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Removed from watchlist'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        // Add to watchlist
+        final success = await ref
+            .read(watchlistProvider.notifier)
+            .addToWatchlist(athleteId: widget.athleteId!);
+
+        if (success && mounted) {
+          setState(() {
+            _isInWatchlist = true;
+            _isProcessing = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Added to watchlist'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showAthleteOverlay(context),
-      child: Container(
-        margin: const EdgeInsets.only(right: 20),
+    return Container(
+      margin: const EdgeInsets.only(right: 20),
+      child: GestureDetector(
+        onTap: () => _showAthleteOverlay(context),
         child: Column(
           children: [
             Container(
@@ -58,14 +153,14 @@ class AthleteCard extends StatelessWidget {
                     children: [
                       const SizedBox(height: 5),
                       CustomText(
-                        title: name,
+                        title: widget.name,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         textColor: AppColors.white, // Using AppColors.white
                       ),
                       const SizedBox(height: 5),
                       CustomText(
-                        title: club,
+                        title: widget.club,
                         fontSize: 14,
                         textColor: AppColors.white, // Using AppColors.white
                         fontWeight: FontWeight.w400,
@@ -73,7 +168,7 @@ class AthleteCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       CustomText(
-                        title: 'Age : $age',
+                        title: 'Age : ${widget.age}',
                         fontSize: 13,
                         textColor: AppColors.white, // Using AppColors.white
                         fontWeight: FontWeight.w400,
@@ -126,7 +221,7 @@ class AthleteCard extends StatelessWidget {
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  rating.toString(),
+                                  widget.rating.toString(),
                                   style: const TextStyle(
                                     color: AppColors
                                         .white, // Using AppColors.white
@@ -139,7 +234,15 @@ class AthleteCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _iconButton(Icons.bookmark_border),
+                        GestureDetector(
+                          onTap: _handleBookmarkPress,
+                          child: _iconButton(
+                            _isInWatchlist
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            isActive: _isInWatchlist,
+                          ),
+                        ),
                         const SizedBox(height: 12),
                         _iconButton(Icons.favorite_border),
                         const SizedBox(height: 12),
@@ -186,7 +289,7 @@ class AthleteCard extends StatelessWidget {
     );
   }
 
-  Widget _iconButton(IconData icon) {
+  Widget _iconButton(IconData icon, {bool isActive = false}) {
     return Container(
       height: 40,
       width: 40,
@@ -210,11 +313,16 @@ class AthleteCard extends StatelessWidget {
         opaque: false,
         barrierColor: AppColors.transparent,
         pageBuilder: (_, __, ___) => AthleteDetailOverlay(
-          name: name,
-          club: club,
-          age: age,
-          flag: flag,
-          image: image,
+          athleteId: widget.athleteId,
+          name: widget.name,
+          club: widget.club,
+          age: widget.age,
+          flag: widget.flag,
+          image: widget.image,
+          achievements: widget.achievements,
+          position: widget.position,
+          level: widget.level,
+          sportCategory: widget.sportCategory,
         ),
         transitionsBuilder: (_, anim, __, child) {
           return FadeTransition(opacity: anim, child: child);
@@ -224,31 +332,122 @@ class AthleteCard extends StatelessWidget {
   }
 }
 
-class AthleteDetailOverlay extends StatelessWidget {
+class AthleteDetailOverlay extends ConsumerStatefulWidget {
+  final String? athleteId;
   final String name;
   final String club;
   final String age;
   final String flag;
   final String image;
+  final List<Achievement> achievements;
+  final String? position;
+  final String? level;
+  final String? sportCategory;
 
   const AthleteDetailOverlay({
     super.key,
+    this.athleteId,
     required this.name,
     required this.club,
     required this.age,
     required this.flag,
     required this.image,
+    this.achievements = const [],
+    this.position,
+    this.level,
+    this.sportCategory,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final achievements = [
-      {"title": "African Cup U20", "year": "2024", "medal": "Gold"},
-      {"title": "National Sprint Final", "year": "2023", "medal": "Silver"},
-      {"title": "Regional Cup", "year": "2022", "medal": "Bronze"},
-      {"title": "African Cup", "year": "2022", "medal": "Bronze"},
-    ];
+  ConsumerState<AthleteDetailOverlay> createState() =>
+      _AthleteDetailOverlayState();
+}
 
+class _AthleteDetailOverlayState extends ConsumerState<AthleteDetailOverlay> {
+  bool _isInWatchlist = false;
+  bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkWatchlistStatus();
+  }
+
+  void _checkWatchlistStatus() {
+    final watchlistState = ref.read(watchlistProvider);
+    final watchlist = watchlistState.watchlistData?.watchlist ?? [];
+
+    if (widget.athleteId != null) {
+      setState(() {
+        _isInWatchlist = watchlist.any(
+          (item) => item.athlete?.id == widget.athleteId,
+        );
+      });
+    }
+  }
+
+  Future<void> _handleBookmarkPress() async {
+    if (widget.athleteId == null || _isProcessing) return;
+
+    setState(() => _isProcessing = true);
+
+    try {
+      if (_isInWatchlist) {
+        // Remove from watchlist
+        final success = await ref
+            .read(watchlistProvider.notifier)
+            .deleteAthleteFromWatchlist(athleteId: widget.athleteId!);
+
+        if (success && mounted) {
+          setState(() {
+            _isInWatchlist = false;
+            _isProcessing = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Removed from watchlist'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        // Add to watchlist
+        final success = await ref
+            .read(watchlistProvider.notifier)
+            .addToWatchlist(athleteId: widget.athleteId!);
+
+        if (success && mounted) {
+          setState(() {
+            _isInWatchlist = true;
+            _isProcessing = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Added to watchlist'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final overlayHeight = screenHeight * 0.7;
 
@@ -271,7 +470,7 @@ class AthleteDetailOverlay extends StatelessWidget {
               Positioned.fill(
                 child: Image.asset(
                   "assets/images/athlete.png",
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
 
@@ -369,7 +568,12 @@ class AthleteDetailOverlay extends StatelessWidget {
                   children: [
                     _roundIcon(Icons.star_border),
                     const SizedBox(height: 15),
-                    _roundIcon(Icons.bookmark_border),
+                    GestureDetector(
+                      onTap: _handleBookmarkPress,
+                      child: _roundIcon(
+                        _isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
+                      ),
+                    ),
                     const SizedBox(height: 15),
                     _roundIcon(Icons.favorite_border),
                     const SizedBox(height: 15),
@@ -401,13 +605,13 @@ class AthleteDetailOverlay extends StatelessWidget {
                         const SizedBox(height: 40),
 
                         CustomText(
-                          title: name,
+                          title: widget.name,
                           textColor: AppColors.white, // Using AppColors.white
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                         CustomText(
-                          title: club,
+                          title: widget.club,
                           textColor: AppColors.white, // Using AppColors.white
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
@@ -416,132 +620,191 @@ class AthleteDetailOverlay extends StatelessWidget {
                         const SizedBox(height: 20),
 
                         // Basic Info
-                        _infoText("Age : $age"),
-                        _infoText("Position : Wide Receiver"),
-                        _infoText("Category : Flag Football"),
-                        _infoText("Level : Semi-pro"),
-                        _infoText("Training : 20 hours/week"),
+                        _infoText("Age : ${widget.age}"),
+                        if (widget.position != null)
+                          _infoText("Position : ${widget.position}"),
+                        if (widget.sportCategory != null)
+                          _infoText("Category : ${widget.sportCategory}"),
+                        if (widget.level != null)
+                          _infoText("Level : ${widget.level}"),
 
                         const SizedBox(height: 40),
 
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: AppColors.black.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
+                        if (widget.achievements.isNotEmpty)
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: AppColors.black.withValues(alpha: 0.4),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                            ),
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Achievements and Wins",
+                                  style: TextStyle(
+                                    color: AppColors
+                                        .white, // Using AppColors.white
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                ...widget.achievements.asMap().entries.map((
+                                  entry,
+                                ) {
+                                  final achievement = entry.value;
+                                  final index = entry.key;
+
+                                  // Determine rank color based on rank value
+                                  final rankColor =
+                                      achievement.rank == "1st" ||
+                                          achievement.rank == "1"
+                                      ? const Color(0xFFFFD700) // Gold
+                                      : achievement.rank == "2nd" ||
+                                            achievement.rank == "2"
+                                      ? AppColors
+                                            .lightGrey // Silver
+                                      : const Color(0xFFCD7F32); // Bronze
+
+                                  // Determine difficulty badge color
+                                  final difficultyColor =
+                                      achievement.difficulty == "hard"
+                                      ? Colors.red
+                                      : achievement.difficulty == "medium"
+                                      ? Colors.orange
+                                      : Colors.green;
+
+                                  return Container(
+                                    margin: EdgeInsets.only(
+                                      bottom:
+                                          index ==
+                                              widget.achievements.length - 1
+                                          ? 0
+                                          : 5,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(width: 6),
+                                                    Icon(
+                                                      Icons.emoji_events,
+                                                      color: AppColors.primary,
+                                                      size: 18,
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    Expanded(
+                                                      child: CustomText(
+                                                        title:
+                                                            achievement.name ??
+                                                            'Achievement',
+                                                        textColor:
+                                                            AppColors.black,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: 13.5,
+                                                        maxLines: 2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+
+                                            if (achievement.rank != null)
+                                              Expanded(
+                                                flex: 1,
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: Text(
+                                                    achievement.rank!,
+                                                    style: TextStyle(
+                                                      color: rankColor,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 13,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+
+                                            if (achievement.score != null)
+                                              Expanded(
+                                                flex: 1,
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: CustomText(
+                                                    title:
+                                                        '${achievement.score}',
+                                                    textColor: AppColors.black
+                                                        .withValues(alpha: 0.7),
+                                                    fontSize: 12,
+                                                    textAlign: TextAlign.center,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        if (achievement.difficulty != null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 30,
+                                              top: 4,
+                                            ),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: difficultyColor
+                                                    .withValues(alpha: 0.2),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                achievement.difficulty!,
+                                                style: TextStyle(
+                                                  color: difficultyColor,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                }),
+                              ],
                             ),
                           ),
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Achievements and Wins",
-                                style: TextStyle(
-                                  color:
-                                      AppColors.white, // Using AppColors.white
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              ...achievements.asMap().entries.map((a) {
-                                final medalColor = a.value["medal"] == "Gold"
-                                    ? const Color(0xFFFFD700)
-                                    : a.value["medal"] == "Silver"
-                                    ? AppColors.lightGrey
-                                    : const Color(0xFFCD7F32);
-
-                                return Container(
-                                  margin: EdgeInsets.only(
-                                    bottom: a.key == achievements.length - 1
-                                        ? 0
-                                        : 5,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.white.withValues(
-                                      alpha: 0.9,
-                                    ), // Using AppColors.extraLightGrey
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Row(
-                                                children: [
-                                                  SizedBox(width: 6),
-                                                  Icon(
-                                                    Icons.emoji_events,
-                                                    color: AppColors
-                                                        .primary, // Using AppColors.primary for icon
-                                                    size: 18,
-                                                  ),
-                                                  SizedBox(width: 6),
-                                                  CustomText(
-                                                    title: a.value["title"]!,
-                                                    textColor: AppColors
-                                                        .black, // Using AppColors.black
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 13.5,
-                                                    maxLines: 2,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-
-                                          Expanded(
-                                            flex: 1,
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: CustomText(
-                                                title: a.value["year"]!,
-                                                textColor: AppColors.black
-                                                    .withValues(
-                                                      alpha: 0.7,
-                                                    ), // Using AppColors.white
-                                                fontSize: 12,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ),
-
-                                          Expanded(
-                                            flex: 1,
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                a.value["medal"]!,
-                                                style: TextStyle(
-                                                  color: medalColor,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 13,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
                         const SizedBox(height: 80),
                       ],
                     ),

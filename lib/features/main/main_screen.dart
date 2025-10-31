@@ -30,7 +30,6 @@ class MainScreen extends StatelessWidget {
     return branchIndex;
   }
 
-
   void _showCreateBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -67,10 +66,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PopScope(
-        canPop: false,
-        child: navigationShell,
-      ),
+      body: PopScope(canPop: false, child: navigationShell),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomNavIndexFromBranch(navigationShell.currentIndex),
         type: BottomNavigationBarType.fixed,

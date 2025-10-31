@@ -1,43 +1,47 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:athlink/features/profile/domain/models/job_post_request.dart';
+import 'package:athlink/features/profile/domain/models/profile_model.dart';
+import 'package:athlink/features/profile/presenation/providers/job_post_provider.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PostFeedSection extends StatelessWidget {
-  PostFeedSection({super.key});
+  final List<JobPost>? jobPosts;
+  final SponsorProfile? sponsorProfile;
+  final ProfileUser? profileUser;
 
-  final List<Map<String, dynamic>> posts = [
-    {
-      'title': 'Brand Ambassador Deal',
-      'subtitle':
-          'Track and field athletes aged 18 - 21, with social media presence.',
-      'price': '500',
-      'duration': '6',
-      'agency': 'SP Sport Agency',
-      'location': 'Los Angeles, CA',
-      'image':
-          'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800',
-    },
-    {
-      'title': 'Endorsement Opportunity',
-      'subtitle': 'Basketball athletes aged 20 - 25 with community engagement.',
-      'price': '800',
-      'duration': '3',
-      'agency': 'Prime Sports',
-      'location': 'New York, NY',
-      'image':
-          'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=800',
-    },
-  ];
+  const PostFeedSection({
+    super.key,
+    this.jobPosts,
+    this.sponsorProfile,
+    this.profileUser,
+  });
+
+  String _calculateDuration(DateTime? startDate, DateTime? endDate) {
+    if (startDate == null || endDate == null) {
+      return 'N/A';
+    }
+    final difference = endDate.difference(startDate);
+    final months = (difference.inDays / 30).round();
+    return months.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final posts = jobPosts ?? [];
+    final agencyName = sponsorProfile?.name ?? 'No name set';
+    final agencyImageUrl = sponsorProfile?.profileImageUrl;
+
     return Container(
       color: AppColors.lightGrey.withValues(alpha: .2),
       child: Column(
@@ -50,37 +54,55 @@ class PostFeedSection extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.add, size: 30, color: AppColors.black),
                   onPressed: () {
-                    _openCreateJobModal(context);
+                    _openCreateJobModal(context, profileUser?.sport ?? []);
                   },
                 ),
               ],
             ),
           ),
-          ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: posts.length,
-            shrinkWrap: true,
-            physics:
-                const NeverScrollableScrollPhysics(), // ✅ Prevents scroll conflict
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
+          posts.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: CustomText(
+                    title: "No posts yet",
+                    fontSize: 14,
+                    textColor: AppColors.textGrey,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: posts.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    final duration = _calculateDuration(
+                      post.timeline.startDate,
+                      post.timeline.endDate,
+                    );
+                    final imageUrl = post.mediaUrls.isNotEmpty
+                        ? UrlHelper.getFullImageUrl(post.mediaUrls.first)
+                        : 'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800';
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      child: _PostCard(
+                        title: post.title,
+                        subtitle: post.description,
+                        price: '500', // Price not in API, using default
+                        duration: duration,
+                        agency: agencyName,
+                        location: post.location,
+                        imageUrl: imageUrl,
+                        agencyImageUrl: agencyImageUrl,
+                      ),
+                    );
+                  },
                 ),
-                child: _PostCard(
-                  title: post['title'],
-                  subtitle: post['subtitle'],
-                  price: post['price'],
-                  duration: post['duration'],
-                  agency: post['agency'],
-                  location: post['location'],
-                  imageUrl: post['image'],
-                ),
-              );
-            },
-          ),
         ],
       ),
     );
@@ -95,6 +117,7 @@ class _PostCard extends StatelessWidget {
   final String agency;
   final String location;
   final String imageUrl;
+  final String? agencyImageUrl;
 
   const _PostCard({
     required this.title,
@@ -104,6 +127,7 @@ class _PostCard extends StatelessWidget {
     required this.agency,
     required this.location,
     required this.imageUrl,
+    this.agencyImageUrl,
   });
 
   @override
@@ -226,12 +250,28 @@ class _PostCard extends StatelessWidget {
                               backgroundColor: AppColors.black,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800",
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: agencyImageUrl != null
+                                    ? Image.network(
+                                        UrlHelper.getFullImageUrl(
+                                          agencyImageUrl,
+                                        ),
+                                        height: 70,
+                                        width: 70,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                              return Icon(
+                                                Icons.business,
+                                                size: 30,
+                                                color: AppColors.grey,
+                                              );
+                                            },
+                                      )
+                                    : Icon(
+                                        Icons.business,
+                                        size: 30,
+                                        color: AppColors.grey,
+                                      ),
                               ),
                             ),
                           ),
@@ -331,7 +371,7 @@ class _DividerLine extends StatelessWidget {
   }
 }
 
-void _openCreateJobModal(BuildContext context) {
+void _openCreateJobModal(BuildContext context, List<ProfileSport> sports) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -339,21 +379,46 @@ void _openCreateJobModal(BuildContext context) {
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
-    builder: (_) => const _CreateJobModal(),
+    builder: (_) => CreateJobModal(sports: sports),
   );
 }
 
-class _CreateJobModal extends StatefulWidget {
-  const _CreateJobModal();
+class CreateJobModal extends ConsumerStatefulWidget {
+  final List<ProfileSport> sports;
+
+  const CreateJobModal({required this.sports});
 
   @override
-  State<_CreateJobModal> createState() => _CreateJobModalState();
+  ConsumerState<CreateJobModal> createState() => _CreateJobModalState();
 }
 
-class _CreateJobModalState extends State<_CreateJobModal>
+class _CreateJobModalState extends ConsumerState<CreateJobModal>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentPage = 0;
+
+  // Form controllers
+  final _titleController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _budgetController = TextEditingController();
+  final _requirementsController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
+
+  // Selected sport
+  String? _selectedSportId;
+  String? _selectedSportName;
+
+  // Media files
+  File? _selectedImage;
+  File? _selectedVideo;
+  Uint8List? _imageBytes;
+  Uint8List? _videoThumbnail;
+
+  // Dates
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   @override
   void initState() {
@@ -361,7 +426,26 @@ class _CreateJobModalState extends State<_CreateJobModal>
     _pageController = PageController();
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _titleController.dispose();
+    _locationController.dispose();
+    _descriptionController.dispose();
+    _budgetController.dispose();
+    _requirementsController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
+    super.dispose();
+  }
+
   void _nextPage() {
+    // Validate step 1
+    if (_titleController.text.trim().isEmpty) {
+      _showErrorSnackbar('Please enter a job title');
+      return;
+    }
+
     _pageController.nextPage(
       duration: const Duration(milliseconds: 350),
       curve: Curves.easeInOut,
@@ -377,9 +461,94 @@ class _CreateJobModalState extends State<_CreateJobModal>
     setState(() => _currentPage = 0);
   }
 
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showSuccessSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  String? _formatDateForApi(DateTime? date) {
+    if (date == null) return null;
+    // Format as YYYY-MM-DD (e.g., 2023-06-01)
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  Future<void> _submitJobPost() async {
+    // Validate required fields
+    if (_titleController.text.trim().isEmpty) {
+      _showErrorSnackbar('Please enter a job title');
+      return;
+    }
+
+    // Prepare media files
+    final List<String> mediaFiles = [];
+    if (_selectedImage != null) {
+      mediaFiles.add(_selectedImage!.path);
+    }
+    if (_selectedVideo != null) {
+      mediaFiles.add(_selectedVideo!.path);
+    }
+
+    // Create request with properly formatted dates
+    final request = JobPostRequest(
+      title: _titleController.text.trim(),
+      sportId: _selectedSportId,
+      location: _locationController.text.trim().isNotEmpty
+          ? _locationController.text.trim()
+          : null,
+      description: _descriptionController.text.trim().isNotEmpty
+          ? _descriptionController.text.trim()
+          : null,
+      timelineStart: _formatDateForApi(
+        _startDate,
+      ), // Use DateTime instead of text
+      timelineEnd: _formatDateForApi(
+        _endDate,
+      ), // Use DateTime instead of text
+      requirements: _requirementsController.text.trim().isNotEmpty
+          ? _requirementsController.text.trim()
+          : null,
+      media: mediaFiles.isNotEmpty ? mediaFiles : null,
+    );
+
+    // Submit
+    await ref.read(jobPostProvider.notifier).createJobPost(request);
+
+    // Check result
+    final jobPostState = ref.read(jobPostProvider);
+    if (jobPostState.isSuccess) {
+      _showSuccessSnackbar(
+        jobPostState.successMessage ?? 'Job post created successfully!',
+      );
+      // Refresh profile to get updated job posts
+      ref.read(profileProvider.notifier).getProfile();
+      Navigator.pop(context);
+    } else if (jobPostState.errorMessage != null) {
+      _showErrorSnackbar(jobPostState.errorMessage!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final jobPostState = ref.watch(jobPostProvider);
 
     return AnimatedPadding(
       duration: const Duration(milliseconds: 200),
@@ -400,7 +569,7 @@ class _CreateJobModalState extends State<_CreateJobModal>
                       width: 24,
                       height: 24,
                     ),
-                    onPressed: _previousPage,
+                    onPressed: jobPostState.isLoading ? null : _previousPage,
                   )
                 else
                   const SizedBox(width: 40),
@@ -416,7 +585,9 @@ class _CreateJobModalState extends State<_CreateJobModal>
                     size: 24,
                     color: AppColors.grey,
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: jobPostState.isLoading
+                      ? null
+                      : () => Navigator.pop(context),
                 ),
               ],
             ),
@@ -440,13 +611,73 @@ class _CreateJobModalState extends State<_CreateJobModal>
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _StepOne(onNext: _nextPage),
-                  _StepTwo(
-                    onPost: () {
-                      // Handle post logic here
-                      Navigator.pop(context);
+                  _StepOne(
+                    onNext: _nextPage,
+                    sports: widget.sports,
+                    titleController: _titleController,
+                    locationController: _locationController,
+                    descriptionController: _descriptionController,
+                    budgetController: _budgetController,
+                    selectedSportId: _selectedSportId,
+                    selectedSportName: _selectedSportName,
+                    onSportSelected: (sportId, sportName) {
+                      setState(() {
+                        _selectedSportId = sportId;
+                        _selectedSportName = sportName;
+                      });
                     },
+                  ),
+                  _StepTwo(
+                    onPost: _submitJobPost,
                     onCancel: () => Navigator.pop(context),
+                    requirementsController: _requirementsController,
+                    startDateController: _startDateController,
+                    endDateController: _endDateController,
+                    selectedImage: _selectedImage,
+                    selectedVideo: _selectedVideo,
+                    imageBytes: _imageBytes,
+                    videoThumbnail: _videoThumbnail,
+                    startDate: _startDate,
+                    endDate: _endDate,
+                    onImageSelected: (image, bytes) {
+                      setState(() {
+                        _selectedImage = image;
+                        _imageBytes = bytes;
+                      });
+                    },
+                    onVideoSelected: (video, thumbnail) {
+                      setState(() {
+                        _selectedVideo = video;
+                        _videoThumbnail = thumbnail;
+                      });
+                    },
+                    onImageRemoved: () {
+                      setState(() {
+                        _selectedImage = null;
+                        _imageBytes = null;
+                      });
+                    },
+                    onVideoRemoved: () {
+                      setState(() {
+                        _selectedVideo = null;
+                        _videoThumbnail = null;
+                      });
+                    },
+                    onStartDateSelected: (date) {
+                      setState(() {
+                        _startDate = date;
+                        _startDateController.text =
+                            '${date.day}/${date.month}/${date.year}';
+                      });
+                    },
+                    onEndDateSelected: (date) {
+                      setState(() {
+                        _endDate = date;
+                        _endDateController.text =
+                            '${date.day}/${date.month}/${date.year}';
+                      });
+                    },
+                    isLoading: jobPostState.isLoading,
                   ),
                 ],
               ),
@@ -479,20 +710,26 @@ class _CreateJobModalState extends State<_CreateJobModal>
 
 class _StepOne extends StatelessWidget {
   final VoidCallback onNext;
+  final List<ProfileSport> sports;
+  final TextEditingController titleController;
+  final TextEditingController locationController;
+  final TextEditingController descriptionController;
+  final TextEditingController budgetController;
+  final String? selectedSportId;
+  final String? selectedSportName;
+  final Function(String sportId, String sportName) onSportSelected;
 
-  _StepOne({required this.onNext});
-
-  List<String> sportCategories = [
-    "Football",
-    "Basketball",
-    "Tennis",
-    "Athletics",
-    "Chess",
-    "Cricket",
-    "Rugby",
-    "Swimming",
-    "Others",
-  ];
+  const _StepOne({
+    required this.onNext,
+    required this.sports,
+    required this.titleController,
+    required this.locationController,
+    required this.descriptionController,
+    required this.budgetController,
+    required this.selectedSportId,
+    required this.selectedSportName,
+    required this.onSportSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -505,7 +742,10 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. Football Sponsorship Opportunity"),
+        _inputField(
+          "e.g. Football Sponsorship Opportunity",
+          controller: titleController,
+        ),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -515,17 +755,34 @@ class _StepOne extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
-        SizedBox(
-          height: 50,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: _chip(sportCategories[index]),
-            ),
-            itemCount: sportCategories.length,
-          ),
-        ),
+        sports.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: CustomText(
+                  title: "No sports available",
+                  fontSize: 14,
+                  textColor: AppColors.textGrey,
+                ),
+              )
+            : SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    final sport = sports[index];
+                    final isSelected = selectedSportId == sport.id;
+                    return Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: _chip(
+                        sport.name,
+                        isSelected: isSelected,
+                        onTap: () => onSportSelected(sport.id, sport.name),
+                      ),
+                    );
+                  },
+                  itemCount: sports.length,
+                ),
+              ),
 
         const SizedBox(height: 16),
 
@@ -535,7 +792,7 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. Paris, France"),
+        _inputField("e.g. Paris, France", controller: locationController),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -544,7 +801,11 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("Write a detailed description...", maxLines: 4),
+        _inputField(
+          "Write a detailed description...",
+          maxLines: 4,
+          controller: descriptionController,
+        ),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -553,7 +814,7 @@ class _StepOne extends StatelessWidget {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. \$5,000 - \$20,000"),
+        _inputField("e.g. \$5,000 - \$20,000", controller: budgetController),
 
         // Next button as part of the scrollable content
         const SizedBox(height: 30),
@@ -572,15 +833,20 @@ class _StepOne extends StatelessWidget {
     );
   }
 
-  Widget _inputField(String hint, {int maxLines = 1}) {
+  Widget _inputField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextField(
+      controller: controller,
       maxLines: maxLines,
       style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textGrey),
         filled: true,
-        fillColor: AppColors.extraLightGrey.withOpacity(0.3),
+        fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -589,12 +855,24 @@ class _StepOne extends StatelessWidget {
     );
   }
 
-  Widget _chip(String label) {
-    return Chip(
-      label: Text(label, style: const TextStyle(color: AppColors.textPrimary)),
-      backgroundColor: AppColors.extraLightGrey,
-      side: BorderSide(color: AppColors.extraLightGrey),
-      labelStyle: const TextStyle(fontWeight: FontWeight.w500),
+  Widget _chip(String label, {bool isSelected = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Chip(
+        label: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? AppColors.white : AppColors.textPrimary,
+          ),
+        ),
+        backgroundColor: isSelected
+            ? AppColors.primary
+            : AppColors.extraLightGrey,
+        side: BorderSide(
+          color: isSelected ? AppColors.primary : AppColors.extraLightGrey,
+        ),
+        labelStyle: const TextStyle(fontWeight: FontWeight.w500),
+      ),
     );
   }
 }
@@ -602,20 +880,100 @@ class _StepOne extends StatelessWidget {
 class _StepTwo extends StatefulWidget {
   final VoidCallback onPost;
   final VoidCallback onCancel;
+  final TextEditingController requirementsController;
+  final TextEditingController startDateController;
+  final TextEditingController endDateController;
+  final File? selectedImage;
+  final File? selectedVideo;
+  final Uint8List? imageBytes;
+  final Uint8List? videoThumbnail;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final Function(File image, Uint8List bytes) onImageSelected;
+  final Function(File video, Uint8List? thumbnail) onVideoSelected;
+  final VoidCallback onImageRemoved;
+  final VoidCallback onVideoRemoved;
+  final Function(DateTime date) onStartDateSelected;
+  final Function(DateTime date) onEndDateSelected;
+  final bool isLoading;
 
-  const _StepTwo({required this.onPost, required this.onCancel});
+  const _StepTwo({
+    required this.onPost,
+    required this.onCancel,
+    required this.requirementsController,
+    required this.startDateController,
+    required this.endDateController,
+    required this.selectedImage,
+    required this.selectedVideo,
+    required this.imageBytes,
+    required this.videoThumbnail,
+    required this.startDate,
+    required this.endDate,
+    required this.onImageSelected,
+    required this.onVideoSelected,
+    required this.onImageRemoved,
+    required this.onVideoRemoved,
+    required this.onStartDateSelected,
+    required this.onEndDateSelected,
+    required this.isLoading,
+  });
 
   @override
   State<_StepTwo> createState() => _StepTwoState();
 }
 
 class _StepTwoState extends State<_StepTwo> {
-  File? _selectedImage;
-  File? _selectedVideo;
-  Uint8List? _imageBytes;
-  Uint8List? _videoThumbnail;
-
   final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickStartDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: widget.startDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      widget.onStartDateSelected(picked);
+    }
+  }
+
+  Future<void> _pickEndDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: widget.endDate ?? widget.startDate ?? DateTime.now(),
+      firstDate: widget.startDate ?? DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      widget.onEndDateSelected(picked);
+    }
+  }
 
   Future<void> _pickImage() async {
     try {
@@ -628,11 +986,7 @@ class _StepTwoState extends State<_StepTwo> {
       if (image != null) {
         final File imageFile = File(image.path);
         final Uint8List bytes = await imageFile.readAsBytes();
-
-        setState(() {
-          _selectedImage = imageFile;
-          _imageBytes = bytes;
-        });
+        widget.onImageSelected(imageFile, bytes);
       }
     } catch (e) {
       _showErrorSnackbar('Failed to pick image: $e');
@@ -651,11 +1005,7 @@ class _StepTwoState extends State<_StepTwo> {
 
         // Generate thumbnail for video
         final Uint8List? thumbnail = await _generateVideoThumbnail(videoFile);
-
-        setState(() {
-          _selectedVideo = videoFile;
-          _videoThumbnail = thumbnail;
-        });
+        widget.onVideoSelected(videoFile, thumbnail);
       }
     } catch (e) {
       _showErrorSnackbar('Failed to pick video: $e');
@@ -679,20 +1029,6 @@ class _StepTwoState extends State<_StepTwo> {
       print('Error generating thumbnail: $e');
     }
     return null;
-  }
-
-  void _removeImage() {
-    setState(() {
-      _selectedImage = null;
-      _imageBytes = null;
-    });
-  }
-
-  void _removeVideo() {
-    setState(() {
-      _selectedVideo = null;
-      _videoThumbnail = null;
-    });
   }
 
   void _showErrorSnackbar(String message) {
@@ -722,10 +1058,10 @@ class _StepTwoState extends State<_StepTwo> {
               child: _mediaBox(
                 Icons.image_outlined,
                 isImage: true,
-                isSelected: _selectedImage != null,
-                thumbnail: _imageBytes,
+                isSelected: widget.selectedImage != null,
+                thumbnail: widget.imageBytes,
                 onTap: _pickImage,
-                onRemove: _removeImage,
+                onRemove: widget.onImageRemoved,
               ),
             ),
             const SizedBox(width: 12),
@@ -733,19 +1069,22 @@ class _StepTwoState extends State<_StepTwo> {
               child: _mediaBox(
                 Icons.videocam_outlined,
                 isImage: false,
-                isSelected: _selectedVideo != null,
-                thumbnail: _videoThumbnail,
+                isSelected: widget.selectedVideo != null,
+                thumbnail: widget.videoThumbnail,
                 onTap: _pickVideo,
-                onRemove: _removeVideo,
+                onRemove: widget.onVideoRemoved,
               ),
             ),
           ],
         ),
 
         // Selected files info
-        if (_selectedImage != null || _selectedVideo != null) ...[
+        if (widget.selectedImage != null || widget.selectedVideo != null) ...[
           const SizedBox(height: 12),
-          _SelectedFilesInfo(image: _selectedImage, video: _selectedVideo),
+          _SelectedFilesInfo(
+            image: widget.selectedImage,
+            video: widget.selectedVideo,
+          ),
         ],
 
         const SizedBox(height: 16),
@@ -757,9 +1096,21 @@ class _StepTwoState extends State<_StepTwo> {
         const SizedBox(height: 8),
         Row(
           children: [
-            Expanded(child: _inputField("Start Date")),
+            Expanded(
+              child: _dateField(
+                "Start Date",
+                controller: widget.startDateController,
+                onTap: _pickStartDate,
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _inputField("End Date")),
+            Expanded(
+              child: _dateField(
+                "End Date",
+                controller: widget.endDateController,
+                onTap: _pickEndDate,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -770,7 +1121,11 @@ class _StepTwoState extends State<_StepTwo> {
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("Write a detailed description...", maxLines: 4),
+        _inputField(
+          "Write a detailed description...",
+          maxLines: 4,
+          controller: widget.requirementsController,
+        ),
 
         // Cancel and Post buttons as part of the scrollable content
         const SizedBox(height: 30),
@@ -782,14 +1137,14 @@ class _StepTwoState extends State<_StepTwo> {
               height: 48,
               width: MediaQuery.of(context).size.width * .43,
               borderRadius: 10,
-              onPressed: widget.onCancel,
+              onPressed: widget.isLoading ? null : widget.onCancel,
             ),
             RoundedButton(
-              label: "Post",
+              label: widget.isLoading ? "Posting..." : "Post",
               height: 48,
               borderRadius: 10,
               width: MediaQuery.of(context).size.width * .43,
-              onPressed: widget.onPost,
+              onPressed: widget.isLoading ? null : widget.onPost,
             ),
           ],
         ),
@@ -884,18 +1239,55 @@ class _StepTwoState extends State<_StepTwo> {
     return Center(child: Icon(icon, color: AppColors.lightGrey, size: 40));
   }
 
-  Widget _inputField(String hint, {int maxLines = 1}) {
+  Widget _inputField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextField(
+      controller: controller,
       maxLines: maxLines,
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textGrey),
         filled: true,
-        fillColor: AppColors.extraLightGrey.withOpacity(0.3),
+        fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _dateField(
+    String hint, {
+    required TextEditingController controller,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AbsorbPointer(
+        child: TextField(
+          controller: controller,
+          readOnly: true,
+          style: const TextStyle(color: AppColors.textPrimary),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.textGrey),
+            filled: true,
+            fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            suffixIcon: const Icon(
+              Icons.calendar_today,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
         ),
       ),
     );
@@ -993,3 +1385,5 @@ class _FileInfoItem extends StatelessWidget {
     );
   }
 }
+
+

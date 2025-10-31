@@ -1,25 +1,57 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:athlink/di.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/profile_edit_page.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/services/local_storage_service.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final TransformationController _transformationController =
       TransformationController();
+
+  File? _bannerImage;
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch profile data when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileProvider.notifier).getProfile();
+    });
+  }
+
+  Future<void> _pickBannerImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _bannerImage = File(picked.path));
+    }
+  }
+
+  Future<void> _pickProfileImage() async {
+    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _profileImage = File(picked.path));
+    }
+  }
 
   final List<String> athleteImages = List.generate(
     75,
@@ -116,10 +148,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
     "Nelly Korda",
   ];
 
-  Widget _buildHeader(BuildContext context) {
+  Future<void> _handleProfileSave(
+    String name,
+    String? description,
+    String? address,
+    File? profileImage,
+    File? bannerImage,
+  ) async {
+    // Call the update API
+    final success = await ref
+        .read(profileProvider.notifier)
+        .updateSponsorProfile(
+          name: name,
+          description: description,
+          address: address,
+          profileImage: profileImage,
+          bannerImage: bannerImage,
+        );
+
+    if (success) {
+      // Exit edit mode and clear local images after successful save
+      if (mounted) {
+        setState(() {
+          isEditMode = false;
+          _profileImage = null;
+          _bannerImage = null;
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      // Show error message
+      if (mounted) {
+        final errorMessage =
+            ref.read(profileProvider).errorMessage ??
+            'Failed to update profile';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  Widget _buildHeader(
+    BuildContext context,
+    String? bannerUrl,
+    String? profileImageUrl,
+  ) {
     const double bannerHeight = 250;
     const double logoCircleRadius = 50;
-    const double logoOffset = logoCircleRadius * 1.2;
+
+    final String fullBannerUrl = UrlHelper.getFullImageUrl(bannerUrl);
+    final String fullProfileUrl = UrlHelper.getFullImageUrl(profileImageUrl);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -133,10 +219,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Positioned.fill(
           child: Opacity(
             opacity: 0.9,
-            child: Image.network(
-              "https://picsum.photos/400/300",
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
+            child: InkWell(
+              onTap: isEditMode ? _pickBannerImage : null,
+              child: _bannerImage != null
+                  ? Image.file(
+                      _bannerImage!,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    )
+                  : fullBannerUrl.isNotEmpty
+                  ? Image.network(
+                      fullBannerUrl,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(color: AppColors.extraLightGrey);
+                      },
+                    )
+                  : Container(color: AppColors.extraLightGrey),
             ),
           ),
         ),
@@ -214,9 +314,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(logoCircleRadius),
-              child: Image.asset(
-                'assets/images/on1.jpg', // Replace with your logo asset path
-                fit: BoxFit.cover,
+              child: InkWell(
+                onTap: isEditMode ? _pickProfileImage : null,
+                child: _profileImage != null
+                    ? Image.file(
+                        _profileImage!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.extraLightGrey,
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: AppColors.grey,
+                            ),
+                          );
+                        },
+                      )
+                    : fullProfileUrl.isNotEmpty
+                    ? Image.network(
+                        fullProfileUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: AppColors.extraLightGrey,
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: AppColors.grey,
+                            ),
+                          );
+                        },
+                      )
+                    : Image.asset('assets/images/on1.jpg', fit: BoxFit.cover),
               ),
             ),
           ),
@@ -227,118 +357,140 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileProvider);
+    final profileUser = profileState.profileUser;
+    final sponsorProfile = profileUser?.sponsorProfile;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            _buildHeader(context),
+      body: profileState.isLoading && profileUser == null
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  _buildHeader(
+                    context,
+                    sponsorProfile?.bannerImageUrl,
+                    sponsorProfile?.profileImageUrl,
+                  ),
 
-            isEditMode
-                ? ProfileEditPage()
-                : Container(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 80),
-                        CustomText(
-                          title: "Sp Sport Agency",
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          textColor: AppColors.black,
-                        ),
-                        CustomText(
-                          title: "Los Angeles, CA",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          textColor: AppColors.textGrey,
-                        ),
-                        SizedBox(height: 30),
-                        IntrinsicHeight(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  isEditMode
+                      ? ProfileEditPage(
+                          sponsorProfile: sponsorProfile,
+                          profileImage: _profileImage,
+                          bannerImage: _bannerImage,
+                          onSave: _handleProfileSave,
+                        )
+                      : Container(
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: _StatItem(
-                                  value: "15+",
-                                  label: "Sponsorship Campaigns",
+                              const SizedBox(height: 80),
+                              CustomText(
+                                title: sponsorProfile?.name ?? "No name set",
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                textColor: AppColors.black,
+                              ),
+                              CustomText(
+                                title: sponsorProfile?.address ?? "No address set",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                textColor: AppColors.textGrey,
+                              ),
+                              SizedBox(height: 30),
+                              IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.sponsorshipCampaigns ?? 0}",
+                                        label: "Sponsorship Campaigns",
+                                      ),
+                                    ),
+                                    const VerticalDivider(
+                                      color: AppColors.divider,
+                                      thickness: 1,
+                                      indent: 10,
+                                      endIndent: 10,
+                                    ),
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.athletesSponsored ?? 0}",
+                                        label: "Athletes Represented",
+                                      ),
+                                    ),
+                                    const VerticalDivider(
+                                      color: AppColors.divider,
+                                      thickness: 1,
+                                      indent: 10,
+                                      endIndent: 10,
+                                    ),
+                                    Expanded(
+                                      child: _StatItem(
+                                        value:
+                                            "${sponsorProfile?.stats.globalPartners ?? 0}",
+                                        label: "Global Partners",
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const VerticalDivider(
-                                color: AppColors.divider,
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              Expanded(
-                                child: _StatItem(
-                                  value: "50+",
-                                  label: "Athletes Represented",
+
+                              const SizedBox(height: 30),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
+                                child: CustomText(
+                                  title: sponsorProfile?.description ?? "No description set",
+                                  textAlign: TextAlign.center,
+                                  textColor: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const VerticalDivider(
-                                color: AppColors.divider,
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
+                              const SizedBox(height: 20),
+
+                              Row(
+                                children: [
+                                  SizedBox(width: 24),
+                                  const CustomText(
+                                    title: "Athletes Sponsored",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    textColor: AppColors.textPrimary,
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                child: _StatItem(
-                                  value: "100+",
-                                  label: "Global Partners",
+                              const SizedBox(height: 10),
+
+                              SizedBox(
+                                height: 400,
+                                child: AthletesSponsored3d(
+                                  athleteImages: athleteImages,
+                                  athleteNames: athleteNames,
                                 ),
                               ),
+
+                              const SizedBox(height: 80),
                             ],
                           ),
                         ),
-
-                        const SizedBox(height: 30),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: CustomText(
-                            title:
-                                "SponsorPro is a global sports sponsorship agency connecting athletes with brands. "
-                                "We specialize in football, athletics, and racket sports, helping companies find the "
-                                "right talent for their campaigns.",
-                            textAlign: TextAlign.center,
-                            textColor: AppColors.textSecondary,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        Row(
-                          children: [
-                            SizedBox(width: 24),
-                            const CustomText(
-                              title: "Athletes Sponsored",
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              textColor: AppColors.textPrimary,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-
-                        SizedBox(
-                          height: 400,
-                          child: AthletesSponsored3d(
-                            athleteImages: athleteImages,
-                            athleteNames: athleteNames,
-                          ),
-                        ),
-
-                        const SizedBox(height: 80),
-                      ],
-                    ),
+                  PostFeedSection(
+                    jobPosts: sponsorProfile?.jobPosts,
+                    sponsorProfile: sponsorProfile,
+                    profileUser: profileUser,
                   ),
-            PostFeedSection(),
-            // PostCardPage(),
-          ],
-        ),
-      ),
+                  // PostCardPage(),
+                ],
+              ),
+            ),
     );
   }
 }
