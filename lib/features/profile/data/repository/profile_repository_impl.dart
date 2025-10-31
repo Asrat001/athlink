@@ -21,7 +21,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
       log("   User ID: ${response.user.id}");
       log("   Email: ${response.user.email}");
       log("   Role: ${response.user.role}");
-      log("   Sponsor Profile: ${response.user.sponsorProfile?.name ?? 'null'}");
+      log(
+        "   Sponsor Profile: ${response.user.sponsorProfile?.name ?? 'null'}",
+      );
+      log("   jobs: ${response.user.sponsorProfile!.jobPosts}");
       return ApiResponse.success(data: response);
     } catch (e, stackTrace) {
       log("❌ Get profile error: $e");

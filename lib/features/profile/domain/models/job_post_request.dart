@@ -14,6 +14,7 @@ abstract class JobPostRequest with _$JobPostRequest {
     String? timelineEnd,
     String? requirements,
     List<String>? media,
+    String? budget,
   }) = _JobPostRequest;
 
   factory JobPostRequest.fromJson(Map<String, dynamic> json) =>
@@ -43,6 +44,7 @@ abstract class UpdateJobPostRequest with _$UpdateJobPostRequest {
     String? timelineEnd,
     String? requirements,
     List<String>? media,
+    String? budget,
   }) = _UpdateJobPostRequest;
 
   factory UpdateJobPostRequest.fromJson(Map<String, dynamic> json) =>

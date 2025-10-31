@@ -34,15 +34,15 @@ class _PodcastCardState extends State<PodcastCard> {
   }
 
   Future<void> _extractColor() async {
-    final color = await ImagePalette.getDominantColorFromNetwork(widget.imageUrl);
+    final color = await ImagePalette.getDominantColorFromNetwork(
+      widget.imageUrl,
+    );
     if (mounted) {
       setState(() {
         _cardColor = color;
       });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _PodcastCardState extends State<PodcastCard> {
     double cardWidth = MediaQuery.of(context).size.width * 0.42;
 
     return GestureDetector(
-      onTap:widget.onPlay,
+      onTap: widget.onPlay,
       child: SizedBox(
         width: cardWidth,
         child: Column(
@@ -63,16 +63,13 @@ class _PodcastCardState extends State<PodcastCard> {
               borderRadius: BorderRadius.circular(8),
               child: AspectRatio(
                 aspectRatio: 1, // keep square
-                child: Image.network(
-                  widget.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.network(widget.imageUrl, fit: BoxFit.cover),
               ),
             ),
             const SizedBox(height: 8),
             // Title
             Text(
-             widget.title,
+              widget.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -86,10 +83,7 @@ class _PodcastCardState extends State<PodcastCard> {
               widget.host,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.grey[400],
-                fontSize: 13,
-              ),
+              style: TextStyle(color: Colors.grey[400], fontSize: 13),
             ),
           ],
         ),

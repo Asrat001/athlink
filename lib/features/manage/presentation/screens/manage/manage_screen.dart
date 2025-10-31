@@ -1,25 +1,28 @@
+import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-
 
 enum JobsSectionState { listing, applicants, jobDetail, baDetail }
 
 enum ApplicantTab { newApplicants, invitees }
 
-class ManageScreen extends StatefulWidget {
+class ManageScreen extends ConsumerStatefulWidget {
   const ManageScreen({super.key});
 
   @override
-  State<ManageScreen> createState() => _ManageScreenState();
+  ConsumerState<ManageScreen> createState() => _ManageScreenState();
 }
 
-class _ManageScreenState extends State<ManageScreen> {
+class _ManageScreenState extends ConsumerState<ManageScreen> {
   // -------------------- Dummy data --------------------
   final List<Map<String, dynamic>> jobs = const [
     {
@@ -128,8 +131,20 @@ class _ManageScreenState extends State<ManageScreen> {
   int? selectedJobIndex;
   JobsSectionState? previousJobsState;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(jobListProvider.notifier).fetchJobPosts();
+      ref.read(profileProvider.notifier).getProfile();
+    });
+  }
+
   // -------------------- Helpers --------------------
   void _openCreateJobModal(BuildContext context) {
+    final profileState = ref.read(profileProvider);
+    final sports = profileState.profileUser?.sport ?? [];
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -137,8 +152,11 @@ class _ManageScreenState extends State<ManageScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => const CreateJobModal(sports: [],),
-    );
+      builder: (_) => CreateJobModal(sports: sports),
+    ).then((_) {
+      // Refresh job list after modal closes
+      ref.read(jobListProvider.notifier).fetchJobPosts();
+    });
   }
 
   void _showJobFromListing(int index) {
@@ -149,7 +167,6 @@ class _ManageScreenState extends State<ManageScreen> {
       jobsState = JobsSectionState.applicants;
     });
   }
-
 
   void _openDetailForSelectedJob() {
     if (selectedJobIndex == null) return;
@@ -318,6 +335,59 @@ class _ManageScreenState extends State<ManageScreen> {
 
   // -------------------- Listing --------------------
   Widget _jobsListing(BuildContext context) {
+    final jobListState = ref.watch(jobListProvider);
+
+    if (jobListState.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (jobListState.errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomText(
+              title: 'Error: ${jobListState.errorMessage}',
+              textColor: AppColors.red,
+            ),
+            const SizedBox(height: 16),
+            RoundedButton(
+              label: 'Retry',
+              onPressed: () {
+                ref.read(jobListProvider.notifier).fetchJobPosts();
+              },
+              height: 40,
+              width: 100,
+              borderRadius: 8,
+              backgroundColor: AppColors.primary,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Convert API jobs to dummy format for display
+    final apiJobs = jobListState.jobPosts;
+    final companyName = jobListState.companyName ?? 'Company';
+    final companyLogo = jobListState.companyLogo;
+
+    final jobs = apiJobs.map((job) {
+      return {
+        "id": job.id,
+        "type": "hiring",
+        "agencyLogo": companyLogo!.isNotEmpty
+            ? UrlHelper.getFullImageUrl(companyLogo) //companyLogo
+            : "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
+        "agencyName": companyName,
+        "location": job.location,
+        "price": job.price.isNotEmpty ? job.price : "N/A",
+        "title": job.title,
+        "tags": [], // No tags in API data
+        "notifications": job.applicantCount,
+        "description": job.description,
+      };
+    }).toList();
+
     if (jobs.isEmpty) return _buildEmptyJobs(context);
 
     return SingleChildScrollView(
@@ -538,7 +608,7 @@ class _ManageScreenState extends State<ManageScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: RoundedButton(
                   label: 'Create a job post',
-                  onPressed: () {},
+                  onPressed: () => _openCreateJobModal(context),
                   height: 50,
                   borderRadius: 8,
                   backgroundColor: AppColors.black,
