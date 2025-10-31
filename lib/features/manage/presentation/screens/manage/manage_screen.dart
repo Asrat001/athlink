@@ -170,14 +170,10 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
   void _openDetailForSelectedJob() {
     if (selectedJobIndex == null) return;
-    final job = jobs[selectedJobIndex!];
     setState(() {
       previousJobsState = jobsState;
-      if (job['type'] == 'brand') {
-        jobsState = JobsSectionState.baDetail;
-      } else {
-        jobsState = JobsSectionState.jobDetail;
-      }
+      // For now, all jobs from API are hiring type
+      jobsState = JobsSectionState.jobDetail;
     });
   }
 
@@ -624,7 +620,16 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   }
 
   Widget _applicantsView(BuildContext context) {
-    final job = jobs[selectedJobIndex ?? 0];
+    final jobListState = ref.watch(jobListProvider);
+
+    // Get real job data
+    final apiJobs = jobListState.jobPosts;
+    if (selectedJobIndex == null || selectedJobIndex! >= apiJobs.length) {
+      return const Center(child: Text('Job not found'));
+    }
+
+    final selectedJob = apiJobs[selectedJobIndex!];
+    final companyLogo = jobListState.companyLogo;
 
     return Column(
       key: const ValueKey('applicants_view'),
@@ -645,15 +650,22 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
           ),
           child: Row(
             children: [
-              // back arrow (Material style - user requested B)
+              // back arrow
               GestureDetector(
                 onTap: _jobsBack,
                 child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
               ),
               const SizedBox(width: 12),
+              // Company logo from API
               CircleAvatar(
                 radius: 22,
-                backgroundImage: AssetImage("assets/images/on1.jpg"),
+                backgroundColor: AppColors.lightGrey,
+                backgroundImage: companyLogo != null && companyLogo.isNotEmpty
+                    ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
+                    : null,
+                child: companyLogo == null || companyLogo.isEmpty
+                    ? const Icon(Icons.business, color: AppColors.grey)
+                    : null,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -661,13 +673,13 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      title: job["agencyName"],
+                      title: selectedJob.title,
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
                     GestureDetector(
                       onTap: _openDetailForSelectedJob,
-                      child: CustomText(
+                      child: const CustomText(
                         title: 'View detail',
                         fontSize: 14,
                         textColor: AppColors.primary,
@@ -678,7 +690,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
               ),
 
               const SizedBox(width: 8),
-              if (job["notifications"] != null)
+              if (selectedJob.applicantCount > 0)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -689,7 +701,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: CustomText(
-                    title: job["notifications"].toString(),
+                    title: selectedJob.applicantCount.toString(),
                     fontSize: 12,
                     textColor: AppColors.white,
                     fontWeight: FontWeight.w600,
@@ -738,94 +750,132 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   // -------------------- Job detail --------------------
   /// Generic job detail (hiring flow)
   Widget _jobDetailView(BuildContext context) {
-    final job = jobs[selectedJobIndex ?? 0];
+    final jobListState = ref.watch(jobListProvider);
+
+    // Get real job data
+    final apiJobs = jobListState.jobPosts;
+    if (selectedJobIndex == null || selectedJobIndex! >= apiJobs.length) {
+      return const Center(child: Text('Job not found'));
+    }
+
+    final selectedJob = apiJobs[selectedJobIndex!];
+    final companyLogo = jobListState.companyLogo;
+    final companyName = jobListState.companyName ?? 'Company';
+
+    // Calculate timeline duration
+    String timelineDuration = 'N/A';
+    if (selectedJob.timeline.startDate != null &&
+        selectedJob.timeline.endDate != null) {
+      final duration = selectedJob.timeline.endDate!.difference(
+        selectedJob.timeline.startDate!,
+      );
+      final months = (duration.inDays / 30).round();
+      if (months > 0) {
+        timelineDuration = '$months month${months != 1 ? 's' : ''}';
+      }
+    }
+
     return SingleChildScrollView(
       key: const ValueKey('job_detail_view'),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // header row: back + logo + agency name + location
-          Row(
-            children: [
-              GestureDetector(
-                onTap: _jobsBack,
-                child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
-              ),
-              const SizedBox(width: 12),
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: NetworkImage(job["agencyLogo"]),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      title: job["agencyName"],
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                    CustomText(
-                      title: job["location"],
-                      fontSize: 14,
-                      textColor: AppColors.grey,
-                    ),
-                  ],
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * .6,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // header row: back + logo + agency name + location
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundImage: companyLogo != null && companyLogo.isNotEmpty
+                      ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
+                      : null,
+                  backgroundColor: AppColors.lightGrey,
+                  child: companyLogo == null || companyLogo.isEmpty
+                      ? const Icon(Icons.business, color: AppColors.grey)
+                      : null,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        title: companyName,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                      CustomText(
+                        title: selectedJob.location,
+                        fontSize: 14,
+                        textColor: AppColors.grey,
+                      ),
+                    ],
+                  ),
+                ),
 
-          CustomText(
-            title: job["title"],
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            textColor: AppColors.black,
-          ),
-          const SizedBox(height: 12),
-          CustomText(
-            title: job["description"] ?? '',
-            fontSize: 14,
-            textColor: AppColors.grey,
-          ),
-          const SizedBox(height: 18),
+                GestureDetector(
+                  onTap: _jobsBack,
+                  child: const Icon(Icons.arrow_back, color: AppColors.black),
+                ),
+                const SizedBox(width: 12),
+              ],
+            ),
+            const SizedBox(height: 18),
 
-          Row(
-            children: [
-              CustomText(
-                title: 'Payment',
-                fontSize: 14,
-                textColor: AppColors.grey,
-              ),
-              const SizedBox(width: 12),
-              CustomText(
-                title: job["price"].toString().replaceAll('/m', ''),
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              CustomText(
-                title: 'Time line',
-                fontSize: 14,
-                textColor: AppColors.grey,
-              ),
-              const SizedBox(width: 12),
-              CustomText(
-                title: '3 months',
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-        ],
+            CustomText(
+              title: selectedJob.title,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              textColor: AppColors.black,
+            ),
+            const SizedBox(height: 12),
+            CustomText(
+              title: selectedJob.description,
+              fontSize: 14,
+              textColor: AppColors.grey,
+            ),
+            const SizedBox(height: 18),
+
+            Row(
+              children: [
+                CustomText(
+                  title: 'Payment',
+                  fontSize: 14,
+                  textColor: AppColors.grey,
+                ),
+                const SizedBox(width: 12),
+                CustomText(
+                  title: selectedJob.price.isNotEmpty
+                      ? selectedJob.price.replaceAll('/m', '')
+                      : 'Not specified',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                CustomText(
+                  title: 'Time line',
+                  fontSize: 14,
+                  textColor: AppColors.grey,
+                ),
+                const SizedBox(width: 12),
+                CustomText(
+                  title: timelineDuration,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }
