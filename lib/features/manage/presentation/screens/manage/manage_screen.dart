@@ -150,8 +150,7 @@ class _ManageScreenState extends State<ManageScreen> {
     });
   }
 
-  /// when View detail clicked inside applicants/baRequest header:
-  /// open detail view for the selected job (choose BA detail or generic job detail).
+
   void _openDetailForSelectedJob() {
     if (selectedJobIndex == null) return;
     final job = jobs[selectedJobIndex!];
