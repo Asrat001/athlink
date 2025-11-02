@@ -1,8 +1,11 @@
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
+import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -137,6 +140,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobListProvider.notifier).fetchJobPosts();
       ref.read(profileProvider.notifier).getProfile();
+      ref.read(feedProvider.notifier).getFeed();
     });
   }
 
@@ -187,6 +191,19 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
       if (jobsState == JobsSectionState.listing) selectedJobIndex = null;
       previousJobsState = null;
     });
+  }
+
+  List<Athlete> _getFilteredAthletesBySport(String sportId) {
+    final feedState = ref.watch(feedProvider);
+
+    if (feedState.feedData == null || feedState.feedData!.athletes.isEmpty) {
+      return [];
+    }
+
+    // Filter athletes that have the same sport as the job
+    return feedState.feedData!.athletes.where((athlete) {
+      return athlete.sport.any((sport) => sport.id == sportId);
+    }).toList();
   }
 
   @override
@@ -727,20 +744,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: ListView.separated(
-              padding: const EdgeInsets.only(bottom: 24),
-              itemCount: activeApplicantTab == ApplicantTab.newApplicants
-                  ? newApplicants.length
-                  : invitees.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 18),
-              itemBuilder: (context, idx) {
-                final applicant =
-                    activeApplicantTab == ApplicantTab.newApplicants
-                    ? newApplicants[idx]
-                    : invitees[idx];
-                return _applicantCard(applicant, context);
-              },
-            ),
+            child: _buildApplicantsList(selectedJob),
           ),
         ),
       ],
@@ -995,6 +999,69 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     );
   }
 
+  Widget _buildApplicantsList(dynamic selectedJob) {
+    if (activeApplicantTab == ApplicantTab.newApplicants) {
+      // Show actual applicants
+      if (selectedJob.applicants.isEmpty) {
+        return Center(
+          child: CustomText(
+            title: 'No new applicants yet',
+            textColor: AppColors.grey,
+            fontSize: 16,
+          ),
+        );
+      }
+
+      return ListView.separated(
+        padding: const EdgeInsets.only(bottom: 24),
+        itemCount: selectedJob.applicants.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 18),
+        itemBuilder: (context, idx) {
+          final applicant = selectedJob.applicants[idx];
+          return _applicantCardFromAPI(applicant, context, isApplicant: true);
+        },
+      );
+    } else {
+      // Show filtered athletes by sport (invitees)
+      final filteredAthletes = _getFilteredAthletesBySport(selectedJob.sportId.id);
+      final feedState = ref.watch(feedProvider);
+
+      if (feedState.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (feedState.errorMessage != null) {
+        return Center(
+          child: CustomText(
+            title: 'Error loading athletes',
+            textColor: AppColors.red,
+            fontSize: 16,
+          ),
+        );
+      }
+
+      if (filteredAthletes.isEmpty) {
+        return Center(
+          child: CustomText(
+            title: 'No athletes found for this sport',
+            textColor: AppColors.grey,
+            fontSize: 16,
+          ),
+        );
+      }
+
+      return ListView.separated(
+        padding: const EdgeInsets.only(bottom: 24),
+        itemCount: filteredAthletes.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 18),
+        itemBuilder: (context, idx) {
+          final athlete = filteredAthletes[idx];
+          return _applicantCardFromAPI(athlete, context, isApplicant: false);
+        },
+      );
+    }
+  }
+
   Widget _applicantTabButton(ApplicantTab tab, String label) {
     final isActive = activeApplicantTab == tab;
     return Expanded(
@@ -1029,8 +1096,44 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         barrierDismissible: true,
         opaque: false,
         barrierColor: AppColors.transparent,
-        pageBuilder: (_, __, ___) =>
-            ApplicantDetail(applicantData: applicantData),
+        pageBuilder: (_, __, ___) {
+          // This is kept for backward compatibility with dummy data
+          // Convert Map to a minimal Athlete object
+          final dummyAthlete = Athlete(
+            id: 'dummy',
+            email: '',
+            name: applicantData["name"] ?? 'Unknown',
+            athleteProfile: AthleteProfile(
+              name: applicantData["name"],
+              age: applicantData["age"],
+              rating: (applicantData["rating"] as num?)?.toDouble(),
+            ),
+            sport: [],
+          );
+          return ApplicantDetail(athlete: dummyAthlete);
+        },
+        transitionsBuilder: (_, anim, __, child) {
+          return FadeTransition(opacity: anim, child: child);
+        },
+      ),
+    );
+  }
+
+  void _showAthleteDetailOverlay(
+    BuildContext context,
+    Athlete athlete, {
+    required bool isApplicant,
+  }) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        barrierDismissible: true,
+        opaque: false,
+        barrierColor: AppColors.transparent,
+        pageBuilder: (_, __, ___) => ApplicantDetail(
+          athlete: athlete,
+          isApplicant: isApplicant,
+        ),
         transitionsBuilder: (_, anim, __, child) {
           return FadeTransition(opacity: anim, child: child);
         },
@@ -1152,6 +1255,166 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                   width: 28,
                   fit: BoxFit.cover,
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _applicantCardFromAPI(Athlete applicant, BuildContext context, {required bool isApplicant}) {
+    final athleteProfile = applicant.athleteProfile;
+    final athleteName = athleteProfile?.name ?? applicant.name ?? 'Unknown Athlete';
+    final age = athleteProfile?.age ?? 0;
+    final rating = athleteProfile?.rating ?? 0.0;
+    final position = athleteProfile?.position ?? '';
+    final profileImageUrl = athleteProfile?.profileImageUrl;
+    final countryFlag = athleteProfile?.countryFlag;
+
+    return InkWell(
+      onTap: () {
+        _showAthleteDetailOverlay(context, applicant, isApplicant: isApplicant);
+      },
+      child: Container(
+        height: 170,
+        decoration: BoxDecoration(
+          color: AppColors.grey.withValues(alpha: .5),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Stack(
+          children: [
+            // main row
+            Row(
+              children: [
+                SizedBox(
+                  width: 140,
+                  height: 170,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
+                    ),
+                    child: profileImageUrl != null && profileImageUrl.isNotEmpty
+                        ? Image.network(
+                            '$fileBaseUrl$profileImageUrl',
+                            fit: BoxFit.cover,
+                            height: 170,
+                            width: 140,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                "assets/images/athlete.png",
+                                fit: BoxFit.cover,
+                                height: 170,
+                                width: 140,
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            "assets/images/athlete.png",
+                            fit: BoxFit.cover,
+                            height: 170,
+                            width: 140,
+                          ),
+                  ),
+                ),
+
+                // content area
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 14,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: athleteName,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          textColor: AppColors.white,
+                        ),
+                        const SizedBox(height: 4),
+                        CustomText(
+                          title: position.isNotEmpty ? position : "Athlete",
+                          fontSize: 12,
+                          textColor: AppColors.white.withValues(alpha: .85),
+                        ),
+                        const SizedBox(height: 6),
+                        CustomText(
+                          title: 'Age : ${age > 0 ? age : 'N/A'}',
+                          fontSize: 12,
+                          textColor: AppColors.white.withValues(alpha: .85),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Row(
+                              children: List.generate(
+                                5,
+                                (i) => Icon(
+                                  Icons.star,
+                                  size: 16,
+                                  color: i < rating.floor()
+                                      ? AppColors.amber
+                                      : AppColors.amber.withOpacity(0.3),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              title: '(${athleteProfile?.achievements.length ?? 0})',
+                              fontSize: 12,
+                              textColor: AppColors.white,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        RoundedButton(
+                          label: isApplicant ? 'Accept proposal' : 'Send Proposal',
+                          onPressed: () {},
+                          height: 36,
+                          width: 140,
+                          borderRadius: 20,
+                          backgroundColor: AppColors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // country flag top-right
+            Positioned(
+              top: 10,
+              right: 12,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: countryFlag != null && countryFlag.isNotEmpty
+                    ? Image.network(
+                        '$fileBaseUrl$countryFlag',
+                        height: 28,
+                        width: 28,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            "assets/images/flag.png",
+                            height: 28,
+                            width: 28,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        "assets/images/flag.png",
+                        height: 28,
+                        width: 28,
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
           ],

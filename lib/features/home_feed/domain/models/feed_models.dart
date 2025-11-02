@@ -87,6 +87,7 @@ abstract class AthleteProfile with _$AthleteProfile {
     String? position,
     String? level,
     double? rating,
+    String? countryFlag,
     @Default([]) List<Achievement> achievements,
   }) = _AthleteProfile;
 

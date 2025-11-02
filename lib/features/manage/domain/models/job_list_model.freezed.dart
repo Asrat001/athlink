@@ -293,7 +293,7 @@ as String?,
 /// @nodoc
 mixin _$JobPostItem {
 
-@JsonKey(name: "_id") String get id; Timeline get timeline; String get title;@JsonKey(name: "sport_id") SportInfo get sportId; String get location; String get description; String get requirements; DateTime get createdAt; List<String> get mediaUrls; List<dynamic> get applicants; int get applicantCount; String get price;
+@JsonKey(name: "_id") String get id; Timeline get timeline; String get title;@JsonKey(name: "sport_id") SportInfo get sportId; String get location; String get description; String get requirements; DateTime get createdAt; List<String> get mediaUrls; List<Athlete> get applicants; int get applicantCount; String get price;
 /// Create a copy of JobPostItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -326,7 +326,7 @@ abstract mixin class $JobPostItemCopyWith<$Res>  {
   factory $JobPostItemCopyWith(JobPostItem value, $Res Function(JobPostItem) _then) = _$JobPostItemCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<dynamic> applicants, int applicantCount, String price
+@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<Athlete> applicants, int applicantCount, String price
 });
 
 
@@ -355,7 +355,7 @@ as String,requirements: null == requirements ? _self.requirements : requirements
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,mediaUrls: null == mediaUrls ? _self.mediaUrls : mediaUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,applicants: null == applicants ? _self.applicants : applicants // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
+as List<Athlete>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -460,7 +460,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<dynamic> applicants,  int applicantCount,  String price)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JobPostItem() when $default != null:
 return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
@@ -481,7 +481,7 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<dynamic> applicants,  int applicantCount,  String price)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)  $default,) {final _that = this;
 switch (_that) {
 case _JobPostItem():
 return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
@@ -501,7 +501,7 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<dynamic> applicants,  int applicantCount,  String price)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)?  $default,) {final _that = this;
 switch (_that) {
 case _JobPostItem() when $default != null:
 return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
@@ -516,7 +516,7 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 @JsonSerializable()
 
 class _JobPostItem implements JobPostItem {
-  const _JobPostItem({@JsonKey(name: "_id") required this.id, required this.timeline, required this.title, @JsonKey(name: "sport_id") required this.sportId, this.location = '', this.description = '', this.requirements = '', required this.createdAt, final  List<String> mediaUrls = const [], final  List<dynamic> applicants = const [], this.applicantCount = 0, this.price = ''}): _mediaUrls = mediaUrls,_applicants = applicants;
+  const _JobPostItem({@JsonKey(name: "_id") required this.id, required this.timeline, required this.title, @JsonKey(name: "sport_id") required this.sportId, this.location = '', this.description = '', this.requirements = '', required this.createdAt, final  List<String> mediaUrls = const [], final  List<Athlete> applicants = const [], this.applicantCount = 0, this.price = ''}): _mediaUrls = mediaUrls,_applicants = applicants;
   factory _JobPostItem.fromJson(Map<String, dynamic> json) => _$JobPostItemFromJson(json);
 
 @override@JsonKey(name: "_id") final  String id;
@@ -534,8 +534,8 @@ class _JobPostItem implements JobPostItem {
   return EqualUnmodifiableListView(_mediaUrls);
 }
 
- final  List<dynamic> _applicants;
-@override@JsonKey() List<dynamic> get applicants {
+ final  List<Athlete> _applicants;
+@override@JsonKey() List<Athlete> get applicants {
   if (_applicants is EqualUnmodifiableListView) return _applicants;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_applicants);
@@ -577,7 +577,7 @@ abstract mixin class _$JobPostItemCopyWith<$Res> implements $JobPostItemCopyWith
   factory _$JobPostItemCopyWith(_JobPostItem value, $Res Function(_JobPostItem) _then) = __$JobPostItemCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<dynamic> applicants, int applicantCount, String price
+@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<Athlete> applicants, int applicantCount, String price
 });
 
 
@@ -606,7 +606,7 @@ as String,requirements: null == requirements ? _self.requirements : requirements
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,mediaUrls: null == mediaUrls ? _self._mediaUrls : mediaUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,applicants: null == applicants ? _self._applicants : applicants // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
+as List<Athlete>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as String,
   ));

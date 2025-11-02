@@ -1,3 +1,4 @@
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
@@ -25,6 +26,19 @@ class JobListRemoteDataSource extends BaseRepository {
 
         // Convert JobPost to JobPostItem
         final jobPostItems = jobPosts.map((jobPost) {
+          // Parse applicants from dynamic to List<Athlete>
+          final applicantsList = jobPost.applicants
+              .map((applicantJson) {
+                try {
+                  return Athlete.fromJson(applicantJson as Map<String, dynamic>);
+                } catch (e) {
+                  // If parsing fails, return null and filter it out
+                  return null;
+                }
+              })
+              .whereType<Athlete>() // Filter out null values
+              .toList();
+
           return manage_models.JobPostItem(
             id: jobPost.id,
             timeline: manage_models.Timeline(
@@ -42,8 +56,8 @@ class JobListRemoteDataSource extends BaseRepository {
             requirements: jobPost.requirements,
             createdAt: jobPost.createdAt,
             mediaUrls: jobPost.mediaUrls,
-            applicants: jobPost.applicants,
-            applicantCount: jobPost.applicants.length,
+            applicants: applicantsList,
+            applicantCount: applicantsList.length,
             price: jobPost.budget,
           );
         }).toList();

@@ -36,7 +36,11 @@ _JobPostItem _$JobPostItemFromJson(Map<String, dynamic> json) => _JobPostItem(
   mediaUrls:
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
-  applicants: json['applicants'] as List<dynamic>? ?? const [],
+  applicants:
+      (json['applicants'] as List<dynamic>?)
+          ?.map((e) => Athlete.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   applicantCount: (json['applicantCount'] as num?)?.toInt() ?? 0,
   price: json['price'] as String? ?? '',
 );

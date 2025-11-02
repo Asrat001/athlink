@@ -1,3 +1,4 @@
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'job_list_model.freezed.dart';
@@ -28,7 +29,7 @@ abstract class JobPostItem with _$JobPostItem {
     @Default('') String requirements,
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
-    @Default([]) List<dynamic> applicants,
+    @Default([]) List<Athlete> applicants,
     @Default(0) int applicantCount,
     @Default('') String price,
   }) = _JobPostItem;

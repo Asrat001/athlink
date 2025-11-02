@@ -6,6 +6,7 @@ import 'package:athlink/features/profile/domain/models/profile_model.dart';
 import 'package:athlink/features/profile/domain/repository/profile_repository.dart';
 import 'package:athlink/shared/handlers/api_response.dart';
 import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:flutter/cupertino.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
@@ -17,14 +18,14 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       log("📡 Fetching profile from API...");
       final response = await _remoteDataSource.getProfile();
-      log("✅ Profile API response received");
-      log("   User ID: ${response.user.id}");
-      log("   Email: ${response.user.email}");
-      log("   Role: ${response.user.role}");
+      debugPrint("✅ Profile API response received");
+      debugPrint("   User ID: ${response.user.id}");
+      debugPrint("   Email: ${response.user.email}");
+      debugPrint("   Role: ${response.user.role}");
       log(
         "   Sponsor Profile: ${response.user.sponsorProfile?.name ?? 'null'}",
       );
-      log("   jobs: ${response.user.sponsorProfile!.jobPosts}");
+      // log("   jobs: ${response.user.sponsorProfile!.jobPosts}");
       return ApiResponse.success(data: response);
     } catch (e, stackTrace) {
       log("❌ Get profile error: $e");
