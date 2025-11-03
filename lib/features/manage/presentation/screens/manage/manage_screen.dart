@@ -142,8 +142,11 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint("=== INIT: Fetching initial data ===");
       ref.read(jobListProvider.notifier).fetchJobPosts();
       ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
+      debugPrint("=== INIT: Calling getSponsorInvitations ===");
+      ref.read(jobListProvider.notifier).getSponsorInvitations();
       ref.read(profileProvider.notifier).getProfile();
       ref.read(feedProvider.notifier).getFeed();
     });
@@ -175,6 +178,10 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
       previousJobsState = jobsState;
       jobsState = JobsSectionState.applicants;
     });
+
+    // Refresh invitations when entering applicants view
+    debugPrint("=== Opening job, refreshing invitations ===");
+    ref.read(jobListProvider.notifier).getSponsorInvitations();
   }
 
   void _openDetailForSelectedJob() {
@@ -218,6 +225,53 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     return jobListState.sponsoredAthletes.any(
       (sponsoredAthlete) => sponsoredAthlete.applicationId == applicationId,
     );
+  }
+
+  // Check if an athlete has been invited for a specific job
+  // Returns the invitation ID if found and active, null otherwise
+  String? _getInvitationId(String athleteId, String jobId) {
+    final jobListState = ref.watch(jobListProvider);
+
+    // Debug: Print all invitations to see what we have
+    debugPrint(
+      "=== Checking invitations for athlete: $athleteId, job: $jobId ===",
+    );
+    debugPrint("Total invitations: ${jobListState.invitations.length}");
+
+    for (var inv in jobListState.invitations) {
+      final invAthleteId = inv.athlete['_id'] as String?;
+      final invJobId = inv.jobPost is String
+          ? inv.jobPost
+          : (inv.jobPost as Map<String, dynamic>?)?['_id'] as String?;
+      debugPrint(
+        "Invitation: athlete=$invAthleteId, job=$invJobId, status=${inv.status}",
+      );
+    }
+
+    // Find invitation that matches both athlete and job (ANY status)
+    try {
+      final invitation = jobListState.invitations.firstWhere((inv) {
+        // Extract athlete ID from the athlete map
+        final invAthleteId = inv.athlete['_id'] as String?;
+        // jobPost could be a string ID or an object
+        final invJobId = inv.jobPost is String
+            ? inv.jobPost
+            : (inv.jobPost as Map<String, dynamic>?)?['_id'] as String?;
+
+        // Check if IDs match (regardless of status)
+        final matches = invAthleteId == athleteId && invJobId == jobId;
+
+        if (matches) {
+          debugPrint("FOUND INVITATION: ID ${inv.id}, status: ${inv.status}");
+        }
+        return matches;
+      });
+      return invitation.id;
+    } catch (e) {
+      // No invitation found
+      debugPrint("NO INVITATION FOUND for athlete: $athleteId, job: $jobId");
+      return null;
+    }
   }
 
   @override
@@ -1090,7 +1144,26 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         );
       }
 
-      if (filteredAthletes.isEmpty) {
+      // Get list of athlete IDs who have already applied
+      final applicantIds = selectedJob.applications
+          .map((app) => app.athlete.id)
+          .where((id) => id != null)
+          .toSet();
+
+      // Get list of athlete IDs who have been accepted/sponsored
+      final jobListState = ref.watch(jobListProvider);
+      final sponsoredAthleteIds = jobListState.sponsoredAthletes
+          .map((sponsored) => sponsored.athlete.id)
+          .where((id) => id != null)
+          .toSet();
+
+      // Filter out athletes who have already applied OR been sponsored
+      final availableAthletes = filteredAthletes.where((athlete) {
+        return !applicantIds.contains(athlete.id) &&
+            !sponsoredAthleteIds.contains(athlete.id);
+      }).toList();
+
+      if (availableAthletes.isEmpty) {
         return Center(
           child: CustomText(
             title: 'No athletes found for this sport',
@@ -1102,10 +1175,10 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
       return ListView.separated(
         padding: const EdgeInsets.only(bottom: 24),
-        itemCount: filteredAthletes.length,
+        itemCount: availableAthletes.length,
         separatorBuilder: (_, __) => const SizedBox(height: 18),
         itemBuilder: (context, idx) {
-          final athlete = filteredAthletes[idx];
+          final athlete = availableAthletes[idx];
           // For invitees, create a JobApplication wrapper without application ID
           final fakeApplication = manage_models.JobApplication(
             id: '', // Empty application ID for invitees
@@ -1126,7 +1199,16 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     final isActive = activeApplicantTab == tab;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => activeApplicantTab = tab),
+        onTap: () {
+          setState(() => activeApplicantTab = tab);
+          // Refresh invitations when switching to Invitees tab
+          if (tab == ApplicantTab.invitees) {
+            debugPrint(
+              "=== Switching to Invitees tab, refreshing invitations ===",
+            );
+            ref.read(jobListProvider.notifier).getSponsorInvitations();
+          }
+        },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
@@ -1190,6 +1272,12 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         application.id.isNotEmpty &&
         _isApplicationAccepted(application.id);
 
+    // Check if athlete has been invited for this job
+    final invitationId = !isApplicant && application.athlete.id != null
+        ? _getInvitationId(application.athlete.id!, jobId)
+        : null;
+    final hasInvitation = invitationId != null;
+
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -1201,6 +1289,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
           isApplicant: isApplicant,
           jobId: jobId,
           isAccepted: isAccepted,
+          hasInvitation: hasInvitation,
           onAccept: isAccepted
               ? null
               : (isApplicant && application.id.isNotEmpty
@@ -1240,6 +1329,51 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                         }
                       }
                     : null),
+          onSendProposal:
+              !isApplicant && !hasInvitation && application.athlete.id != null
+              ? () async {
+                  // Send invitation to athlete
+                  final result = await ref
+                      .read(jobListProvider.notifier)
+                      .sendInvitation(
+                        athleteId: application.athlete.id!,
+                        jobId: jobId,
+                        message:
+                            'We would love to sponsor you for this opportunity!',
+                      );
+
+                  if (context.mounted) {
+                    result.when(
+                      success: (data) {
+                        final response =
+                            data as manage_models.SendInvitationResponse;
+                        // Refresh invitations to update button state
+                        ref
+                            .read(jobListProvider.notifier)
+                            .getSponsorInvitations();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(response.message),
+                            backgroundColor: AppColors.success,
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                      failure: (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Error: ${NetworkExceptions.getErrorMessage(error)}',
+                            ),
+                            backgroundColor: AppColors.red,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
+              : null,
+          onCancelProposal: null,
         ),
         transitionsBuilder: (_, anim, _, child) {
           return FadeTransition(opacity: anim, child: child);
@@ -1498,14 +1632,24 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                                 application.id.isNotEmpty &&
                                 _isApplicationAccepted(application.id);
 
+                            // Check if athlete has been invited for this job
+                            final invitationId =
+                                !isApplicant && applicant.id != null
+                                ? _getInvitationId(applicant.id!, jobId)
+                                : null;
+                            final hasInvitation = invitationId != null;
+                            debugPrint("hasInvitation $hasInvitation");
+
                             return RoundedButton(
                               label: isAccepted
                                   ? 'Accepted'
                                   : isApplicant
                                   ? 'Accept proposal'
+                                  : hasInvitation
+                                  ? 'Sent'
                                   : 'Send Proposal',
-                              onPressed: isAccepted
-                                  ? () {}
+                              onPressed: isAccepted || hasInvitation
+                                  ? () {} // Disabled for accepted or sent
                                   : (isApplicant && application.id.isNotEmpty
                                         ? () async {
                                             // Accept the applicant
@@ -1550,11 +1694,66 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                                               );
                                             }
                                           }
+                                        : !isApplicant &&
+                                              applicant.id != null &&
+                                              !hasInvitation
+                                        ? () async {
+                                            // Send invitation to athlete
+                                            final result = await ref
+                                                .read(jobListProvider.notifier)
+                                                .sendInvitation(
+                                                  athleteId: applicant.id!,
+                                                  jobId: jobId,
+                                                  message:
+                                                      'We would love to sponsor you for this opportunity!',
+                                                );
+
+                                            if (context.mounted) {
+                                              result.when(
+                                                success: (data) {
+                                                  final response =
+                                                      data
+                                                          as manage_models.SendInvitationResponse;
+                                                  // Refresh invitations to update button state
+                                                  ref
+                                                      .read(
+                                                        jobListProvider
+                                                            .notifier,
+                                                      )
+                                                      .getSponsorInvitations();
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        response.message,
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.success,
+                                                    ),
+                                                  );
+                                                },
+                                                failure: (error) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Error: ${NetworkExceptions.getErrorMessage(error)}',
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.red,
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          }
                                         : () {}),
                               height: 36,
                               width: 140,
                               borderRadius: 20,
-                              backgroundColor: isAccepted
+                              backgroundColor: isAccepted || hasInvitation
                                   ? AppColors.black.withValues(alpha: 0.6)
                                   : AppColors.black,
                               fontSize: 14,

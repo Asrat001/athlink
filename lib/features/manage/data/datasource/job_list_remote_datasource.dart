@@ -52,7 +52,9 @@ class JobListRemoteDataSource extends BaseRepository {
                   }
                 }
               })
-              .whereType<manage_models.JobApplication>() // Filter out null values
+              .whereType<
+                manage_models.JobApplication
+              >() // Filter out null values
               .toList();
 
           return manage_models.JobPostItem(
@@ -118,6 +120,88 @@ class JobListRemoteDataSource extends BaseRepository {
       },
       fromData: (data) {
         return manage_models.SponsoredAthletesResponse.fromJson(data);
+      },
+    );
+  }
+
+  Future<manage_models.SendInvitationResponse> sendInvitation({
+    required String athleteId,
+    required String jobId,
+    required String message,
+  }) async {
+    return await safeApiCall(
+      path: "/invitation/send",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .post(
+              "/invitation/send",
+              data: {
+                "athleteId": athleteId,
+                "jobId": jobId,
+                "message": message,
+              },
+            );
+      },
+      fromData: (data) {
+        return manage_models.SendInvitationResponse.fromJson(data);
+      },
+    );
+  }
+
+  Future<manage_models.SponsorInvitationsResponse> getSponsorInvitations({
+    String? status,
+  }) async {
+    print(
+      "=== DATASOURCE: getSponsorInvitations called (fetching ALL statuses) ===",
+    );
+    return await safeApiCall(
+      path: "/invitation/sponsor",
+      apiCall: () async {
+        print("=== DATASOURCE: Making HTTP GET to /invitation/sponsor (no status filter) ===");
+        final response = await _httpClient
+            .client(requireAuth: true)
+            .get("/invitation/sponsor"); // Removed queryParameters - fetch all
+        print("=== DATASOURCE: HTTP response received: ${response.data} ===");
+        return response;
+      },
+      fromData: (data) {
+        print("=== DATASOURCE: Parsing response data ===");
+        try {
+          final parsed = manage_models.SponsorInvitationsResponse.fromJson(
+            data,
+          );
+          print(
+            "=== DATASOURCE: Parsed ${parsed.data.invitations.length} invitations ===",
+          );
+          return parsed;
+        } catch (e, stackTrace) {
+          print("=== DATASOURCE: Parsing FAILED ===");
+          print("Error: $e");
+          print("Stack trace: $stackTrace");
+          rethrow;
+        }
+      },
+    );
+  }
+
+  Future<manage_models.WithdrawInvitationResponse> withdrawInvitation({
+    required String invitationId,
+  }) async {
+    print("=== DATASOURCE: withdrawInvitation called for ID: $invitationId ===");
+    return await safeApiCall(
+      path: "/invitation/$invitationId",
+      apiCall: () async {
+        print("=== DATASOURCE: Making DELETE request to /invitation/$invitationId ===");
+        final response = await _httpClient
+            .client(requireAuth: true)
+            .delete("/invitation/$invitationId");
+        print("=== DATASOURCE: DELETE response: ${response.data} ===");
+        return response;
+      },
+      fromData: (data) {
+        print("=== DATASOURCE: Parsing withdraw response ===");
+        return manage_models.WithdrawInvitationResponse.fromJson(data);
       },
     );
   }

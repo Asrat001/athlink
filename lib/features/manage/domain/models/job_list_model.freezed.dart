@@ -3147,4 +3147,1686 @@ $SponsoredAthletesDataCopyWith<$Res> get data {
 }
 }
 
+
+/// @nodoc
+mixin _$SendInvitationRequest {
+
+ String get athleteId; String get jobId; String get message;
+/// Create a copy of SendInvitationRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SendInvitationRequestCopyWith<SendInvitationRequest> get copyWith => _$SendInvitationRequestCopyWithImpl<SendInvitationRequest>(this as SendInvitationRequest, _$identity);
+
+  /// Serializes this SendInvitationRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SendInvitationRequest&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.jobId, jobId) || other.jobId == jobId)&&(identical(other.message, message) || other.message == message));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athleteId,jobId,message);
+
+@override
+String toString() {
+  return 'SendInvitationRequest(athleteId: $athleteId, jobId: $jobId, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SendInvitationRequestCopyWith<$Res>  {
+  factory $SendInvitationRequestCopyWith(SendInvitationRequest value, $Res Function(SendInvitationRequest) _then) = _$SendInvitationRequestCopyWithImpl;
+@useResult
+$Res call({
+ String athleteId, String jobId, String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$SendInvitationRequestCopyWithImpl<$Res>
+    implements $SendInvitationRequestCopyWith<$Res> {
+  _$SendInvitationRequestCopyWithImpl(this._self, this._then);
+
+  final SendInvitationRequest _self;
+  final $Res Function(SendInvitationRequest) _then;
+
+/// Create a copy of SendInvitationRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? athleteId = null,Object? jobId = null,Object? message = null,}) {
+  return _then(_self.copyWith(
+athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String,jobId: null == jobId ? _self.jobId : jobId // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SendInvitationRequest].
+extension SendInvitationRequestPatterns on SendInvitationRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SendInvitationRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SendInvitationRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SendInvitationRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _SendInvitationRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SendInvitationRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SendInvitationRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String athleteId,  String jobId,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SendInvitationRequest() when $default != null:
+return $default(_that.athleteId,_that.jobId,_that.message);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String athleteId,  String jobId,  String message)  $default,) {final _that = this;
+switch (_that) {
+case _SendInvitationRequest():
+return $default(_that.athleteId,_that.jobId,_that.message);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String athleteId,  String jobId,  String message)?  $default,) {final _that = this;
+switch (_that) {
+case _SendInvitationRequest() when $default != null:
+return $default(_that.athleteId,_that.jobId,_that.message);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SendInvitationRequest implements SendInvitationRequest {
+  const _SendInvitationRequest({required this.athleteId, required this.jobId, required this.message});
+  factory _SendInvitationRequest.fromJson(Map<String, dynamic> json) => _$SendInvitationRequestFromJson(json);
+
+@override final  String athleteId;
+@override final  String jobId;
+@override final  String message;
+
+/// Create a copy of SendInvitationRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SendInvitationRequestCopyWith<_SendInvitationRequest> get copyWith => __$SendInvitationRequestCopyWithImpl<_SendInvitationRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SendInvitationRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendInvitationRequest&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.jobId, jobId) || other.jobId == jobId)&&(identical(other.message, message) || other.message == message));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athleteId,jobId,message);
+
+@override
+String toString() {
+  return 'SendInvitationRequest(athleteId: $athleteId, jobId: $jobId, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SendInvitationRequestCopyWith<$Res> implements $SendInvitationRequestCopyWith<$Res> {
+  factory _$SendInvitationRequestCopyWith(_SendInvitationRequest value, $Res Function(_SendInvitationRequest) _then) = __$SendInvitationRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String athleteId, String jobId, String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$SendInvitationRequestCopyWithImpl<$Res>
+    implements _$SendInvitationRequestCopyWith<$Res> {
+  __$SendInvitationRequestCopyWithImpl(this._self, this._then);
+
+  final _SendInvitationRequest _self;
+  final $Res Function(_SendInvitationRequest) _then;
+
+/// Create a copy of SendInvitationRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? athleteId = null,Object? jobId = null,Object? message = null,}) {
+  return _then(_SendInvitationRequest(
+athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String,jobId: null == jobId ? _self.jobId : jobId // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$InvitationData {
+
+@JsonKey(name: "_id") String get id; dynamic get sponsor;// Can be String or Map
+ Map<String, dynamic> get athlete; dynamic get jobPost;// Can be either String (ID) or Map (object)
+ String get message; String get status; DateTime get sentAt; DateTime? get createdAt; DateTime? get updatedAt;@JsonKey(name: "__v") int? get version;
+/// Create a copy of InvitationData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$InvitationDataCopyWith<InvitationData> get copyWith => _$InvitationDataCopyWithImpl<InvitationData>(this as InvitationData, _$identity);
+
+  /// Serializes this InvitationData to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvitationData&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.sponsor, sponsor)&&const DeepCollectionEquality().equals(other.athlete, athlete)&&const DeepCollectionEquality().equals(other.jobPost, jobPost)&&(identical(other.message, message) || other.message == message)&&(identical(other.status, status) || other.status == status)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(sponsor),const DeepCollectionEquality().hash(athlete),const DeepCollectionEquality().hash(jobPost),message,status,sentAt,createdAt,updatedAt,version);
+
+@override
+String toString() {
+  return 'InvitationData(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, message: $message, status: $status, sentAt: $sentAt, createdAt: $createdAt, updatedAt: $updatedAt, version: $version)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $InvitationDataCopyWith<$Res>  {
+  factory $InvitationDataCopyWith(InvitationData value, $Res Function(InvitationData) _then) = _$InvitationDataCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "_id") String id, dynamic sponsor, Map<String, dynamic> athlete, dynamic jobPost, String message, String status, DateTime sentAt, DateTime? createdAt, DateTime? updatedAt,@JsonKey(name: "__v") int? version
+});
+
+
+
+
+}
+/// @nodoc
+class _$InvitationDataCopyWithImpl<$Res>
+    implements $InvitationDataCopyWith<$Res> {
+  _$InvitationDataCopyWithImpl(this._self, this._then);
+
+  final InvitationData _self;
+  final $Res Function(InvitationData) _then;
+
+/// Create a copy of InvitationData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sponsor = freezed,Object? athlete = null,Object? jobPost = freezed,Object? message = null,Object? status = null,Object? sentAt = null,Object? createdAt = freezed,Object? updatedAt = freezed,Object? version = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,sponsor: freezed == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
+as dynamic,athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,jobPost: freezed == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as dynamic,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,version: freezed == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [InvitationData].
+extension InvitationDataPatterns on InvitationData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _InvitationData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _InvitationData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _InvitationData value)  $default,){
+final _that = this;
+switch (_that) {
+case _InvitationData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _InvitationData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _InvitationData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  dynamic sponsor,  Map<String, dynamic> athlete,  dynamic jobPost,  String message,  String status,  DateTime sentAt,  DateTime? createdAt,  DateTime? updatedAt, @JsonKey(name: "__v")  int? version)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _InvitationData() when $default != null:
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.message,_that.status,_that.sentAt,_that.createdAt,_that.updatedAt,_that.version);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  dynamic sponsor,  Map<String, dynamic> athlete,  dynamic jobPost,  String message,  String status,  DateTime sentAt,  DateTime? createdAt,  DateTime? updatedAt, @JsonKey(name: "__v")  int? version)  $default,) {final _that = this;
+switch (_that) {
+case _InvitationData():
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.message,_that.status,_that.sentAt,_that.createdAt,_that.updatedAt,_that.version);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  dynamic sponsor,  Map<String, dynamic> athlete,  dynamic jobPost,  String message,  String status,  DateTime sentAt,  DateTime? createdAt,  DateTime? updatedAt, @JsonKey(name: "__v")  int? version)?  $default,) {final _that = this;
+switch (_that) {
+case _InvitationData() when $default != null:
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.message,_that.status,_that.sentAt,_that.createdAt,_that.updatedAt,_that.version);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _InvitationData implements InvitationData {
+  const _InvitationData({@JsonKey(name: "_id") required this.id, required this.sponsor, required final  Map<String, dynamic> athlete, required this.jobPost, required this.message, required this.status, required this.sentAt, this.createdAt, this.updatedAt, @JsonKey(name: "__v") this.version}): _athlete = athlete;
+  factory _InvitationData.fromJson(Map<String, dynamic> json) => _$InvitationDataFromJson(json);
+
+@override@JsonKey(name: "_id") final  String id;
+@override final  dynamic sponsor;
+// Can be String or Map
+ final  Map<String, dynamic> _athlete;
+// Can be String or Map
+@override Map<String, dynamic> get athlete {
+  if (_athlete is EqualUnmodifiableMapView) return _athlete;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_athlete);
+}
+
+@override final  dynamic jobPost;
+// Can be either String (ID) or Map (object)
+@override final  String message;
+@override final  String status;
+@override final  DateTime sentAt;
+@override final  DateTime? createdAt;
+@override final  DateTime? updatedAt;
+@override@JsonKey(name: "__v") final  int? version;
+
+/// Create a copy of InvitationData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InvitationDataCopyWith<_InvitationData> get copyWith => __$InvitationDataCopyWithImpl<_InvitationData>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$InvitationDataToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InvitationData&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.sponsor, sponsor)&&const DeepCollectionEquality().equals(other._athlete, _athlete)&&const DeepCollectionEquality().equals(other.jobPost, jobPost)&&(identical(other.message, message) || other.message == message)&&(identical(other.status, status) || other.status == status)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(sponsor),const DeepCollectionEquality().hash(_athlete),const DeepCollectionEquality().hash(jobPost),message,status,sentAt,createdAt,updatedAt,version);
+
+@override
+String toString() {
+  return 'InvitationData(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, message: $message, status: $status, sentAt: $sentAt, createdAt: $createdAt, updatedAt: $updatedAt, version: $version)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$InvitationDataCopyWith<$Res> implements $InvitationDataCopyWith<$Res> {
+  factory _$InvitationDataCopyWith(_InvitationData value, $Res Function(_InvitationData) _then) = __$InvitationDataCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "_id") String id, dynamic sponsor, Map<String, dynamic> athlete, dynamic jobPost, String message, String status, DateTime sentAt, DateTime? createdAt, DateTime? updatedAt,@JsonKey(name: "__v") int? version
+});
+
+
+
+
+}
+/// @nodoc
+class __$InvitationDataCopyWithImpl<$Res>
+    implements _$InvitationDataCopyWith<$Res> {
+  __$InvitationDataCopyWithImpl(this._self, this._then);
+
+  final _InvitationData _self;
+  final $Res Function(_InvitationData) _then;
+
+/// Create a copy of InvitationData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sponsor = freezed,Object? athlete = null,Object? jobPost = freezed,Object? message = null,Object? status = null,Object? sentAt = null,Object? createdAt = freezed,Object? updatedAt = freezed,Object? version = freezed,}) {
+  return _then(_InvitationData(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,sponsor: freezed == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
+as dynamic,athlete: null == athlete ? _self._athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,jobPost: freezed == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as dynamic,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,version: freezed == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SendInvitationResponse {
+
+ bool get success; String get message; InvitationData get invitation;
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SendInvitationResponseCopyWith<SendInvitationResponse> get copyWith => _$SendInvitationResponseCopyWithImpl<SendInvitationResponse>(this as SendInvitationResponse, _$identity);
+
+  /// Serializes this SendInvitationResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SendInvitationResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.invitation, invitation) || other.invitation == invitation));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,invitation);
+
+@override
+String toString() {
+  return 'SendInvitationResponse(success: $success, message: $message, invitation: $invitation)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SendInvitationResponseCopyWith<$Res>  {
+  factory $SendInvitationResponseCopyWith(SendInvitationResponse value, $Res Function(SendInvitationResponse) _then) = _$SendInvitationResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, InvitationData invitation
+});
+
+
+$InvitationDataCopyWith<$Res> get invitation;
+
+}
+/// @nodoc
+class _$SendInvitationResponseCopyWithImpl<$Res>
+    implements $SendInvitationResponseCopyWith<$Res> {
+  _$SendInvitationResponseCopyWithImpl(this._self, this._then);
+
+  final SendInvitationResponse _self;
+  final $Res Function(SendInvitationResponse) _then;
+
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? invitation = null,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,invitation: null == invitation ? _self.invitation : invitation // ignore: cast_nullable_to_non_nullable
+as InvitationData,
+  ));
+}
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$InvitationDataCopyWith<$Res> get invitation {
+  
+  return $InvitationDataCopyWith<$Res>(_self.invitation, (value) {
+    return _then(_self.copyWith(invitation: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [SendInvitationResponse].
+extension SendInvitationResponsePatterns on SendInvitationResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SendInvitationResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SendInvitationResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SendInvitationResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _SendInvitationResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SendInvitationResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SendInvitationResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  InvitationData invitation)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SendInvitationResponse() when $default != null:
+return $default(_that.success,_that.message,_that.invitation);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  InvitationData invitation)  $default,) {final _that = this;
+switch (_that) {
+case _SendInvitationResponse():
+return $default(_that.success,_that.message,_that.invitation);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  InvitationData invitation)?  $default,) {final _that = this;
+switch (_that) {
+case _SendInvitationResponse() when $default != null:
+return $default(_that.success,_that.message,_that.invitation);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SendInvitationResponse implements SendInvitationResponse {
+  const _SendInvitationResponse({required this.success, required this.message, required this.invitation});
+  factory _SendInvitationResponse.fromJson(Map<String, dynamic> json) => _$SendInvitationResponseFromJson(json);
+
+@override final  bool success;
+@override final  String message;
+@override final  InvitationData invitation;
+
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SendInvitationResponseCopyWith<_SendInvitationResponse> get copyWith => __$SendInvitationResponseCopyWithImpl<_SendInvitationResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SendInvitationResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendInvitationResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.invitation, invitation) || other.invitation == invitation));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,invitation);
+
+@override
+String toString() {
+  return 'SendInvitationResponse(success: $success, message: $message, invitation: $invitation)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SendInvitationResponseCopyWith<$Res> implements $SendInvitationResponseCopyWith<$Res> {
+  factory _$SendInvitationResponseCopyWith(_SendInvitationResponse value, $Res Function(_SendInvitationResponse) _then) = __$SendInvitationResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, InvitationData invitation
+});
+
+
+@override $InvitationDataCopyWith<$Res> get invitation;
+
+}
+/// @nodoc
+class __$SendInvitationResponseCopyWithImpl<$Res>
+    implements _$SendInvitationResponseCopyWith<$Res> {
+  __$SendInvitationResponseCopyWithImpl(this._self, this._then);
+
+  final _SendInvitationResponse _self;
+  final $Res Function(_SendInvitationResponse) _then;
+
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? invitation = null,}) {
+  return _then(_SendInvitationResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,invitation: null == invitation ? _self.invitation : invitation // ignore: cast_nullable_to_non_nullable
+as InvitationData,
+  ));
+}
+
+/// Create a copy of SendInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$InvitationDataCopyWith<$Res> get invitation {
+  
+  return $InvitationDataCopyWith<$Res>(_self.invitation, (value) {
+    return _then(_self.copyWith(invitation: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$SponsorInvitationsData {
+
+ List<InvitationData> get invitations; int get count;
+/// Create a copy of SponsorInvitationsData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsorInvitationsDataCopyWith<SponsorInvitationsData> get copyWith => _$SponsorInvitationsDataCopyWithImpl<SponsorInvitationsData>(this as SponsorInvitationsData, _$identity);
+
+  /// Serializes this SponsorInvitationsData to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsorInvitationsData&&const DeepCollectionEquality().equals(other.invitations, invitations)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invitations),count);
+
+@override
+String toString() {
+  return 'SponsorInvitationsData(invitations: $invitations, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsorInvitationsDataCopyWith<$Res>  {
+  factory $SponsorInvitationsDataCopyWith(SponsorInvitationsData value, $Res Function(SponsorInvitationsData) _then) = _$SponsorInvitationsDataCopyWithImpl;
+@useResult
+$Res call({
+ List<InvitationData> invitations, int count
+});
+
+
+
+
+}
+/// @nodoc
+class _$SponsorInvitationsDataCopyWithImpl<$Res>
+    implements $SponsorInvitationsDataCopyWith<$Res> {
+  _$SponsorInvitationsDataCopyWithImpl(this._self, this._then);
+
+  final SponsorInvitationsData _self;
+  final $Res Function(SponsorInvitationsData) _then;
+
+/// Create a copy of SponsorInvitationsData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? invitations = null,Object? count = null,}) {
+  return _then(_self.copyWith(
+invitations: null == invitations ? _self.invitations : invitations // ignore: cast_nullable_to_non_nullable
+as List<InvitationData>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SponsorInvitationsData].
+extension SponsorInvitationsDataPatterns on SponsorInvitationsData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsorInvitationsData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsorInvitationsData value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsorInvitationsData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<InvitationData> invitations,  int count)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsData() when $default != null:
+return $default(_that.invitations,_that.count);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<InvitationData> invitations,  int count)  $default,) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsData():
+return $default(_that.invitations,_that.count);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<InvitationData> invitations,  int count)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsData() when $default != null:
+return $default(_that.invitations,_that.count);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsorInvitationsData implements SponsorInvitationsData {
+  const _SponsorInvitationsData({required final  List<InvitationData> invitations, required this.count}): _invitations = invitations;
+  factory _SponsorInvitationsData.fromJson(Map<String, dynamic> json) => _$SponsorInvitationsDataFromJson(json);
+
+ final  List<InvitationData> _invitations;
+@override List<InvitationData> get invitations {
+  if (_invitations is EqualUnmodifiableListView) return _invitations;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_invitations);
+}
+
+@override final  int count;
+
+/// Create a copy of SponsorInvitationsData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsorInvitationsDataCopyWith<_SponsorInvitationsData> get copyWith => __$SponsorInvitationsDataCopyWithImpl<_SponsorInvitationsData>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsorInvitationsDataToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsorInvitationsData&&const DeepCollectionEquality().equals(other._invitations, _invitations)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_invitations),count);
+
+@override
+String toString() {
+  return 'SponsorInvitationsData(invitations: $invitations, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsorInvitationsDataCopyWith<$Res> implements $SponsorInvitationsDataCopyWith<$Res> {
+  factory _$SponsorInvitationsDataCopyWith(_SponsorInvitationsData value, $Res Function(_SponsorInvitationsData) _then) = __$SponsorInvitationsDataCopyWithImpl;
+@override @useResult
+$Res call({
+ List<InvitationData> invitations, int count
+});
+
+
+
+
+}
+/// @nodoc
+class __$SponsorInvitationsDataCopyWithImpl<$Res>
+    implements _$SponsorInvitationsDataCopyWith<$Res> {
+  __$SponsorInvitationsDataCopyWithImpl(this._self, this._then);
+
+  final _SponsorInvitationsData _self;
+  final $Res Function(_SponsorInvitationsData) _then;
+
+/// Create a copy of SponsorInvitationsData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? invitations = null,Object? count = null,}) {
+  return _then(_SponsorInvitationsData(
+invitations: null == invitations ? _self._invitations : invitations // ignore: cast_nullable_to_non_nullable
+as List<InvitationData>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SponsorInvitationsResponse {
+
+ bool get success; String get message; SponsorInvitationsData get data;
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsorInvitationsResponseCopyWith<SponsorInvitationsResponse> get copyWith => _$SponsorInvitationsResponseCopyWithImpl<SponsorInvitationsResponse>(this as SponsorInvitationsResponse, _$identity);
+
+  /// Serializes this SponsorInvitationsResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsorInvitationsResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'SponsorInvitationsResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsorInvitationsResponseCopyWith<$Res>  {
+  factory $SponsorInvitationsResponseCopyWith(SponsorInvitationsResponse value, $Res Function(SponsorInvitationsResponse) _then) = _$SponsorInvitationsResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, SponsorInvitationsData data
+});
+
+
+$SponsorInvitationsDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class _$SponsorInvitationsResponseCopyWithImpl<$Res>
+    implements $SponsorInvitationsResponseCopyWith<$Res> {
+  _$SponsorInvitationsResponseCopyWithImpl(this._self, this._then);
+
+  final SponsorInvitationsResponse _self;
+  final $Res Function(SponsorInvitationsResponse) _then;
+
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as SponsorInvitationsData,
+  ));
+}
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsorInvitationsDataCopyWith<$Res> get data {
+  
+  return $SponsorInvitationsDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [SponsorInvitationsResponse].
+extension SponsorInvitationsResponsePatterns on SponsorInvitationsResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsorInvitationsResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsorInvitationsResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsorInvitationsResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  SponsorInvitationsData data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  SponsorInvitationsData data)  $default,) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse():
+return $default(_that.success,_that.message,_that.data);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  SponsorInvitationsData data)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsorInvitationsResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsorInvitationsResponse implements SponsorInvitationsResponse {
+  const _SponsorInvitationsResponse({required this.success, required this.message, required this.data});
+  factory _SponsorInvitationsResponse.fromJson(Map<String, dynamic> json) => _$SponsorInvitationsResponseFromJson(json);
+
+@override final  bool success;
+@override final  String message;
+@override final  SponsorInvitationsData data;
+
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsorInvitationsResponseCopyWith<_SponsorInvitationsResponse> get copyWith => __$SponsorInvitationsResponseCopyWithImpl<_SponsorInvitationsResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsorInvitationsResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsorInvitationsResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'SponsorInvitationsResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsorInvitationsResponseCopyWith<$Res> implements $SponsorInvitationsResponseCopyWith<$Res> {
+  factory _$SponsorInvitationsResponseCopyWith(_SponsorInvitationsResponse value, $Res Function(_SponsorInvitationsResponse) _then) = __$SponsorInvitationsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, SponsorInvitationsData data
+});
+
+
+@override $SponsorInvitationsDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class __$SponsorInvitationsResponseCopyWithImpl<$Res>
+    implements _$SponsorInvitationsResponseCopyWith<$Res> {
+  __$SponsorInvitationsResponseCopyWithImpl(this._self, this._then);
+
+  final _SponsorInvitationsResponse _self;
+  final $Res Function(_SponsorInvitationsResponse) _then;
+
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_SponsorInvitationsResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as SponsorInvitationsData,
+  ));
+}
+
+/// Create a copy of SponsorInvitationsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsorInvitationsDataCopyWith<$Res> get data {
+  
+  return $SponsorInvitationsDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$WithdrawInvitationResponse {
+
+ bool get success; String get message;
+/// Create a copy of WithdrawInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WithdrawInvitationResponseCopyWith<WithdrawInvitationResponse> get copyWith => _$WithdrawInvitationResponseCopyWithImpl<WithdrawInvitationResponse>(this as WithdrawInvitationResponse, _$identity);
+
+  /// Serializes this WithdrawInvitationResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WithdrawInvitationResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message);
+
+@override
+String toString() {
+  return 'WithdrawInvitationResponse(success: $success, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WithdrawInvitationResponseCopyWith<$Res>  {
+  factory $WithdrawInvitationResponseCopyWith(WithdrawInvitationResponse value, $Res Function(WithdrawInvitationResponse) _then) = _$WithdrawInvitationResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$WithdrawInvitationResponseCopyWithImpl<$Res>
+    implements $WithdrawInvitationResponseCopyWith<$Res> {
+  _$WithdrawInvitationResponseCopyWithImpl(this._self, this._then);
+
+  final WithdrawInvitationResponse _self;
+  final $Res Function(WithdrawInvitationResponse) _then;
+
+/// Create a copy of WithdrawInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [WithdrawInvitationResponse].
+extension WithdrawInvitationResponsePatterns on WithdrawInvitationResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WithdrawInvitationResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WithdrawInvitationResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WithdrawInvitationResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse() when $default != null:
+return $default(_that.success,_that.message);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message)  $default,) {final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse():
+return $default(_that.success,_that.message);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message)?  $default,) {final _that = this;
+switch (_that) {
+case _WithdrawInvitationResponse() when $default != null:
+return $default(_that.success,_that.message);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _WithdrawInvitationResponse implements WithdrawInvitationResponse {
+  const _WithdrawInvitationResponse({required this.success, required this.message});
+  factory _WithdrawInvitationResponse.fromJson(Map<String, dynamic> json) => _$WithdrawInvitationResponseFromJson(json);
+
+@override final  bool success;
+@override final  String message;
+
+/// Create a copy of WithdrawInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WithdrawInvitationResponseCopyWith<_WithdrawInvitationResponse> get copyWith => __$WithdrawInvitationResponseCopyWithImpl<_WithdrawInvitationResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WithdrawInvitationResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WithdrawInvitationResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message);
+
+@override
+String toString() {
+  return 'WithdrawInvitationResponse(success: $success, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WithdrawInvitationResponseCopyWith<$Res> implements $WithdrawInvitationResponseCopyWith<$Res> {
+  factory _$WithdrawInvitationResponseCopyWith(_WithdrawInvitationResponse value, $Res Function(_WithdrawInvitationResponse) _then) = __$WithdrawInvitationResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$WithdrawInvitationResponseCopyWithImpl<$Res>
+    implements _$WithdrawInvitationResponseCopyWith<$Res> {
+  __$WithdrawInvitationResponseCopyWithImpl(this._self, this._then);
+
+  final _WithdrawInvitationResponse _self;
+  final $Res Function(_WithdrawInvitationResponse) _then;
+
+/// Create a copy of WithdrawInvitationResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,}) {
+  return _then(_WithdrawInvitationResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 // dart format on

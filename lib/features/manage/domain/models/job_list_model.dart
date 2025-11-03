@@ -141,3 +141,80 @@ abstract class SponsoredAthletesResponse with _$SponsoredAthletesResponse {
   factory SponsoredAthletesResponse.fromJson(Map<String, dynamic> json) =>
       _$SponsoredAthletesResponseFromJson(json);
 }
+
+@freezed
+abstract class SendInvitationRequest with _$SendInvitationRequest {
+  const factory SendInvitationRequest({
+    required String athleteId,
+    required String jobId,
+    required String message,
+  }) = _SendInvitationRequest;
+
+  factory SendInvitationRequest.fromJson(Map<String, dynamic> json) =>
+      _$SendInvitationRequestFromJson(json);
+}
+
+@freezed
+abstract class InvitationData with _$InvitationData {
+  const factory InvitationData({
+    @JsonKey(name: "_id") required String id,
+    required dynamic sponsor, // Can be String or Map
+    required Map<String, dynamic> athlete,
+    required dynamic jobPost, // Can be either String (ID) or Map (object)
+    required String message,
+    required String status,
+    required DateTime sentAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    @JsonKey(name: "__v") int? version,
+  }) = _InvitationData;
+
+  factory InvitationData.fromJson(Map<String, dynamic> json) =>
+      _$InvitationDataFromJson(json);
+}
+
+@freezed
+abstract class SendInvitationResponse with _$SendInvitationResponse {
+  const factory SendInvitationResponse({
+    required bool success,
+    required String message,
+    required InvitationData invitation,
+  }) = _SendInvitationResponse;
+
+  factory SendInvitationResponse.fromJson(Map<String, dynamic> json) =>
+      _$SendInvitationResponseFromJson(json);
+}
+
+@freezed
+abstract class SponsorInvitationsData with _$SponsorInvitationsData {
+  const factory SponsorInvitationsData({
+    required List<InvitationData> invitations,
+    required int count,
+  }) = _SponsorInvitationsData;
+
+  factory SponsorInvitationsData.fromJson(Map<String, dynamic> json) =>
+      _$SponsorInvitationsDataFromJson(json);
+}
+
+@freezed
+abstract class SponsorInvitationsResponse with _$SponsorInvitationsResponse {
+  const factory SponsorInvitationsResponse({
+    required bool success,
+    required String message,
+    required SponsorInvitationsData data,
+  }) = _SponsorInvitationsResponse;
+
+  factory SponsorInvitationsResponse.fromJson(Map<String, dynamic> json) =>
+      _$SponsorInvitationsResponseFromJson(json);
+}
+
+@freezed
+abstract class WithdrawInvitationResponse with _$WithdrawInvitationResponse {
+  const factory WithdrawInvitationResponse({
+    required bool success,
+    required String message,
+  }) = _WithdrawInvitationResponse;
+
+  factory WithdrawInvitationResponse.fromJson(Map<String, dynamic> json) =>
+      _$WithdrawInvitationResponseFromJson(json);
+}

@@ -10,4 +10,18 @@ abstract class JobListRepository {
   });
 
   Future<ApiResponse<SponsoredAthletesResponse>> getSponsoredAthletes();
+
+  Future<ApiResponse<SendInvitationResponse>> sendInvitation({
+    required String athleteId,
+    required String jobId,
+    required String message,
+  });
+
+  Future<ApiResponse<SponsorInvitationsResponse>> getSponsorInvitations({
+    String? status,
+  });
+
+  Future<ApiResponse<WithdrawInvitationResponse>> withdrawInvitation({
+    required String invitationId,
+  });
 }

@@ -12,6 +12,9 @@ class ApplicantDetail extends StatelessWidget {
   final String? jobId;
   final VoidCallback? onAccept;
   final bool isAccepted;
+  final VoidCallback? onSendProposal;
+  final VoidCallback? onCancelProposal;
+  final bool hasInvitation;
 
   const ApplicantDetail({
     super.key,
@@ -20,6 +23,9 @@ class ApplicantDetail extends StatelessWidget {
     this.jobId,
     this.onAccept,
     this.isAccepted = false,
+    this.onSendProposal,
+    this.onCancelProposal,
+    this.hasInvitation = false,
   });
 
   @override
@@ -235,12 +241,18 @@ class ApplicantDetail extends StatelessWidget {
                               ? "Accepted"
                               : (isApplicant
                                     ? "Accept proposal"
+                                    : hasInvitation
+                                    ? "Sent"
                                     : "Send Proposal"),
-                          onPressed: isAccepted ? () {} : (onAccept ?? () {}),
+                          onPressed: isAccepted || hasInvitation
+                              ? () {} // Disabled for accepted or sent
+                              : (isApplicant
+                                    ? (onAccept ?? () {})
+                                    : (onSendProposal ?? () {})),
                           height: 60,
                           borderRadius: 15,
-                          backgroundColor: isAccepted
-                              ? AppColors.primary.withValues(alpha: 0.7)
+                          backgroundColor: isAccepted || hasInvitation
+                              ? AppColors.primary.withValues(alpha: 0.6)
                               : AppColors.primary,
                         ),
                       ],
@@ -275,8 +287,9 @@ class ApplicantDetail extends StatelessWidget {
           final parts = <String>[];
           if (achievement.name != null) parts.add(achievement.name!);
           if (achievement.rank != null) parts.add(achievement.rank!);
-          if (achievement.difficulty != null)
+          if (achievement.difficulty != null) {
             parts.add('(${achievement.difficulty})');
+          }
           return parts.join(' ');
         })
         .join('\n');

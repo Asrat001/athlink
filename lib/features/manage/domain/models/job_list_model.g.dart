@@ -191,3 +191,115 @@ Map<String, dynamic> _$SponsoredAthletesResponseToJson(
   'message': instance.message,
   'data': instance.data,
 };
+
+_SendInvitationRequest _$SendInvitationRequestFromJson(
+  Map<String, dynamic> json,
+) => _SendInvitationRequest(
+  athleteId: json['athleteId'] as String,
+  jobId: json['jobId'] as String,
+  message: json['message'] as String,
+);
+
+Map<String, dynamic> _$SendInvitationRequestToJson(
+  _SendInvitationRequest instance,
+) => <String, dynamic>{
+  'athleteId': instance.athleteId,
+  'jobId': instance.jobId,
+  'message': instance.message,
+};
+
+_InvitationData _$InvitationDataFromJson(Map<String, dynamic> json) =>
+    _InvitationData(
+      id: json['_id'] as String,
+      sponsor: json['sponsor'],
+      athlete: json['athlete'] as Map<String, dynamic>,
+      jobPost: json['jobPost'],
+      message: json['message'] as String,
+      status: json['status'] as String,
+      sentAt: DateTime.parse(json['sentAt'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      version: (json['__v'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$InvitationDataToJson(_InvitationData instance) =>
+    <String, dynamic>{
+      '_id': instance.id,
+      'sponsor': instance.sponsor,
+      'athlete': instance.athlete,
+      'jobPost': instance.jobPost,
+      'message': instance.message,
+      'status': instance.status,
+      'sentAt': instance.sentAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+      '__v': instance.version,
+    };
+
+_SendInvitationResponse _$SendInvitationResponseFromJson(
+  Map<String, dynamic> json,
+) => _SendInvitationResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+  invitation: InvitationData.fromJson(
+    json['invitation'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$SendInvitationResponseToJson(
+  _SendInvitationResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'invitation': instance.invitation,
+};
+
+_SponsorInvitationsData _$SponsorInvitationsDataFromJson(
+  Map<String, dynamic> json,
+) => _SponsorInvitationsData(
+  invitations: (json['invitations'] as List<dynamic>)
+      .map((e) => InvitationData.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  count: (json['count'] as num).toInt(),
+);
+
+Map<String, dynamic> _$SponsorInvitationsDataToJson(
+  _SponsorInvitationsData instance,
+) => <String, dynamic>{
+  'invitations': instance.invitations,
+  'count': instance.count,
+};
+
+_SponsorInvitationsResponse _$SponsorInvitationsResponseFromJson(
+  Map<String, dynamic> json,
+) => _SponsorInvitationsResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+  data: SponsorInvitationsData.fromJson(json['data'] as Map<String, dynamic>),
+);
+
+Map<String, dynamic> _$SponsorInvitationsResponseToJson(
+  _SponsorInvitationsResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+  'data': instance.data,
+};
+
+_WithdrawInvitationResponse _$WithdrawInvitationResponseFromJson(
+  Map<String, dynamic> json,
+) => _WithdrawInvitationResponse(
+  success: json['success'] as bool,
+  message: json['message'] as String,
+);
+
+Map<String, dynamic> _$WithdrawInvitationResponseToJson(
+  _WithdrawInvitationResponse instance,
+) => <String, dynamic>{
+  'success': instance.success,
+  'message': instance.message,
+};

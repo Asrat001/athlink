@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$JobListState {
 
- bool get isLoading; List<JobPostItem> get jobPosts; String? get errorMessage; String? get companyName; String? get companyLogo; bool get isSponsorshipsLoading; List<SponsoredAthleteItem> get sponsoredAthletes; String? get sponsorshipsErrorMessage;
+ bool get isLoading; List<JobPostItem> get jobPosts; String? get errorMessage; String? get companyName; String? get companyLogo; bool get isSponsorshipsLoading; List<SponsoredAthleteItem> get sponsoredAthletes; String? get sponsorshipsErrorMessage; bool get isInvitationsLoading; List<InvitationData> get invitations; String? get invitationsErrorMessage;
 /// Create a copy of JobListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $JobListStateCopyWith<JobListState> get copyWith => _$JobListStateCopyWithImpl<J
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.jobPosts, jobPosts)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.isSponsorshipsLoading, isSponsorshipsLoading) || other.isSponsorshipsLoading == isSponsorshipsLoading)&&const DeepCollectionEquality().equals(other.sponsoredAthletes, sponsoredAthletes)&&(identical(other.sponsorshipsErrorMessage, sponsorshipsErrorMessage) || other.sponsorshipsErrorMessage == sponsorshipsErrorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.jobPosts, jobPosts)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.isSponsorshipsLoading, isSponsorshipsLoading) || other.isSponsorshipsLoading == isSponsorshipsLoading)&&const DeepCollectionEquality().equals(other.sponsoredAthletes, sponsoredAthletes)&&(identical(other.sponsorshipsErrorMessage, sponsorshipsErrorMessage) || other.sponsorshipsErrorMessage == sponsorshipsErrorMessage)&&(identical(other.isInvitationsLoading, isInvitationsLoading) || other.isInvitationsLoading == isInvitationsLoading)&&const DeepCollectionEquality().equals(other.invitations, invitations)&&(identical(other.invitationsErrorMessage, invitationsErrorMessage) || other.invitationsErrorMessage == invitationsErrorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(jobPosts),errorMessage,companyName,companyLogo,isSponsorshipsLoading,const DeepCollectionEquality().hash(sponsoredAthletes),sponsorshipsErrorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(jobPosts),errorMessage,companyName,companyLogo,isSponsorshipsLoading,const DeepCollectionEquality().hash(sponsoredAthletes),sponsorshipsErrorMessage,isInvitationsLoading,const DeepCollectionEquality().hash(invitations),invitationsErrorMessage);
 
 @override
 String toString() {
-  return 'JobListState(isLoading: $isLoading, jobPosts: $jobPosts, errorMessage: $errorMessage, companyName: $companyName, companyLogo: $companyLogo, isSponsorshipsLoading: $isSponsorshipsLoading, sponsoredAthletes: $sponsoredAthletes, sponsorshipsErrorMessage: $sponsorshipsErrorMessage)';
+  return 'JobListState(isLoading: $isLoading, jobPosts: $jobPosts, errorMessage: $errorMessage, companyName: $companyName, companyLogo: $companyLogo, isSponsorshipsLoading: $isSponsorshipsLoading, sponsoredAthletes: $sponsoredAthletes, sponsorshipsErrorMessage: $sponsorshipsErrorMessage, isInvitationsLoading: $isInvitationsLoading, invitations: $invitations, invitationsErrorMessage: $invitationsErrorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $JobListStateCopyWith<$Res>  {
   factory $JobListStateCopyWith(JobListState value, $Res Function(JobListState) _then) = _$JobListStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, List<JobPostItem> jobPosts, String? errorMessage, String? companyName, String? companyLogo, bool isSponsorshipsLoading, List<SponsoredAthleteItem> sponsoredAthletes, String? sponsorshipsErrorMessage
+ bool isLoading, List<JobPostItem> jobPosts, String? errorMessage, String? companyName, String? companyLogo, bool isSponsorshipsLoading, List<SponsoredAthleteItem> sponsoredAthletes, String? sponsorshipsErrorMessage, bool isInvitationsLoading, List<InvitationData> invitations, String? invitationsErrorMessage
 });
 
 
@@ -62,7 +62,7 @@ class _$JobListStateCopyWithImpl<$Res>
 
 /// Create a copy of JobListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? jobPosts = null,Object? errorMessage = freezed,Object? companyName = freezed,Object? companyLogo = freezed,Object? isSponsorshipsLoading = null,Object? sponsoredAthletes = null,Object? sponsorshipsErrorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? jobPosts = null,Object? errorMessage = freezed,Object? companyName = freezed,Object? companyLogo = freezed,Object? isSponsorshipsLoading = null,Object? sponsoredAthletes = null,Object? sponsorshipsErrorMessage = freezed,Object? isInvitationsLoading = null,Object? invitations = null,Object? invitationsErrorMessage = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,jobPosts: null == jobPosts ? _self.jobPosts : jobPosts // ignore: cast_nullable_to_non_nullable
@@ -72,6 +72,9 @@ as String?,companyLogo: freezed == companyLogo ? _self.companyLogo : companyLogo
 as String?,isSponsorshipsLoading: null == isSponsorshipsLoading ? _self.isSponsorshipsLoading : isSponsorshipsLoading // ignore: cast_nullable_to_non_nullable
 as bool,sponsoredAthletes: null == sponsoredAthletes ? _self.sponsoredAthletes : sponsoredAthletes // ignore: cast_nullable_to_non_nullable
 as List<SponsoredAthleteItem>,sponsorshipsErrorMessage: freezed == sponsorshipsErrorMessage ? _self.sponsorshipsErrorMessage : sponsorshipsErrorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isInvitationsLoading: null == isInvitationsLoading ? _self.isInvitationsLoading : isInvitationsLoading // ignore: cast_nullable_to_non_nullable
+as bool,invitations: null == invitations ? _self.invitations : invitations // ignore: cast_nullable_to_non_nullable
+as List<InvitationData>,invitationsErrorMessage: freezed == invitationsErrorMessage ? _self.invitationsErrorMessage : invitationsErrorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage,  bool isInvitationsLoading,  List<InvitationData> invitations,  String? invitationsErrorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JobListState() when $default != null:
-return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage);case _:
+return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage,_that.isInvitationsLoading,_that.invitations,_that.invitationsErrorMessage);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyN
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage,  bool isInvitationsLoading,  List<InvitationData> invitations,  String? invitationsErrorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _JobListState():
-return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage);case _:
+return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage,_that.isInvitationsLoading,_that.invitations,_that.invitationsErrorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyN
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  List<JobPostItem> jobPosts,  String? errorMessage,  String? companyName,  String? companyLogo,  bool isSponsorshipsLoading,  List<SponsoredAthleteItem> sponsoredAthletes,  String? sponsorshipsErrorMessage,  bool isInvitationsLoading,  List<InvitationData> invitations,  String? invitationsErrorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _JobListState() when $default != null:
-return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage);case _:
+return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyName,_that.companyLogo,_that.isSponsorshipsLoading,_that.sponsoredAthletes,_that.sponsorshipsErrorMessage,_that.isInvitationsLoading,_that.invitations,_that.invitationsErrorMessage);case _:
   return null;
 
 }
@@ -213,7 +216,7 @@ return $default(_that.isLoading,_that.jobPosts,_that.errorMessage,_that.companyN
 
 
 class _JobListState implements JobListState {
-  const _JobListState({this.isLoading = false, final  List<JobPostItem> jobPosts = const [], this.errorMessage, this.companyName, this.companyLogo, this.isSponsorshipsLoading = false, final  List<SponsoredAthleteItem> sponsoredAthletes = const [], this.sponsorshipsErrorMessage}): _jobPosts = jobPosts,_sponsoredAthletes = sponsoredAthletes;
+  const _JobListState({this.isLoading = false, final  List<JobPostItem> jobPosts = const [], this.errorMessage, this.companyName, this.companyLogo, this.isSponsorshipsLoading = false, final  List<SponsoredAthleteItem> sponsoredAthletes = const [], this.sponsorshipsErrorMessage, this.isInvitationsLoading = false, final  List<InvitationData> invitations = const [], this.invitationsErrorMessage}): _jobPosts = jobPosts,_sponsoredAthletes = sponsoredAthletes,_invitations = invitations;
   
 
 @override@JsonKey() final  bool isLoading;
@@ -236,6 +239,15 @@ class _JobListState implements JobListState {
 }
 
 @override final  String? sponsorshipsErrorMessage;
+@override@JsonKey() final  bool isInvitationsLoading;
+ final  List<InvitationData> _invitations;
+@override@JsonKey() List<InvitationData> get invitations {
+  if (_invitations is EqualUnmodifiableListView) return _invitations;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_invitations);
+}
+
+@override final  String? invitationsErrorMessage;
 
 /// Create a copy of JobListState
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +259,16 @@ _$JobListStateCopyWith<_JobListState> get copyWith => __$JobListStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other._jobPosts, _jobPosts)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.isSponsorshipsLoading, isSponsorshipsLoading) || other.isSponsorshipsLoading == isSponsorshipsLoading)&&const DeepCollectionEquality().equals(other._sponsoredAthletes, _sponsoredAthletes)&&(identical(other.sponsorshipsErrorMessage, sponsorshipsErrorMessage) || other.sponsorshipsErrorMessage == sponsorshipsErrorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other._jobPosts, _jobPosts)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.isSponsorshipsLoading, isSponsorshipsLoading) || other.isSponsorshipsLoading == isSponsorshipsLoading)&&const DeepCollectionEquality().equals(other._sponsoredAthletes, _sponsoredAthletes)&&(identical(other.sponsorshipsErrorMessage, sponsorshipsErrorMessage) || other.sponsorshipsErrorMessage == sponsorshipsErrorMessage)&&(identical(other.isInvitationsLoading, isInvitationsLoading) || other.isInvitationsLoading == isInvitationsLoading)&&const DeepCollectionEquality().equals(other._invitations, _invitations)&&(identical(other.invitationsErrorMessage, invitationsErrorMessage) || other.invitationsErrorMessage == invitationsErrorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_jobPosts),errorMessage,companyName,companyLogo,isSponsorshipsLoading,const DeepCollectionEquality().hash(_sponsoredAthletes),sponsorshipsErrorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(_jobPosts),errorMessage,companyName,companyLogo,isSponsorshipsLoading,const DeepCollectionEquality().hash(_sponsoredAthletes),sponsorshipsErrorMessage,isInvitationsLoading,const DeepCollectionEquality().hash(_invitations),invitationsErrorMessage);
 
 @override
 String toString() {
-  return 'JobListState(isLoading: $isLoading, jobPosts: $jobPosts, errorMessage: $errorMessage, companyName: $companyName, companyLogo: $companyLogo, isSponsorshipsLoading: $isSponsorshipsLoading, sponsoredAthletes: $sponsoredAthletes, sponsorshipsErrorMessage: $sponsorshipsErrorMessage)';
+  return 'JobListState(isLoading: $isLoading, jobPosts: $jobPosts, errorMessage: $errorMessage, companyName: $companyName, companyLogo: $companyLogo, isSponsorshipsLoading: $isSponsorshipsLoading, sponsoredAthletes: $sponsoredAthletes, sponsorshipsErrorMessage: $sponsorshipsErrorMessage, isInvitationsLoading: $isInvitationsLoading, invitations: $invitations, invitationsErrorMessage: $invitationsErrorMessage)';
 }
 
 
@@ -267,7 +279,7 @@ abstract mixin class _$JobListStateCopyWith<$Res> implements $JobListStateCopyWi
   factory _$JobListStateCopyWith(_JobListState value, $Res Function(_JobListState) _then) = __$JobListStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, List<JobPostItem> jobPosts, String? errorMessage, String? companyName, String? companyLogo, bool isSponsorshipsLoading, List<SponsoredAthleteItem> sponsoredAthletes, String? sponsorshipsErrorMessage
+ bool isLoading, List<JobPostItem> jobPosts, String? errorMessage, String? companyName, String? companyLogo, bool isSponsorshipsLoading, List<SponsoredAthleteItem> sponsoredAthletes, String? sponsorshipsErrorMessage, bool isInvitationsLoading, List<InvitationData> invitations, String? invitationsErrorMessage
 });
 
 
@@ -284,7 +296,7 @@ class __$JobListStateCopyWithImpl<$Res>
 
 /// Create a copy of JobListState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? jobPosts = null,Object? errorMessage = freezed,Object? companyName = freezed,Object? companyLogo = freezed,Object? isSponsorshipsLoading = null,Object? sponsoredAthletes = null,Object? sponsorshipsErrorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? jobPosts = null,Object? errorMessage = freezed,Object? companyName = freezed,Object? companyLogo = freezed,Object? isSponsorshipsLoading = null,Object? sponsoredAthletes = null,Object? sponsorshipsErrorMessage = freezed,Object? isInvitationsLoading = null,Object? invitations = null,Object? invitationsErrorMessage = freezed,}) {
   return _then(_JobListState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,jobPosts: null == jobPosts ? _self._jobPosts : jobPosts // ignore: cast_nullable_to_non_nullable
@@ -294,6 +306,9 @@ as String?,companyLogo: freezed == companyLogo ? _self.companyLogo : companyLogo
 as String?,isSponsorshipsLoading: null == isSponsorshipsLoading ? _self.isSponsorshipsLoading : isSponsorshipsLoading // ignore: cast_nullable_to_non_nullable
 as bool,sponsoredAthletes: null == sponsoredAthletes ? _self._sponsoredAthletes : sponsoredAthletes // ignore: cast_nullable_to_non_nullable
 as List<SponsoredAthleteItem>,sponsorshipsErrorMessage: freezed == sponsorshipsErrorMessage ? _self.sponsorshipsErrorMessage : sponsorshipsErrorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isInvitationsLoading: null == isInvitationsLoading ? _self.isInvitationsLoading : isInvitationsLoading // ignore: cast_nullable_to_non_nullable
+as bool,invitations: null == invitations ? _self._invitations : invitations // ignore: cast_nullable_to_non_nullable
+as List<InvitationData>,invitationsErrorMessage: freezed == invitationsErrorMessage ? _self.invitationsErrorMessage : invitationsErrorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
