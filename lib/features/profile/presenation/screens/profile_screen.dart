@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:athlink/di.dart';
+import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/profile_edit_page.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/services/local_storage_service.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
@@ -33,9 +35,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch profile data when screen loads
+    // Fetch profile data and sponsored athletes when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileProvider.notifier).getProfile();
+      ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
     });
   }
 
@@ -53,100 +56,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  final List<String> athleteImages = List.generate(
-    75,
-    (i) => "https://picsum.photos/200?random=${i + 1}",
-  );
-
   bool isEditMode = false;
-
-  final List<String> athleteNames = [
-    "LeBron James",
-    "Serena Williams",
-    "Cristiano Ronaldo",
-    "Simone Biles",
-    "Usain Bolt",
-    "Megan Rapinoe",
-    "Michael Phelps",
-    "Naomi Osaka",
-    "Stephen Curry",
-    "Alex Morgan",
-    "Roger Federer",
-    "Katie Ledecky",
-    "Lionel Messi",
-    "Shaun White",
-    "Novak Djokovic",
-    "Allyson Felix",
-    "Kevin Durant",
-    "Carli Lloyd",
-    "Rafael Nadal",
-    "Simone Manuel",
-    "Giannis Antetokounmpo",
-    "Mikaela Shiffrin",
-    "Patrick Mahomes",
-    "Chloe Kim",
-    "Tom Brady",
-    "Diana Taurasi",
-    "Aaron Rodgers",
-    "Lindsey Vonn",
-    "Mike Trout",
-    "Sue Bird",
-    "Bryce Harper",
-    "Misty May-Treanor",
-    "Drew Brees",
-    "Kerri Walsh",
-    "Clayton Kershaw",
-    "Ronda Rousey",
-    "Russell Wilson",
-    "Hope Solo",
-    "James Harden",
-    "Maria Sharapova",
-    "Anthony Davis",
-    "Venus Williams",
-    "Kawhi Leonard",
-    "Gabby Douglas",
-    "Kyrie Irving",
-    "Sydney McLaughlin",
-    "Damian Lillard",
-    "Katarina Johnson",
-    "Joel Embiid",
-    "Nelly Korda",
-    "Allyson Felix",
-    "Kevin Durant",
-    "Carli Lloyd",
-    "Rafael Nadal",
-    "Simone Manuel",
-    "Giannis Antetokounmpo",
-    "Mikaela Shiffrin",
-    "Patrick Mahomes",
-    "Chloe Kim",
-    "Tom Brady",
-    "Diana Taurasi",
-    "Aaron Rodgers",
-    "Lindsey Vonn",
-    "Mike Trout",
-    "Sue Bird",
-    "Bryce Harper",
-    "Misty May-Treanor",
-    "Drew Brees",
-    "Kerri Walsh",
-    "Clayton Kershaw",
-    "Ronda Rousey",
-    "Russell Wilson",
-    "Hope Solo",
-    "James Harden",
-    "Maria Sharapova",
-    "Anthony Davis",
-    "Venus Williams",
-    "Kawhi Leonard",
-    "Gabby Douglas",
-    "Kyrie Irving",
-    "Sydney McLaughlin",
-    "Damian Lillard",
-    "Katarina Johnson",
-    "Joel Embiid",
-    "Nelly Korda",
-  ];
 
   Future<void> _handleProfileSave(
     String name,
@@ -393,7 +303,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 textColor: AppColors.black,
                               ),
                               CustomText(
-                                title: sponsorProfile?.address ?? "No address set",
+                                title:
+                                    sponsorProfile?.address ?? "No address set",
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 textColor: AppColors.textGrey,
@@ -448,7 +359,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   horizontal: 24,
                                 ),
                                 child: CustomText(
-                                  title: sponsorProfile?.description ?? "No description set",
+                                  title:
+                                      sponsorProfile?.description ??
+                                      "No description set",
                                   textAlign: TextAlign.center,
                                   textColor: AppColors.textSecondary,
                                   fontWeight: FontWeight.w300,
@@ -470,12 +383,156 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ),
                               const SizedBox(height: 10),
 
-                              SizedBox(
-                                height: 400,
-                                child: AthletesSponsored3d(
-                                  athleteImages: athleteImages,
-                                  athleteNames: athleteNames,
-                                ),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final jobListState = ref.watch(
+                                    jobListProvider,
+                                  );
+
+                                  if (jobListState.isSponsorshipsLoading) {
+                                    return SizedBox(
+                                      height: 400,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  }
+
+                                  if (jobListState.sponsorshipsErrorMessage !=
+                                      null) {
+                                    return SizedBox(
+                                      height: 400,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CustomText(
+                                              title:
+                                                  'Error loading sponsored athletes',
+                                              textColor: AppColors.red,
+                                            ),
+                                            SizedBox(height: 8),
+                                            CustomText(
+                                              title: jobListState
+                                                  .sponsorshipsErrorMessage!,
+                                              textColor: AppColors.grey,
+                                              fontSize: 12,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  if (jobListState.sponsoredAthletes.isEmpty) {
+                                    return SizedBox(
+                                      height: 400,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CustomText(
+                                              title:
+                                                  'No sponsored athletes yet',
+                                              textColor: AppColors.grey,
+                                              fontSize: 16,
+                                            ),
+                                            SizedBox(height: 8),
+                                            CustomText(
+                                              title:
+                                                  'Accept applicants in the Manage tab to see them here',
+                                              textColor: AppColors.grey,
+                                              fontSize: 12,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  // Extract images and names from sponsored athletes
+                                  final athleteImages = jobListState
+                                      .sponsoredAthletes
+                                      .map((item) {
+                                        final profileImageUrl = item
+                                            .athlete
+                                            .athleteProfile
+                                            ?.profileImageUrl;
+                                        if (profileImageUrl != null &&
+                                            profileImageUrl.isNotEmpty) {
+                                          return '$fileBaseUrl$profileImageUrl';
+                                        }
+                                        // Use a consistent placeholder based on athlete ID
+                                        final idHash =
+                                            item.athlete.id?.hashCode ?? 0;
+                                        return 'https://picsum.photos/200?random=${idHash.abs()}';
+                                      })
+                                      .toList();
+
+                                  final athleteNames = jobListState
+                                      .sponsoredAthletes
+                                      .map((item) {
+                                        // Try to get name from various sources
+                                        String? name =
+                                            item.athlete.athleteProfile?.name ??
+                                            item.athlete.name;
+
+                                        // If no name, try to extract from email
+                                        if (name == null || name.isEmpty) {
+                                          final email = item.athlete.email;
+                                          if (email != null &&
+                                              email.isNotEmpty) {
+                                            // Extract username from email (before @)
+                                            name = email.split('@').first;
+                                            // Capitalize first letter
+                                            if (name.isNotEmpty) {
+                                              name =
+                                                  name[0].toUpperCase() +
+                                                  name.substring(1);
+                                            }
+                                          }
+                                        }
+
+                                        return name ??
+                                            'Athlete ${item.athlete.id?.substring(0, 8) ?? ""}';
+                                      })
+                                      .toList();
+
+                                  final athletePositions = jobListState
+                                      .sponsoredAthletes
+                                      .map((item) {
+                                        final position = item
+                                            .athlete
+                                            .athleteProfile
+                                            ?.position;
+                                        if (position != null &&
+                                            position.isNotEmpty) {
+                                          return position;
+                                        }
+                                        // Fallback to sport name if position is not available
+                                        final sportName =
+                                            item.athlete.sport.isNotEmpty
+                                            ? item.athlete.sport.first.name
+                                            : null;
+                                        return sportName ??
+                                            'Professional Athlete';
+                                      })
+                                      .toList();
+
+                                  return SizedBox(
+                                    height: 400,
+                                    child: AthletesSponsored3d(
+                                      athleteImages: athleteImages,
+                                      athleteNames: athleteNames,
+                                      athletePositions: athletePositions,
+                                      sponsorName:
+                                          sponsorProfile?.name ?? 'Sponsor',
+                                    ),
+                                  );
+                                },
                               ),
 
                               const SizedBox(height: 80),
@@ -498,11 +555,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 class AthletesSponsored3d extends StatefulWidget {
   final List<String> athleteImages;
   final List<String> athleteNames;
+  final List<String> athletePositions;
+  final String sponsorName;
 
   const AthletesSponsored3d({
     super.key,
     required this.athleteImages,
     required this.athleteNames,
+    required this.athletePositions,
+    required this.sponsorName,
   });
 
   @override
@@ -520,16 +581,32 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
   @override
   void initState() {
     super.initState();
+    // //debugPrint('=== AthletesSponsored3d initState ===');
+    // //debugPrint('Athletes count: ${widget.athleteImages.length}');
     _horizontalController.addListener(_onScroll);
     _verticalController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _horizontalController.jumpTo(
-        _horizontalController.position.maxScrollExtent / 2,
-      );
-      _verticalController.jumpTo(
-        _verticalController.position.maxScrollExtent / 2,
-      );
+      //debugPrint('PostFrameCallback - centering scrolls');
+      if (_horizontalController.hasClients) {
+        final maxH = _horizontalController.position.maxScrollExtent;
+        final targetH = maxH / 2;
+        //debugPrint('H: max=$maxH, target=$targetH');
+        _horizontalController.jumpTo(targetH);
+        setState(() {
+          _horizontalOffset = targetH;
+        });
+      }
+
+      if (_verticalController.hasClients) {
+        final maxV = _verticalController.position.maxScrollExtent;
+        final targetV = maxV / 2;
+        //debugPrint('V: max=$maxV, target=$targetV');
+        _verticalController.jumpTo(targetV);
+        setState(() {
+          _verticalOffset = targetV;
+        });
+      }
     });
   }
 
@@ -619,7 +696,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 400,
       child: Stack(
         children: [
@@ -646,7 +723,8 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
   }
 
   Widget _buildSmoothGlobeScroll() {
-    const int columns = 7;
+    // For small number of athletes, use fewer columns to center better
+    final int columns = widget.athleteImages.length <= 4 ? 3 : 7;
     final double baseItemSize = widget.athleteImages.length <= 4 ? 100.0 : 65.0;
     const double spacing = 10.0;
 
@@ -654,6 +732,17 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
     final double gridWidth = columns * (itemSize + spacing) + spacing;
     final int rows = (widget.athleteImages.length / columns).ceil();
     final double gridHeight = rows * (itemSize + spacing) + spacing;
+
+    // For small grids, add extra padding to make the grid larger and center it properly
+    final bool isSmallGrid = widget.athleteImages.length <= 4;
+    final double extraPadding = isSmallGrid ? 200.0 : 0.0;
+
+    //debugPrint('=== AthletesSponsored3d Grid ===');
+    //debugPrint('Athletes: ${widget.athleteImages.length}');
+    //debugPrint('Columns: $columns, Rows: $rows');
+    //debugPrint('ItemSize: $itemSize, Spacing: $spacing');
+    //debugPrint('Grid: ${gridWidth}x$gridHeight, ExtraPadding: $extraPadding');
+    //debugPrint('Total container: ${gridWidth + (extraPadding * 2)}x${gridHeight + (extraPadding * 2)}');
 
     return SingleChildScrollView(
       controller: _verticalController,
@@ -663,8 +752,8 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
-          width: gridWidth,
-          height: gridHeight,
+          width: gridWidth + (extraPadding * 2),
+          height: gridHeight + (extraPadding * 2),
           padding: EdgeInsets.all(spacing),
           child: Stack(
             children: [
@@ -676,6 +765,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                   spacing,
                   gridWidth,
                   gridHeight,
+                  extraPadding,
                 ),
             ],
           ),
@@ -691,12 +781,14 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
     double spacing,
     double gridWidth,
     double gridHeight,
+    double extraPadding,
   ) {
     final int row = index ~/ columns;
     final int col = index % columns;
 
-    final double baseX = col * (itemSize + spacing);
-    final double baseY = row * (itemSize + spacing);
+    // Base position in the grid, THEN add extraPadding to center small grids
+    final double baseX = col * (itemSize + spacing) + extraPadding;
+    final double baseY = row * (itemSize + spacing) + extraPadding;
 
     final double containerWidth = MediaQuery.of(context).size.width - 20;
     final double containerHeight = 360;
@@ -713,6 +805,17 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
     final double distance = sqrt(deltaX * deltaX + deltaY * deltaY);
 
     final bool isWithinCircle = distance <= containerRadius;
+
+    if (index == 0) {
+      //debugPrint('=== Item #0 Visibility Check ===');
+      //debugPrint('Position: row=$row, col=$col');
+      //debugPrint('Base: ($baseX, $baseY), Center: ($itemCenterX, $itemCenterY)');
+      //debugPrint('Container: ${containerWidth}x$containerHeight, radius=$containerRadius');
+      //debugPrint('ContainerCenter: ($containerCenterX, $containerCenterY)');
+      //debugPrint('Offsets: H=$_horizontalOffset, V=$_verticalOffset');
+      //debugPrint('Delta: ($deltaX, $deltaY), Distance: $distance');
+      //debugPrint('IsVisible: $isWithinCircle (distance <= radius: $distance <= $containerRadius)');
+    }
 
     if (!isWithinCircle) {
       return const SizedBox.shrink();
@@ -946,7 +1049,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "Professional Athlete",
+                        widget.athletePositions[index],
                         style: TextStyle(
                           color: AppColors.lightGrey,
                           fontSize: 18,
@@ -956,7 +1059,7 @@ class _AthletesSponsored3dState extends State<AthletesSponsored3d> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                          "Sponsored by SP Sport Agency. Tap anywhere to close.",
+                          "Sponsored by ${widget.sponsorName}. Tap anywhere to close.",
                           style: TextStyle(
                             color: AppColors.textGrey,
                             fontSize: 16,
