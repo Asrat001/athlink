@@ -21,4 +21,32 @@ class JobListRepositoryImpl implements JobListRepository {
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
+  @override
+  Future<ApiResponse<AcceptApplicantResponse>> acceptApplicant({
+    required String jobId,
+    required String applicationId,
+  }) async {
+    try {
+      final response = await _remoteDataSource.acceptApplicant(
+        jobId: jobId,
+        applicationId: applicationId,
+      );
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Accept applicant error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResponse<SponsoredAthletesResponse>> getSponsoredAthletes() async {
+    try {
+      final response = await _remoteDataSource.getSponsoredAthletes();
+      return ApiResponse.success(data: response);
+    } catch (e) {
+      log("Get sponsored athletes error: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
 }

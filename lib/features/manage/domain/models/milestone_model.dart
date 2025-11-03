@@ -129,9 +129,8 @@ abstract class GetMilestoneByIdResponse with _$GetMilestoneByIdResponse {
 @freezed
 abstract class UpdateMilestoneStatusRequest
     with _$UpdateMilestoneStatusRequest {
-  const factory UpdateMilestoneStatusRequest({
-    required String status,
-  }) = _UpdateMilestoneStatusRequest;
+  const factory UpdateMilestoneStatusRequest({required String status}) =
+      _UpdateMilestoneStatusRequest;
 
   factory UpdateMilestoneStatusRequest.fromJson(Map<String, dynamic> json) =>
       _$UpdateMilestoneStatusRequestFromJson(json);

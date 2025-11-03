@@ -11,6 +11,9 @@ abstract class JobListState with _$JobListState {
     String? errorMessage,
     String? companyName,
     String? companyLogo,
+    @Default(false) bool isSponsorshipsLoading,
+    @Default([]) List<SponsoredAthleteItem> sponsoredAthletes,
+    String? sponsorshipsErrorMessage,
   }) = _JobListState;
 
   factory JobListState.initial() => const JobListState();

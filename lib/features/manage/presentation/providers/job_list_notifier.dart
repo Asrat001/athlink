@@ -34,6 +34,55 @@ class JobListNotifier extends StateNotifier<JobListState> {
     );
   }
 
+  Future<ApiResponse<dynamic>> acceptApplicant({
+    required String jobId,
+    required String applicationId,
+  }) async {
+    final response = await _jobListRepository.acceptApplicant(
+      jobId: jobId,
+      applicationId: applicationId,
+    );
+
+    return response.when(
+      success: (data) {
+        debugPrint("Applicant accepted: ${data.message}");
+        // Refresh the job posts and sponsored athletes
+        fetchJobPosts();
+        fetchSponsoredAthletes();
+        return ApiResponse.success(data: data);
+      },
+      failure: (error) {
+        debugPrint("Accept applicant error: ${NetworkExceptions.getErrorMessage(error)}");
+        return ApiResponse.failure(error: error);
+      },
+    );
+  }
+
+  Future<void> fetchSponsoredAthletes() async {
+    state = state.copyWith(
+      isSponsorshipsLoading: true,
+      sponsorshipsErrorMessage: null,
+    );
+
+    final response = await _jobListRepository.getSponsoredAthletes();
+    debugPrint("sponsored athletes===== $response");
+    response.when(
+      success: (data) {
+        state = state.copyWith(
+          isSponsorshipsLoading: false,
+          sponsoredAthletes: data.data.athletes,
+          sponsorshipsErrorMessage: null,
+        );
+      },
+      failure: (error) {
+        state = state.copyWith(
+          isSponsorshipsLoading: false,
+          sponsorshipsErrorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
   void resetState() {
     state = JobListState.initial();
   }

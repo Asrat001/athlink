@@ -9,11 +9,17 @@ import 'package:flutter_svg/svg.dart';
 class ApplicantDetail extends StatelessWidget {
   final Athlete athlete;
   final bool isApplicant;
+  final String? jobId;
+  final VoidCallback? onAccept;
+  final bool isAccepted;
 
   const ApplicantDetail({
     super.key,
     required this.athlete,
     this.isApplicant = false,
+    this.jobId,
+    this.onAccept,
+    this.isAccepted = false,
   });
 
   @override
@@ -225,12 +231,17 @@ class ApplicantDetail extends StatelessWidget {
                         const SizedBox(height: 40),
 
                         RoundedButton(
-                          label: isApplicant
-                              ? "Accept proposal"
-                              : "Send Proposal",
-                          onPressed: () {},
+                          label: isAccepted
+                              ? "Accepted"
+                              : (isApplicant
+                                    ? "Accept proposal"
+                                    : "Send Proposal"),
+                          onPressed: isAccepted ? () {} : (onAccept ?? () {}),
                           height: 60,
                           borderRadius: 15,
+                          backgroundColor: isAccepted
+                              ? AppColors.primary.withValues(alpha: 0.7)
+                              : AppColors.primary,
                         ),
                       ],
                     ),

@@ -13,6 +13,290 @@ part of 'job_list_model.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$JobApplication {
+
+@JsonKey(name: "_id") String get id;@JsonKey(name: "athlete") Athlete get athlete;
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$JobApplicationCopyWith<JobApplication> get copyWith => _$JobApplicationCopyWithImpl<JobApplication>(this as JobApplication, _$identity);
+
+  /// Serializes this JobApplication to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobApplication&&(identical(other.id, id) || other.id == id)&&(identical(other.athlete, athlete) || other.athlete == athlete));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,athlete);
+
+@override
+String toString() {
+  return 'JobApplication(id: $id, athlete: $athlete)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $JobApplicationCopyWith<$Res>  {
+  factory $JobApplicationCopyWith(JobApplication value, $Res Function(JobApplication) _then) = _$JobApplicationCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "_id") String id,@JsonKey(name: "athlete") Athlete athlete
+});
+
+
+$AthleteCopyWith<$Res> get athlete;
+
+}
+/// @nodoc
+class _$JobApplicationCopyWithImpl<$Res>
+    implements $JobApplicationCopyWith<$Res> {
+  _$JobApplicationCopyWithImpl(this._self, this._then);
+
+  final JobApplication _self;
+  final $Res Function(JobApplication) _then;
+
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athlete = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Athlete,
+  ));
+}
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AthleteCopyWith<$Res> get athlete {
+  
+  return $AthleteCopyWith<$Res>(_self.athlete, (value) {
+    return _then(_self.copyWith(athlete: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [JobApplication].
+extension JobApplicationPatterns on JobApplication {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _JobApplication value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _JobApplication() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _JobApplication value)  $default,){
+final _that = this;
+switch (_that) {
+case _JobApplication():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _JobApplication value)?  $default,){
+final _that = this;
+switch (_that) {
+case _JobApplication() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id, @JsonKey(name: "athlete")  Athlete athlete)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _JobApplication() when $default != null:
+return $default(_that.id,_that.athlete);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id, @JsonKey(name: "athlete")  Athlete athlete)  $default,) {final _that = this;
+switch (_that) {
+case _JobApplication():
+return $default(_that.id,_that.athlete);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id, @JsonKey(name: "athlete")  Athlete athlete)?  $default,) {final _that = this;
+switch (_that) {
+case _JobApplication() when $default != null:
+return $default(_that.id,_that.athlete);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _JobApplication implements JobApplication {
+  const _JobApplication({@JsonKey(name: "_id") required this.id, @JsonKey(name: "athlete") required this.athlete});
+  factory _JobApplication.fromJson(Map<String, dynamic> json) => _$JobApplicationFromJson(json);
+
+@override@JsonKey(name: "_id") final  String id;
+@override@JsonKey(name: "athlete") final  Athlete athlete;
+
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$JobApplicationCopyWith<_JobApplication> get copyWith => __$JobApplicationCopyWithImpl<_JobApplication>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$JobApplicationToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobApplication&&(identical(other.id, id) || other.id == id)&&(identical(other.athlete, athlete) || other.athlete == athlete));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,athlete);
+
+@override
+String toString() {
+  return 'JobApplication(id: $id, athlete: $athlete)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$JobApplicationCopyWith<$Res> implements $JobApplicationCopyWith<$Res> {
+  factory _$JobApplicationCopyWith(_JobApplication value, $Res Function(_JobApplication) _then) = __$JobApplicationCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "_id") String id,@JsonKey(name: "athlete") Athlete athlete
+});
+
+
+@override $AthleteCopyWith<$Res> get athlete;
+
+}
+/// @nodoc
+class __$JobApplicationCopyWithImpl<$Res>
+    implements _$JobApplicationCopyWith<$Res> {
+  __$JobApplicationCopyWithImpl(this._self, this._then);
+
+  final _JobApplication _self;
+  final $Res Function(_JobApplication) _then;
+
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athlete = null,}) {
+  return _then(_JobApplication(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Athlete,
+  ));
+}
+
+/// Create a copy of JobApplication
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AthleteCopyWith<$Res> get athlete {
+  
+  return $AthleteCopyWith<$Res>(_self.athlete, (value) {
+    return _then(_self.copyWith(athlete: value));
+  });
+}
+}
+
+
+/// @nodoc
 mixin _$JobListResponse {
 
  bool get success; List<JobPostItem> get jobPosts; String? get companyName; String? get companyLogo;
@@ -293,7 +577,7 @@ as String?,
 /// @nodoc
 mixin _$JobPostItem {
 
-@JsonKey(name: "_id") String get id; Timeline get timeline; String get title;@JsonKey(name: "sport_id") SportInfo get sportId; String get location; String get description; String get requirements; DateTime get createdAt; List<String> get mediaUrls; List<Athlete> get applicants; int get applicantCount; String get price;
+@JsonKey(name: "_id") String get id; Timeline get timeline; String get title;@JsonKey(name: "sport_id") SportInfo get sportId; String get location; String get description; String get requirements; DateTime get createdAt; List<String> get mediaUrls; List<JobApplication> get applications; int get applicantCount; String get price;
 /// Create a copy of JobPostItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -306,16 +590,16 @@ $JobPostItemCopyWith<JobPostItem> get copyWith => _$JobPostItemCopyWithImpl<JobP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobPostItem&&(identical(other.id, id) || other.id == id)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.mediaUrls, mediaUrls)&&const DeepCollectionEquality().equals(other.applicants, applicants)&&(identical(other.applicantCount, applicantCount) || other.applicantCount == applicantCount)&&(identical(other.price, price) || other.price == price));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobPostItem&&(identical(other.id, id) || other.id == id)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.mediaUrls, mediaUrls)&&const DeepCollectionEquality().equals(other.applications, applications)&&(identical(other.applicantCount, applicantCount) || other.applicantCount == applicantCount)&&(identical(other.price, price) || other.price == price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,timeline,title,sportId,location,description,requirements,createdAt,const DeepCollectionEquality().hash(mediaUrls),const DeepCollectionEquality().hash(applicants),applicantCount,price);
+int get hashCode => Object.hash(runtimeType,id,timeline,title,sportId,location,description,requirements,createdAt,const DeepCollectionEquality().hash(mediaUrls),const DeepCollectionEquality().hash(applications),applicantCount,price);
 
 @override
 String toString() {
-  return 'JobPostItem(id: $id, timeline: $timeline, title: $title, sportId: $sportId, location: $location, description: $description, requirements: $requirements, createdAt: $createdAt, mediaUrls: $mediaUrls, applicants: $applicants, applicantCount: $applicantCount, price: $price)';
+  return 'JobPostItem(id: $id, timeline: $timeline, title: $title, sportId: $sportId, location: $location, description: $description, requirements: $requirements, createdAt: $createdAt, mediaUrls: $mediaUrls, applications: $applications, applicantCount: $applicantCount, price: $price)';
 }
 
 
@@ -326,7 +610,7 @@ abstract mixin class $JobPostItemCopyWith<$Res>  {
   factory $JobPostItemCopyWith(JobPostItem value, $Res Function(JobPostItem) _then) = _$JobPostItemCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<Athlete> applicants, int applicantCount, String price
+@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<JobApplication> applications, int applicantCount, String price
 });
 
 
@@ -343,7 +627,7 @@ class _$JobPostItemCopyWithImpl<$Res>
 
 /// Create a copy of JobPostItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? timeline = null,Object? title = null,Object? sportId = null,Object? location = null,Object? description = null,Object? requirements = null,Object? createdAt = null,Object? mediaUrls = null,Object? applicants = null,Object? applicantCount = null,Object? price = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? timeline = null,Object? title = null,Object? sportId = null,Object? location = null,Object? description = null,Object? requirements = null,Object? createdAt = null,Object? mediaUrls = null,Object? applications = null,Object? applicantCount = null,Object? price = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
@@ -354,8 +638,8 @@ as String,description: null == description ? _self.description : description // 
 as String,requirements: null == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,mediaUrls: null == mediaUrls ? _self.mediaUrls : mediaUrls // ignore: cast_nullable_to_non_nullable
-as List<String>,applicants: null == applicants ? _self.applicants : applicants // ignore: cast_nullable_to_non_nullable
-as List<Athlete>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
+as List<String>,applications: null == applications ? _self.applications : applications // ignore: cast_nullable_to_non_nullable
+as List<JobApplication>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -460,10 +744,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<JobApplication> applications,  int applicantCount,  String price)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JobPostItem() when $default != null:
-return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
+return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applications,_that.applicantCount,_that.price);case _:
   return orElse();
 
 }
@@ -481,10 +765,10 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<JobApplication> applications,  int applicantCount,  String price)  $default,) {final _that = this;
 switch (_that) {
 case _JobPostItem():
-return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
+return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applications,_that.applicantCount,_that.price);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -501,10 +785,10 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<Athlete> applicants,  int applicantCount,  String price)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  Timeline timeline,  String title, @JsonKey(name: "sport_id")  SportInfo sportId,  String location,  String description,  String requirements,  DateTime createdAt,  List<String> mediaUrls,  List<JobApplication> applications,  int applicantCount,  String price)?  $default,) {final _that = this;
 switch (_that) {
 case _JobPostItem() when $default != null:
-return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applicants,_that.applicantCount,_that.price);case _:
+return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location,_that.description,_that.requirements,_that.createdAt,_that.mediaUrls,_that.applications,_that.applicantCount,_that.price);case _:
   return null;
 
 }
@@ -516,7 +800,7 @@ return $default(_that.id,_that.timeline,_that.title,_that.sportId,_that.location
 @JsonSerializable()
 
 class _JobPostItem implements JobPostItem {
-  const _JobPostItem({@JsonKey(name: "_id") required this.id, required this.timeline, required this.title, @JsonKey(name: "sport_id") required this.sportId, this.location = '', this.description = '', this.requirements = '', required this.createdAt, final  List<String> mediaUrls = const [], final  List<Athlete> applicants = const [], this.applicantCount = 0, this.price = ''}): _mediaUrls = mediaUrls,_applicants = applicants;
+  const _JobPostItem({@JsonKey(name: "_id") required this.id, required this.timeline, required this.title, @JsonKey(name: "sport_id") required this.sportId, this.location = '', this.description = '', this.requirements = '', required this.createdAt, final  List<String> mediaUrls = const [], final  List<JobApplication> applications = const [], this.applicantCount = 0, this.price = ''}): _mediaUrls = mediaUrls,_applications = applications;
   factory _JobPostItem.fromJson(Map<String, dynamic> json) => _$JobPostItemFromJson(json);
 
 @override@JsonKey(name: "_id") final  String id;
@@ -534,11 +818,11 @@ class _JobPostItem implements JobPostItem {
   return EqualUnmodifiableListView(_mediaUrls);
 }
 
- final  List<Athlete> _applicants;
-@override@JsonKey() List<Athlete> get applicants {
-  if (_applicants is EqualUnmodifiableListView) return _applicants;
+ final  List<JobApplication> _applications;
+@override@JsonKey() List<JobApplication> get applications {
+  if (_applications is EqualUnmodifiableListView) return _applications;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_applicants);
+  return EqualUnmodifiableListView(_applications);
 }
 
 @override@JsonKey() final  int applicantCount;
@@ -557,16 +841,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobPostItem&&(identical(other.id, id) || other.id == id)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._mediaUrls, _mediaUrls)&&const DeepCollectionEquality().equals(other._applicants, _applicants)&&(identical(other.applicantCount, applicantCount) || other.applicantCount == applicantCount)&&(identical(other.price, price) || other.price == price));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobPostItem&&(identical(other.id, id) || other.id == id)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._mediaUrls, _mediaUrls)&&const DeepCollectionEquality().equals(other._applications, _applications)&&(identical(other.applicantCount, applicantCount) || other.applicantCount == applicantCount)&&(identical(other.price, price) || other.price == price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,timeline,title,sportId,location,description,requirements,createdAt,const DeepCollectionEquality().hash(_mediaUrls),const DeepCollectionEquality().hash(_applicants),applicantCount,price);
+int get hashCode => Object.hash(runtimeType,id,timeline,title,sportId,location,description,requirements,createdAt,const DeepCollectionEquality().hash(_mediaUrls),const DeepCollectionEquality().hash(_applications),applicantCount,price);
 
 @override
 String toString() {
-  return 'JobPostItem(id: $id, timeline: $timeline, title: $title, sportId: $sportId, location: $location, description: $description, requirements: $requirements, createdAt: $createdAt, mediaUrls: $mediaUrls, applicants: $applicants, applicantCount: $applicantCount, price: $price)';
+  return 'JobPostItem(id: $id, timeline: $timeline, title: $title, sportId: $sportId, location: $location, description: $description, requirements: $requirements, createdAt: $createdAt, mediaUrls: $mediaUrls, applications: $applications, applicantCount: $applicantCount, price: $price)';
 }
 
 
@@ -577,7 +861,7 @@ abstract mixin class _$JobPostItemCopyWith<$Res> implements $JobPostItemCopyWith
   factory _$JobPostItemCopyWith(_JobPostItem value, $Res Function(_JobPostItem) _then) = __$JobPostItemCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<Athlete> applicants, int applicantCount, String price
+@JsonKey(name: "_id") String id, Timeline timeline, String title,@JsonKey(name: "sport_id") SportInfo sportId, String location, String description, String requirements, DateTime createdAt, List<String> mediaUrls, List<JobApplication> applications, int applicantCount, String price
 });
 
 
@@ -594,7 +878,7 @@ class __$JobPostItemCopyWithImpl<$Res>
 
 /// Create a copy of JobPostItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? timeline = null,Object? title = null,Object? sportId = null,Object? location = null,Object? description = null,Object? requirements = null,Object? createdAt = null,Object? mediaUrls = null,Object? applicants = null,Object? applicantCount = null,Object? price = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? timeline = null,Object? title = null,Object? sportId = null,Object? location = null,Object? description = null,Object? requirements = null,Object? createdAt = null,Object? mediaUrls = null,Object? applications = null,Object? applicantCount = null,Object? price = null,}) {
   return _then(_JobPostItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
@@ -605,8 +889,8 @@ as String,description: null == description ? _self.description : description // 
 as String,requirements: null == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,mediaUrls: null == mediaUrls ? _self._mediaUrls : mediaUrls // ignore: cast_nullable_to_non_nullable
-as List<String>,applicants: null == applicants ? _self._applicants : applicants // ignore: cast_nullable_to_non_nullable
-as List<Athlete>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
+as List<String>,applications: null == applications ? _self._applications : applications // ignore: cast_nullable_to_non_nullable
+as List<JobApplication>,applicantCount: null == applicantCount ? _self.applicantCount : applicantCount // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -1166,6 +1450,1701 @@ as DateTime?,
 }
 
 
+}
+
+
+/// @nodoc
+mixin _$AcceptApplicantData {
+
+ String get athleteId; String get jobId; String get applicationId; String get sponsorshipSource; String get status;
+/// Create a copy of AcceptApplicantData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AcceptApplicantDataCopyWith<AcceptApplicantData> get copyWith => _$AcceptApplicantDataCopyWithImpl<AcceptApplicantData>(this as AcceptApplicantData, _$identity);
+
+  /// Serializes this AcceptApplicantData to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AcceptApplicantData&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.jobId, jobId) || other.jobId == jobId)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.sponsorshipSource, sponsorshipSource) || other.sponsorshipSource == sponsorshipSource)&&(identical(other.status, status) || other.status == status));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athleteId,jobId,applicationId,sponsorshipSource,status);
+
+@override
+String toString() {
+  return 'AcceptApplicantData(athleteId: $athleteId, jobId: $jobId, applicationId: $applicationId, sponsorshipSource: $sponsorshipSource, status: $status)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AcceptApplicantDataCopyWith<$Res>  {
+  factory $AcceptApplicantDataCopyWith(AcceptApplicantData value, $Res Function(AcceptApplicantData) _then) = _$AcceptApplicantDataCopyWithImpl;
+@useResult
+$Res call({
+ String athleteId, String jobId, String applicationId, String sponsorshipSource, String status
+});
+
+
+
+
+}
+/// @nodoc
+class _$AcceptApplicantDataCopyWithImpl<$Res>
+    implements $AcceptApplicantDataCopyWith<$Res> {
+  _$AcceptApplicantDataCopyWithImpl(this._self, this._then);
+
+  final AcceptApplicantData _self;
+  final $Res Function(AcceptApplicantData) _then;
+
+/// Create a copy of AcceptApplicantData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? athleteId = null,Object? jobId = null,Object? applicationId = null,Object? sponsorshipSource = null,Object? status = null,}) {
+  return _then(_self.copyWith(
+athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String,jobId: null == jobId ? _self.jobId : jobId // ignore: cast_nullable_to_non_nullable
+as String,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,sponsorshipSource: null == sponsorshipSource ? _self.sponsorshipSource : sponsorshipSource // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AcceptApplicantData].
+extension AcceptApplicantDataPatterns on AcceptApplicantData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AcceptApplicantData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AcceptApplicantData value)  $default,){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AcceptApplicantData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String athleteId,  String jobId,  String applicationId,  String sponsorshipSource,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AcceptApplicantData() when $default != null:
+return $default(_that.athleteId,_that.jobId,_that.applicationId,_that.sponsorshipSource,_that.status);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String athleteId,  String jobId,  String applicationId,  String sponsorshipSource,  String status)  $default,) {final _that = this;
+switch (_that) {
+case _AcceptApplicantData():
+return $default(_that.athleteId,_that.jobId,_that.applicationId,_that.sponsorshipSource,_that.status);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String athleteId,  String jobId,  String applicationId,  String sponsorshipSource,  String status)?  $default,) {final _that = this;
+switch (_that) {
+case _AcceptApplicantData() when $default != null:
+return $default(_that.athleteId,_that.jobId,_that.applicationId,_that.sponsorshipSource,_that.status);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _AcceptApplicantData implements AcceptApplicantData {
+  const _AcceptApplicantData({required this.athleteId, required this.jobId, required this.applicationId, required this.sponsorshipSource, required this.status});
+  factory _AcceptApplicantData.fromJson(Map<String, dynamic> json) => _$AcceptApplicantDataFromJson(json);
+
+@override final  String athleteId;
+@override final  String jobId;
+@override final  String applicationId;
+@override final  String sponsorshipSource;
+@override final  String status;
+
+/// Create a copy of AcceptApplicantData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AcceptApplicantDataCopyWith<_AcceptApplicantData> get copyWith => __$AcceptApplicantDataCopyWithImpl<_AcceptApplicantData>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AcceptApplicantDataToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AcceptApplicantData&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.jobId, jobId) || other.jobId == jobId)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.sponsorshipSource, sponsorshipSource) || other.sponsorshipSource == sponsorshipSource)&&(identical(other.status, status) || other.status == status));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athleteId,jobId,applicationId,sponsorshipSource,status);
+
+@override
+String toString() {
+  return 'AcceptApplicantData(athleteId: $athleteId, jobId: $jobId, applicationId: $applicationId, sponsorshipSource: $sponsorshipSource, status: $status)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AcceptApplicantDataCopyWith<$Res> implements $AcceptApplicantDataCopyWith<$Res> {
+  factory _$AcceptApplicantDataCopyWith(_AcceptApplicantData value, $Res Function(_AcceptApplicantData) _then) = __$AcceptApplicantDataCopyWithImpl;
+@override @useResult
+$Res call({
+ String athleteId, String jobId, String applicationId, String sponsorshipSource, String status
+});
+
+
+
+
+}
+/// @nodoc
+class __$AcceptApplicantDataCopyWithImpl<$Res>
+    implements _$AcceptApplicantDataCopyWith<$Res> {
+  __$AcceptApplicantDataCopyWithImpl(this._self, this._then);
+
+  final _AcceptApplicantData _self;
+  final $Res Function(_AcceptApplicantData) _then;
+
+/// Create a copy of AcceptApplicantData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? athleteId = null,Object? jobId = null,Object? applicationId = null,Object? sponsorshipSource = null,Object? status = null,}) {
+  return _then(_AcceptApplicantData(
+athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
+as String,jobId: null == jobId ? _self.jobId : jobId // ignore: cast_nullable_to_non_nullable
+as String,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,sponsorshipSource: null == sponsorshipSource ? _self.sponsorshipSource : sponsorshipSource // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$AcceptApplicantResponse {
+
+ bool get success; String get message; AcceptApplicantData get data;
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AcceptApplicantResponseCopyWith<AcceptApplicantResponse> get copyWith => _$AcceptApplicantResponseCopyWithImpl<AcceptApplicantResponse>(this as AcceptApplicantResponse, _$identity);
+
+  /// Serializes this AcceptApplicantResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AcceptApplicantResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'AcceptApplicantResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AcceptApplicantResponseCopyWith<$Res>  {
+  factory $AcceptApplicantResponseCopyWith(AcceptApplicantResponse value, $Res Function(AcceptApplicantResponse) _then) = _$AcceptApplicantResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, AcceptApplicantData data
+});
+
+
+$AcceptApplicantDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class _$AcceptApplicantResponseCopyWithImpl<$Res>
+    implements $AcceptApplicantResponseCopyWith<$Res> {
+  _$AcceptApplicantResponseCopyWithImpl(this._self, this._then);
+
+  final AcceptApplicantResponse _self;
+  final $Res Function(AcceptApplicantResponse) _then;
+
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as AcceptApplicantData,
+  ));
+}
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AcceptApplicantDataCopyWith<$Res> get data {
+  
+  return $AcceptApplicantDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [AcceptApplicantResponse].
+extension AcceptApplicantResponsePatterns on AcceptApplicantResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AcceptApplicantResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AcceptApplicantResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AcceptApplicantResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  AcceptApplicantData data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  AcceptApplicantData data)  $default,) {final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse():
+return $default(_that.success,_that.message,_that.data);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  AcceptApplicantData data)?  $default,) {final _that = this;
+switch (_that) {
+case _AcceptApplicantResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _AcceptApplicantResponse implements AcceptApplicantResponse {
+  const _AcceptApplicantResponse({required this.success, required this.message, required this.data});
+  factory _AcceptApplicantResponse.fromJson(Map<String, dynamic> json) => _$AcceptApplicantResponseFromJson(json);
+
+@override final  bool success;
+@override final  String message;
+@override final  AcceptApplicantData data;
+
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AcceptApplicantResponseCopyWith<_AcceptApplicantResponse> get copyWith => __$AcceptApplicantResponseCopyWithImpl<_AcceptApplicantResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AcceptApplicantResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AcceptApplicantResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'AcceptApplicantResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AcceptApplicantResponseCopyWith<$Res> implements $AcceptApplicantResponseCopyWith<$Res> {
+  factory _$AcceptApplicantResponseCopyWith(_AcceptApplicantResponse value, $Res Function(_AcceptApplicantResponse) _then) = __$AcceptApplicantResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, AcceptApplicantData data
+});
+
+
+@override $AcceptApplicantDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class __$AcceptApplicantResponseCopyWithImpl<$Res>
+    implements _$AcceptApplicantResponseCopyWith<$Res> {
+  __$AcceptApplicantResponseCopyWithImpl(this._self, this._then);
+
+  final _AcceptApplicantResponse _self;
+  final $Res Function(_AcceptApplicantResponse) _then;
+
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_AcceptApplicantResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as AcceptApplicantData,
+  ));
+}
+
+/// Create a copy of AcceptApplicantResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AcceptApplicantDataCopyWith<$Res> get data {
+  
+  return $AcceptApplicantDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$SponsoredAthleteJobPost {
+
+@JsonKey(name: "_id") String get id; String get title;
+/// Create a copy of SponsoredAthleteJobPost
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsoredAthleteJobPostCopyWith<SponsoredAthleteJobPost> get copyWith => _$SponsoredAthleteJobPostCopyWithImpl<SponsoredAthleteJobPost>(this as SponsoredAthleteJobPost, _$identity);
+
+  /// Serializes this SponsoredAthleteJobPost to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsoredAthleteJobPost&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title);
+
+@override
+String toString() {
+  return 'SponsoredAthleteJobPost(id: $id, title: $title)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsoredAthleteJobPostCopyWith<$Res>  {
+  factory $SponsoredAthleteJobPostCopyWith(SponsoredAthleteJobPost value, $Res Function(SponsoredAthleteJobPost) _then) = _$SponsoredAthleteJobPostCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: "_id") String id, String title
+});
+
+
+
+
+}
+/// @nodoc
+class _$SponsoredAthleteJobPostCopyWithImpl<$Res>
+    implements $SponsoredAthleteJobPostCopyWith<$Res> {
+  _$SponsoredAthleteJobPostCopyWithImpl(this._self, this._then);
+
+  final SponsoredAthleteJobPost _self;
+  final $Res Function(SponsoredAthleteJobPost) _then;
+
+/// Create a copy of SponsoredAthleteJobPost
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SponsoredAthleteJobPost].
+extension SponsoredAthleteJobPostPatterns on SponsoredAthleteJobPost {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsoredAthleteJobPost value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsoredAthleteJobPost value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsoredAthleteJobPost value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String title)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost() when $default != null:
+return $default(_that.id,_that.title);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String title)  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost():
+return $default(_that.id,_that.title);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String title)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteJobPost() when $default != null:
+return $default(_that.id,_that.title);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsoredAthleteJobPost implements SponsoredAthleteJobPost {
+  const _SponsoredAthleteJobPost({@JsonKey(name: "_id") required this.id, required this.title});
+  factory _SponsoredAthleteJobPost.fromJson(Map<String, dynamic> json) => _$SponsoredAthleteJobPostFromJson(json);
+
+@override@JsonKey(name: "_id") final  String id;
+@override final  String title;
+
+/// Create a copy of SponsoredAthleteJobPost
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsoredAthleteJobPostCopyWith<_SponsoredAthleteJobPost> get copyWith => __$SponsoredAthleteJobPostCopyWithImpl<_SponsoredAthleteJobPost>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsoredAthleteJobPostToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsoredAthleteJobPost&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title);
+
+@override
+String toString() {
+  return 'SponsoredAthleteJobPost(id: $id, title: $title)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsoredAthleteJobPostCopyWith<$Res> implements $SponsoredAthleteJobPostCopyWith<$Res> {
+  factory _$SponsoredAthleteJobPostCopyWith(_SponsoredAthleteJobPost value, $Res Function(_SponsoredAthleteJobPost) _then) = __$SponsoredAthleteJobPostCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: "_id") String id, String title
+});
+
+
+
+
+}
+/// @nodoc
+class __$SponsoredAthleteJobPostCopyWithImpl<$Res>
+    implements _$SponsoredAthleteJobPostCopyWith<$Res> {
+  __$SponsoredAthleteJobPostCopyWithImpl(this._self, this._then);
+
+  final _SponsoredAthleteJobPost _self;
+  final $Res Function(_SponsoredAthleteJobPost) _then;
+
+/// Create a copy of SponsoredAthleteJobPost
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,}) {
+  return _then(_SponsoredAthleteJobPost(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SponsoredAthleteItem {
+
+ Athlete get athlete; SponsoredAthleteJobPost get jobPost; String get applicationId; DateTime get acceptedAt;
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsoredAthleteItemCopyWith<SponsoredAthleteItem> get copyWith => _$SponsoredAthleteItemCopyWithImpl<SponsoredAthleteItem>(this as SponsoredAthleteItem, _$identity);
+
+  /// Serializes this SponsoredAthleteItem to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsoredAthleteItem&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.acceptedAt, acceptedAt) || other.acceptedAt == acceptedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athlete,jobPost,applicationId,acceptedAt);
+
+@override
+String toString() {
+  return 'SponsoredAthleteItem(athlete: $athlete, jobPost: $jobPost, applicationId: $applicationId, acceptedAt: $acceptedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsoredAthleteItemCopyWith<$Res>  {
+  factory $SponsoredAthleteItemCopyWith(SponsoredAthleteItem value, $Res Function(SponsoredAthleteItem) _then) = _$SponsoredAthleteItemCopyWithImpl;
+@useResult
+$Res call({
+ Athlete athlete, SponsoredAthleteJobPost jobPost, String applicationId, DateTime acceptedAt
+});
+
+
+$AthleteCopyWith<$Res> get athlete;$SponsoredAthleteJobPostCopyWith<$Res> get jobPost;
+
+}
+/// @nodoc
+class _$SponsoredAthleteItemCopyWithImpl<$Res>
+    implements $SponsoredAthleteItemCopyWith<$Res> {
+  _$SponsoredAthleteItemCopyWithImpl(this._self, this._then);
+
+  final SponsoredAthleteItem _self;
+  final $Res Function(SponsoredAthleteItem) _then;
+
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? athlete = null,Object? jobPost = null,Object? applicationId = null,Object? acceptedAt = null,}) {
+  return _then(_self.copyWith(
+athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Athlete,jobPost: null == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as SponsoredAthleteJobPost,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,acceptedAt: null == acceptedAt ? _self.acceptedAt : acceptedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AthleteCopyWith<$Res> get athlete {
+  
+  return $AthleteCopyWith<$Res>(_self.athlete, (value) {
+    return _then(_self.copyWith(athlete: value));
+  });
+}/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsoredAthleteJobPostCopyWith<$Res> get jobPost {
+  
+  return $SponsoredAthleteJobPostCopyWith<$Res>(_self.jobPost, (value) {
+    return _then(_self.copyWith(jobPost: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [SponsoredAthleteItem].
+extension SponsoredAthleteItemPatterns on SponsoredAthleteItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsoredAthleteItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsoredAthleteItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsoredAthleteItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Athlete athlete,  SponsoredAthleteJobPost jobPost,  String applicationId,  DateTime acceptedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem() when $default != null:
+return $default(_that.athlete,_that.jobPost,_that.applicationId,_that.acceptedAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Athlete athlete,  SponsoredAthleteJobPost jobPost,  String applicationId,  DateTime acceptedAt)  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem():
+return $default(_that.athlete,_that.jobPost,_that.applicationId,_that.acceptedAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Athlete athlete,  SponsoredAthleteJobPost jobPost,  String applicationId,  DateTime acceptedAt)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthleteItem() when $default != null:
+return $default(_that.athlete,_that.jobPost,_that.applicationId,_that.acceptedAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsoredAthleteItem implements SponsoredAthleteItem {
+  const _SponsoredAthleteItem({required this.athlete, required this.jobPost, required this.applicationId, required this.acceptedAt});
+  factory _SponsoredAthleteItem.fromJson(Map<String, dynamic> json) => _$SponsoredAthleteItemFromJson(json);
+
+@override final  Athlete athlete;
+@override final  SponsoredAthleteJobPost jobPost;
+@override final  String applicationId;
+@override final  DateTime acceptedAt;
+
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsoredAthleteItemCopyWith<_SponsoredAthleteItem> get copyWith => __$SponsoredAthleteItemCopyWithImpl<_SponsoredAthleteItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsoredAthleteItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsoredAthleteItem&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.acceptedAt, acceptedAt) || other.acceptedAt == acceptedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,athlete,jobPost,applicationId,acceptedAt);
+
+@override
+String toString() {
+  return 'SponsoredAthleteItem(athlete: $athlete, jobPost: $jobPost, applicationId: $applicationId, acceptedAt: $acceptedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsoredAthleteItemCopyWith<$Res> implements $SponsoredAthleteItemCopyWith<$Res> {
+  factory _$SponsoredAthleteItemCopyWith(_SponsoredAthleteItem value, $Res Function(_SponsoredAthleteItem) _then) = __$SponsoredAthleteItemCopyWithImpl;
+@override @useResult
+$Res call({
+ Athlete athlete, SponsoredAthleteJobPost jobPost, String applicationId, DateTime acceptedAt
+});
+
+
+@override $AthleteCopyWith<$Res> get athlete;@override $SponsoredAthleteJobPostCopyWith<$Res> get jobPost;
+
+}
+/// @nodoc
+class __$SponsoredAthleteItemCopyWithImpl<$Res>
+    implements _$SponsoredAthleteItemCopyWith<$Res> {
+  __$SponsoredAthleteItemCopyWithImpl(this._self, this._then);
+
+  final _SponsoredAthleteItem _self;
+  final $Res Function(_SponsoredAthleteItem) _then;
+
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? athlete = null,Object? jobPost = null,Object? applicationId = null,Object? acceptedAt = null,}) {
+  return _then(_SponsoredAthleteItem(
+athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as Athlete,jobPost: null == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as SponsoredAthleteJobPost,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,acceptedAt: null == acceptedAt ? _self.acceptedAt : acceptedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AthleteCopyWith<$Res> get athlete {
+  
+  return $AthleteCopyWith<$Res>(_self.athlete, (value) {
+    return _then(_self.copyWith(athlete: value));
+  });
+}/// Create a copy of SponsoredAthleteItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsoredAthleteJobPostCopyWith<$Res> get jobPost {
+  
+  return $SponsoredAthleteJobPostCopyWith<$Res>(_self.jobPost, (value) {
+    return _then(_self.copyWith(jobPost: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$SponsoredAthletesData {
+
+ List<SponsoredAthleteItem> get athletes; int get count;
+/// Create a copy of SponsoredAthletesData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsoredAthletesDataCopyWith<SponsoredAthletesData> get copyWith => _$SponsoredAthletesDataCopyWithImpl<SponsoredAthletesData>(this as SponsoredAthletesData, _$identity);
+
+  /// Serializes this SponsoredAthletesData to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsoredAthletesData&&const DeepCollectionEquality().equals(other.athletes, athletes)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(athletes),count);
+
+@override
+String toString() {
+  return 'SponsoredAthletesData(athletes: $athletes, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsoredAthletesDataCopyWith<$Res>  {
+  factory $SponsoredAthletesDataCopyWith(SponsoredAthletesData value, $Res Function(SponsoredAthletesData) _then) = _$SponsoredAthletesDataCopyWithImpl;
+@useResult
+$Res call({
+ List<SponsoredAthleteItem> athletes, int count
+});
+
+
+
+
+}
+/// @nodoc
+class _$SponsoredAthletesDataCopyWithImpl<$Res>
+    implements $SponsoredAthletesDataCopyWith<$Res> {
+  _$SponsoredAthletesDataCopyWithImpl(this._self, this._then);
+
+  final SponsoredAthletesData _self;
+  final $Res Function(SponsoredAthletesData) _then;
+
+/// Create a copy of SponsoredAthletesData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? athletes = null,Object? count = null,}) {
+  return _then(_self.copyWith(
+athletes: null == athletes ? _self.athletes : athletes // ignore: cast_nullable_to_non_nullable
+as List<SponsoredAthleteItem>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SponsoredAthletesData].
+extension SponsoredAthletesDataPatterns on SponsoredAthletesData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsoredAthletesData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsoredAthletesData value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsoredAthletesData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SponsoredAthleteItem> athletes,  int count)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesData() when $default != null:
+return $default(_that.athletes,_that.count);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SponsoredAthleteItem> athletes,  int count)  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesData():
+return $default(_that.athletes,_that.count);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SponsoredAthleteItem> athletes,  int count)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesData() when $default != null:
+return $default(_that.athletes,_that.count);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsoredAthletesData implements SponsoredAthletesData {
+  const _SponsoredAthletesData({required final  List<SponsoredAthleteItem> athletes, required this.count}): _athletes = athletes;
+  factory _SponsoredAthletesData.fromJson(Map<String, dynamic> json) => _$SponsoredAthletesDataFromJson(json);
+
+ final  List<SponsoredAthleteItem> _athletes;
+@override List<SponsoredAthleteItem> get athletes {
+  if (_athletes is EqualUnmodifiableListView) return _athletes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_athletes);
+}
+
+@override final  int count;
+
+/// Create a copy of SponsoredAthletesData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsoredAthletesDataCopyWith<_SponsoredAthletesData> get copyWith => __$SponsoredAthletesDataCopyWithImpl<_SponsoredAthletesData>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsoredAthletesDataToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsoredAthletesData&&const DeepCollectionEquality().equals(other._athletes, _athletes)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_athletes),count);
+
+@override
+String toString() {
+  return 'SponsoredAthletesData(athletes: $athletes, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsoredAthletesDataCopyWith<$Res> implements $SponsoredAthletesDataCopyWith<$Res> {
+  factory _$SponsoredAthletesDataCopyWith(_SponsoredAthletesData value, $Res Function(_SponsoredAthletesData) _then) = __$SponsoredAthletesDataCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SponsoredAthleteItem> athletes, int count
+});
+
+
+
+
+}
+/// @nodoc
+class __$SponsoredAthletesDataCopyWithImpl<$Res>
+    implements _$SponsoredAthletesDataCopyWith<$Res> {
+  __$SponsoredAthletesDataCopyWithImpl(this._self, this._then);
+
+  final _SponsoredAthletesData _self;
+  final $Res Function(_SponsoredAthletesData) _then;
+
+/// Create a copy of SponsoredAthletesData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? athletes = null,Object? count = null,}) {
+  return _then(_SponsoredAthletesData(
+athletes: null == athletes ? _self._athletes : athletes // ignore: cast_nullable_to_non_nullable
+as List<SponsoredAthleteItem>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SponsoredAthletesResponse {
+
+ bool get success; String get message; SponsoredAthletesData get data;
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SponsoredAthletesResponseCopyWith<SponsoredAthletesResponse> get copyWith => _$SponsoredAthletesResponseCopyWithImpl<SponsoredAthletesResponse>(this as SponsoredAthletesResponse, _$identity);
+
+  /// Serializes this SponsoredAthletesResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsoredAthletesResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'SponsoredAthletesResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SponsoredAthletesResponseCopyWith<$Res>  {
+  factory $SponsoredAthletesResponseCopyWith(SponsoredAthletesResponse value, $Res Function(SponsoredAthletesResponse) _then) = _$SponsoredAthletesResponseCopyWithImpl;
+@useResult
+$Res call({
+ bool success, String message, SponsoredAthletesData data
+});
+
+
+$SponsoredAthletesDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class _$SponsoredAthletesResponseCopyWithImpl<$Res>
+    implements $SponsoredAthletesResponseCopyWith<$Res> {
+  _$SponsoredAthletesResponseCopyWithImpl(this._self, this._then);
+
+  final SponsoredAthletesResponse _self;
+  final $Res Function(SponsoredAthletesResponse) _then;
+
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_self.copyWith(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as SponsoredAthletesData,
+  ));
+}
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsoredAthletesDataCopyWith<$Res> get data {
+  
+  return $SponsoredAthletesDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [SponsoredAthletesResponse].
+extension SponsoredAthletesResponsePatterns on SponsoredAthletesResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SponsoredAthletesResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SponsoredAthletesResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SponsoredAthletesResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool success,  String message,  SponsoredAthletesData data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool success,  String message,  SponsoredAthletesData data)  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse():
+return $default(_that.success,_that.message,_that.data);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool success,  String message,  SponsoredAthletesData data)?  $default,) {final _that = this;
+switch (_that) {
+case _SponsoredAthletesResponse() when $default != null:
+return $default(_that.success,_that.message,_that.data);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SponsoredAthletesResponse implements SponsoredAthletesResponse {
+  const _SponsoredAthletesResponse({required this.success, required this.message, required this.data});
+  factory _SponsoredAthletesResponse.fromJson(Map<String, dynamic> json) => _$SponsoredAthletesResponseFromJson(json);
+
+@override final  bool success;
+@override final  String message;
+@override final  SponsoredAthletesData data;
+
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SponsoredAthletesResponseCopyWith<_SponsoredAthletesResponse> get copyWith => __$SponsoredAthletesResponseCopyWithImpl<_SponsoredAthletesResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SponsoredAthletesResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsoredAthletesResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,success,message,data);
+
+@override
+String toString() {
+  return 'SponsoredAthletesResponse(success: $success, message: $message, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SponsoredAthletesResponseCopyWith<$Res> implements $SponsoredAthletesResponseCopyWith<$Res> {
+  factory _$SponsoredAthletesResponseCopyWith(_SponsoredAthletesResponse value, $Res Function(_SponsoredAthletesResponse) _then) = __$SponsoredAthletesResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ bool success, String message, SponsoredAthletesData data
+});
+
+
+@override $SponsoredAthletesDataCopyWith<$Res> get data;
+
+}
+/// @nodoc
+class __$SponsoredAthletesResponseCopyWithImpl<$Res>
+    implements _$SponsoredAthletesResponseCopyWith<$Res> {
+  __$SponsoredAthletesResponseCopyWithImpl(this._self, this._then);
+
+  final _SponsoredAthletesResponse _self;
+  final $Res Function(_SponsoredAthletesResponse) _then;
+
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? data = null,}) {
+  return _then(_SponsoredAthletesResponse(
+success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as SponsoredAthletesData,
+  ));
+}
+
+/// Create a copy of SponsoredAthletesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsoredAthletesDataCopyWith<$Res> get data {
+  
+  return $SponsoredAthletesDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
 }
 
 // dart format on

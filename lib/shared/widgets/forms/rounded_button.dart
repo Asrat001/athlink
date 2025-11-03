@@ -3,7 +3,7 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  RoundedButton({
+  const RoundedButton({
     super.key,
     required this.label,
     required this.onPressed,

@@ -26,17 +26,33 @@ class JobListRemoteDataSource extends BaseRepository {
 
         // Convert JobPost to JobPostItem
         final jobPostItems = jobPosts.map((jobPost) {
-          // Parse applicants from dynamic to List<Athlete>
-          final applicantsList = jobPost.applicants
+          // Parse applicants from dynamic to List<JobApplication>
+          final applicationsList = jobPost.applicants
               .map((applicantJson) {
                 try {
-                  return Athlete.fromJson(applicantJson as Map<String, dynamic>);
+                  // Try to parse as JobApplication (with _id and athlete fields)
+                  return manage_models.JobApplication.fromJson(
+                    applicantJson as Map<String, dynamic>,
+                  );
                 } catch (e) {
-                  // If parsing fails, return null and filter it out
-                  return null;
+                  // If parsing fails, it might be a direct Athlete object
+                  // Create a JobApplication with athlete ID as application ID
+                  try {
+                    final athlete = Athlete.fromJson(
+                      applicantJson as Map<String, dynamic>,
+                    );
+                    // Use athlete ID as a fallback for application ID
+                    return manage_models.JobApplication(
+                      id: athlete.id ?? 'unknown',
+                      athlete: athlete,
+                    );
+                  } catch (e2) {
+                    // If both fail, return null and filter it out
+                    return null;
+                  }
                 }
               })
-              .whereType<Athlete>() // Filter out null values
+              .whereType<manage_models.JobApplication>() // Filter out null values
               .toList();
 
           return manage_models.JobPostItem(
@@ -56,8 +72,8 @@ class JobListRemoteDataSource extends BaseRepository {
             requirements: jobPost.requirements,
             createdAt: jobPost.createdAt,
             mediaUrls: jobPost.mediaUrls,
-            applicants: applicantsList,
-            applicantCount: applicantsList.length,
+            applications: applicationsList,
+            applicantCount: applicationsList.length,
             price: jobPost.budget,
           );
         }).toList();
@@ -71,6 +87,37 @@ class JobListRemoteDataSource extends BaseRepository {
           companyName: sponsorProfile?.name,
           companyLogo: sponsorProfile?.profileImageUrl,
         );
+      },
+    );
+  }
+
+  Future<manage_models.AcceptApplicantResponse> acceptApplicant({
+    required String jobId,
+    required String applicationId,
+  }) async {
+    return await safeApiCall(
+      path: "/sponsorship/accept-applicant/$jobId/$applicationId",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .post("/sponsorship/accept-applicant/$jobId/$applicationId");
+      },
+      fromData: (data) {
+        return manage_models.AcceptApplicantResponse.fromJson(data);
+      },
+    );
+  }
+
+  Future<manage_models.SponsoredAthletesResponse> getSponsoredAthletes() async {
+    return await safeApiCall(
+      path: "/sponsorship/sponsored-athletes",
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .get("/sponsorship/sponsored-athletes");
+      },
+      fromData: (data) {
+        return manage_models.SponsoredAthletesResponse.fromJson(data);
       },
     );
   }

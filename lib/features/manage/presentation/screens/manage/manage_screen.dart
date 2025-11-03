@@ -1,11 +1,15 @@
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
+import 'package:athlink/features/manage/domain/models/job_list_model.dart'
+    as manage_models;
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/constant/constants.dart';
+import 'package:athlink/shared/handlers/api_response.dart';
+import 'package:athlink/shared/handlers/network_exceptions.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -139,6 +143,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobListProvider.notifier).fetchJobPosts();
+      ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
       ref.read(profileProvider.notifier).getProfile();
       ref.read(feedProvider.notifier).getFeed();
     });
@@ -204,6 +209,15 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     return feedState.feedData!.athletes.where((athlete) {
       return athlete.sport.any((sport) => sport.id == sportId);
     }).toList();
+  }
+
+  bool _isApplicationAccepted(String applicationId) {
+    final jobListState = ref.watch(jobListProvider);
+
+    // Check if this application ID exists in the sponsored athletes list
+    return jobListState.sponsoredAthletes.any(
+      (sponsoredAthlete) => sponsoredAthlete.applicationId == applicationId,
+    );
   }
 
   @override
@@ -306,10 +320,39 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                     child: _jobsBodyForState(context),
                   ),
                   // Sponsorship tab
-                  SponsorshipSection(
-                    activeCount: 1,
-                    closedCount: 0,
-                    sponsorships: sponsorships,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final jobListState = ref.watch(jobListProvider);
+
+                      // Convert sponsored athletes to the format expected by SponsorshipSection
+                      final sponsorshipsData = jobListState.sponsoredAthletes
+                          .map((item) {
+                            final athleteProfile = item.athlete.athleteProfile;
+                            return {
+                              "name":
+                                  athleteProfile?.name ??
+                                  item.athlete.name ??
+                                  'Unknown',
+                              "club": athleteProfile?.position ?? "Athlete",
+                              "age": athleteProfile?.age?.toString() ?? 'N/A',
+                              "rating":
+                                  athleteProfile?.rating?.toStringAsFixed(1) ??
+                                  '0.0',
+                              "flag": athleteProfile?.countryFlag ?? "",
+                              "image": athleteProfile?.profileImageUrl ?? "",
+                              "jobTitle": item.jobPost.title,
+                              "applicationId": item.applicationId,
+                              "acceptedAt": item.acceptedAt,
+                            };
+                          })
+                          .toList();
+
+                      return SponsorshipSection(
+                        activeCount: jobListState.sponsoredAthletes.length,
+                        closedCount: 0,
+                        sponsorships: sponsorshipsData,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -472,7 +515,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -1002,7 +1045,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   Widget _buildApplicantsList(dynamic selectedJob) {
     if (activeApplicantTab == ApplicantTab.newApplicants) {
       // Show actual applicants
-      if (selectedJob.applicants.isEmpty) {
+      if (selectedJob.applications.isEmpty) {
         return Center(
           child: CustomText(
             title: 'No new applicants yet',
@@ -1014,16 +1057,23 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
       return ListView.separated(
         padding: const EdgeInsets.only(bottom: 24),
-        itemCount: selectedJob.applicants.length,
+        itemCount: selectedJob.applications.length,
         separatorBuilder: (_, __) => const SizedBox(height: 18),
         itemBuilder: (context, idx) {
-          final applicant = selectedJob.applicants[idx];
-          return _applicantCardFromAPI(applicant, context, isApplicant: true);
+          final application = selectedJob.applications[idx];
+          return _applicantCardFromAPI(
+            application,
+            selectedJob.id,
+            context,
+            isApplicant: true,
+          );
         },
       );
     } else {
       // Show filtered athletes by sport (invitees)
-      final filteredAthletes = _getFilteredAthletesBySport(selectedJob.sportId.id);
+      final filteredAthletes = _getFilteredAthletesBySport(
+        selectedJob.sportId.id,
+      );
       final feedState = ref.watch(feedProvider);
 
       if (feedState.isLoading) {
@@ -1056,7 +1106,17 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         separatorBuilder: (_, __) => const SizedBox(height: 18),
         itemBuilder: (context, idx) {
           final athlete = filteredAthletes[idx];
-          return _applicantCardFromAPI(athlete, context, isApplicant: false);
+          // For invitees, create a JobApplication wrapper without application ID
+          final fakeApplication = manage_models.JobApplication(
+            id: '', // Empty application ID for invitees
+            athlete: athlete,
+          );
+          return _applicantCardFromAPI(
+            fakeApplication,
+            selectedJob.id,
+            context,
+            isApplicant: false,
+          );
         },
       );
     }
@@ -1121,20 +1181,67 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
   void _showAthleteDetailOverlay(
     BuildContext context,
-    Athlete athlete, {
+    manage_models.JobApplication application,
+    String jobId, {
     required bool isApplicant,
   }) {
+    final isAccepted =
+        isApplicant &&
+        application.id.isNotEmpty &&
+        _isApplicationAccepted(application.id);
+
     Navigator.push(
       context,
       PageRouteBuilder(
         barrierDismissible: true,
         opaque: false,
         barrierColor: AppColors.transparent,
-        pageBuilder: (_, __, ___) => ApplicantDetail(
-          athlete: athlete,
+        pageBuilder: (_, _, _) => ApplicantDetail(
+          athlete: application.athlete,
           isApplicant: isApplicant,
+          jobId: jobId,
+          isAccepted: isAccepted,
+          onAccept: isAccepted
+              ? null
+              : (isApplicant && application.id.isNotEmpty
+                    ? () async {
+                        // Accept the applicant
+                        final result = await ref
+                            .read(jobListProvider.notifier)
+                            .acceptApplicant(
+                              jobId: jobId,
+                              applicationId: application.id,
+                            );
+
+                        if (context.mounted) {
+                          result.when(
+                            success: (data) {
+                              final response =
+                                  data as manage_models.AcceptApplicantResponse;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(response.message),
+                                  backgroundColor: AppColors.success,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                            failure: (error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Error: ${NetworkExceptions.getErrorMessage(error)}',
+                                  ),
+                                  backgroundColor: AppColors.red,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      }
+                    : null),
         ),
-        transitionsBuilder: (_, anim, __, child) {
+        transitionsBuilder: (_, anim, _, child) {
           return FadeTransition(opacity: anim, child: child);
         },
       ),
@@ -1213,7 +1320,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                                   size: 16,
                                   color: i < (data["rating"] ?? 0).floor()
                                       ? AppColors.amber
-                                      : AppColors.amber.withOpacity(0.3),
+                                      : AppColors.amber.withValues(alpha: 0.3),
                                 ),
                               ),
                             ),
@@ -1263,9 +1370,16 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     );
   }
 
-  Widget _applicantCardFromAPI(Athlete applicant, BuildContext context, {required bool isApplicant}) {
+  Widget _applicantCardFromAPI(
+    manage_models.JobApplication application,
+    String jobId,
+    BuildContext context, {
+    required bool isApplicant,
+  }) {
+    final applicant = application.athlete;
     final athleteProfile = applicant.athleteProfile;
-    final athleteName = athleteProfile?.name ?? applicant.name ?? 'Unknown Athlete';
+    final athleteName =
+        athleteProfile?.name ?? applicant.name ?? 'Unknown Athlete';
     final age = athleteProfile?.age ?? 0;
     final rating = athleteProfile?.rating ?? 0.0;
     final position = athleteProfile?.position ?? '';
@@ -1274,7 +1388,12 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
     return InkWell(
       onTap: () {
-        _showAthleteDetailOverlay(context, applicant, isApplicant: isApplicant);
+        _showAthleteDetailOverlay(
+          context,
+          application,
+          jobId,
+          isApplicant: isApplicant,
+        );
       },
       child: Container(
         height: 170,
@@ -1358,28 +1477,90 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                                   size: 16,
                                   color: i < rating.floor()
                                       ? AppColors.amber
-                                      : AppColors.amber.withOpacity(0.3),
+                                      : AppColors.amber.withValues(alpha: 0.3),
                                 ),
                               ),
                             ),
                             const SizedBox(width: 8),
                             CustomText(
-                              title: '(${athleteProfile?.achievements.length ?? 0})',
+                              title:
+                                  '(${athleteProfile?.achievements.length ?? 0})',
                               fontSize: 12,
                               textColor: AppColors.white,
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
-                        RoundedButton(
-                          label: isApplicant ? 'Accept proposal' : 'Send Proposal',
-                          onPressed: () {},
-                          height: 36,
-                          width: 140,
-                          borderRadius: 20,
-                          backgroundColor: AppColors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                        Builder(
+                          builder: (context) {
+                            final isAccepted =
+                                isApplicant &&
+                                application.id.isNotEmpty &&
+                                _isApplicationAccepted(application.id);
+
+                            return RoundedButton(
+                              label: isAccepted
+                                  ? 'Accepted'
+                                  : isApplicant
+                                  ? 'Accept proposal'
+                                  : 'Send Proposal',
+                              onPressed: isAccepted
+                                  ? () {}
+                                  : (isApplicant && application.id.isNotEmpty
+                                        ? () async {
+                                            // Accept the applicant
+                                            final result = await ref
+                                                .read(jobListProvider.notifier)
+                                                .acceptApplicant(
+                                                  jobId: jobId,
+                                                  applicationId: application.id,
+                                                );
+
+                                            if (context.mounted) {
+                                              result.when(
+                                                success: (data) {
+                                                  final response =
+                                                      data
+                                                          as manage_models.AcceptApplicantResponse;
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        response.message,
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.success,
+                                                    ),
+                                                  );
+                                                },
+                                                failure: (error) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'Error: ${NetworkExceptions.getErrorMessage(error)}',
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.red,
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          }
+                                        : () {}),
+                              height: 36,
+                              width: 140,
+                              borderRadius: 20,
+                              backgroundColor: isAccepted
+                                  ? AppColors.black.withValues(alpha: 0.6)
+                                  : AppColors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            );
+                          },
                         ),
                       ],
                     ),
