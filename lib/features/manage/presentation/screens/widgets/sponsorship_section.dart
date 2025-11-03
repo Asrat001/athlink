@@ -1,11 +1,13 @@
+import 'package:athlink/features/manage/presentation/providers/milestone_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/create_milestone_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/milestone_carousel_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
-class SponsorshipSection extends StatelessWidget {
+class SponsorshipSection extends ConsumerStatefulWidget {
   final int activeCount;
   final int closedCount;
   final List<Map<String, dynamic>> sponsorships;
@@ -16,6 +18,20 @@ class SponsorshipSection extends StatelessWidget {
     required this.closedCount,
     required this.sponsorships,
   });
+
+  @override
+  ConsumerState<SponsorshipSection> createState() => _SponsorshipSectionState();
+}
+
+class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch milestones when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(milestoneProvider.notifier).getMilestones();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +53,7 @@ class SponsorshipSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          sponsorships.isEmpty
+          widget.sponsorships.isEmpty
               ? SizedBox(
                   width: size.width,
                   height: size.height * 0.30,
@@ -57,9 +73,9 @@ class SponsorshipSection extends StatelessWidget {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) =>
-                        _buildCard(context, sponsorships[index]),
+                        _buildCard(context, widget.sponsorships[index]),
                     separatorBuilder: (_, __) => const SizedBox(width: 16),
-                    itemCount: sponsorships.length,
+                    itemCount: widget.sponsorships.length,
                   ),
                 ),
         ],
@@ -78,7 +94,7 @@ class SponsorshipSection extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: Colors.black87),
             ),
             Text(
-              "$activeCount",
+              "${widget.activeCount}",
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -94,7 +110,7 @@ class SponsorshipSection extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: Colors.black87),
             ),
             Text(
-              "$closedCount",
+              "${widget.closedCount}",
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -238,17 +254,36 @@ class SponsorshipSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _iconButton(
-                    SvgPicture.asset(
-                      "assets/images/home.svg",
+                  InkWell(
+                    onTap: () {
+                      // Navigate to milestone modal with athlete/job context
+                      final athleteId = data['athleteId'] as String?;
+                      final jobId = data['jobId'] as String?;
+                      final applicationId = data['applicationId'] as String?;
 
-                      colorFilter: ColorFilter.mode(
-                        AppColors.white,
-                        BlendMode.srcIn,
+                      if (athleteId != null &&
+                          jobId != null &&
+                          applicationId != null &&
+                          athleteId.isNotEmpty &&
+                          jobId.isNotEmpty &&
+                          applicationId.isNotEmpty) {
+                        CreateMilestoneModal.show(
+                          context,
+                          athleteId: athleteId,
+                          jobId: jobId,
+                          applicationId: applicationId,
+                        );
+                      }
+                    },
+                    child: _iconButton(
+                      SvgPicture.asset(
+                        "assets/images/home.svg",
+                        colorFilter: ColorFilter.mode(
+                          AppColors.white,
+                          BlendMode.srcIn,
+                        ),
+                        fit: BoxFit.contain,
                       ),
-                      fit: BoxFit.contain,
-                      // height: 15,
-                      // width: 15,
                     ),
                   ),
                 ],
@@ -355,71 +390,120 @@ class SponsorshipSection extends StatelessWidget {
             ],
           ),
 
-          // const SizedBox(height: 10),
-          if (true)
-            MilestoneCarousel(
-              milestones: [
-                {
-                  'id': 1,
-                  'title': 'Onboarding',
-                  'startDate': 'Jan 24, 2023',
-                  'endDate': 'Jan 28, 2023',
-                  'description':
-                      'This phase is all about making a plan for advertisement, following every meeting and workshop related to the role.',
-                  'checklist': ['Completed', 'Fund Released'],
-                  'progress': 100.0,
-                  'status': 'Finished',
-                },
-                {
-                  'id': 2,
-                  'title': 'Content Planning',
-                  'startDate': 'Feb 01, 2023',
-                  'endDate': 'Feb 05, 2023',
-                  'description':
-                      'Creating content calendar and strategy aligned with brand guidelines.',
-                  'checklist': ['Draft Ready', 'Review Pending'],
-                  'progress': 70.0,
-                  'status': 'In Progress',
-                },
-              ],
-            )
-          else
-            InkWell(
-              onTap: () {
-                CreateMilestoneModal.show(context);
-              },
-              child: Column(
-                children: [
-                  SizedBox(height: 60),
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: AppColors.grey.withOpacity(0.40),
-                        width: 1.5,
+          // Fetch and display real milestones from API
+          Consumer(
+            builder: (context, ref, child) {
+              final milestoneState = ref.watch(milestoneProvider);
+
+              // Filter milestones for this specific athlete (if needed)
+              // For now, showing all sponsor milestones
+              final milestonesForAthlete = milestoneState.milestones;
+
+              if (milestonesForAthlete.isNotEmpty) {
+                // Convert API milestones to the format expected by MilestoneCarousel
+                final milestoneData = milestonesForAthlete.map((milestone) {
+                  // Calculate progress based on status
+                  double progress = 0.0;
+                  String displayStatus = 'Pending';
+
+                  switch (milestone.status.toLowerCase()) {
+                    case 'completed':
+                      progress = 100.0;
+                      displayStatus = 'Finished';
+                      break;
+                    case 'in_progress':
+                      progress = 50.0;
+                      displayStatus = 'In Progress';
+                      break;
+                    case 'accepted':
+                      progress = 25.0;
+                      displayStatus = 'Accepted';
+                      break;
+                    default:
+                      progress = 0.0;
+                      displayStatus = milestone.status;
+                  }
+
+                  return {
+                    'id': milestone.id,
+                    'title': milestone.title,
+                    'startDate': _formatDate(milestone.timeline.startDate),
+                    'endDate': _formatDate(milestone.timeline.endDate),
+                    'description': milestone.description,
+                    'checklist': [
+                      milestone.paymentStatus == 'released'
+                          ? 'Fund Released'
+                          : 'Payment ${milestone.paymentStatus}',
+                    ],
+                    'progress': progress,
+                    'status': displayStatus,
+                  };
+                }).toList();
+
+                return MilestoneCarousel(
+                  milestones: milestoneData,
+                  athleteId: data['athleteId'] as String?,
+                  jobId: data['jobId'] as String?,
+                  applicationId: data['applicationId'] as String?,
+                );
+              } else {
+                // Show "Add milestone" button if no milestones exist
+                return InkWell(
+                  onTap: () {
+                    // Get athlete and job IDs from data
+                    final athleteId = data['athleteId'] as String?;
+                    final jobId = data['jobId'] as String?;
+                    final applicationId = data['applicationId'] as String?;
+
+                    if (athleteId != null &&
+                        jobId != null &&
+                        applicationId != null &&
+                        athleteId.isNotEmpty &&
+                        jobId.isNotEmpty &&
+                        applicationId.isNotEmpty) {
+                      CreateMilestoneModal.show(
+                        context,
+                        athleteId: athleteId,
+                        jobId: jobId,
+                        applicationId: applicationId,
+                      );
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      SizedBox(height: 60),
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: AppColors.grey.withValues(alpha: 0.40),
+                            width: 1.5,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.insert_drive_file_outlined,
+                          size: 30,
+                          color: AppColors.grey,
+                        ),
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.insert_drive_file_outlined,
-                      size: 30,
-                      color: AppColors.grey,
-                    ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Add new milestone",
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Add new milestone",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );
@@ -435,5 +519,23 @@ class SponsorshipSection extends StatelessWidget {
       ),
       child: icon, // Using AppColors.white
     );
+  }
+
+  String _formatDate(DateTime date) {
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 }

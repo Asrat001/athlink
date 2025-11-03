@@ -11,6 +11,7 @@ abstract class CreateMilestoneRequest with _$CreateMilestoneRequest {
     required String startDate,
     required String endDate,
     required double fundAmount,
+    required String applicationId,
     String? notes,
   }) = _CreateMilestoneRequest;
 
@@ -32,9 +33,9 @@ abstract class MilestoneTimeline with _$MilestoneTimeline {
 @freezed
 abstract class MilestoneSponsor with _$MilestoneSponsor {
   const factory MilestoneSponsor({
-    @JsonKey(name: '_id') required String id,
-    required String name,
-    required String email,
+    @JsonKey(name: '_id') String? id,
+    String? name,
+    String? email,
     Map<String, dynamic>? sponsorProfile,
   }) = _MilestoneSponsor;
 
@@ -45,9 +46,9 @@ abstract class MilestoneSponsor with _$MilestoneSponsor {
 @freezed
 abstract class MilestoneAthlete with _$MilestoneAthlete {
   const factory MilestoneAthlete({
-    @JsonKey(name: '_id') required String id,
-    required String name,
-    required String email,
+    @JsonKey(name: '_id') String? id,
+    String? name,
+    String? email,
     Map<String, dynamic>? athleteProfile,
     @Default([]) List<Map<String, dynamic>> sport,
   }) = _MilestoneAthlete;
@@ -60,10 +61,12 @@ abstract class MilestoneAthlete with _$MilestoneAthlete {
 abstract class Milestone with _$Milestone {
   const factory Milestone({
     @JsonKey(name: '_id') required String id,
-    required MilestoneSponsor sponsor,
-    required MilestoneAthlete athlete,
-    required String jobPost,
-    required String application,
+    MilestoneSponsor? sponsor,
+    MilestoneAthlete? athlete,
+    String? jobPost,
+    String? application,
+    String? invitation,
+    String? sponsorshipSource,
     required String title,
     required String description,
     required MilestoneTimeline timeline,

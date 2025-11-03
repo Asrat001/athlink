@@ -3,18 +3,18 @@ import 'package:athlink/features/manage/domain/repository/milestone_repository.d
 import 'package:athlink/features/manage/presentation/providers/state/milestone_state.dart';
 import 'package:athlink/shared/handlers/api_response.dart';
 import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MilestoneNotifier extends StateNotifier<MilestoneState> {
   final MilestoneRepository _milestoneRepository;
 
   MilestoneNotifier(this._milestoneRepository)
-      : super(MilestoneState.initial());
+    : super(MilestoneState.initial());
 
   Future<void> createMilestone({
     required String athleteId,
     required String jobId,
-    required String applicationId,
     required CreateMilestoneRequest request,
   }) async {
     state = state.copyWith(
@@ -27,10 +27,9 @@ class MilestoneNotifier extends StateNotifier<MilestoneState> {
     final response = await _milestoneRepository.createMilestone(
       athleteId: athleteId,
       jobId: jobId,
-      applicationId: applicationId,
       request: request,
     );
-
+    // debugPrint("milestone $response");
     response.when(
       success: (data) {
         state = state.copyWith(
@@ -52,10 +51,7 @@ class MilestoneNotifier extends StateNotifier<MilestoneState> {
   }
 
   Future<void> getMilestones({String? status}) async {
-    state = state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-    );
+    state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _milestoneRepository.getMilestones(status: status);
 
@@ -78,13 +74,11 @@ class MilestoneNotifier extends StateNotifier<MilestoneState> {
   }
 
   Future<void> getAthleteMilestones({String? status}) async {
-    state = state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-    );
+    state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final response =
-        await _milestoneRepository.getAthleteMilestones(status: status);
+    final response = await _milestoneRepository.getAthleteMilestones(
+      status: status,
+    );
 
     response.when(
       success: (data) {
@@ -111,8 +105,9 @@ class MilestoneNotifier extends StateNotifier<MilestoneState> {
       milestone: null,
     );
 
-    final response =
-        await _milestoneRepository.getMilestoneById(milestoneId: milestoneId);
+    final response = await _milestoneRepository.getMilestoneById(
+      milestoneId: milestoneId,
+    );
 
     response.when(
       success: (data) {

@@ -397,6 +397,8 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                               "jobTitle": item.jobPost.title,
                               "applicationId": item.applicationId,
                               "acceptedAt": item.acceptedAt,
+                              "athleteId": item.athlete.id ?? '',
+                              "jobId": item.jobPost.id,
                             };
                           })
                           .toList();

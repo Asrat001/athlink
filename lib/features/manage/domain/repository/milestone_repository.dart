@@ -5,7 +5,6 @@ abstract class MilestoneRepository {
   Future<ApiResponse<CreateMilestoneResponse>> createMilestone({
     required String athleteId,
     required String jobId,
-    required String applicationId,
     required CreateMilestoneRequest request,
   });
 

@@ -15,14 +15,12 @@ class MilestoneRepositoryImpl implements MilestoneRepository {
   Future<ApiResponse<CreateMilestoneResponse>> createMilestone({
     required String athleteId,
     required String jobId,
-    required String applicationId,
     required CreateMilestoneRequest request,
   }) async {
     try {
       final response = await _remoteDataSource.createMilestone(
         athleteId: athleteId,
         jobId: jobId,
-        applicationId: applicationId,
         request: request,
       );
       return ApiResponse.success(data: response);

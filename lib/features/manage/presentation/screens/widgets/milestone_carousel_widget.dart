@@ -5,8 +5,17 @@ import 'package:athlink/features/manage/presentation/screens/widgets/create_mile
 
 class MilestoneCarousel extends StatefulWidget {
   final List<Map<String, dynamic>> milestones;
+  final String? athleteId;
+  final String? jobId;
+  final String? applicationId;
 
-  const MilestoneCarousel({super.key, required this.milestones});
+  const MilestoneCarousel({
+    super.key,
+    required this.milestones,
+    this.athleteId,
+    this.jobId,
+    this.applicationId,
+  });
 
   @override
   State<MilestoneCarousel> createState() => _MilestoneCarouselState();
@@ -249,7 +258,22 @@ class _MilestoneCarouselState extends State<MilestoneCarousel> {
 
   Widget _buildAddCard(BuildContext context) {
     return InkWell(
-      onTap: () => CreateMilestoneModal.show(context),
+      onTap: () {
+        // Only show modal if all required IDs are present
+        if (widget.athleteId != null &&
+            widget.jobId != null &&
+            widget.applicationId != null &&
+            widget.athleteId!.isNotEmpty &&
+            widget.jobId!.isNotEmpty &&
+            widget.applicationId!.isNotEmpty) {
+          CreateMilestoneModal.show(
+            context,
+            athleteId: widget.athleteId!,
+            jobId: widget.jobId!,
+            applicationId: widget.applicationId!,
+          );
+        }
+      },
       borderRadius: BorderRadius.circular(25),
       child: Center(
         child: Column(

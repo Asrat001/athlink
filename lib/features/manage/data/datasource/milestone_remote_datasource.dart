@@ -10,16 +10,15 @@ class MilestoneRemoteDataSource extends BaseRepository {
   Future<CreateMilestoneResponse> createMilestone({
     required String athleteId,
     required String jobId,
-    required String applicationId,
     required CreateMilestoneRequest request,
   }) async {
     return await safeApiCall(
-      path: "/milestones/create/$athleteId/$jobId/$applicationId",
+      path: "/milestones/create/$athleteId/$jobId",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
             .post(
-              "/milestones/create/$athleteId/$jobId/$applicationId",
+              "/milestones/create/$athleteId/$jobId",
               data: request.toJson(),
             );
       },

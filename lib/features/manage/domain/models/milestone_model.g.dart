@@ -14,6 +14,7 @@ _CreateMilestoneRequest _$CreateMilestoneRequestFromJson(
   startDate: json['startDate'] as String,
   endDate: json['endDate'] as String,
   fundAmount: (json['fundAmount'] as num).toDouble(),
+  applicationId: json['applicationId'] as String,
   notes: json['notes'] as String?,
 );
 
@@ -25,6 +26,7 @@ Map<String, dynamic> _$CreateMilestoneRequestToJson(
   'startDate': instance.startDate,
   'endDate': instance.endDate,
   'fundAmount': instance.fundAmount,
+  'applicationId': instance.applicationId,
   'notes': instance.notes,
 };
 
@@ -42,9 +44,9 @@ Map<String, dynamic> _$MilestoneTimelineToJson(_MilestoneTimeline instance) =>
 
 _MilestoneSponsor _$MilestoneSponsorFromJson(Map<String, dynamic> json) =>
     _MilestoneSponsor(
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
+      id: json['_id'] as String?,
+      name: json['name'] as String?,
+      email: json['email'] as String?,
       sponsorProfile: json['sponsorProfile'] as Map<String, dynamic>?,
     );
 
@@ -58,9 +60,9 @@ Map<String, dynamic> _$MilestoneSponsorToJson(_MilestoneSponsor instance) =>
 
 _MilestoneAthlete _$MilestoneAthleteFromJson(Map<String, dynamic> json) =>
     _MilestoneAthlete(
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
+      id: json['_id'] as String?,
+      name: json['name'] as String?,
+      email: json['email'] as String?,
       athleteProfile: json['athleteProfile'] as Map<String, dynamic>?,
       sport:
           (json['sport'] as List<dynamic>?)
@@ -80,10 +82,16 @@ Map<String, dynamic> _$MilestoneAthleteToJson(_MilestoneAthlete instance) =>
 
 _Milestone _$MilestoneFromJson(Map<String, dynamic> json) => _Milestone(
   id: json['_id'] as String,
-  sponsor: MilestoneSponsor.fromJson(json['sponsor'] as Map<String, dynamic>),
-  athlete: MilestoneAthlete.fromJson(json['athlete'] as Map<String, dynamic>),
-  jobPost: json['jobPost'] as String,
-  application: json['application'] as String,
+  sponsor: json['sponsor'] == null
+      ? null
+      : MilestoneSponsor.fromJson(json['sponsor'] as Map<String, dynamic>),
+  athlete: json['athlete'] == null
+      ? null
+      : MilestoneAthlete.fromJson(json['athlete'] as Map<String, dynamic>),
+  jobPost: json['jobPost'] as String?,
+  application: json['application'] as String?,
+  invitation: json['invitation'] as String?,
+  sponsorshipSource: json['sponsorshipSource'] as String?,
   title: json['title'] as String,
   description: json['description'] as String,
   timeline: MilestoneTimeline.fromJson(
@@ -104,6 +112,8 @@ Map<String, dynamic> _$MilestoneToJson(_Milestone instance) =>
       'athlete': instance.athlete,
       'jobPost': instance.jobPost,
       'application': instance.application,
+      'invitation': instance.invitation,
+      'sponsorshipSource': instance.sponsorshipSource,
       'title': instance.title,
       'description': instance.description,
       'timeline': instance.timeline,

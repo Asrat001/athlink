@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateMilestoneRequest {
 
- String get title; String get description; String get startDate; String get endDate; double get fundAmount; String? get notes;
+ String get title; String get description; String get startDate; String get endDate; double get fundAmount; String get applicationId; String? get notes;
 /// Create a copy of CreateMilestoneRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CreateMilestoneRequestCopyWith<CreateMilestoneRequest> get copyWith => _$Create
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateMilestoneRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateMilestoneRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,description,startDate,endDate,fundAmount,notes);
+int get hashCode => Object.hash(runtimeType,title,description,startDate,endDate,fundAmount,applicationId,notes);
 
 @override
 String toString() {
-  return 'CreateMilestoneRequest(title: $title, description: $description, startDate: $startDate, endDate: $endDate, fundAmount: $fundAmount, notes: $notes)';
+  return 'CreateMilestoneRequest(title: $title, description: $description, startDate: $startDate, endDate: $endDate, fundAmount: $fundAmount, applicationId: $applicationId, notes: $notes)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CreateMilestoneRequestCopyWith<$Res>  {
   factory $CreateMilestoneRequestCopyWith(CreateMilestoneRequest value, $Res Function(CreateMilestoneRequest) _then) = _$CreateMilestoneRequestCopyWithImpl;
 @useResult
 $Res call({
- String title, String description, String startDate, String endDate, double fundAmount, String? notes
+ String title, String description, String startDate, String endDate, double fundAmount, String applicationId, String? notes
 });
 
 
@@ -65,14 +65,15 @@ class _$CreateMilestoneRequestCopyWithImpl<$Res>
 
 /// Create a copy of CreateMilestoneRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? description = null,Object? startDate = null,Object? endDate = null,Object? fundAmount = null,Object? notes = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? description = null,Object? startDate = null,Object? endDate = null,Object? fundAmount = null,Object? applicationId = null,Object? notes = freezed,}) {
   return _then(_self.copyWith(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as String,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as String,fundAmount: null == fundAmount ? _self.fundAmount : fundAmount // ignore: cast_nullable_to_non_nullable
-as double,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as double,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String applicationId,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateMilestoneRequest() when $default != null:
-return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.notes);case _:
+return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.applicationId,_that.notes);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.title,_that.description,_that.startDate,_that.endDate,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String? notes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String applicationId,  String? notes)  $default,) {final _that = this;
 switch (_that) {
 case _CreateMilestoneRequest():
-return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.notes);case _:
+return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.applicationId,_that.notes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.title,_that.description,_that.startDate,_that.endDate,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String? notes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String description,  String startDate,  String endDate,  double fundAmount,  String applicationId,  String? notes)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateMilestoneRequest() when $default != null:
-return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.notes);case _:
+return $default(_that.title,_that.description,_that.startDate,_that.endDate,_that.fundAmount,_that.applicationId,_that.notes);case _:
   return null;
 
 }
@@ -214,7 +215,7 @@ return $default(_that.title,_that.description,_that.startDate,_that.endDate,_tha
 @JsonSerializable()
 
 class _CreateMilestoneRequest implements CreateMilestoneRequest {
-  const _CreateMilestoneRequest({required this.title, required this.description, required this.startDate, required this.endDate, required this.fundAmount, this.notes});
+  const _CreateMilestoneRequest({required this.title, required this.description, required this.startDate, required this.endDate, required this.fundAmount, required this.applicationId, this.notes});
   factory _CreateMilestoneRequest.fromJson(Map<String, dynamic> json) => _$CreateMilestoneRequestFromJson(json);
 
 @override final  String title;
@@ -222,6 +223,7 @@ class _CreateMilestoneRequest implements CreateMilestoneRequest {
 @override final  String startDate;
 @override final  String endDate;
 @override final  double fundAmount;
+@override final  String applicationId;
 @override final  String? notes;
 
 /// Create a copy of CreateMilestoneRequest
@@ -237,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateMilestoneRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateMilestoneRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.applicationId, applicationId) || other.applicationId == applicationId)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,description,startDate,endDate,fundAmount,notes);
+int get hashCode => Object.hash(runtimeType,title,description,startDate,endDate,fundAmount,applicationId,notes);
 
 @override
 String toString() {
-  return 'CreateMilestoneRequest(title: $title, description: $description, startDate: $startDate, endDate: $endDate, fundAmount: $fundAmount, notes: $notes)';
+  return 'CreateMilestoneRequest(title: $title, description: $description, startDate: $startDate, endDate: $endDate, fundAmount: $fundAmount, applicationId: $applicationId, notes: $notes)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$CreateMilestoneRequestCopyWith<$Res> implements $CreateMi
   factory _$CreateMilestoneRequestCopyWith(_CreateMilestoneRequest value, $Res Function(_CreateMilestoneRequest) _then) = __$CreateMilestoneRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String title, String description, String startDate, String endDate, double fundAmount, String? notes
+ String title, String description, String startDate, String endDate, double fundAmount, String applicationId, String? notes
 });
 
 
@@ -274,14 +276,15 @@ class __$CreateMilestoneRequestCopyWithImpl<$Res>
 
 /// Create a copy of CreateMilestoneRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? startDate = null,Object? endDate = null,Object? fundAmount = null,Object? notes = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? startDate = null,Object? endDate = null,Object? fundAmount = null,Object? applicationId = null,Object? notes = freezed,}) {
   return _then(_CreateMilestoneRequest(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as String,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as String,fundAmount: null == fundAmount ? _self.fundAmount : fundAmount // ignore: cast_nullable_to_non_nullable
-as double,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as double,applicationId: null == applicationId ? _self.applicationId : applicationId // ignore: cast_nullable_to_non_nullable
+as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -559,7 +562,7 @@ as DateTime,
 /// @nodoc
 mixin _$MilestoneSponsor {
 
-@JsonKey(name: '_id') String get id; String get name; String get email; Map<String, dynamic>? get sponsorProfile;
+@JsonKey(name: '_id') String? get id; String? get name; String? get email; Map<String, dynamic>? get sponsorProfile;
 /// Create a copy of MilestoneSponsor
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -592,7 +595,7 @@ abstract mixin class $MilestoneSponsorCopyWith<$Res>  {
   factory $MilestoneSponsorCopyWith(MilestoneSponsor value, $Res Function(MilestoneSponsor) _then) = _$MilestoneSponsorCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String name, String email, Map<String, dynamic>? sponsorProfile
+@JsonKey(name: '_id') String? id, String? name, String? email, Map<String, dynamic>? sponsorProfile
 });
 
 
@@ -609,12 +612,12 @@ class _$MilestoneSponsorCopyWithImpl<$Res>
 
 /// Create a copy of MilestoneSponsor
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? sponsorProfile = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? email = freezed,Object? sponsorProfile = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,sponsorProfile: freezed == sponsorProfile ? _self.sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,sponsorProfile: freezed == sponsorProfile ? _self.sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,
   ));
 }
@@ -700,7 +703,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? sponsorProfile)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? sponsorProfile)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MilestoneSponsor() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
@@ -721,7 +724,7 @@ return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? sponsorProfile)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? sponsorProfile)  $default,) {final _that = this;
 switch (_that) {
 case _MilestoneSponsor():
 return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
@@ -741,7 +744,7 @@ return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? sponsorProfile)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? sponsorProfile)?  $default,) {final _that = this;
 switch (_that) {
 case _MilestoneSponsor() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
@@ -756,12 +759,12 @@ return $default(_that.id,_that.name,_that.email,_that.sponsorProfile);case _:
 @JsonSerializable()
 
 class _MilestoneSponsor implements MilestoneSponsor {
-  const _MilestoneSponsor({@JsonKey(name: '_id') required this.id, required this.name, required this.email, final  Map<String, dynamic>? sponsorProfile}): _sponsorProfile = sponsorProfile;
+  const _MilestoneSponsor({@JsonKey(name: '_id') this.id, this.name, this.email, final  Map<String, dynamic>? sponsorProfile}): _sponsorProfile = sponsorProfile;
   factory _MilestoneSponsor.fromJson(Map<String, dynamic> json) => _$MilestoneSponsorFromJson(json);
 
-@override@JsonKey(name: '_id') final  String id;
-@override final  String name;
-@override final  String email;
+@override@JsonKey(name: '_id') final  String? id;
+@override final  String? name;
+@override final  String? email;
  final  Map<String, dynamic>? _sponsorProfile;
 @override Map<String, dynamic>? get sponsorProfile {
   final value = _sponsorProfile;
@@ -805,7 +808,7 @@ abstract mixin class _$MilestoneSponsorCopyWith<$Res> implements $MilestoneSpons
   factory _$MilestoneSponsorCopyWith(_MilestoneSponsor value, $Res Function(_MilestoneSponsor) _then) = __$MilestoneSponsorCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String name, String email, Map<String, dynamic>? sponsorProfile
+@JsonKey(name: '_id') String? id, String? name, String? email, Map<String, dynamic>? sponsorProfile
 });
 
 
@@ -822,12 +825,12 @@ class __$MilestoneSponsorCopyWithImpl<$Res>
 
 /// Create a copy of MilestoneSponsor
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? sponsorProfile = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? email = freezed,Object? sponsorProfile = freezed,}) {
   return _then(_MilestoneSponsor(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,sponsorProfile: freezed == sponsorProfile ? _self._sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,sponsorProfile: freezed == sponsorProfile ? _self._sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,
   ));
 }
@@ -839,7 +842,7 @@ as Map<String, dynamic>?,
 /// @nodoc
 mixin _$MilestoneAthlete {
 
-@JsonKey(name: '_id') String get id; String get name; String get email; Map<String, dynamic>? get athleteProfile; List<Map<String, dynamic>> get sport;
+@JsonKey(name: '_id') String? get id; String? get name; String? get email; Map<String, dynamic>? get athleteProfile; List<Map<String, dynamic>> get sport;
 /// Create a copy of MilestoneAthlete
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -872,7 +875,7 @@ abstract mixin class $MilestoneAthleteCopyWith<$Res>  {
   factory $MilestoneAthleteCopyWith(MilestoneAthlete value, $Res Function(MilestoneAthlete) _then) = _$MilestoneAthleteCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String name, String email, Map<String, dynamic>? athleteProfile, List<Map<String, dynamic>> sport
+@JsonKey(name: '_id') String? id, String? name, String? email, Map<String, dynamic>? athleteProfile, List<Map<String, dynamic>> sport
 });
 
 
@@ -889,12 +892,12 @@ class _$MilestoneAthleteCopyWithImpl<$Res>
 
 /// Create a copy of MilestoneAthlete
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? athleteProfile = freezed,Object? sport = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? email = freezed,Object? athleteProfile = freezed,Object? sport = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,athleteProfile: freezed == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,athleteProfile: freezed == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,sport: null == sport ? _self.sport : sport // ignore: cast_nullable_to_non_nullable
 as List<Map<String, dynamic>>,
   ));
@@ -981,7 +984,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MilestoneAthlete() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport);case _:
@@ -1002,7 +1005,7 @@ return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)  $default,) {final _that = this;
 switch (_that) {
 case _MilestoneAthlete():
 return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport);case _:
@@ -1022,7 +1025,7 @@ return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  String name,  String email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String? id,  String? name,  String? email,  Map<String, dynamic>? athleteProfile,  List<Map<String, dynamic>> sport)?  $default,) {final _that = this;
 switch (_that) {
 case _MilestoneAthlete() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport);case _:
@@ -1037,12 +1040,12 @@ return $default(_that.id,_that.name,_that.email,_that.athleteProfile,_that.sport
 @JsonSerializable()
 
 class _MilestoneAthlete implements MilestoneAthlete {
-  const _MilestoneAthlete({@JsonKey(name: '_id') required this.id, required this.name, required this.email, final  Map<String, dynamic>? athleteProfile, final  List<Map<String, dynamic>> sport = const []}): _athleteProfile = athleteProfile,_sport = sport;
+  const _MilestoneAthlete({@JsonKey(name: '_id') this.id, this.name, this.email, final  Map<String, dynamic>? athleteProfile, final  List<Map<String, dynamic>> sport = const []}): _athleteProfile = athleteProfile,_sport = sport;
   factory _MilestoneAthlete.fromJson(Map<String, dynamic> json) => _$MilestoneAthleteFromJson(json);
 
-@override@JsonKey(name: '_id') final  String id;
-@override final  String name;
-@override final  String email;
+@override@JsonKey(name: '_id') final  String? id;
+@override final  String? name;
+@override final  String? email;
  final  Map<String, dynamic>? _athleteProfile;
 @override Map<String, dynamic>? get athleteProfile {
   final value = _athleteProfile;
@@ -1093,7 +1096,7 @@ abstract mixin class _$MilestoneAthleteCopyWith<$Res> implements $MilestoneAthle
   factory _$MilestoneAthleteCopyWith(_MilestoneAthlete value, $Res Function(_MilestoneAthlete) _then) = __$MilestoneAthleteCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String name, String email, Map<String, dynamic>? athleteProfile, List<Map<String, dynamic>> sport
+@JsonKey(name: '_id') String? id, String? name, String? email, Map<String, dynamic>? athleteProfile, List<Map<String, dynamic>> sport
 });
 
 
@@ -1110,12 +1113,12 @@ class __$MilestoneAthleteCopyWithImpl<$Res>
 
 /// Create a copy of MilestoneAthlete
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? athleteProfile = freezed,Object? sport = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? email = freezed,Object? athleteProfile = freezed,Object? sport = null,}) {
   return _then(_MilestoneAthlete(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,athleteProfile: freezed == athleteProfile ? _self._athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,athleteProfile: freezed == athleteProfile ? _self._athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,sport: null == sport ? _self._sport : sport // ignore: cast_nullable_to_non_nullable
 as List<Map<String, dynamic>>,
   ));
@@ -1128,7 +1131,7 @@ as List<Map<String, dynamic>>,
 /// @nodoc
 mixin _$Milestone {
 
-@JsonKey(name: '_id') String get id; MilestoneSponsor get sponsor; MilestoneAthlete get athlete; String get jobPost; String get application; String get title; String get description; MilestoneTimeline get timeline; double get fundAmount; String get status; String get paymentStatus; String? get notes; DateTime get createdAt; DateTime get updatedAt;
+@JsonKey(name: '_id') String get id; MilestoneSponsor? get sponsor; MilestoneAthlete? get athlete; String? get jobPost; String? get application; String? get invitation; String? get sponsorshipSource; String get title; String get description; MilestoneTimeline get timeline; double get fundAmount; String get status; String get paymentStatus; String? get notes; DateTime get createdAt; DateTime get updatedAt;
 /// Create a copy of Milestone
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1141,16 +1144,16 @@ $MilestoneCopyWith<Milestone> get copyWith => _$MilestoneCopyWithImpl<Milestone>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Milestone&&(identical(other.id, id) || other.id == id)&&(identical(other.sponsor, sponsor) || other.sponsor == sponsor)&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.application, application) || other.application == application)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Milestone&&(identical(other.id, id) || other.id == id)&&(identical(other.sponsor, sponsor) || other.sponsor == sponsor)&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.application, application) || other.application == application)&&(identical(other.invitation, invitation) || other.invitation == invitation)&&(identical(other.sponsorshipSource, sponsorshipSource) || other.sponsorshipSource == sponsorshipSource)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,sponsor,athlete,jobPost,application,title,description,timeline,fundAmount,status,paymentStatus,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,sponsor,athlete,jobPost,application,invitation,sponsorshipSource,title,description,timeline,fundAmount,status,paymentStatus,notes,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Milestone(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, application: $application, title: $title, description: $description, timeline: $timeline, fundAmount: $fundAmount, status: $status, paymentStatus: $paymentStatus, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Milestone(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, application: $application, invitation: $invitation, sponsorshipSource: $sponsorshipSource, title: $title, description: $description, timeline: $timeline, fundAmount: $fundAmount, status: $status, paymentStatus: $paymentStatus, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -1161,11 +1164,11 @@ abstract mixin class $MilestoneCopyWith<$Res>  {
   factory $MilestoneCopyWith(Milestone value, $Res Function(Milestone) _then) = _$MilestoneCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, MilestoneSponsor sponsor, MilestoneAthlete athlete, String jobPost, String application, String title, String description, MilestoneTimeline timeline, double fundAmount, String status, String paymentStatus, String? notes, DateTime createdAt, DateTime updatedAt
+@JsonKey(name: '_id') String id, MilestoneSponsor? sponsor, MilestoneAthlete? athlete, String? jobPost, String? application, String? invitation, String? sponsorshipSource, String title, String description, MilestoneTimeline timeline, double fundAmount, String status, String paymentStatus, String? notes, DateTime createdAt, DateTime updatedAt
 });
 
 
-$MilestoneSponsorCopyWith<$Res> get sponsor;$MilestoneAthleteCopyWith<$Res> get athlete;$MilestoneTimelineCopyWith<$Res> get timeline;
+$MilestoneSponsorCopyWith<$Res>? get sponsor;$MilestoneAthleteCopyWith<$Res>? get athlete;$MilestoneTimelineCopyWith<$Res> get timeline;
 
 }
 /// @nodoc
@@ -1178,14 +1181,16 @@ class _$MilestoneCopyWithImpl<$Res>
 
 /// Create a copy of Milestone
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sponsor = null,Object? athlete = null,Object? jobPost = null,Object? application = null,Object? title = null,Object? description = null,Object? timeline = null,Object? fundAmount = null,Object? status = null,Object? paymentStatus = null,Object? notes = freezed,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sponsor = freezed,Object? athlete = freezed,Object? jobPost = freezed,Object? application = freezed,Object? invitation = freezed,Object? sponsorshipSource = freezed,Object? title = null,Object? description = null,Object? timeline = null,Object? fundAmount = null,Object? status = null,Object? paymentStatus = null,Object? notes = freezed,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,sponsor: null == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
-as MilestoneSponsor,athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
-as MilestoneAthlete,jobPost: null == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
-as String,application: null == application ? _self.application : application // ignore: cast_nullable_to_non_nullable
-as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,sponsor: freezed == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
+as MilestoneSponsor?,athlete: freezed == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as MilestoneAthlete?,jobPost: freezed == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as String?,application: freezed == application ? _self.application : application // ignore: cast_nullable_to_non_nullable
+as String?,invitation: freezed == invitation ? _self.invitation : invitation // ignore: cast_nullable_to_non_nullable
+as String?,sponsorshipSource: freezed == sponsorshipSource ? _self.sponsorshipSource : sponsorshipSource // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
 as MilestoneTimeline,fundAmount: null == fundAmount ? _self.fundAmount : fundAmount // ignore: cast_nullable_to_non_nullable
@@ -1201,18 +1206,24 @@ as DateTime,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MilestoneSponsorCopyWith<$Res> get sponsor {
-  
-  return $MilestoneSponsorCopyWith<$Res>(_self.sponsor, (value) {
+$MilestoneSponsorCopyWith<$Res>? get sponsor {
+    if (_self.sponsor == null) {
+    return null;
+  }
+
+  return $MilestoneSponsorCopyWith<$Res>(_self.sponsor!, (value) {
     return _then(_self.copyWith(sponsor: value));
   });
 }/// Create a copy of Milestone
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MilestoneAthleteCopyWith<$Res> get athlete {
-  
-  return $MilestoneAthleteCopyWith<$Res>(_self.athlete, (value) {
+$MilestoneAthleteCopyWith<$Res>? get athlete {
+    if (_self.athlete == null) {
+    return null;
+  }
+
+  return $MilestoneAthleteCopyWith<$Res>(_self.athlete!, (value) {
     return _then(_self.copyWith(athlete: value));
   });
 }/// Create a copy of Milestone
@@ -1306,10 +1317,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor sponsor,  MilestoneAthlete athlete,  String jobPost,  String application,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor? sponsor,  MilestoneAthlete? athlete,  String? jobPost,  String? application,  String? invitation,  String? sponsorshipSource,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Milestone() when $default != null:
-return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.invitation,_that.sponsorshipSource,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -1327,10 +1338,10 @@ return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.applica
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor sponsor,  MilestoneAthlete athlete,  String jobPost,  String application,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor? sponsor,  MilestoneAthlete? athlete,  String? jobPost,  String? application,  String? invitation,  String? sponsorshipSource,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Milestone():
-return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.invitation,_that.sponsorshipSource,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1347,10 +1358,10 @@ return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.applica
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor sponsor,  MilestoneAthlete athlete,  String jobPost,  String application,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  MilestoneSponsor? sponsor,  MilestoneAthlete? athlete,  String? jobPost,  String? application,  String? invitation,  String? sponsorshipSource,  String title,  String description,  MilestoneTimeline timeline,  double fundAmount,  String status,  String paymentStatus,  String? notes,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Milestone() when $default != null:
-return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.application,_that.invitation,_that.sponsorshipSource,_that.title,_that.description,_that.timeline,_that.fundAmount,_that.status,_that.paymentStatus,_that.notes,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -1362,14 +1373,16 @@ return $default(_that.id,_that.sponsor,_that.athlete,_that.jobPost,_that.applica
 @JsonSerializable()
 
 class _Milestone implements Milestone {
-  const _Milestone({@JsonKey(name: '_id') required this.id, required this.sponsor, required this.athlete, required this.jobPost, required this.application, required this.title, required this.description, required this.timeline, required this.fundAmount, required this.status, required this.paymentStatus, this.notes, required this.createdAt, required this.updatedAt});
+  const _Milestone({@JsonKey(name: '_id') required this.id, this.sponsor, this.athlete, this.jobPost, this.application, this.invitation, this.sponsorshipSource, required this.title, required this.description, required this.timeline, required this.fundAmount, required this.status, required this.paymentStatus, this.notes, required this.createdAt, required this.updatedAt});
   factory _Milestone.fromJson(Map<String, dynamic> json) => _$MilestoneFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
-@override final  MilestoneSponsor sponsor;
-@override final  MilestoneAthlete athlete;
-@override final  String jobPost;
-@override final  String application;
+@override final  MilestoneSponsor? sponsor;
+@override final  MilestoneAthlete? athlete;
+@override final  String? jobPost;
+@override final  String? application;
+@override final  String? invitation;
+@override final  String? sponsorshipSource;
 @override final  String title;
 @override final  String description;
 @override final  MilestoneTimeline timeline;
@@ -1393,16 +1406,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Milestone&&(identical(other.id, id) || other.id == id)&&(identical(other.sponsor, sponsor) || other.sponsor == sponsor)&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.application, application) || other.application == application)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Milestone&&(identical(other.id, id) || other.id == id)&&(identical(other.sponsor, sponsor) || other.sponsor == sponsor)&&(identical(other.athlete, athlete) || other.athlete == athlete)&&(identical(other.jobPost, jobPost) || other.jobPost == jobPost)&&(identical(other.application, application) || other.application == application)&&(identical(other.invitation, invitation) || other.invitation == invitation)&&(identical(other.sponsorshipSource, sponsorshipSource) || other.sponsorshipSource == sponsorshipSource)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.fundAmount, fundAmount) || other.fundAmount == fundAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,sponsor,athlete,jobPost,application,title,description,timeline,fundAmount,status,paymentStatus,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,sponsor,athlete,jobPost,application,invitation,sponsorshipSource,title,description,timeline,fundAmount,status,paymentStatus,notes,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Milestone(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, application: $application, title: $title, description: $description, timeline: $timeline, fundAmount: $fundAmount, status: $status, paymentStatus: $paymentStatus, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Milestone(id: $id, sponsor: $sponsor, athlete: $athlete, jobPost: $jobPost, application: $application, invitation: $invitation, sponsorshipSource: $sponsorshipSource, title: $title, description: $description, timeline: $timeline, fundAmount: $fundAmount, status: $status, paymentStatus: $paymentStatus, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -1413,11 +1426,11 @@ abstract mixin class _$MilestoneCopyWith<$Res> implements $MilestoneCopyWith<$Re
   factory _$MilestoneCopyWith(_Milestone value, $Res Function(_Milestone) _then) = __$MilestoneCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, MilestoneSponsor sponsor, MilestoneAthlete athlete, String jobPost, String application, String title, String description, MilestoneTimeline timeline, double fundAmount, String status, String paymentStatus, String? notes, DateTime createdAt, DateTime updatedAt
+@JsonKey(name: '_id') String id, MilestoneSponsor? sponsor, MilestoneAthlete? athlete, String? jobPost, String? application, String? invitation, String? sponsorshipSource, String title, String description, MilestoneTimeline timeline, double fundAmount, String status, String paymentStatus, String? notes, DateTime createdAt, DateTime updatedAt
 });
 
 
-@override $MilestoneSponsorCopyWith<$Res> get sponsor;@override $MilestoneAthleteCopyWith<$Res> get athlete;@override $MilestoneTimelineCopyWith<$Res> get timeline;
+@override $MilestoneSponsorCopyWith<$Res>? get sponsor;@override $MilestoneAthleteCopyWith<$Res>? get athlete;@override $MilestoneTimelineCopyWith<$Res> get timeline;
 
 }
 /// @nodoc
@@ -1430,14 +1443,16 @@ class __$MilestoneCopyWithImpl<$Res>
 
 /// Create a copy of Milestone
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sponsor = null,Object? athlete = null,Object? jobPost = null,Object? application = null,Object? title = null,Object? description = null,Object? timeline = null,Object? fundAmount = null,Object? status = null,Object? paymentStatus = null,Object? notes = freezed,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sponsor = freezed,Object? athlete = freezed,Object? jobPost = freezed,Object? application = freezed,Object? invitation = freezed,Object? sponsorshipSource = freezed,Object? title = null,Object? description = null,Object? timeline = null,Object? fundAmount = null,Object? status = null,Object? paymentStatus = null,Object? notes = freezed,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_Milestone(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,sponsor: null == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
-as MilestoneSponsor,athlete: null == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
-as MilestoneAthlete,jobPost: null == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
-as String,application: null == application ? _self.application : application // ignore: cast_nullable_to_non_nullable
-as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,sponsor: freezed == sponsor ? _self.sponsor : sponsor // ignore: cast_nullable_to_non_nullable
+as MilestoneSponsor?,athlete: freezed == athlete ? _self.athlete : athlete // ignore: cast_nullable_to_non_nullable
+as MilestoneAthlete?,jobPost: freezed == jobPost ? _self.jobPost : jobPost // ignore: cast_nullable_to_non_nullable
+as String?,application: freezed == application ? _self.application : application // ignore: cast_nullable_to_non_nullable
+as String?,invitation: freezed == invitation ? _self.invitation : invitation // ignore: cast_nullable_to_non_nullable
+as String?,sponsorshipSource: freezed == sponsorshipSource ? _self.sponsorshipSource : sponsorshipSource // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
 as MilestoneTimeline,fundAmount: null == fundAmount ? _self.fundAmount : fundAmount // ignore: cast_nullable_to_non_nullable
@@ -1454,18 +1469,24 @@ as DateTime,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MilestoneSponsorCopyWith<$Res> get sponsor {
-  
-  return $MilestoneSponsorCopyWith<$Res>(_self.sponsor, (value) {
+$MilestoneSponsorCopyWith<$Res>? get sponsor {
+    if (_self.sponsor == null) {
+    return null;
+  }
+
+  return $MilestoneSponsorCopyWith<$Res>(_self.sponsor!, (value) {
     return _then(_self.copyWith(sponsor: value));
   });
 }/// Create a copy of Milestone
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MilestoneAthleteCopyWith<$Res> get athlete {
-  
-  return $MilestoneAthleteCopyWith<$Res>(_self.athlete, (value) {
+$MilestoneAthleteCopyWith<$Res>? get athlete {
+    if (_self.athlete == null) {
+    return null;
+  }
+
+  return $MilestoneAthleteCopyWith<$Res>(_self.athlete!, (value) {
     return _then(_self.copyWith(athlete: value));
   });
 }/// Create a copy of Milestone
