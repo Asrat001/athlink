@@ -1,4 +1,5 @@
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/circular_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class SponsorCard extends StatelessWidget {
@@ -120,13 +121,9 @@ class SponsorCard extends StatelessWidget {
   }
 
   Widget _iconButton(IconData icon) {
-    return Container(
-      height: 34,
-      width: 34,
-      decoration: const BoxDecoration(
-        color: AppColors.grey600,
-        shape: BoxShape.circle,
-      ),
+    return CircularIconButton(
+      size: 34,
+      backgroundColor: AppColors.grey600,
       child: Icon(icon, color: AppColors.white, size: 18),
     );
   }

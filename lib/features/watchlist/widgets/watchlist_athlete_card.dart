@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/widgets/circular_icon_button.dart';
+import 'package:athlink/shared/extensions/build_context_extension.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,13 +62,7 @@ class _WatchlistAthleteCardState extends ConsumerState<WatchlistAthleteCard> {
           _isProcessing = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Removed from watchlist'),
-            backgroundColor: Colors.orange,
-            duration: Duration(seconds: 2),
-          ),
-        );
+        context.showWarning('Removed from watchlist');
       } else {
         if (mounted) {
           setState(() => _isProcessing = false);
@@ -75,12 +71,7 @@ class _WatchlistAthleteCardState extends ConsumerState<WatchlistAthleteCard> {
     } catch (e) {
       if (mounted) {
         setState(() => _isProcessing = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        context.showError('Error: ${e.toString()}');
       }
     }
   }
@@ -254,18 +245,14 @@ class _WatchlistAthleteCardState extends ConsumerState<WatchlistAthleteCard> {
   }
 
   Widget _iconButton(IconData icon) {
-    return Container(
-      height: 30,
-      width: 30,
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.4), // Using AppColors.white
-        shape: BoxShape.circle,
-      ),
+    return CircularIconButton(
+      size: 30,
+      backgroundColor: AppColors.white.withValues(alpha: 0.4),
       child: Icon(
         icon,
         color: AppColors.white,
         size: 18,
-      ), // Using AppColors.white
+      ),
     );
   }
 
@@ -400,12 +387,7 @@ class _AthleteDetailOverlayState extends ConsumerState<AthleteDetailOverlay> {
     } catch (e) {
       if (mounted) {
         setState(() => _isProcessing = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        context.showError('Error: ${e.toString()}');
       }
     }
   }
@@ -796,18 +778,14 @@ class _AthleteDetailOverlayState extends ConsumerState<AthleteDetailOverlay> {
   }
 
   Widget _roundIcon(IconData icon) {
-    return Container(
-      height: 40,
-      width: 40,
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.3),
-        shape: BoxShape.circle,
-      ),
+    return CircularIconButton(
+      size: 40,
+      backgroundColor: AppColors.white.withValues(alpha: 0.3),
       child: Icon(
         icon,
         color: AppColors.white,
         size: 20,
-      ), // Using AppColors.white
+      ),
     );
   }
 }

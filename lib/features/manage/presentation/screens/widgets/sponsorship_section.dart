@@ -2,7 +2,9 @@ import 'package:athlink/features/manage/presentation/providers/milestone_provide
 import 'package:athlink/features/manage/presentation/screens/widgets/create_milestone_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/milestone_carousel_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/widgets/circular_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -427,8 +429,8 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
                   return {
                     'id': milestone.id,
                     'title': milestone.title,
-                    'startDate': _formatDate(milestone.timeline.startDate),
-                    'endDate': _formatDate(milestone.timeline.endDate),
+                    'startDate': DateFormatter.formatMedium(milestone.timeline.startDate),
+                    'endDate': DateFormatter.formatMedium(milestone.timeline.endDate),
                     'description': milestone.description,
                     'checklist': [
                       milestone.paymentStatus == 'released'
@@ -510,32 +512,10 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
   }
 
   Widget _iconButton(Widget icon) {
-    return Container(
-      height: 35,
-      width: 35,
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.4), // Using AppColors.white
-        shape: BoxShape.circle,
-      ),
-      child: icon, // Using AppColors.white
+    return CircularIconButton(
+      size: 35,
+      backgroundColor: AppColors.white.withValues(alpha: 0.4),
+      child: icon,
     );
-  }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 }
