@@ -28,75 +28,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
     });
   }
 
-  final players = [
-    {
-      "name": "Mariya Osteen",
-      "club": "NY Woman's Flag Football",
-      "age": "21",
-      "followers": "23K Followers",
-      "jobs": "5 Jobs Done",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-woman-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--lady-girl-cartoon-character-illustrations-5652139.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "followers": "3K Followers",
-      "jobs": "1 Jobs Done",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "followers": "3K Followers",
-      "jobs": "1 Jobs Done",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-    {
-      "name": "David Shuan",
-      "club": "King Box Club",
-      "age": "21",
-      "followers": "3K Followers",
-      "jobs": "1 Jobs Done",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
-      "image":
-          "https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png",
-    },
-  ];
 
-  final sponsors = [
-    {
-      "name": "Pharaoh Manufacturing",
-      "category": "Textile Factory",
-      "image": "https://picsum.photos/400/300",
-    },
-    {
-      "name": "Pharaoh Manufacturing",
-      "category": "Fruit Juice Factory",
-      "image": "https://picsum.photos/400/300",
-    },
-    {
-      "name": "Pharaoh Manufacturing",
-      "category": "Fruit Juice Factory",
-      "image": "https://picsum.photos/400/300",
-    },
-    {
-      "name": "Pharaoh Manufacturing",
-      "category": "Fruit Juice Factory",
-      "image": "https://picsum.photos/400/300",
-    },
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
