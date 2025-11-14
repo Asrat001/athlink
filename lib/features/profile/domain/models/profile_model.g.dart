@@ -129,6 +129,7 @@ _JobPost _$JobPostFromJson(Map<String, dynamic> json) => _JobPost(
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
   applicants: json['applicants'] as List<dynamic>? ?? const [],
+  budget: json['budget'] as String? ?? '',
 );
 
 Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
@@ -142,6 +143,7 @@ Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
   'createdAt': instance.createdAt.toIso8601String(),
   'mediaUrls': instance.mediaUrls,
   'applicants': instance.applicants,
+  'budget': instance.budget,
 };
 
 _Timeline _$TimelineFromJson(Map<String, dynamic> json) => _Timeline(

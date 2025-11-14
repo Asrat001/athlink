@@ -99,6 +99,7 @@ abstract class JobPost with _$JobPost {
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
     @Default([]) List<dynamic> applicants,
+    @Default('') String budget,
   }) = _JobPost;
 
   factory JobPost.fromJson(Map<String, dynamic> json) =>

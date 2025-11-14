@@ -1,26 +1,48 @@
+import 'package:athlink/features/manage/domain/models/milestone_model.dart';
+import 'package:athlink/features/manage/presentation/providers/milestone_provider.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreateMilestoneModal extends StatefulWidget {
-  const CreateMilestoneModal({super.key});
+class CreateMilestoneModal extends ConsumerStatefulWidget {
+  final String athleteId;
+  final String jobId;
+  final String applicationId;
 
-  static Future<void> show(BuildContext context) async {
+  const CreateMilestoneModal({
+    super.key,
+    required this.athleteId,
+    required this.jobId,
+    required this.applicationId,
+  });
+
+  static Future<void> show(
+    BuildContext context, {
+    required String athleteId,
+    required String jobId,
+    required String applicationId,
+  }) async {
     await showModalBottomSheet(
       barrierColor: AppColors.transparent,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const CreateMilestoneModal(),
+      builder: (_) => CreateMilestoneModal(
+        athleteId: athleteId,
+        jobId: jobId,
+        applicationId: applicationId,
+      ),
     );
   }
 
   @override
-  State<CreateMilestoneModal> createState() => _CreateMilestoneModalState();
+  ConsumerState<CreateMilestoneModal> createState() =>
+      _CreateMilestoneModalState();
 }
 
-class _CreateMilestoneModalState extends State<CreateMilestoneModal> {
+class _CreateMilestoneModalState extends ConsumerState<CreateMilestoneModal> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
@@ -165,17 +187,86 @@ class _CreateMilestoneModalState extends State<CreateMilestoneModal> {
                 const SizedBox(height: 28),
 
                 /// Buttons
-                RoundedButton(
-                  label: "Done",
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pop(context);
-                    }
+                Consumer(
+                  builder: (context, ref, child) {
+                    final milestoneState = ref.watch(milestoneProvider);
+                    final isLoading = milestoneState.isLoading;
+
+                    return RoundedButton(
+                      label: isLoading ? "Creating..." : "Done",
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                if (_startDate == null || _endDate == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Please select start and end dates'),
+                                      backgroundColor: AppColors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                // Create milestone request
+                                final request = CreateMilestoneRequest(
+                                  title: _titleController.text,
+                                  description: _descController.text,
+                                  startDate: _startDate!.toIso8601String(),
+                                  endDate: _endDate!.toIso8601String(),
+                                  fundAmount:
+                                      double.tryParse(_fundController.text) ?? 0.0,
+                                  applicationId: widget.applicationId,
+                                  notes: null,
+                                );
+
+                                // Call the API
+                                await ref
+                                    .read(milestoneProvider.notifier)
+                                    .createMilestone(
+                                      athleteId: widget.athleteId,
+                                      jobId: widget.jobId,
+                                      request: request,
+                                    );
+
+                                // Check the result
+                                final milestoneState = ref.read(milestoneProvider);
+
+                                if (context.mounted) {
+                                  if (milestoneState.isSuccess) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          milestoneState.successMessage ??
+                                              'Milestone created successfully',
+                                        ),
+                                        backgroundColor: AppColors.success,
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                    // Refresh milestones list
+                                    ref
+                                        .read(milestoneProvider.notifier)
+                                        .getMilestones();
+                                  } else if (milestoneState.errorMessage != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(milestoneState.errorMessage!),
+                                        backgroundColor: AppColors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            },
+                      borderRadius: 15,
+                      backgroundColor:
+                          isLoading ? AppColors.grey : AppColors.primary,
+                      foregroundColor: AppColors.white,
+                      height: 48,
+                    );
                   },
-                  borderRadius: 15,
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.white,
-                  height: 48,
                 ),
                 const SizedBox(height: 12),
                 RoundedButton(

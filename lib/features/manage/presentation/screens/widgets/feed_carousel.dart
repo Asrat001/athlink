@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -48,8 +47,6 @@ class _FeedCarouselState extends State<FeedCarousel> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Column(
       children: [
         ClipRRect(

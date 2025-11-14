@@ -17,14 +17,14 @@ class ProfileRemoteDataSource extends BaseRepository {
         return await _httpClient.client(requireAuth: true).get("/auth/profile");
       },
       fromData: (data) {
-        print("📦 Raw profile API data: $data");
+        // print("📦 Raw profile API data: $data");
         try {
           final result = ProfileResponse.fromJson(data);
-          print("✅ Successfully parsed ProfileResponse");
+          // print("✅ Successfully parsed ProfileResponse");
           return result;
         } catch (e, stackTrace) {
-          print("❌ Failed to parse ProfileResponse: $e");
-          print("   Stack trace: $stackTrace");
+          // print("❌ Failed to parse ProfileResponse: $e");
+          // print("   Stack trace: $stackTrace");
           rethrow;
         }
       },

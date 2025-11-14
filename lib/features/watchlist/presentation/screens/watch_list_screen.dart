@@ -311,9 +311,11 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                                                   .athleteProfile
                                                   ?.achievements ??
                                               [],
-                                          position: athlete.athleteProfile?.position,
+                                          position:
+                                              athlete.athleteProfile?.position,
                                           level: athlete.athleteProfile?.level,
-                                          sportCategory: athlete.sport.isNotEmpty
+                                          sportCategory:
+                                              athlete.sport.isNotEmpty
                                               ? athlete.sport.first.name
                                               : null,
                                         ),

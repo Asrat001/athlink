@@ -38,7 +38,10 @@ class PostFeedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final posts = jobPosts ?? [];
+    // Create a mutable copy of the list and sort by creation date (newest first)
+    final posts = (jobPosts ?? []).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
     final agencyName = sponsorProfile?.name ?? 'No name set';
     final agencyImageUrl = sponsorProfile?.profileImageUrl;
 
@@ -93,7 +96,8 @@ class PostFeedSection extends StatelessWidget {
                       child: _PostCard(
                         title: post.title,
                         subtitle: post.description,
-                        price: '500', // Price not in API, using default
+                        price: post
+                            .budget, // '500' Price not in API, using default
                         duration: duration,
                         agency: agencyName,
                         location: post.location,
@@ -386,7 +390,7 @@ void _openCreateJobModal(BuildContext context, List<ProfileSport> sports) {
 class CreateJobModal extends ConsumerStatefulWidget {
   final List<ProfileSport> sports;
 
-  const CreateJobModal({required this.sports});
+  const CreateJobModal({super.key, required this.sports});
 
   @override
   ConsumerState<CreateJobModal> createState() => _CreateJobModalState();
@@ -519,13 +523,14 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
       timelineStart: _formatDateForApi(
         _startDate,
       ), // Use DateTime instead of text
-      timelineEnd: _formatDateForApi(
-        _endDate,
-      ), // Use DateTime instead of text
+      timelineEnd: _formatDateForApi(_endDate), // Use DateTime instead of text
       requirements: _requirementsController.text.trim().isNotEmpty
           ? _requirementsController.text.trim()
           : null,
       media: mediaFiles.isNotEmpty ? mediaFiles : null,
+      budget: _budgetController.text.trim().isNotEmpty
+          ? _budgetController.text.trim()
+          : null,
     );
 
     // Submit
@@ -1385,5 +1390,3 @@ class _FileInfoItem extends StatelessWidget {
     );
   }
 }
-
-

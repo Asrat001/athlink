@@ -1,3 +1,5 @@
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
@@ -5,14 +7,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ApplicantDetail extends StatelessWidget {
-  final Map<String, dynamic> applicantData;
+  final Athlete athlete;
+  final bool isApplicant;
+  final String? jobId;
+  final VoidCallback? onAccept;
+  final bool isAccepted;
+  final VoidCallback? onSendProposal;
+  final VoidCallback? onCancelProposal;
+  final bool hasInvitation;
 
-  const ApplicantDetail({super.key, required this.applicantData});
+  const ApplicantDetail({
+    super.key,
+    required this.athlete,
+    this.isApplicant = false,
+    this.jobId,
+    this.onAccept,
+    this.isAccepted = false,
+    this.onSendProposal,
+    this.onCancelProposal,
+    this.hasInvitation = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final overlayHeight = screenHeight * 0.7;
+
+    // Extract athlete data
+    final athleteProfile = athlete.athleteProfile;
+    final athleteName =
+        athleteProfile?.name ?? athlete.name ?? 'Unknown Athlete';
+    final profileImageUrl = athleteProfile?.profileImageUrl;
+    final countryFlag = athleteProfile?.countryFlag;
+    final sportName = athlete.sport.isNotEmpty
+        ? athlete.sport.first.name
+        : null;
 
     return Scaffold(
       backgroundColor: AppColors.black.withValues(alpha: 0.2),
@@ -30,10 +59,17 @@ class ApplicantDetail extends StatelessWidget {
             children: [
               // Background Image
               Positioned.fill(
-                child:
-                    applicantData["image"] != null &&
-                        applicantData["image"]!.isNotEmpty
-                    ? Image.network(applicantData["image"]!, fit: BoxFit.cover)
+                child: profileImageUrl != null && profileImageUrl.isNotEmpty
+                    ? Image.network(
+                        '$fileBaseUrl$profileImageUrl',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            "assets/images/athlete.png",
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
                     : Image.asset(
                         "assets/images/athlete.png",
                         fit: BoxFit.cover,
@@ -88,12 +124,27 @@ class ApplicantDetail extends StatelessWidget {
                           ),
                           const SizedBox(width: 12),
                           ClipOval(
-                            child: Image.asset(
-                              "assets/images/flag.png",
-                              height: 55,
-                              width: 55,
-                              fit: BoxFit.cover,
-                            ),
+                            child: countryFlag != null && countryFlag.isNotEmpty
+                                ? Image.network(
+                                    '$fileBaseUrl$countryFlag',
+                                    height: 55,
+                                    width: 55,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        "assets/images/flag.png",
+                                        height: 55,
+                                        width: 55,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    "assets/images/flag.png",
+                                    height: 55,
+                                    width: 55,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         ],
                       ),
@@ -143,13 +194,13 @@ class ApplicantDetail extends StatelessWidget {
 
                         // Dynamic Name and Club
                         CustomText(
-                          title: applicantData["name"] ?? "Unknown Athlete",
+                          title: athleteName,
                           textColor: AppColors.white,
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
                         ),
                         CustomText(
-                          title: applicantData["club"] ?? "No Club",
+                          title: sportName ?? "Athlete",
                           textColor: AppColors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
@@ -157,25 +208,52 @@ class ApplicantDetail extends StatelessWidget {
 
                         const SizedBox(height: 20),
 
-                        _infoText("Age : ${applicantData["age"] ?? "N/A"}"),
+                        _infoText("Age : ${athleteProfile?.age ?? "N/A"}"),
 
-                        _infoText("Position : Wide Receiver"),
-                        _infoText("Category : Flag Football"),
-                        _infoText("Level : Semi-pro"),
-                        _infoText("Training : 20 hours/week"),
+                        if (athleteProfile?.position != null &&
+                            athleteProfile!.position!.isNotEmpty)
+                          _infoText("Position : ${athleteProfile.position}"),
 
-                        // Rating Info
-                        _infoText(
-                          "Achievements: State champion \n2023, MVP Nominee",
-                        ),
+                        if (sportName != null && sportName.isNotEmpty)
+                          _infoText("Category : $sportName"),
+
+                        if (athleteProfile?.level != null &&
+                            athleteProfile!.level!.isNotEmpty)
+                          _infoText("Level : ${athleteProfile.level}"),
+
+                        if (athleteProfile?.rating != null &&
+                            athleteProfile!.rating! > 0)
+                          _infoText(
+                            "Rating : ${athleteProfile.rating?.toStringAsFixed(1)} ⭐",
+                          ),
+
+                        // Achievements Info
+                        if (athleteProfile?.achievements != null &&
+                            athleteProfile!.achievements.isNotEmpty)
+                          _infoText(
+                            "Achievements:\n${_getAchievementsText(athleteProfile.achievements)}",
+                          ),
 
                         const SizedBox(height: 40),
 
                         RoundedButton(
-                          label: "Send Proposal",
-                          onPressed: () {},
+                          label: isAccepted
+                              ? "Accepted"
+                              : (isApplicant
+                                    ? "Accept proposal"
+                                    : hasInvitation
+                                    ? "Sent"
+                                    : "Send Proposal"),
+                          onPressed: isAccepted || hasInvitation
+                              ? () {} // Disabled for accepted or sent
+                              : (isApplicant
+                                    ? (onAccept ?? () {})
+                                    : (onSendProposal ?? () {})),
                           height: 60,
                           borderRadius: 15,
+                          backgroundColor: isAccepted || hasInvitation
+                              ? AppColors.primary.withValues(alpha: 0.6)
+                              : AppColors.primary,
                         ),
                       ],
                     ),
@@ -191,7 +269,7 @@ class ApplicantDetail extends StatelessWidget {
 
   Widget _infoText(String text) {
     return Container(
-      margin: EdgeInsets.only(bottom: 5),
+      margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.only(bottom: 4),
       child: CustomText(
         title: text,
@@ -199,5 +277,21 @@ class ApplicantDetail extends StatelessWidget {
         fontSize: 14,
       ),
     );
+  }
+
+  String _getAchievementsText(List<Achievement> achievements) {
+    if (achievements.isEmpty) return "No achievements yet";
+
+    return achievements
+        .map((achievement) {
+          final parts = <String>[];
+          if (achievement.name != null) parts.add(achievement.name!);
+          if (achievement.rank != null) parts.add(achievement.rank!);
+          if (achievement.difficulty != null) {
+            parts.add('(${achievement.difficulty})');
+          }
+          return parts.join(' ');
+        })
+        .join('\n');
   }
 }

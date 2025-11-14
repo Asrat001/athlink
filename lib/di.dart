@@ -1,6 +1,12 @@
 import 'package:athlink/features/home_feed/data/datasource/feed_remote_datasource.dart';
 import 'package:athlink/features/home_feed/data/repository/feed_repository_impl.dart';
 import 'package:athlink/features/home_feed/domain/repository/feed_repository.dart';
+import 'package:athlink/features/manage/data/datasource/job_list_remote_datasource.dart';
+import 'package:athlink/features/manage/data/datasource/milestone_remote_datasource.dart';
+import 'package:athlink/features/manage/data/repository/job_list_repository_impl.dart';
+import 'package:athlink/features/manage/data/repository/milestone_repository_impl.dart';
+import 'package:athlink/features/manage/domain/repository/job_list_repository.dart';
+import 'package:athlink/features/manage/domain/repository/milestone_repository.dart';
 import 'package:athlink/features/profile/data/datasource/job_post_remote_datasource.dart';
 import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:athlink/features/profile/data/repository/job_post_repository_impl.dart';
@@ -59,6 +65,12 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<WatchlistRemoteDataSource>(
     WatchlistRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<JobListRemoteDataSource>(
+    JobListRemoteDataSource(sl<DioHttpClient>()),
+  );
+  sl.registerSingleton<MilestoneRemoteDataSource>(
+    MilestoneRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -81,5 +93,11 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<WatchlistRepository>(
     WatchlistRepositoryImpl(sl<WatchlistRemoteDataSource>()),
+  );
+  sl.registerSingleton<JobListRepository>(
+    JobListRepositoryImpl(sl<JobListRemoteDataSource>()),
+  );
+  sl.registerSingleton<MilestoneRepository>(
+    MilestoneRepositoryImpl(sl<MilestoneRemoteDataSource>()),
   );
 }

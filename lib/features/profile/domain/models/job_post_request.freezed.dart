@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$JobPostRequest {
 
- String get title;@JsonKey(name: 'sport_id') String? get sportId; String? get location; String? get description; String? get timelineStart; String? get timelineEnd; String? get requirements; List<String>? get media;
+ String get title;@JsonKey(name: 'sport_id') String? get sportId; String? get location; String? get description; String? get timelineStart; String? get timelineEnd; String? get requirements; List<String>? get media; String? get budget;
 /// Create a copy of JobPostRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $JobPostRequestCopyWith<JobPostRequest> get copyWith => _$JobPostRequestCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other.media, media));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.budget, budget) || other.budget == budget));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(media));
+int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(media),budget);
 
 @override
 String toString() {
-  return 'JobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media)';
+  return 'JobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media, budget: $budget)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $JobPostRequestCopyWith<$Res>  {
   factory $JobPostRequestCopyWith(JobPostRequest value, $Res Function(JobPostRequest) _then) = _$JobPostRequestCopyWithImpl;
 @useResult
 $Res call({
- String title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media
+ String title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media, String? budget
 });
 
 
@@ -65,7 +65,7 @@ class _$JobPostRequestCopyWithImpl<$Res>
 
 /// Create a copy of JobPostRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,Object? budget = freezed,}) {
   return _then(_self.copyWith(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,sportId: freezed == sportId ? _self.sportId : sportId // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as String?,timelineStart: freezed == timelineStart ? _self.timelineStart : timel
 as String?,timelineEnd: freezed == timelineEnd ? _self.timelineEnd : timelineEnd // ignore: cast_nullable_to_non_nullable
 as String?,requirements: freezed == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String?,media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,budget: freezed == budget ? _self.budget : budget // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JobPostRequest() when $default != null:
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)  $default,) {final _that = this;
 switch (_that) {
 case _JobPostRequest():
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)?  $default,) {final _that = this;
 switch (_that) {
 case _JobPostRequest() when $default != null:
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 @JsonSerializable()
 
 class _JobPostRequest implements JobPostRequest {
-  const _JobPostRequest({required this.title, @JsonKey(name: 'sport_id') this.sportId, this.location, this.description, this.timelineStart, this.timelineEnd, this.requirements, final  List<String>? media}): _media = media;
+  const _JobPostRequest({required this.title, @JsonKey(name: 'sport_id') this.sportId, this.location, this.description, this.timelineStart, this.timelineEnd, this.requirements, final  List<String>? media, this.budget}): _media = media;
   factory _JobPostRequest.fromJson(Map<String, dynamic> json) => _$JobPostRequestFromJson(json);
 
 @override final  String title;
@@ -235,6 +236,7 @@ class _JobPostRequest implements JobPostRequest {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  String? budget;
 
 /// Create a copy of JobPostRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other._media, _media));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.budget, budget) || other.budget == budget));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(_media));
+int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(_media),budget);
 
 @override
 String toString() {
-  return 'JobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media)';
+  return 'JobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media, budget: $budget)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$JobPostRequestCopyWith<$Res> implements $JobPostRequestCo
   factory _$JobPostRequestCopyWith(_JobPostRequest value, $Res Function(_JobPostRequest) _then) = __$JobPostRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media
+ String title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media, String? budget
 });
 
 
@@ -286,7 +288,7 @@ class __$JobPostRequestCopyWithImpl<$Res>
 
 /// Create a copy of JobPostRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,Object? budget = freezed,}) {
   return _then(_JobPostRequest(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,sportId: freezed == sportId ? _self.sportId : sportId // ignore: cast_nullable_to_non_nullable
@@ -296,7 +298,8 @@ as String?,timelineStart: freezed == timelineStart ? _self.timelineStart : timel
 as String?,timelineEnd: freezed == timelineEnd ? _self.timelineEnd : timelineEnd // ignore: cast_nullable_to_non_nullable
 as String?,requirements: freezed == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String?,media: freezed == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,budget: freezed == budget ? _self.budget : budget // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -584,7 +587,7 @@ as Map<String, dynamic>?,
 /// @nodoc
 mixin _$UpdateJobPostRequest {
 
- String? get title;@JsonKey(name: 'sport_id') String? get sportId; String? get location; String? get description; String? get timelineStart; String? get timelineEnd; String? get requirements; List<String>? get media;
+ String? get title;@JsonKey(name: 'sport_id') String? get sportId; String? get location; String? get description; String? get timelineStart; String? get timelineEnd; String? get requirements; List<String>? get media; String? get budget;
 /// Create a copy of UpdateJobPostRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -597,16 +600,16 @@ $UpdateJobPostRequestCopyWith<UpdateJobPostRequest> get copyWith => _$UpdateJobP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateJobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other.media, media));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateJobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.budget, budget) || other.budget == budget));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(media));
+int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(media),budget);
 
 @override
 String toString() {
-  return 'UpdateJobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media)';
+  return 'UpdateJobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media, budget: $budget)';
 }
 
 
@@ -617,7 +620,7 @@ abstract mixin class $UpdateJobPostRequestCopyWith<$Res>  {
   factory $UpdateJobPostRequestCopyWith(UpdateJobPostRequest value, $Res Function(UpdateJobPostRequest) _then) = _$UpdateJobPostRequestCopyWithImpl;
 @useResult
 $Res call({
- String? title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media
+ String? title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media, String? budget
 });
 
 
@@ -634,7 +637,7 @@ class _$UpdateJobPostRequestCopyWithImpl<$Res>
 
 /// Create a copy of UpdateJobPostRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,Object? budget = freezed,}) {
   return _then(_self.copyWith(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,sportId: freezed == sportId ? _self.sportId : sportId // ignore: cast_nullable_to_non_nullable
@@ -644,7 +647,8 @@ as String?,timelineStart: freezed == timelineStart ? _self.timelineStart : timel
 as String?,timelineEnd: freezed == timelineEnd ? _self.timelineEnd : timelineEnd // ignore: cast_nullable_to_non_nullable
 as String?,requirements: freezed == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String?,media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,budget: freezed == budget ? _self.budget : budget // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -729,10 +733,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateJobPostRequest() when $default != null:
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   return orElse();
 
 }
@@ -750,10 +754,10 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateJobPostRequest():
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -770,10 +774,10 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title, @JsonKey(name: 'sport_id')  String? sportId,  String? location,  String? description,  String? timelineStart,  String? timelineEnd,  String? requirements,  List<String>? media,  String? budget)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateJobPostRequest() when $default != null:
-return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media);case _:
+return $default(_that.title,_that.sportId,_that.location,_that.description,_that.timelineStart,_that.timelineEnd,_that.requirements,_that.media,_that.budget);case _:
   return null;
 
 }
@@ -785,7 +789,7 @@ return $default(_that.title,_that.sportId,_that.location,_that.description,_that
 @JsonSerializable()
 
 class _UpdateJobPostRequest implements UpdateJobPostRequest {
-  const _UpdateJobPostRequest({this.title, @JsonKey(name: 'sport_id') this.sportId, this.location, this.description, this.timelineStart, this.timelineEnd, this.requirements, final  List<String>? media}): _media = media;
+  const _UpdateJobPostRequest({this.title, @JsonKey(name: 'sport_id') this.sportId, this.location, this.description, this.timelineStart, this.timelineEnd, this.requirements, final  List<String>? media, this.budget}): _media = media;
   factory _UpdateJobPostRequest.fromJson(Map<String, dynamic> json) => _$UpdateJobPostRequestFromJson(json);
 
 @override final  String? title;
@@ -804,6 +808,7 @@ class _UpdateJobPostRequest implements UpdateJobPostRequest {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  String? budget;
 
 /// Create a copy of UpdateJobPostRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -818,16 +823,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateJobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other._media, _media));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateJobPostRequest&&(identical(other.title, title) || other.title == title)&&(identical(other.sportId, sportId) || other.sportId == sportId)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.timelineStart, timelineStart) || other.timelineStart == timelineStart)&&(identical(other.timelineEnd, timelineEnd) || other.timelineEnd == timelineEnd)&&(identical(other.requirements, requirements) || other.requirements == requirements)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.budget, budget) || other.budget == budget));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(_media));
+int get hashCode => Object.hash(runtimeType,title,sportId,location,description,timelineStart,timelineEnd,requirements,const DeepCollectionEquality().hash(_media),budget);
 
 @override
 String toString() {
-  return 'UpdateJobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media)';
+  return 'UpdateJobPostRequest(title: $title, sportId: $sportId, location: $location, description: $description, timelineStart: $timelineStart, timelineEnd: $timelineEnd, requirements: $requirements, media: $media, budget: $budget)';
 }
 
 
@@ -838,7 +843,7 @@ abstract mixin class _$UpdateJobPostRequestCopyWith<$Res> implements $UpdateJobP
   factory _$UpdateJobPostRequestCopyWith(_UpdateJobPostRequest value, $Res Function(_UpdateJobPostRequest) _then) = __$UpdateJobPostRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String? title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media
+ String? title,@JsonKey(name: 'sport_id') String? sportId, String? location, String? description, String? timelineStart, String? timelineEnd, String? requirements, List<String>? media, String? budget
 });
 
 
@@ -855,7 +860,7 @@ class __$UpdateJobPostRequestCopyWithImpl<$Res>
 
 /// Create a copy of UpdateJobPostRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? sportId = freezed,Object? location = freezed,Object? description = freezed,Object? timelineStart = freezed,Object? timelineEnd = freezed,Object? requirements = freezed,Object? media = freezed,Object? budget = freezed,}) {
   return _then(_UpdateJobPostRequest(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,sportId: freezed == sportId ? _self.sportId : sportId // ignore: cast_nullable_to_non_nullable
@@ -865,7 +870,8 @@ as String?,timelineStart: freezed == timelineStart ? _self.timelineStart : timel
 as String?,timelineEnd: freezed == timelineEnd ? _self.timelineEnd : timelineEnd // ignore: cast_nullable_to_non_nullable
 as String?,requirements: freezed == requirements ? _self.requirements : requirements // ignore: cast_nullable_to_non_nullable
 as String?,media: freezed == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,budget: freezed == budget ? _self.budget : budget // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
