@@ -1615,7 +1615,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
               ],
             ),
 
-            // country flag top-right
             Positioned(
               top: 10,
               right: 12,

@@ -12,6 +12,9 @@ class Routes {
   static String feedRouteName = '/manage';
   static String dashBoardRouteName = '/dashboard';
   static String watchListRouteName = '/watchlist';
+  static String messageRouteName = '/message';
   static String profileRouteName = '/profile';
   static String splashRouteName = '/splash';
+  static String notificationScreen = "/notification-screen";
+  static String chatDetailRouteName = '/chat-detail';
 }

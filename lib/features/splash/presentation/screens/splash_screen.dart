@@ -97,8 +97,8 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                 end: Alignment.bottomCenter,
                 colors: [
                   AppColors.white,
-                  AppColors.white.withOpacity(0.7),
-                  AppColors.white.withOpacity(0.4),
+                  AppColors.white.withValues(alpha: 0.7),
+                  AppColors.white.withValues(alpha: 0.4),
                 ],
               ),
             ),
@@ -118,7 +118,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                     height: 300,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                     ),
                   ),
                 );
@@ -139,7 +139,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                     height: 200,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.15),
+                      color: AppColors.primary.withValues(alpha: 0.15),
                     ),
                   ),
                 );
@@ -167,7 +167,7 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withOpacity(0.2),
+                                color: AppColors.primary.withValues(alpha: 0.2),
                                 blurRadius: 30,
                                 spreadRadius: 5,
                               ),
@@ -211,7 +211,9 @@ class _SplashPageState extends ConsumerState<SplashScreen>
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          AppColors.primary.withOpacity(0.7),
+                                          AppColors.primary.withValues(
+                                            alpha: 0.7,
+                                          ),
                                           AppColors.primary,
                                         ],
                                       ),
@@ -272,190 +274,6 @@ class _SplashPageState extends ConsumerState<SplashScreen>
           ),
         ],
       ),
-
-      // body: Stack(
-      //   children: [
-      //     Container(
-      //       decoration: BoxDecoration(
-      //         gradient: LinearGradient(
-      //           begin: Alignment.topCenter,
-      //           end: Alignment.bottomCenter,
-      //           colors: [
-      //             AppColors.black,
-      //             AppColors.black.withOpacity(0.7),
-      //             AppColors.black.withOpacity(0.4),
-      //           ],
-      //         ),
-      //       ),
-      //     ),
-
-      //     // Decorative elements
-      //     Positioned(
-      //       top: -100,
-      //       right: -100,
-      //       child: AnimatedBuilder(
-      //         animation: _controller,
-      //         builder: (context, child) {
-      //           return Opacity(
-      //             opacity: _fadeAnimation.value * 0.1,
-      //             child: Container(
-      //               width: 300,
-      //               height: 300,
-      //               decoration: BoxDecoration(
-      //                 shape: BoxShape.circle,
-      //                 color: AppColors.primary.withOpacity(0.2),
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-
-      //     Positioned(
-      //       bottom: -80,
-      //       left: -80,
-      //       child: AnimatedBuilder(
-      //         animation: _controller,
-      //         builder: (context, child) {
-      //           return Opacity(
-      //             opacity: _fadeAnimation.value * 0.1,
-      //             child: Container(
-      //               width: 200,
-      //               height: 200,
-      //               decoration: BoxDecoration(
-      //                 shape: BoxShape.circle,
-      //                 color: AppColors.primary.withOpacity(0.15),
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-
-      //     // Main content
-      //     Center(
-      //       child: AnimatedBuilder(
-      //         animation: _controller,
-      //         builder: (context, child) {
-      //           return Opacity(
-      //             opacity: _fadeAnimation.value,
-      //             child: Transform.scale(
-      //               scale: _scaleAnimation.value * _pulseAnimation.value,
-      //               child: Column(
-      //                 mainAxisAlignment: MainAxisAlignment.center,
-      //                 children: [
-      //                   // Logo with glow effect
-      //                   Container(
-      //                     width: 220,
-      //                     height: 220,
-      //                     decoration: BoxDecoration(
-      //                       shape: BoxShape.circle,
-      //                       boxShadow: [
-      //                         BoxShadow(
-      //                           color: AppColors.primary.withOpacity(0.2),
-      //                           blurRadius: 30,
-      //                           spreadRadius: 5,
-      //                         ),
-      //                       ],
-      //                     ),
-      //                     child: ClipRRect(
-      //                       borderRadius: BorderRadius.circular(100),
-      //                       child: SvgPicture.asset(
-      //                         "assets/images/athlink.svg",
-      //                         semanticsLabel: 'ET Podcast Logo',
-      //                         width: 60,
-      //                         height: 60,
-      //                       ),
-      //                     ),
-      //                   ),
-
-      //                   SizedBox(height: 40),
-
-      //                   // Custom loading indicator
-      //                   Container(
-      //                     width: 160,
-      //                     height: 6,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.grey[200],
-      //                       borderRadius: BorderRadius.circular(3),
-      //                     ),
-      //                     child: Stack(
-      //                       children: [
-      //                         AnimatedBuilder(
-      //                           animation: _controller,
-      //                           builder: (context, child) {
-      //                             // Create a continuous loading animation
-      //                             final animationValue = (_controller.value * 2) % 2;
-      //                             final width = animationValue <= 1
-      //                                 ? animationValue * 160
-      //                                 : (2 - animationValue) * 160;
-
-      //                             return Container(
-      //                               width: width,
-      //                               decoration: BoxDecoration(
-      //                                 gradient: LinearGradient(
-      //                                   colors: [
-      //                                     AppColors.primary.withOpacity(0.7),
-      //                                     AppColors.primary,
-      //                                   ],
-      //                                 ),
-      //                                 borderRadius: BorderRadius.circular(3),
-      //                               ),
-      //                             );
-      //                           },
-      //                         ),
-      //                       ],
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-
-      //     // Company name at bottom
-      //     Positioned(
-      //       left: 0,
-      //       right: 0,
-      //       bottom: 48,
-      //       child: AnimatedBuilder(
-      //         animation: _controller,
-      //         builder: (context, child) {
-      //           return Opacity(
-      //             opacity: _fadeAnimation.value,
-      //             child: Column(
-      //               children: [
-      //                 Text(
-      //                   'ET-Podcast , From ITech Team',
-      //                   style: GoogleFonts.bebasNeue(
-      //                     fontSize: 16,
-      //                     fontWeight: FontWeight.w500,
-      //                     color: Colors.white70,
-      //                     letterSpacing: 0.5,
-      //                   ),
-      //                   textAlign: TextAlign.center,
-      //                 ),
-      //                 SizedBox(height: 8),
-      //                 Text(
-      //                   'Simplifying the way interact with your fev podcast in Ethiopia',
-      //                   style: GoogleFonts.bebasNeue(
-      //                     fontSize: 14,
-      //                     fontWeight: FontWeight.w400,
-      //                     color: Colors.grey[600],
-      //                     letterSpacing: 0.3,
-      //                   ),
-      //                   textAlign: TextAlign.center,
-      //                 ),
-      //               ],
-      //             ),
-      //           );
-      //         },
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

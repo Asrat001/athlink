@@ -2,12 +2,14 @@ import 'package:athlink/features/home_feed/presentation/providers/feed_provider.
 import 'package:athlink/features/home_feed/widgets/athlete_card.dart';
 import 'package:athlink/features/home_feed/widgets/filter_drop_downs.dart';
 import 'package:athlink/features/home_feed/widgets/sponsor_card.dart';
+import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeFeedScreen extends ConsumerStatefulWidget {
   const HomeFeedScreen({super.key});
@@ -94,6 +96,13 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      IconButton(
+                        icon: Icon(Icons.notifications_none_outlined),
+                        color: AppColors.primary,
+                        onPressed: () {
+                          GoRouter.of(context).push(Routes.notificationScreen);
+                        },
+                      ),
                     ],
                   ),
 
