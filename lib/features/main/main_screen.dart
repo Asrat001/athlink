@@ -8,26 +8,10 @@ class MainScreen extends StatelessWidget {
   const MainScreen({super.key, required this.navigationShell});
 
   void _onItemTapped(BuildContext context, int index) {
-    if (index == 2) {
-      // 👇 Handle the "Create" action differently
-      _showCreateBottomSheet(context);
-    } else {
-      // Navigate normally for other tabs
-      int branchIndex = index > 2 ? index - 1 : index;
-      navigationShell.goBranch(
-        branchIndex,
-        initialLocation: index == navigationShell.currentIndex,
-      );
-    }
-  }
-
-  int _bottomNavIndexFromBranch(int branchIndex) {
-    if (branchIndex >= 2) {
-      // branchIndex 2 → Watchlist (BottomNav 3)
-      // branchIndex 3 → Profile (BottomNav 4)
-      return branchIndex + 1;
-    }
-    return branchIndex;
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   void _showCreateBottomSheet(BuildContext context) {
@@ -68,7 +52,7 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       body: PopScope(canPop: false, child: navigationShell),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _bottomNavIndexFromBranch(navigationShell.currentIndex),
+        currentIndex: navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: (index) => _onItemTapped(context, index),
         items: [
@@ -89,10 +73,10 @@ class MainScreen extends StatelessWidget {
             ),
           ),
           BottomNavigationBarItem(
-            label: '',
-            icon: SvgPicture.asset("assets/logos/create.svg"),
+            label: 'Message',
+            icon: SvgPicture.asset("assets/logos/chat.svg"),
             activeIcon: SvgPicture.asset(
-              "assets/logos/create.svg",
+              "assets/logos/chat.svg",
               color: AppColors.primary,
             ),
           ),

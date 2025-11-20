@@ -1022,7 +1022,6 @@ class _ManageScreenState extends State<ManageScreen> {
               ],
             ),
 
-            // country flag top-right
             Positioned(
               top: 10,
               right: 12,

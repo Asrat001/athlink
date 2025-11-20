@@ -4,6 +4,8 @@ import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
 import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
 import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
+import 'package:athlink/features/message/presentation/screens/message_detail_screen.dart';
+import 'package:athlink/features/message/presentation/screens/message_screen.dart';
 import 'package:athlink/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.dart';
 import 'package:athlink/features/watchlist/presentation/screens/watch_list_screen.dart';
@@ -68,6 +70,19 @@ class AppRouter {
           );
         },
       ),
+
+      GoRoute(
+        path: Routes.chatDetailRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return MessageDetailScreen(
+            name: extra["name"],
+            logo: extra["logo"],
+            isOnline: extra["isOnline"],
+          );
+        },
+      ),
+
       GoRoute(
         path: Routes.selectSportScreen,
         builder: (context, state) => SelectSportScreen(),
@@ -127,6 +142,14 @@ class AppRouter {
               GoRoute(
                 path: Routes.feedRouteName,
                 builder: (context, state) => const ManageScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.messageRouteName,
+                builder: (context, state) => MessageScreen(),
               ),
             ],
           ),
