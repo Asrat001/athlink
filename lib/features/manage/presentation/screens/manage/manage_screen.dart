@@ -15,6 +15,7 @@ import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -157,15 +158,33 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     final profileState = ref.read(profileProvider);
     final sports = profileState.profileUser?.sport ?? [];
 
+    // Save the current status bar style to restore later
+    final originalStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    );
+
+    // Set the new status bar style for the modal
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: AppColors.black.withOpacity(0.3),
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.white,
+      useRootNavigator: true,
+      useSafeArea: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => CreateJobModal(sports: sports),
     ).then((_) {
+      // Restore the original status bar style when modal closes
+      SystemChrome.setSystemUIOverlayStyle(originalStyle);
       // Refresh job list after modal closes
       ref.read(jobListProvider.notifier).fetchJobPosts();
     });

@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/widgets/chat_bubble_file.dart';
 import 'package:athlink/features/message/widgets/chat_bubble_text.dart';

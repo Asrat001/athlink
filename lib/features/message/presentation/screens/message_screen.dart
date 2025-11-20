@@ -141,6 +141,8 @@ class _MessageScreenState extends State<MessageScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: false,
       backgroundColor: AppColors.transparent,
       builder: (context) {
         return DraggableScrollableSheet(

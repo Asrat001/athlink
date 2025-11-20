@@ -1,9 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'routes/app_route.dart';
 import 'routes/custom_page_transition.dart';
 import 'shared/theme/app_theme.dart';
 
