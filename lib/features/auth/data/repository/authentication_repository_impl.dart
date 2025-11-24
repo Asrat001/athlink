@@ -61,10 +61,10 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
         password: password,
         name: name,
       );
-      log("User registered: ${response.user.email}");
+   ;
       return ApiResponse.success(data: response);
     } catch (e) {
-      log("Registration error: $e");
+  
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -80,7 +80,8 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
         success: (account) async {
           try {
             // Step 2: Retrieve ID token from Google account
-            final idToken = account.authentication.idToken;
+            final authentication =  account.authentication;
+            final idToken = authentication.idToken;
             if (idToken == null) {
               return const ApiResponse.failure(
                 error: NetworkExceptions.defaultError(

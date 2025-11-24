@@ -42,7 +42,7 @@ class TokenRefreshService {
       );
 
       final response = await dio.post(
-        '/auth/refresh_token',
+        '/auth/refresh-token',
         data: {'refreshToken': refreshToken},
       );
 

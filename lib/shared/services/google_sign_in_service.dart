@@ -44,21 +44,32 @@ class GoogleAuthService {
     try {
       // authenticate() throws exceptions instead of returning null
       await _googleSignIn.signOut();
-      final GoogleSignInAccount account = await _googleSignIn.authenticate(
+      print("Google Sign-In initialized successfully");
+     try{
+            final GoogleSignInAccount account = await _googleSignIn.authenticate(
         scopeHint: ['email'], // Specify required scopes
       );
+     print("Google Sign-In initialized successfully: ${account.displayName}");
       return ApiResponse.success(data: account);
+     }catch(e){
+      print("Google Sign-In failed: $e");
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+     }
+    
     } on GoogleSignInException catch (e) {
+      print("Google Sign-In failed: $e");
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     } catch (error) {
+      print("Google Sign-In failed: $error");
       return ApiResponse.failure(
         error: NetworkExceptions.getDioException(error),
       );
     }
   }
 
-  GoogleSignInAuthentication getAuthTokens(GoogleSignInAccount account) {
-    // authentication is now synchronous
-    return account.authentication;
+  Future<GoogleSignInAuthentication> getAuthTokens(
+    GoogleSignInAccount account,
+  ) async {
+    return await account.authentication;
   }
 }

@@ -45,6 +45,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void googleSignIn() async {
+    print("googleSignIn");
     final provider = ref.read(loginProvider.notifier);
     await provider.googleSignIn(context);
   }

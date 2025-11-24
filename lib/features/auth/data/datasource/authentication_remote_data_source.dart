@@ -1,9 +1,5 @@
 import 'dart:developer';
-
-import 'package:athlink/features/auth/domain/models/forgot_password_model.dart'
-    show ForgotPasswordRequest;
 import 'package:athlink/features/auth/domain/models/login_model.dart';
-import 'package:athlink/features/auth/domain/models/reset_password_model.dart';
 import 'package:athlink/features/auth/domain/models/verification_response.dart';
 import 'package:athlink/shared/handlers/dio_client.dart';
 import 'package:athlink/shared/repository/base_repository.dart';

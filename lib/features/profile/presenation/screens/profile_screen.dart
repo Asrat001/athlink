@@ -25,8 +25,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  final TransformationController _transformationController =
-      TransformationController();
+
 
   File? _bannerImage;
   File? _profileImage;

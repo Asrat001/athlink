@@ -6,7 +6,6 @@ import 'package:athlink/shared/services/local_storage_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../../di.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../../../shared/services/internet_connection_service.dart';
@@ -23,7 +22,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     required BuildContext context,
   }) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (true) {
+    if (connected) {
       state = state.copyWith(isLoading: true);
       final storageService = sl<LocalStorageService>();
       final response = await _authenticationRepository
@@ -57,14 +56,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
           }
         },
       );
-    } else {
-      if (context.mounted) {
-        AppHelpers.showErrorFlash(
-          context,
-          "You are currently offline ,Please check your internet connection",
-        );
-      }
-    }
+    } 
   }
 
   Future<void> googleSignIn(BuildContext context) async {
@@ -80,6 +72,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
             isError: false,
             isSuccess: true,
           );
+      
           await storageService.setAccessToken(data.accessToken);
           await storageService.setRefreshToken(data.refreshToken);
           await storageService.setUserData(data.user);

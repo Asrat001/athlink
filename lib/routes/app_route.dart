@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/main/error_screen.dart';
 import '../features/main/main_screen.dart';
-import '../features/manage/presentation/screens/manage/manage_screen.dart';
+import '../features/manage/presentation/screens/manage_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';

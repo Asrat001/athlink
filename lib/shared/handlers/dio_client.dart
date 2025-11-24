@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:athlink/shared/handlers/token_intreceptor.dart';
 import '../constant/constants.dart';
@@ -25,9 +24,6 @@ class DioHttpClient {
       responseBody: true,
       responseHeader: false,
       error: true,
-      logPrint: (obj) {
-        log(obj.toString());
-      },
     ));
     return dio;
   }

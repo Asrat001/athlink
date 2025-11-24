@@ -3,7 +3,11 @@ import 'package:athlink/features/home_feed/presentation/providers/feed_provider.
 import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/manage/presentation/screens/manage_enums.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/applicant_card_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/applicant_tab_button.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/job_card_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
@@ -19,10 +23,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
-enum JobsSectionState { listing, applicants, jobDetail, baDetail }
-
-enum ApplicantTab { newApplicants, invitees }
-
 class ManageScreen extends ConsumerStatefulWidget {
   const ManageScreen({super.key});
 
@@ -31,109 +31,6 @@ class ManageScreen extends ConsumerStatefulWidget {
 }
 
 class _ManageScreenState extends ConsumerState<ManageScreen> {
-  // -------------------- Dummy data --------------------
-  final List<Map<String, dynamic>> jobs = const [
-    {
-      "id": "job_brand_1",
-      "type": "brand", // brand -> Brand Ambassador flow
-      "agencyLogo":
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
-      "agencyName": "SP Sport Agency",
-      "location": "Los Angeles, CA",
-      "price": "500\$/m",
-      "title": "Brand Ambassador Deal",
-      "tags": ["#Social Media Post", "#Model", "#Event speaker", "#Poster Ad"],
-      "notifications": 9,
-      "description":
-          "Track and field athletes aged 18 - 21, with social media presence. This is a full time job for 6 months.",
-    },
-    {
-      "id": "job_hire_1",
-      "type": "hiring", // hiring -> normal applicants -> job detail
-      "agencyLogo":
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
-      "agencyName": "Quartz",
-      "location": "New York, NY",
-      "price": "750\$/m",
-      "title": "Ambassador Deal",
-      "tags": ["#Reel", "#Model", "#Ambassador"],
-      "notifications": 2,
-      "description":
-          "Short-term ambassador role for content creation and local events. 3 months.",
-    },
-  ];
-
-  final List<Map<String, dynamic>> newApplicants = [
-    {
-      "name": "Mariya Osteen",
-      "club": "NY Woman's Flag Football",
-      "age": 21,
-      "rating": 4.9,
-      "reviews": 726,
-      "image":
-          "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
-      "countryFlag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-    },
-    {
-      "name": "Ava Johnson",
-      "club": "LA Fitness Team",
-      "age": 25,
-      "rating": 4.7,
-      "reviews": 432,
-      "image":
-          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80",
-      "countryFlag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-    },
-    {
-      "name": "Lina Gomez",
-      "club": "NY Woman's Flag Football",
-      "age": 20,
-      "rating": 4.8,
-      "reviews": 512,
-      "image":
-          "https://images.unsplash.com/photo-1545996124-1a7f9b545f7d?w=800&q=80",
-      "countryFlag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-    },
-  ];
-
-  final List<Map<String, dynamic>> invitees = [
-    {
-      "name": "Kara Smith",
-      "club": "Chicago Elite",
-      "age": 27,
-      "rating": 4.5,
-      "reviews": 210,
-      "image":
-          "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=800&q=80",
-      "countryFlag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-    },
-  ];
-
-  final List<Map<String, dynamic>> sponsorships = [
-    {
-      "name": "Mariya Osteen",
-      "club": "NY Woman’s Flag Football",
-      "age": "21",
-      "rating": "4.9",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
-      "image": "https://i.ibb.co/WDrV1nV/girl-athlete.png",
-    },
-    {
-      "name": "Helen Moore",
-      "club": "NY Woman’s Flag Football",
-      "age": "21",
-      "rating": "4.7",
-      "flag":
-          "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg",
-      "image": "https://i.ibb.co/WDrV1nV/girl-athlete.png",
-    },
-  ];
-
   JobsSectionState jobsState = JobsSectionState.listing;
   ApplicantTab activeApplicantTab = ApplicantTab.newApplicants;
   int? selectedJobIndex;
@@ -561,7 +458,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
               jobs.length,
               (index) => GestureDetector(
                 onTap: () => _showJobFromListing(index),
-                child: _jobCard(jobs[index]),
+                child: JobCard(job: jobs[index], onTap: () => _showJobFromListing(index)),
               ),
             ),
           ),
@@ -577,136 +474,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
         const SizedBox(height: 6),
         CustomText(title: value, fontSize: 18, fontWeight: FontWeight.w700),
       ],
-    );
-  }
-
-  Widget _jobCard(Map<String, dynamic> job) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // header row
-          Row(
-            children: [
-              SizedBox(
-                width: 70,
-                height: 70,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.lightGrey,
-                          width: 2,
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(2),
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: AppColors.black,
-                        backgroundImage: NetworkImage(job["agencyLogo"]),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 4,
-                      child: Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: AppColors.success,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.white, width: 2),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              // title + subtitle
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    title: job["agencyName"],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                  CustomText(
-                    title: job["location"],
-                    fontSize: 14,
-                    textColor: AppColors.grey,
-                  ),
-                ],
-              ),
-              const Spacer(),
-              // more icon
-              const Icon(Icons.more_vert, size: 22, color: AppColors.lightGrey),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // price + title
-          CustomText(
-            title: job["price"],
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
-          const SizedBox(height: 6),
-          CustomText(
-            title: job["title"],
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-
-          const SizedBox(height: 12),
-          const Divider(color: AppColors.extraLightGrey, height: 1),
-
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: job["tags"]
-                .map<Widget>(
-                  (tag) => CustomText(
-                    title: tag,
-                    fontSize: 12,
-                    textColor: AppColors.blue,
-                  ),
-                )
-                .toList(),
-          ),
-
-          const SizedBox(height: 20),
-          Row(
-            children: const [
-              Icon(Icons.share_outlined, size: 22, color: AppColors.lightGrey),
-              SizedBox(width: 30),
-              Icon(Icons.favorite, size: 22, color: AppColors.red),
-              SizedBox(width: 30),
-              Icon(Icons.bookmark_border, size: 22, color: AppColors.lightGrey),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -851,9 +618,27 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
           child: Row(
             children: [
-              _applicantTabButton(ApplicantTab.newApplicants, "New applicants"),
+              ApplicantTabButton(
+                tab: ApplicantTab.newApplicants,
+                activeTab: activeApplicantTab,
+                label: "New applicants",
+                onTap: () {
+                  setState(
+                    () => activeApplicantTab = ApplicantTab.newApplicants,
+                  );
+                },
+              ),
               const SizedBox(width: 16),
-              _applicantTabButton(ApplicantTab.invitees, "Invitees"),
+              ApplicantTabButton(
+                tab: ApplicantTab.invitees,
+                activeTab: activeApplicantTab,
+                label: "Invitees",
+                onTap: () {
+                  setState(() => activeApplicantTab = ApplicantTab.invitees);
+                  // Refresh invitations when switching to Invitees tab
+                  ref.read(jobListProvider.notifier).getSponsorInvitations();
+                },
+              ),
             ],
           ),
         ),
@@ -1216,39 +1001,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     }
   }
 
-  Widget _applicantTabButton(ApplicantTab tab, String label) {
-    final isActive = activeApplicantTab == tab;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() => activeApplicantTab = tab);
-          // Refresh invitations when switching to Invitees tab
-          if (tab == ApplicantTab.invitees) {
-            debugPrint(
-              "=== Switching to Invitees tab, refreshing invitations ===",
-            );
-            ref.read(jobListProvider.notifier).getSponsorInvitations();
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          decoration: BoxDecoration(
-            color: AppColors.greyScaffoldBackground,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: CustomText(
-              title: label,
-              fontSize: 16,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-              textColor: isActive ? AppColors.black : AppColors.grey,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void _showAthleteDetailOverlay(
     BuildContext context,
     manage_models.JobApplication application,
@@ -1377,16 +1129,21 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     required bool isApplicant,
   }) {
     final applicant = application.athlete;
-    final athleteProfile = applicant.athleteProfile;
-    final athleteName =
-        athleteProfile?.name ?? applicant.name ?? 'Unknown Athlete';
-    final age = athleteProfile?.age ?? 0;
-    final rating = athleteProfile?.rating ?? 0.0;
-    final position = athleteProfile?.position ?? '';
-    final profileImageUrl = athleteProfile?.profileImageUrl;
-    final countryFlag = athleteProfile?.countryFlag;
+    final isAccepted =
+        isApplicant &&
+        application.id.isNotEmpty &&
+        _isApplicationAccepted(application.id);
+    final invitationId = !isApplicant && applicant.id != null
+        ? _getInvitationId(applicant.id!, jobId)
+        : null;
+    final hasInvitation = invitationId != null;
 
-    return InkWell(
+    return ApplicantCardWidget(
+      application: application,
+      jobId: jobId,
+      isApplicant: isApplicant,
+      isAccepted: isAccepted,
+      hasInvitation: hasInvitation,
       onTap: () {
         _showAthleteDetailOverlay(
           context,
@@ -1395,276 +1152,8 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
           isApplicant: isApplicant,
         );
       },
-      child: Container(
-        height: 170,
-        decoration: BoxDecoration(
-          color: AppColors.grey.withValues(alpha: .5),
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Stack(
-          children: [
-            // main row
-            Row(
-              children: [
-                SizedBox(
-                  width: 140,
-                  height: 170,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      bottomLeft: Radius.circular(18),
-                    ),
-                    child: profileImageUrl != null && profileImageUrl.isNotEmpty
-                        ? Image.network(
-                            '$fileBaseUrl$profileImageUrl',
-                            fit: BoxFit.cover,
-                            height: 170,
-                            width: 140,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                "assets/images/athlete.png",
-                                fit: BoxFit.cover,
-                                height: 170,
-                                width: 140,
-                              );
-                            },
-                          )
-                        : Image.asset(
-                            "assets/images/athlete.png",
-                            fit: BoxFit.cover,
-                            height: 170,
-                            width: 140,
-                          ),
-                  ),
-                ),
-
-                // content area
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 14,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: athleteName,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          textColor: AppColors.white,
-                        ),
-                        const SizedBox(height: 4),
-                        CustomText(
-                          title: position.isNotEmpty ? position : "Athlete",
-                          fontSize: 12,
-                          textColor: AppColors.white.withValues(alpha: .85),
-                        ),
-                        const SizedBox(height: 6),
-                        CustomText(
-                          title: 'Age : ${age > 0 ? age : 'N/A'}',
-                          fontSize: 12,
-                          textColor: AppColors.white.withValues(alpha: .85),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Row(
-                              children: List.generate(
-                                5,
-                                (i) => Icon(
-                                  Icons.star,
-                                  size: 16,
-                                  color: i < rating.floor()
-                                      ? AppColors.amber
-                                      : AppColors.amber.withValues(alpha: 0.3),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            CustomText(
-                              title:
-                                  '(${athleteProfile?.achievements.length ?? 0})',
-                              fontSize: 12,
-                              textColor: AppColors.white,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Builder(
-                          builder: (context) {
-                            final isAccepted =
-                                isApplicant &&
-                                application.id.isNotEmpty &&
-                                _isApplicationAccepted(application.id);
-
-                            // Check if athlete has been invited for this job
-                            final invitationId =
-                                !isApplicant && applicant.id != null
-                                ? _getInvitationId(applicant.id!, jobId)
-                                : null;
-                            final hasInvitation = invitationId != null;
-                            debugPrint("hasInvitation $hasInvitation");
-
-                            return RoundedButton(
-                              label: isAccepted
-                                  ? 'Accepted'
-                                  : isApplicant
-                                  ? 'Accept proposal'
-                                  : hasInvitation
-                                  ? 'Sent'
-                                  : 'Send Proposal',
-                              onPressed: isAccepted || hasInvitation
-                                  ? () {} // Disabled for accepted or sent
-                                  : (isApplicant && application.id.isNotEmpty
-                                        ? () async {
-                                            // Accept the applicant
-                                            final result = await ref
-                                                .read(jobListProvider.notifier)
-                                                .acceptApplicant(
-                                                  jobId: jobId,
-                                                  applicationId: application.id,
-                                                );
-
-                                            if (context.mounted) {
-                                              result.when(
-                                                success: (data) {
-                                                  final response =
-                                                      data
-                                                          as manage_models.AcceptApplicantResponse;
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        response.message,
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.success,
-                                                    ),
-                                                  );
-                                                },
-                                                failure: (error) {
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Error: ${NetworkExceptions.getErrorMessage(error)}',
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.red,
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          }
-                                        : !isApplicant &&
-                                              applicant.id != null &&
-                                              !hasInvitation
-                                        ? () async {
-                                            // Send invitation to athlete
-                                            final result = await ref
-                                                .read(jobListProvider.notifier)
-                                                .sendInvitation(
-                                                  athleteId: applicant.id!,
-                                                  jobId: jobId,
-                                                  message:
-                                                      'We would love to sponsor you for this opportunity!',
-                                                );
-
-                                            if (context.mounted) {
-                                              result.when(
-                                                success: (data) {
-                                                  final response =
-                                                      data
-                                                          as manage_models.SendInvitationResponse;
-                                                  // Refresh invitations to update button state
-                                                  ref
-                                                      .read(
-                                                        jobListProvider
-                                                            .notifier,
-                                                      )
-                                                      .getSponsorInvitations();
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        response.message,
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.success,
-                                                    ),
-                                                  );
-                                                },
-                                                failure: (error) {
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Error: ${NetworkExceptions.getErrorMessage(error)}',
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.red,
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          }
-                                        : () {}),
-                              height: 36,
-                              width: 140,
-                              borderRadius: 20,
-                              backgroundColor: isAccepted || hasInvitation
-                                  ? AppColors.black.withValues(alpha: 0.6)
-                                  : AppColors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Positioned(
-              top: 10,
-              right: 12,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: countryFlag != null && countryFlag.isNotEmpty
-                    ? Image.network(
-                        '$fileBaseUrl$countryFlag',
-                        height: 28,
-                        width: 28,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            "assets/images/flag.png",
-                            height: 28,
-                            width: 28,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        "assets/images/flag.png",
-                        height: 28,
-                        width: 28,
-                        fit: BoxFit.cover,
-                      ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
+
+    // return InkWell(
   }
 }
