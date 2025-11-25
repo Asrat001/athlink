@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:athlink/features/auth/presentaion/providers/otp_verification/state/otp_verification_state.dart';
+import 'package:athlink/features/auth/presentation/providers/otp_verification/state/otp_verification_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/material.dart';

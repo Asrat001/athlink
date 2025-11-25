@@ -1,6 +1,7 @@
 import 'package:athlink/features/profile/domain/models/job_post_request.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 import 'package:dio/dio.dart';
 
 class JobPostRemoteDataSource extends BaseRepository {
@@ -8,9 +9,10 @@ class JobPostRemoteDataSource extends BaseRepository {
 
   JobPostRemoteDataSource(this._httpClient);
 
-  Future<CreateJobPostResponse> createJobPost(JobPostRequest request) async {
+  Future<ApiResponse<CreateJobPostResponse>> createJobPost(
+    JobPostRequest request,
+  ) async {
     return await safeApiCall(
-      path: "/sponsors/job-post",
       apiCall: () async {
         // Convert the request to FormData for file uploads
         final formData = FormData.fromMap({
@@ -50,12 +52,11 @@ class JobPostRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<UpdateJobPostResponse> updateJobPost(
+  Future<ApiResponse<UpdateJobPostResponse>> updateJobPost(
     String jobId,
     UpdateJobPostRequest request,
   ) async {
     return await safeApiCall(
-      path: "/sponsors/job-post",
       apiCall: () async {
         // Convert the request to FormData for file uploads
         final formData = FormData.fromMap({
@@ -95,9 +96,8 @@ class JobPostRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<DeleteJobPostResponse> deleteJobPost(String jobId) async {
+  Future<ApiResponse<DeleteJobPostResponse>> deleteJobPost(String jobId) async {
     return await safeApiCall(
-      path: "/sponsors/job-post/$jobId",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)

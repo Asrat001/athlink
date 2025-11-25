@@ -1,4 +1,4 @@
-import 'package:athlink/features/auth/presentaion/providers/forgot_password/state/forgot_password_state.dart';
+import 'package:athlink/features/auth/presentation/providers/forgot_password/state/forgot_password_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

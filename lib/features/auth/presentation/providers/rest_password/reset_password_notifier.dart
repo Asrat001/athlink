@@ -1,5 +1,4 @@
-// features/auth/presentation/providers/reset_password/reset_password_provider.dart
-import 'package:athlink/features/auth/presentaion/providers/reset_password/state/reset_password_state.dart';
+import 'package:athlink/features/auth/presentation/providers/rest_password/state/reset_password_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,31 +14,18 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
   ResetPasswordNotifier(this._authenticationRepository)
     : super(ResetPasswordState.initial());
 
-  void setEmailAndToken({
-    required String email,
-    required String token,
-    required String otp,
-  }) {
-    state = state.copyWith(email: email, token: token, otp: otp);
-  }
-
   Future<void> resetPassword({
     required String password,
     required String otp,
     required BuildContext context,
   }) async {
-    final token = state.token;
-
-    // final connected = await sl<AppConnectivity>().connectivity();
-    // if (!connected) {
-    //   if (context.mounted) {
-    //     AppHelpers.showErrorFlash(
-    //       context,
-    //       "You are currently offline, Please check your internet connection",
-    //     );
-    //   }
-    //   return;
-    // }
+    final connected = await sl<AppConnectivity>().connectivity();
+    if (!connected) {
+      if (context.mounted) {
+        AppHelpers.showNoConnectionSnackBar(context);
+      }
+      return;
+    }
 
     state = state.copyWith(
       isLoading: true,
@@ -59,7 +45,6 @@ class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
           isSuccess: true,
           errorMessage: null,
         );
-
         if (context.mounted) {
           AppHelpers.showSuccessToast(context, "Password reset successful");
         }

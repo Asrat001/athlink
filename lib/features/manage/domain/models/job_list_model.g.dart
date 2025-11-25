@@ -15,6 +15,19 @@ _JobApplication _$JobApplicationFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$JobApplicationToJson(_JobApplication instance) =>
     <String, dynamic>{'_id': instance.id, 'athlete': instance.athlete};
 
+_JobsResponse _$JobsResponseFromJson(Map<String, dynamic> json) =>
+    _JobsResponse(
+      jobs:
+          (json['jobs'] as List<dynamic>?)
+              ?.map((e) => JobPostItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      count: (json['count'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$JobsResponseToJson(_JobsResponse instance) =>
+    <String, dynamic>{'jobs': instance.jobs, 'count': instance.count};
+
 _JobListResponse _$JobListResponseFromJson(Map<String, dynamic> json) =>
     _JobListResponse(
       success: json['success'] as bool,

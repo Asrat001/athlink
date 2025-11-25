@@ -1,8 +1,8 @@
-import 'package:athlink/features/auth/presentaion/screens/forgot_password_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/login_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/login_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/otp_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/register_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_detail_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_screen.dart';

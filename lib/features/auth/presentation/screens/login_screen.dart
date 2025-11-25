@@ -1,4 +1,4 @@
-import 'package:athlink/features/auth/presentaion/providers/login/login_provider.dart';
+import 'package:athlink/features/auth/presentation/providers/login/login_provider.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:flutter/gestures.dart';
 import 'package:athlink/shared/theme/app_colors.dart';

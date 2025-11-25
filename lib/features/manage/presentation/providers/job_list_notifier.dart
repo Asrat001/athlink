@@ -14,14 +14,11 @@ class JobListNotifier extends StateNotifier<JobListState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _jobListRepository.getJobPosts();
-    debugPrint("jobs===== $response");
     response.when(
       success: (data) {
         state = state.copyWith(
           isLoading: false,
-          jobPosts: data.jobPosts,
-          companyName: data.companyName,
-          companyLogo: data.companyLogo,
+          jobPosts: data,
           errorMessage: null,
         );
       },

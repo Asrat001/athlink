@@ -16,6 +16,17 @@ abstract class JobApplication with _$JobApplication {
 }
 
 @freezed
+abstract class JobsResponse with _$JobsResponse {
+  const factory JobsResponse({
+    @Default([]) List<JobPostItem> jobs,
+    @Default(0) int count,
+  }) = _JobsResponse;
+
+  factory JobsResponse.fromJson(Map<String, dynamic> json) =>
+      _$JobsResponseFromJson(json);
+}
+
+@freezed
 abstract class JobListResponse with _$JobListResponse {
   const factory JobListResponse({
     required bool success,

@@ -1,5 +1,5 @@
-import 'package:athlink/features/auth/presentaion/providers/register/register_provider.dart';
-import 'package:athlink/features/auth/presentaion/providers/register/state/register_state.dart';
+import 'package:athlink/features/auth/presentation/providers/register/register_provider.dart';
+import 'package:athlink/features/auth/presentation/providers/register/state/register_state.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/validators_utils.dart';

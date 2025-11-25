@@ -5,9 +5,9 @@ import 'di.dart';
 import 'app.dart';
 import 'observers.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  serviceLocator();
+  await serviceLocator();
   final router = sl<AppRouter>().router;
   runApp(
     ProviderScope(

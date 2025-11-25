@@ -60,9 +60,7 @@ class JobListing extends ConsumerWidget {
       return {
         "id": job.id,
         "type": "hiring",
-        "agencyLogo": companyLogo!.isNotEmpty
-            ? UrlHelper.getFullImageUrl(companyLogo) //companyLogo
-            : "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
+        "agencyLogo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
         "agencyName": companyName,
         "location": job.location,
         "price": job.price.isNotEmpty ? job.price : "N/A",
