@@ -1,13 +1,21 @@
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/job_card_widget.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/no_jobs_card.dart';
+import 'package:athlink/features/manage/presentation/screens/widgets/stat_item.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class JobListing extends ConsumerWidget {
-  const JobListing({super.key});
+  const JobListing({super.key, required this.onJobTap});
+
+  final Function(int index) onJobTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,7 +72,7 @@ class JobListing extends ConsumerWidget {
       };
     }).toList();
 
-    if (jobs.isEmpty) return _buildEmptyJobs(context);
+    if (jobs.isEmpty) return NoJobsCard();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -75,8 +83,8 @@ class JobListing extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _statItem("Jobs Posted", jobs.length.toString()),
-              _statItem("Funds Released", "\$0"),
+              StatItem(label: "Jobs Posted",value:  jobs.length.toString()),
+              StatItem(label: "Funds Released", value: "\$0"),
             ],
           ),
           const SizedBox(height: 20),
@@ -89,7 +97,7 @@ class JobListing extends ConsumerWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () => _openCreateJobModal(context),
+                onTap: () => _openCreateJobModal(context,ref),
                 child: const Icon(
                   Icons.add,
                   size: 26,
@@ -104,16 +112,51 @@ class JobListing extends ConsumerWidget {
           Column(
             children: List.generate(
               jobs.length,
-              (index) => GestureDetector(
-                onTap: () => _showJobFromListing(index),
-                child: JobCard(job: jobs[index], onTap: () => _showJobFromListing(index)),
-              ),
+              (index) => JobCard(job: jobs[index], onTap: () => onJobTap(index)),
             ),
           ),
         ],
       ),
     );
   }
+
+
+  void _openCreateJobModal(BuildContext context,WidgetRef ref) {
+    final profileState = ref.read(profileProvider);
+    final sports = profileState.profileUser?.sport ?? [];
+
+    // Save the current status bar style to restore later
+    final originalStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    );
+
+    // Set the new status bar style for the modal
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: AppColors.black.withOpacity(0.3),
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.white,
+      useRootNavigator: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => CreateJobModal(sports: sports),
+    ).then((_) {
+      // Restore the original status bar style when modal closes
+      SystemChrome.setSystemUIOverlayStyle(originalStyle);
+      // Refresh job list after modal closes
+      ref.read(jobListProvider.notifier).fetchJobPosts();
+    });
+  }
+
 
 
   

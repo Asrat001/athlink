@@ -1,25 +1,17 @@
-import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
+
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/manage_enums.dart';
-import 'package:athlink/features/manage/presentation/screens/widgets/applicant_card_widget.dart';
+import 'package:athlink/features/manage/presentation/screens/tabs/jobs_tab/jobs_tab.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
-import 'package:athlink/features/manage/presentation/screens/widgets/applicant_tab_button.dart';
-import 'package:athlink/features/manage/presentation/screens/widgets/job_card_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
-import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
-import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/handlers/api_response.dart';
 import 'package:athlink/shared/handlers/network_exceptions.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/utils/url_helper.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -50,47 +42,11 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     });
   }
 
-  // -------------------- Helpers --------------------
-  void _openCreateJobModal(BuildContext context) {
-    final profileState = ref.read(profileProvider);
-    final sports = profileState.profileUser?.sport ?? [];
-
-    // Save the current status bar style to restore later
-    final originalStyle = SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    );
-
-    // Set the new status bar style for the modal
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: AppColors.black.withOpacity(0.3),
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.white,
-      useRootNavigator: true,
-      useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => CreateJobModal(sports: sports),
-    ).then((_) {
-      // Restore the original status bar style when modal closes
-      SystemChrome.setSystemUIOverlayStyle(originalStyle);
-      // Refresh job list after modal closes
-      ref.read(jobListProvider.notifier).fetchJobPosts();
-    });
-  }
 
   void _showJobFromListing(int index) {
+
     setState(() {
       selectedJobIndex = index;
-
       previousJobsState = jobsState;
       jobsState = JobsSectionState.applicants;
     });
@@ -100,16 +56,9 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     ref.read(jobListProvider.notifier).getSponsorInvitations();
   }
 
-  void _openDetailForSelectedJob() {
-    if (selectedJobIndex == null) return;
-    setState(() {
-      previousJobsState = jobsState;
-      // For now, all jobs from API are hiring type
-      jobsState = JobsSectionState.jobDetail;
-    });
-  }
 
   void _jobsBack() {
+
     setState(() {
       if (previousJobsState != null) {
         jobsState = previousJobsState!;
@@ -121,18 +70,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     });
   }
 
-  List<Athlete> _getFilteredAthletesBySport(String sportId) {
-    final feedState = ref.watch(feedProvider);
-
-    if (feedState.feedData == null || feedState.feedData!.athletes.isEmpty) {
-      return [];
-    }
-
-    // Filter athletes that have the same sport as the job
-    return feedState.feedData!.athletes.where((athlete) {
-      return athlete.sport.any((sport) => sport.id == sportId);
-    }).toList();
-  }
 
   bool _isApplicationAccepted(String applicationId) {
     final jobListState = ref.watch(jobListProvider);
@@ -146,6 +83,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   // Check if an athlete has been invited for a specific job
   // Returns the invitation ID if found and active, null otherwise
   String? _getInvitationId(String athleteId, String jobId) {
+
     final jobListState = ref.watch(jobListProvider);
 
     // Debug: Print all invitations to see what we have
@@ -287,7 +225,20 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                     duration: const Duration(milliseconds: 260),
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
-                    child: _jobsBodyForState(context),
+                    child: JobsTab(
+                      jobSectionState: jobsState,
+                      onJobTap:(index){
+                        _showJobFromListing(index);
+                      },
+                      activeTab: activeApplicantTab,
+                      openDetailForSelectedJob: () {  },
+                      onApplicatntTabCliked: () {  },
+                      onJobBack:_jobsBack,
+                            showAthleteDetailOverlay: (application, jobId, isApplicant) {  
+                              _showAthleteDetailOverlay(context, application, jobId, isApplicant: isApplicant);
+                            },
+
+                    )
                   ),
                   // Sponsorship tab
                   Consumer(
@@ -335,673 +286,12 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     );
   }
 
-  Widget _jobsBodyForState(BuildContext context) {
-    switch (jobsState) {
-      case JobsSectionState.listing:
-        return KeyedSubtree(
-          key: const ValueKey('jobs_listing'),
-          child: _jobsListing(context),
-        );
-      case JobsSectionState.applicants:
-        return KeyedSubtree(
-          key: const ValueKey('jobs_applicants'),
-          child: _applicantsView(context),
-        );
 
-      case JobsSectionState.jobDetail:
-        return KeyedSubtree(
-          key: const ValueKey('job_detail'),
-          child: _jobDetailView(context),
-        );
-      case JobsSectionState.baDetail:
-        return KeyedSubtree(
-          key: const ValueKey('ba_detail'),
-          child: _brandAmbassadorDetailView(context),
-        );
-    }
-  }
 
-  // -------------------- Listing --------------------
-  Widget _jobsListing(BuildContext context) {
-    final jobListState = ref.watch(jobListProvider);
 
-    if (jobListState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (jobListState.errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomText(
-              title: 'Error: ${jobListState.errorMessage}',
-              textColor: AppColors.red,
-            ),
-            const SizedBox(height: 16),
-            RoundedButton(
-              label: 'Retry',
-              onPressed: () {
-                ref.read(jobListProvider.notifier).fetchJobPosts();
-              },
-              height: 40,
-              width: 100,
-              borderRadius: 8,
-              backgroundColor: AppColors.primary,
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Convert API jobs to dummy format for display
-    final apiJobs = jobListState.jobPosts;
-    final companyName = jobListState.companyName ?? 'Company';
-    final companyLogo = jobListState.companyLogo;
-
-    final jobs = apiJobs.map((job) {
-      return {
-        "id": job.id,
-        "type": "hiring",
-        "agencyLogo": companyLogo!.isNotEmpty
-            ? UrlHelper.getFullImageUrl(companyLogo) //companyLogo
-            : "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
-        "agencyName": companyName,
-        "location": job.location,
-        "price": job.price.isNotEmpty ? job.price : "N/A",
-        "title": job.title,
-        "tags": [], // No tags in API data
-        "notifications": job.applicantCount,
-        "description": job.description,
-      };
-    }).toList();
-
-    if (jobs.isEmpty) return _buildEmptyJobs(context);
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // stats row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _statItem("Jobs Posted", jobs.length.toString()),
-              _statItem("Funds Released", "\$0"),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              const CustomText(
-                title: 'Your previous Job Posts',
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () => _openCreateJobModal(context),
-                child: const Icon(
-                  Icons.add,
-                  size: 26,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // job cards
-          Column(
-            children: List.generate(
-              jobs.length,
-              (index) => GestureDetector(
-                onTap: () => _showJobFromListing(index),
-                child: JobCard(job: jobs[index], onTap: () => _showJobFromListing(index)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _statItem(String label, String value) {
-    return Column(
-      children: [
-        CustomText(title: label, fontSize: 14, textColor: AppColors.grey),
-        const SizedBox(height: 6),
-        CustomText(title: value, fontSize: 18, fontWeight: FontWeight.w700),
-      ],
-    );
-  }
-
-  Widget _buildEmptyJobs(BuildContext context) {
-    final double appBarHeight =
-        AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
-    const double tabBarHeight = 48;
-    final double viewportHeight =
-        MediaQuery.of(context).size.height - appBarHeight - tabBarHeight;
-
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: viewportHeight),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: viewportHeight * 0.15),
-              const Center(
-                child: CustomText(
-                  title: 'No job posted yet',
-                  textColor: AppColors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: RoundedButton(
-                  label: 'Create a job post',
-                  onPressed: () => _openCreateJobModal(context),
-                  height: 50,
-                  borderRadius: 8,
-                  backgroundColor: AppColors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _applicantsView(BuildContext context) {
-    final jobListState = ref.watch(jobListProvider);
-
-    // Get real job data
-    final apiJobs = jobListState.jobPosts;
-    if (selectedJobIndex == null || selectedJobIndex! >= apiJobs.length) {
-      return const Center(child: Text('Job not found'));
-    }
-
-    final selectedJob = apiJobs[selectedJobIndex!];
-    final companyLogo = jobListState.companyLogo;
-
-    return Column(
-      key: const ValueKey('applicants_view'),
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              // back arrow
-              GestureDetector(
-                onTap: _jobsBack,
-                child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
-              ),
-              const SizedBox(width: 12),
-              // Company logo from API
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.lightGrey,
-                backgroundImage: companyLogo != null && companyLogo.isNotEmpty
-                    ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
-                    : null,
-                child: companyLogo == null || companyLogo.isEmpty
-                    ? const Icon(Icons.business, color: AppColors.grey)
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      title: selectedJob.title,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                    GestureDetector(
-                      onTap: _openDetailForSelectedJob,
-                      child: const CustomText(
-                        title: 'View detail',
-                        fontSize: 14,
-                        textColor: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 8),
-              if (selectedJob.applicantCount > 0)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: CustomText(
-                    title: selectedJob.applicantCount.toString(),
-                    fontSize: 12,
-                    textColor: AppColors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-            ],
-          ),
-        ),
-
-        // segmented tabs
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
-          child: Row(
-            children: [
-              ApplicantTabButton(
-                tab: ApplicantTab.newApplicants,
-                activeTab: activeApplicantTab,
-                label: "New applicants",
-                onTap: () {
-                  setState(
-                    () => activeApplicantTab = ApplicantTab.newApplicants,
-                  );
-                },
-              ),
-              const SizedBox(width: 16),
-              ApplicantTabButton(
-                tab: ApplicantTab.invitees,
-                activeTab: activeApplicantTab,
-                label: "Invitees",
-                onTap: () {
-                  setState(() => activeApplicantTab = ApplicantTab.invitees);
-                  // Refresh invitations when switching to Invitees tab
-                  ref.read(jobListProvider.notifier).getSponsorInvitations();
-                },
-              ),
-            ],
-          ),
-        ),
-
-        // list of applicants (scrolls independently)
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: _buildApplicantsList(selectedJob),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // -------------------- Job detail --------------------
-  /// Generic job detail (hiring flow)
-  Widget _jobDetailView(BuildContext context) {
-    final jobListState = ref.watch(jobListProvider);
-
-    // Get real job data
-    final apiJobs = jobListState.jobPosts;
-    if (selectedJobIndex == null || selectedJobIndex! >= apiJobs.length) {
-      return const Center(child: Text('Job not found'));
-    }
-
-    final selectedJob = apiJobs[selectedJobIndex!];
-    final companyLogo = jobListState.companyLogo;
-    final companyName = jobListState.companyName ?? 'Company';
-
-    // Calculate timeline duration
-    String timelineDuration = 'N/A';
-    if (selectedJob.timeline.startDate != null &&
-        selectedJob.timeline.endDate != null) {
-      final duration = selectedJob.timeline.endDate!.difference(
-        selectedJob.timeline.startDate!,
-      );
-      final months = (duration.inDays / 30).round();
-      if (months > 0) {
-        timelineDuration = '$months month${months != 1 ? 's' : ''}';
-      }
-    }
-
-    return SingleChildScrollView(
-      key: const ValueKey('job_detail_view'),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * .6,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // header row: back + logo + agency name + location
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundImage: companyLogo != null && companyLogo.isNotEmpty
-                      ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
-                      : null,
-                  backgroundColor: AppColors.lightGrey,
-                  child: companyLogo == null || companyLogo.isEmpty
-                      ? const Icon(Icons.business, color: AppColors.grey)
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        title: companyName,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        title: selectedJob.location,
-                        fontSize: 14,
-                        textColor: AppColors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-
-                GestureDetector(
-                  onTap: _jobsBack,
-                  child: const Icon(Icons.arrow_back, color: AppColors.black),
-                ),
-                const SizedBox(width: 12),
-              ],
-            ),
-            const SizedBox(height: 18),
-
-            CustomText(
-              title: selectedJob.title,
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              textColor: AppColors.black,
-            ),
-            const SizedBox(height: 12),
-            CustomText(
-              title: selectedJob.description,
-              fontSize: 14,
-              textColor: AppColors.grey,
-            ),
-            const SizedBox(height: 18),
-
-            Row(
-              children: [
-                CustomText(
-                  title: 'Payment',
-                  fontSize: 14,
-                  textColor: AppColors.grey,
-                ),
-                const SizedBox(width: 12),
-                CustomText(
-                  title: selectedJob.price.isNotEmpty
-                      ? selectedJob.price.replaceAll('/m', '')
-                      : 'Not specified',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                CustomText(
-                  title: 'Time line',
-                  fontSize: 14,
-                  textColor: AppColors.grey,
-                ),
-                const SizedBox(width: 12),
-                CustomText(
-                  title: timelineDuration,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _brandAmbassadorDetailView(BuildContext context) {
-    final job = jobs[selectedJobIndex ?? 0];
-
-    return SingleChildScrollView(
-      key: const ValueKey('ba_detail_view'),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * .6,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundImage: AssetImage("assets/images/on1.jpg"),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        title: job["agencyName"],
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        title: job["location"],
-                        fontSize: 14,
-                        textColor: AppColors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-
-                GestureDetector(
-                  onTap: _jobsBack,
-                  child: const Icon(Icons.arrow_back, color: AppColors.black),
-                ),
-                const SizedBox(width: 12),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Title
-            CustomText(
-              title: job["title"],
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              textColor: AppColors.black,
-            ),
-            const SizedBox(height: 12),
-
-            // Description paragraph (matching the screenshot spacing)
-            CustomText(
-              title: job["description"] ?? '',
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              textColor: AppColors.grey,
-            ),
-            const SizedBox(height: 18),
-
-            // Payment & timeline row (pixel aligned)
-            Row(
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: CustomText(
-                    title: 'Payment',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    textColor: AppColors.grey,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                CustomText(
-                  title: job["price"].toString().replaceAll('/m', ''),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  textColor: AppColors.grey,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: CustomText(
-                    title: 'Time line',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    textColor: AppColors.grey,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                CustomText(
-                  title: '6 months',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  textColor: AppColors.grey,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildApplicantsList(dynamic selectedJob) {
-    if (activeApplicantTab == ApplicantTab.newApplicants) {
-      // Show actual applicants
-      if (selectedJob.applications.isEmpty) {
-        return Center(
-          child: CustomText(
-            title: 'No new applicants yet',
-            textColor: AppColors.grey,
-            fontSize: 16,
-          ),
-        );
-      }
-
-      return ListView.separated(
-        padding: const EdgeInsets.only(bottom: 24),
-        itemCount: selectedJob.applications.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 18),
-        itemBuilder: (context, idx) {
-          final application = selectedJob.applications[idx];
-          return _applicantCardFromAPI(
-            application,
-            selectedJob.id,
-            context,
-            isApplicant: true,
-          );
-        },
-      );
-    } else {
-      // Show filtered athletes by sport (invitees)
-      final filteredAthletes = _getFilteredAthletesBySport(
-        selectedJob.sportId.id,
-      );
-      final feedState = ref.watch(feedProvider);
-
-      if (feedState.isLoading) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (feedState.errorMessage != null) {
-        return Center(
-          child: CustomText(
-            title: 'Error loading athletes',
-            textColor: AppColors.red,
-            fontSize: 16,
-          ),
-        );
-      }
-
-      // Get list of athlete IDs who have already applied
-      final applicantIds = selectedJob.applications
-          .map((app) => app.athlete.id)
-          .where((id) => id != null)
-          .toSet();
-
-      // Get list of athlete IDs who have been accepted/sponsored
-      final jobListState = ref.watch(jobListProvider);
-      final sponsoredAthleteIds = jobListState.sponsoredAthletes
-          .map((sponsored) => sponsored.athlete.id)
-          .where((id) => id != null)
-          .toSet();
-
-      // Filter out athletes who have already applied OR been sponsored
-      final availableAthletes = filteredAthletes.where((athlete) {
-        return !applicantIds.contains(athlete.id) &&
-            !sponsoredAthleteIds.contains(athlete.id);
-      }).toList();
-
-      if (availableAthletes.isEmpty) {
-        return Center(
-          child: CustomText(
-            title: 'No athletes found for this sport',
-            textColor: AppColors.grey,
-            fontSize: 16,
-          ),
-        );
-      }
-
-      return ListView.separated(
-        padding: const EdgeInsets.only(bottom: 24),
-        itemCount: availableAthletes.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 18),
-        itemBuilder: (context, idx) {
-          final athlete = availableAthletes[idx];
-          // For invitees, create a JobApplication wrapper without application ID
-          final fakeApplication = manage_models.JobApplication(
-            id: '', // Empty application ID for invitees
-            athlete: athlete,
-          );
-          return _applicantCardFromAPI(
-            fakeApplication,
-            selectedJob.id,
-            context,
-            isApplicant: false,
-          );
-        },
-      );
-    }
-  }
 
   void _showAthleteDetailOverlay(
+
     BuildContext context,
     manage_models.JobApplication application,
     String jobId, {
@@ -1122,38 +412,5 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     );
   }
 
-  Widget _applicantCardFromAPI(
-    manage_models.JobApplication application,
-    String jobId,
-    BuildContext context, {
-    required bool isApplicant,
-  }) {
-    final applicant = application.athlete;
-    final isAccepted =
-        isApplicant &&
-        application.id.isNotEmpty &&
-        _isApplicationAccepted(application.id);
-    final invitationId = !isApplicant && applicant.id != null
-        ? _getInvitationId(applicant.id!, jobId)
-        : null;
-    final hasInvitation = invitationId != null;
 
-    return ApplicantCardWidget(
-      application: application,
-      jobId: jobId,
-      isApplicant: isApplicant,
-      isAccepted: isAccepted,
-      hasInvitation: hasInvitation,
-      onTap: () {
-        _showAthleteDetailOverlay(
-          context,
-          application,
-          jobId,
-          isApplicant: isApplicant,
-        );
-      },
-    );
-
-    // return InkWell(
-  }
 }
