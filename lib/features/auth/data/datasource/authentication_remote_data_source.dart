@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'package:athlink/features/auth/domain/models/login_model.dart';
 import 'package:athlink/features/auth/domain/models/verification_response.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 import '../../domain/models/registration_response.dart';
 

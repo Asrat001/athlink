@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:athlink/di.dart';
-import '../utils/app_helpers.dart';
+import '../../shared/utils/app_helpers.dart';
 import '../services/local_storage_service.dart';
 import '../services/navigation_service.dart';
 import '../services/token_refreshe_service.dart';
@@ -13,7 +13,7 @@ class TokenInterceptor extends Interceptor {
   TokenInterceptor({required this.requireAuth, required this.dio});
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -26,7 +26,7 @@ class TokenInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     // Check if error is due to an expired token (401 Unauthorized)
     if (err.response?.statusCode == 401 && requireAuth) {
       log('Token expired, attempting to refresh...');

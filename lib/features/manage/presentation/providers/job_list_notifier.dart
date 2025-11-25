@@ -1,7 +1,7 @@
 import 'package:athlink/features/manage/domain/repository/job_list_repository.dart';
 import 'package:athlink/features/manage/presentation/providers/state/job_list_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

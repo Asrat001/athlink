@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:athlink/features/manage/data/datasource/milestone_remote_datasource.dart';
 import 'package:athlink/features/manage/domain/models/milestone_model.dart';
 import 'package:athlink/features/manage/domain/repository/milestone_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 
 class MilestoneRepositoryImpl implements MilestoneRepository {
   final MilestoneRemoteDataSource _remoteDataSource;

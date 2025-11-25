@@ -1,8 +1,8 @@
 import 'package:athlink/features/manage/domain/models/milestone_model.dart';
 import 'package:athlink/features/manage/domain/repository/milestone_repository.dart';
 import 'package:athlink/features/manage/presentation/providers/state/milestone_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

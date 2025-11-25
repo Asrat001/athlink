@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:athlink/features/auth/presentaion/providers/otp_verification/state/otp_verification_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 
-import '../../../../../shared/services/internet_connection_service.dart';
+import '../../../../../core/services/internet_connection_service.dart';
 
 class OtpVerificationNotifier extends StateNotifier<OtpVerificationState> {
   final IAuthenticationRepository _authenticationRepository;

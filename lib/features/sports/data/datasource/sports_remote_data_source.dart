@@ -1,8 +1,8 @@
 // features/sports/data/datasource/sports_remote_data_source.dart
 import 'package:athlink/features/sports/domain/models/sport_model.dart';
 import 'package:athlink/features/sports/domain/models/sport_selection_model.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 class SportsRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;

@@ -1,6 +1,6 @@
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 class FeedRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;

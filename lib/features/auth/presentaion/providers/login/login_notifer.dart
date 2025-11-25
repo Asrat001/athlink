@@ -1,14 +1,14 @@
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/features/auth/presentaion/providers/login/state/login_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../di.dart';
 import '../../../../../routes/route_names.dart';
-import '../../../../../shared/services/internet_connection_service.dart';
+import '../../../../../core/services/internet_connection_service.dart';
 import '../../../../../shared/utils/app_helpers.dart';
 
 class LoginNotifier extends StateNotifier<LoginState> {

@@ -1,11 +1,11 @@
 import 'package:athlink/features/auth/presentaion/providers/register/state/register_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../di.dart';
-import '../../../../../shared/handlers/network_exceptions.dart';
-import '../../../../../shared/services/internet_connection_service.dart';
-import '../../../../../shared/services/local_storage_service.dart';
+import '../../../../../core/handlers/network_exceptions.dart';
+import '../../../../../core/services/internet_connection_service.dart';
+import '../../../../../core/services/local_storage_service.dart';
 import '../../../../../shared/utils/app_helpers.dart';
 import '../../../domain/repository/authentication_repository.dart';
 

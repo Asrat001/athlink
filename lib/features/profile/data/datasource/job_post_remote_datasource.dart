@@ -1,6 +1,6 @@
 import 'package:athlink/features/profile/domain/models/job_post_request.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 import 'package:dio/dio.dart';
 
 class JobPostRemoteDataSource extends BaseRepository {

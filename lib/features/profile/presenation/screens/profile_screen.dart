@@ -7,7 +7,7 @@ import 'package:athlink/features/profile/presenation/screens/widgets/posts_widge
 import 'package:athlink/features/profile/presenation/screens/widgets/profile_edit_page.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 import 'package:dio/dio.dart';
 
 class ProfileRemoteDataSource extends BaseRepository {

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../features/auth/domain/models/login_model.dart';
-import '../constant/local_storage_keys.dart';
+import '../../shared/constant/local_storage_keys.dart';
 
 class LocalStorageService {
   SharedPreferences? _preferences;

@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
 import 'package:athlink/features/profile/domain/repository/profile_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {

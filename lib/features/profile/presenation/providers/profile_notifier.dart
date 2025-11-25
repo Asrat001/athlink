@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:athlink/features/profile/domain/repository/profile_repository.dart';
 import 'package:athlink/features/profile/presenation/providers/state/profile_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileNotifier extends StateNotifier<ProfileState> {

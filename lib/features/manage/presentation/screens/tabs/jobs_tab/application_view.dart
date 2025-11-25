@@ -1,6 +1,7 @@
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/manage/presentation/providers/manage_navigation_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/manage_enums.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_card_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_tab_button.dart';
@@ -13,33 +14,33 @@ import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 
 class ApplicationView extends ConsumerWidget {
-  const ApplicationView({super.key,
-   this.selectedJobIndex,
-   required this.openDetailForSelectedJob,
-   required this.onApplicatntTabCliked,
-   required this.activeTab,
-   required this.onJobBack,
-   required this.showAthleteDetailOverlay,
+  const ApplicationView({
+    super.key,
+    required this.showAthleteDetailOverlay,
   });
 
-  final int? selectedJobIndex;
-  final ApplicantTab activeTab;
-  final VoidCallback openDetailForSelectedJob;
-  final VoidCallback onApplicatntTabCliked;
-  final VoidCallback onJobBack;
-  final Function(manage_models.JobApplication jobApplication, String jobId, bool isApplicant) showAthleteDetailOverlay;
+
+  final Function(
+    manage_models.JobApplication jobApplication,
+    String jobId,
+    bool isApplicant,
+  )
+  showAthleteDetailOverlay;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-   final jobListState = ref.watch(jobListProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final jobListState = ref.watch(jobListProvider);
+    final navigationState = ref.watch(manageNavigationProvider);
+    final selectedJobIndex = navigationState.selectedJobIndex;
+    final activeTab = navigationState.activeApplicantTab;
 
     // Get real job data
     final apiJobs = jobListState.jobPosts;
-    if (selectedJobIndex == null || selectedJobIndex! >= apiJobs.length) {
+    if (selectedJobIndex == null || selectedJobIndex >= apiJobs.length) {
       return const Center(child: Text('Job not found'));
     }
 
-    final selectedJob = apiJobs[selectedJobIndex!];
+    final selectedJob = apiJobs[selectedJobIndex];
     final companyLogo = jobListState.companyLogo;
 
     return Column(
@@ -63,7 +64,7 @@ class ApplicationView extends ConsumerWidget {
             children: [
               // back arrow
               GestureDetector(
-                onTap: onJobBack,
+                onTap: () => ref.read(manageNavigationProvider.notifier).jobsBack(),
                 child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
               ),
               const SizedBox(width: 12),
@@ -89,7 +90,7 @@ class ApplicationView extends ConsumerWidget {
                       fontSize: 16,
                     ),
                     GestureDetector(
-                      onTap: openDetailForSelectedJob,
+                      onTap: () => ref.read(manageNavigationProvider.notifier).showJobDetail(),
                       child: const CustomText(
                         title: 'View detail',
                         fontSize: 14,
@@ -131,14 +132,14 @@ class ApplicationView extends ConsumerWidget {
                 tab: ApplicantTab.newApplicants,
                 activeTab: activeTab,
                 label: "New applicants",
-                onTap: onApplicatntTabCliked
+             onTap: () => ref.read(manageNavigationProvider.notifier).setActiveApplicantTab(ApplicantTab.newApplicants),
               ),
               const SizedBox(width: 16),
               ApplicantTabButton(
                 tab: ApplicantTab.invitees,
                 activeTab: activeTab,
                 label: "Invitees",
-                onTap: onApplicatntTabCliked
+               onTap: () => ref.read(manageNavigationProvider.notifier).setActiveApplicantTab(ApplicantTab.invitees),
               ),
             ],
           ),
@@ -148,16 +149,16 @@ class ApplicationView extends ConsumerWidget {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: _buildApplicantsList(selectedJob,ref),
+            child: _buildApplicantsList(selectedJob, ref),
           ),
         ),
       ],
     );
   }
 
-
- Widget _buildApplicantsList(dynamic selectedJob,WidgetRef ref) {
-    
+  Widget _buildApplicantsList(dynamic selectedJob, WidgetRef ref) {
+    final navigationState = ref.watch(manageNavigationProvider);
+  final activeTab = navigationState.activeApplicantTab;
     if (activeTab == ApplicantTab.newApplicants) {
       // Show actual applicants
       if (selectedJob.applications.isEmpty) {
@@ -189,7 +190,7 @@ class ApplicationView extends ConsumerWidget {
       // Show filtered athletes by sport (invitees)
       final filteredAthletes = _getFilteredAthletesBySport(
         selectedJob.sportId.id,
-        ref
+        ref,
       );
       final feedState = ref.watch(feedProvider);
 
@@ -259,7 +260,7 @@ class ApplicationView extends ConsumerWidget {
     }
   }
 
-    List<Athlete> _getFilteredAthletesBySport(String sportId,WidgetRef ref) {
+  List<Athlete> _getFilteredAthletesBySport(String sportId, WidgetRef ref) {
     final feedState = ref.watch(feedProvider);
 
     if (feedState.feedData == null || feedState.feedData!.athletes.isEmpty) {
@@ -272,10 +273,7 @@ class ApplicationView extends ConsumerWidget {
     }).toList();
   }
 
-
-
   Widget _applicantCardFromAPI(
-    
     manage_models.JobApplication application,
     String jobId,
     WidgetRef ref,
@@ -286,9 +284,9 @@ class ApplicationView extends ConsumerWidget {
     final isAccepted =
         isApplicant &&
         application.id.isNotEmpty &&
-        _isApplicationAccepted(application.id,ref);
+        _isApplicationAccepted(application.id, ref);
     final invitationId = !isApplicant && applicant.id != null
-        ? _getInvitationId(applicant.id!, jobId,ref)
+        ? _getInvitationId(applicant.id!, jobId, ref)
         : null;
     final hasInvitation = invitationId != null;
 
@@ -298,10 +296,11 @@ class ApplicationView extends ConsumerWidget {
       isApplicant: isApplicant,
       isAccepted: isAccepted,
       hasInvitation: hasInvitation,
-      onTap:showAthleteDetailOverlay(application, jobId, isApplicant)
+      onTap: () => showAthleteDetailOverlay(application, jobId, isApplicant),
     );
   }
-    bool _isApplicationAccepted(String applicationId,WidgetRef ref) {
+
+  bool _isApplicationAccepted(String applicationId, WidgetRef ref) {
     final jobListState = ref.watch(jobListProvider);
 
     // Check if this application ID exists in the sponsored athletes list
@@ -312,8 +311,7 @@ class ApplicationView extends ConsumerWidget {
 
   // Check if an athlete has been invited for a specific job
   // Returns the invitation ID if found and active, null otherwise
-  String? _getInvitationId(String athleteId, String jobId,WidgetRef ref) {
-    
+  String? _getInvitationId(String athleteId, String jobId, WidgetRef ref) {
     final jobListState = ref.watch(jobListProvider);
 
     // Debug: Print all invitations to see what we have
@@ -357,7 +355,4 @@ class ApplicationView extends ConsumerWidget {
       return null;
     }
   }
-
-
-
 }

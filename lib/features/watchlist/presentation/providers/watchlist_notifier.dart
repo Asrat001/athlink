@@ -1,8 +1,8 @@
 import 'dart:developer' as developer;
 import 'package:athlink/features/watchlist/domain/repository/watchlist_repository.dart';
 import 'package:athlink/features/watchlist/presentation/providers/state/watchlist_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WatchlistNotifier extends StateNotifier<WatchlistState> {

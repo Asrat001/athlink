@@ -1,6 +1,6 @@
 import 'package:athlink/features/watchlist/domain/models/watchlist_models.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 class WatchlistRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;

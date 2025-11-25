@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:athlink/features/auth/domain/models/login_model.dart';
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
-import 'package:athlink/shared/services/google_sign_in_service.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
+import 'package:athlink/core/services/google_sign_in_service.dart';
 import 'package:athlink/features/auth/domain/models/registration_response.dart';
 import 'package:athlink/features/auth/data/datasource/authentication_remote_data_source.dart';
 

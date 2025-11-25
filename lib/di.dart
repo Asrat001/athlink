@@ -19,11 +19,11 @@ import 'package:athlink/features/watchlist/data/datasource/watchlist_remote_data
 import 'package:athlink/features/watchlist/data/repository/watchlist_repository_impl.dart';
 import 'package:athlink/features/watchlist/domain/repository/watchlist_repository.dart';
 import 'package:athlink/routes/app_route.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/services/google_sign_in_service.dart';
-import 'package:athlink/shared/services/internet_connection_service.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
-import 'package:athlink/shared/services/token_refreshe_service.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/services/google_sign_in_service.dart';
+import 'package:athlink/core/services/internet_connection_service.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/core/services/token_refreshe_service.dart';
 import 'package:athlink/shared/utils/image_palette_util.dart';
 import 'package:get_it/get_it.dart';
 import 'features/auth/data/datasource/authentication_remote_data_source.dart';

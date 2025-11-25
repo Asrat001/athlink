@@ -1,5 +1,5 @@
 import 'package:athlink/features/auth/domain/models/login_model.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/features/auth/domain/models/registration_response.dart';
 
 abstract class IAuthenticationRepository {

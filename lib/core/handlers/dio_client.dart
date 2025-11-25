@@ -1,7 +1,7 @@
 
 import 'package:dio/dio.dart';
-import 'package:athlink/shared/handlers/token_intreceptor.dart';
-import '../constant/constants.dart';
+import 'package:athlink/core/handlers/token_intreceptor.dart';
+import '../../shared/constant/constants.dart';
 
 
 class DioHttpClient {

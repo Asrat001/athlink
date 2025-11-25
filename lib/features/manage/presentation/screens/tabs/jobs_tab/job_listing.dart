@@ -1,4 +1,5 @@
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/manage/presentation/providers/manage_navigation_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/job_card_widget.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/no_jobs_card.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/stat_item.dart';
@@ -13,9 +14,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class JobListing extends ConsumerWidget {
-  const JobListing({super.key, required this.onJobTap});
+  const JobListing({super.key});
 
-  final Function(int index) onJobTap;
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,7 +84,7 @@ class JobListing extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              StatItem(label: "Jobs Posted",value:  jobs.length.toString()),
+              StatItem(label: "Jobs Posted", value: jobs.length.toString()),
               StatItem(label: "Funds Released", value: "\$0"),
             ],
           ),
@@ -97,7 +98,7 @@ class JobListing extends ConsumerWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () => _openCreateJobModal(context,ref),
+                onTap: () => _openCreateJobModal(context, ref),
                 child: const Icon(
                   Icons.add,
                   size: 26,
@@ -112,7 +113,10 @@ class JobListing extends ConsumerWidget {
           Column(
             children: List.generate(
               jobs.length,
-              (index) => JobCard(job: jobs[index], onTap: () => onJobTap(index)),
+              (index) =>
+                  JobCard(job: jobs[index],
+                  onTap: () => ref.read(manageNavigationProvider.notifier).showJobFromListing(index),
+                   ),
             ),
           ),
         ],
@@ -120,8 +124,7 @@ class JobListing extends ConsumerWidget {
     );
   }
 
-
-  void _openCreateJobModal(BuildContext context,WidgetRef ref) {
+  void _openCreateJobModal(BuildContext context, WidgetRef ref) {
     final profileState = ref.read(profileProvider);
     final sports = profileState.profileUser?.sport ?? [];
 
@@ -156,8 +159,4 @@ class JobListing extends ConsumerWidget {
       ref.read(jobListProvider.notifier).fetchJobPosts();
     });
   }
-
-
-
-  
 }

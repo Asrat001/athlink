@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:athlink/features/home_feed/data/datasource/feed_remote_datasource.dart';
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/home_feed/domain/repository/feed_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 
 class FeedRepositoryImpl implements FeedRepository {
   final FeedRemoteDataSource _remoteDataSource;

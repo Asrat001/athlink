@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'package:athlink/features/watchlist/data/datasource/watchlist_remote_datasource.dart';
 import 'package:athlink/features/watchlist/domain/models/watchlist_models.dart';
 import 'package:athlink/features/watchlist/domain/repository/watchlist_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 
 class WatchlistRepositoryImpl implements WatchlistRepository {
   final WatchlistRemoteDataSource _remoteDataSource;

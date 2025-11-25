@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import '../../di.dart';
-import '../constant/constants.dart';
+import '../../shared/constant/constants.dart';
 import 'local_storage_service.dart';
 
 class TokenRefreshService {
@@ -27,6 +27,7 @@ class TokenRefreshService {
 
     try {
       final refreshToken = await localStorageService.getRefreshToken();
+      log('Refresh token from storage: $refreshToken');
 
       if (refreshToken == null) {
         log('No refresh token found in storage');
@@ -38,12 +39,14 @@ class TokenRefreshService {
       log('Attempting to refresh token...');
 
       final dio = Dio(
-        BaseOptions(baseUrl: cBaseUrl, headers: {'accept': 'application/json'}),
+        BaseOptions(baseUrl: cBaseUrl, headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $refreshToken',
+          }),
       );
 
       final response = await dio.post(
         '/auth/refresh-token',
-        data: {'refreshToken': refreshToken},
       );
 
       if (response.statusCode == 200) {

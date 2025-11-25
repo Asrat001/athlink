@@ -19,7 +19,7 @@ import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
-import '../shared/handlers/app_router_observer.dart';
+import '../core/handlers/app_router_observer.dart';
 
 class AppRouter {
   final bool isFirstTimeUser;

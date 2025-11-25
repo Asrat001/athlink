@@ -1,15 +1,13 @@
-
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
-import 'package:athlink/features/manage/presentation/screens/manage_enums.dart';
 import 'package:athlink/features/manage/presentation/screens/tabs/jobs_tab/jobs_tab.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/applicant_detail.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/sponsorship_section.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,10 +21,7 @@ class ManageScreen extends ConsumerStatefulWidget {
 }
 
 class _ManageScreenState extends ConsumerState<ManageScreen> {
-  JobsSectionState jobsState = JobsSectionState.listing;
-  ApplicantTab activeApplicantTab = ApplicantTab.newApplicants;
-  int? selectedJobIndex;
-  JobsSectionState? previousJobsState;
+
 
   @override
   void initState() {
@@ -43,33 +38,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   }
 
 
-  void _showJobFromListing(int index) {
-
-    setState(() {
-      selectedJobIndex = index;
-      previousJobsState = jobsState;
-      jobsState = JobsSectionState.applicants;
-    });
-
-    // Refresh invitations when entering applicants view
-    debugPrint("=== Opening job, refreshing invitations ===");
-    ref.read(jobListProvider.notifier).getSponsorInvitations();
-  }
-
-
-  void _jobsBack() {
-
-    setState(() {
-      if (previousJobsState != null) {
-        jobsState = previousJobsState!;
-      } else {
-        jobsState = JobsSectionState.listing;
-      }
-      if (jobsState == JobsSectionState.listing) selectedJobIndex = null;
-      previousJobsState = null;
-    });
-  }
-
 
   bool _isApplicationAccepted(String applicationId) {
     final jobListState = ref.watch(jobListProvider);
@@ -83,7 +51,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   // Check if an athlete has been invited for a specific job
   // Returns the invitation ID if found and active, null otherwise
   String? _getInvitationId(String athleteId, String jobId) {
-
     final jobListState = ref.watch(jobListProvider);
 
     // Debug: Print all invitations to see what we have
@@ -226,19 +193,16 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
                     child: JobsTab(
-                      jobSectionState: jobsState,
-                      onJobTap:(index){
-                        _showJobFromListing(index);
-                      },
-                      activeTab: activeApplicantTab,
-                      openDetailForSelectedJob: () {  },
-                      onApplicatntTabCliked: () {  },
-                      onJobBack:_jobsBack,
-                            showAthleteDetailOverlay: (application, jobId, isApplicant) {  
-                              _showAthleteDetailOverlay(context, application, jobId, isApplicant: isApplicant);
-                            },
-
-                    )
+                      showAthleteDetailOverlay:
+                          (application, jobId, isApplicant) {
+                            _showAthleteDetailOverlay(
+                              context,
+                              application,
+                              jobId,
+                              isApplicant: isApplicant,
+                            );
+                          },
+                    ),
                   ),
                   // Sponsorship tab
                   Consumer(
@@ -286,12 +250,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     );
   }
 
-
-
-
-
   void _showAthleteDetailOverlay(
-
     BuildContext context,
     manage_models.JobApplication application,
     String jobId, {
@@ -411,6 +370,4 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
       ),
     );
   }
-
-
 }

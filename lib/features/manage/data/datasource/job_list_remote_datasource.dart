@@ -2,8 +2,8 @@ import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 class JobListRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;

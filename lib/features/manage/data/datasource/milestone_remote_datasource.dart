@@ -1,6 +1,6 @@
 import 'package:athlink/features/manage/domain/models/milestone_model.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
 
 class MilestoneRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;
