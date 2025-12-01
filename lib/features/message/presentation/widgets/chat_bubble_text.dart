@@ -1,7 +1,11 @@
+import 'package:athlink/di.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../shared/utils/date_formatter.dart';
 
 class ChatBubbleText extends StatelessWidget {
   final ChatMessage message;
@@ -10,7 +14,8 @@ class ChatBubbleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMe = message.fromMe;
+    final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+    final isMe = message.isFromMe(currentUserId);
     final radius = BorderRadius.only(
       topLeft: Radius.circular(isMe ? 12 : 6),
       topRight: Radius.circular(isMe ? 6 : 12),
@@ -49,7 +54,7 @@ class ChatBubbleText extends StatelessWidget {
                 ],
               ),
               child: CustomText(
-                title: message.text ?? '',
+                title: message.content,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.textPrimary,
@@ -57,7 +62,7 @@ class ChatBubbleText extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             CustomText(
-              title: message.time ?? '',
+              title: DateFormatter.formatDateTime(message.createdAt),
               fontSize: 11,
               fontWeight: FontWeight.w400,
               textColor: AppColors.grey600,

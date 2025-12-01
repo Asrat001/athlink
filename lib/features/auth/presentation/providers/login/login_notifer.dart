@@ -98,6 +98,12 @@ class LoginNotifier extends StateNotifier<LoginState> {
             isError: true,
             isSuccess: false,
           );
+          if (context.mounted) {
+            AppHelpers.showErrorFlash(
+              context,
+              "Something went wrong: ${NetworkExceptions.getErrorMessage(error)}",
+            );
+          }
         },
       );
     } else {

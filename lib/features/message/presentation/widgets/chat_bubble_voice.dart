@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'package:athlink/di.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -29,7 +33,7 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
   @override
   void didUpdateWidget(covariant ChatBubbleVoice oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.message.audioPath != oldWidget.message.audioPath) {
+    if (widget.message.mediaUrl != oldWidget.message.mediaUrl) {
       _stopAndReload();
     }
   }
@@ -50,8 +54,9 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
 
   Future<void> _initAudio() async {
     try {
-      if (widget.message.audioPath != null) {
-        await _player.setFilePath(widget.message.audioPath!);
+      if (widget.message.mediaUrl != null) {
+        final decodedUrl = Uri.decodeFull(widget.message.mediaUrl!);
+        await _player.setUrl(fileBaseUrl + decodedUrl);
         _duration = widget.message.duration ?? Duration.zero;
 
         _player.playerStateStream.listen((state) {
@@ -96,7 +101,8 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
 
   @override
   Widget build(BuildContext context) {
-    final isMe = widget.message.fromMe;
+    final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+    final isMe = widget.message.isFromMe(currentUserId);
     final color = isMe ? AppColors.darkBlue : AppColors.white;
     final fgColor = isMe ? AppColors.white : AppColors.darkBlue;
 
@@ -188,7 +194,7 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
                         ),
                       ),
                       Text(
-                        widget.message.time ?? "",
+                        DateFormatter.formatShort(widget.message.createdAt),
                         style: TextStyle(
                           fontSize: 10,
                           color: fgColor.withValues(alpha: 0.7),

@@ -1,8 +1,12 @@
+import 'package:athlink/di.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../shared/utils/date_formatter.dart';
 
 class ChatCardProposal extends StatelessWidget {
   final ChatMessage message;
@@ -25,17 +29,17 @@ class ChatCardProposal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+    final isMe = message.isFromMe(currentUserId);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
-        crossAxisAlignment: message.fromMe
+        crossAxisAlignment: isMe
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start,
         children: [
           Align(
-            alignment: message.fromMe
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
+            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
             child: GestureDetector(
               onTap: () => _showProposalDetails(context),
               child: Container(
@@ -85,20 +89,19 @@ class ChatCardProposal extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          if (message.time != null)
-            Padding(
-              padding: EdgeInsets.only(
-                left: message.fromMe ? 0 : 6,
-                right: message.fromMe ? 6 : 0,
-                bottom: 6,
-              ),
-              child: CustomText(
-                title: message.time!,
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.grey600,
-              ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: isMe ? 0 : 6,
+              right: isMe ? 6 : 0,
+              bottom: 6,
             ),
+            child: CustomText(
+              title: DateFormatter.formatDateTime(message.createdAt),
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+              textColor: AppColors.grey600,
+            ),
+          ),
         ],
       ),
     );

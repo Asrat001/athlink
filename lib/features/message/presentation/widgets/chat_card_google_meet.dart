@@ -1,3 +1,5 @@
+import 'package:athlink/di.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../shared/utils/date_formatter.dart';
 
 class ChatCardGoogleMeet extends StatelessWidget {
   final ChatMessage message;
@@ -22,7 +26,8 @@ class ChatCardGoogleMeet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMe = message.fromMe;
+    final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+    final isMe = message.isFromMe(currentUserId);
     return Padding(
       padding: EdgeInsets.only(
         left: isMe ? 60 : 12,
@@ -129,7 +134,7 @@ class ChatCardGoogleMeet extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           CustomText(
-            title: message.time ?? '',
+            title: DateFormatter.formatDateTime(message.createdAt),
             fontSize: 11,
             fontWeight: FontWeight.w400,
             textColor: AppColors.grey600,

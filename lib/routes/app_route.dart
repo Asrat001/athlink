@@ -76,8 +76,9 @@ class AppRouter {
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
           return MessageDetailScreen(
+            conversationId: extra["conversationId"] as String,
             name: extra["name"],
-            logo: extra["logo"],
+            logo: extra["logo"]??"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
             isOnline: extra["isOnline"],
           );
         },

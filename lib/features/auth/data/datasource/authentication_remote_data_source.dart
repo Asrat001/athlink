@@ -32,7 +32,7 @@ class AuthenticationRemoteDataSource extends BaseRepository {
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: false)
-            .post("/auth/sign_in_with_google", data: {"idToken": idToken});
+            .post("/auth/sign-in-with-google", data: {"idToken": idToken});
       },
       fromData: (data) => LoginResponse.fromJson(data),
     );

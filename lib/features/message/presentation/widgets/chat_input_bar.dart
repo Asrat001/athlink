@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:athlink/features/message/widgets/proposal_selection_bottom_sheet.dart';
+import 'package:athlink/features/message/presentation/widgets/proposal_selection_bottom_sheet.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
