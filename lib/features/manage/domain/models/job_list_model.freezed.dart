@@ -297,6 +297,278 @@ $AthleteCopyWith<$Res> get athlete {
 
 
 /// @nodoc
+mixin _$JobsResponse {
+
+ List<JobPostItem> get jobs; int get count;
+/// Create a copy of JobsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$JobsResponseCopyWith<JobsResponse> get copyWith => _$JobsResponseCopyWithImpl<JobsResponse>(this as JobsResponse, _$identity);
+
+  /// Serializes this JobsResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JobsResponse&&const DeepCollectionEquality().equals(other.jobs, jobs)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(jobs),count);
+
+@override
+String toString() {
+  return 'JobsResponse(jobs: $jobs, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $JobsResponseCopyWith<$Res>  {
+  factory $JobsResponseCopyWith(JobsResponse value, $Res Function(JobsResponse) _then) = _$JobsResponseCopyWithImpl;
+@useResult
+$Res call({
+ List<JobPostItem> jobs, int count
+});
+
+
+
+
+}
+/// @nodoc
+class _$JobsResponseCopyWithImpl<$Res>
+    implements $JobsResponseCopyWith<$Res> {
+  _$JobsResponseCopyWithImpl(this._self, this._then);
+
+  final JobsResponse _self;
+  final $Res Function(JobsResponse) _then;
+
+/// Create a copy of JobsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? jobs = null,Object? count = null,}) {
+  return _then(_self.copyWith(
+jobs: null == jobs ? _self.jobs : jobs // ignore: cast_nullable_to_non_nullable
+as List<JobPostItem>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [JobsResponse].
+extension JobsResponsePatterns on JobsResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _JobsResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _JobsResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _JobsResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _JobsResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _JobsResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _JobsResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<JobPostItem> jobs,  int count)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _JobsResponse() when $default != null:
+return $default(_that.jobs,_that.count);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<JobPostItem> jobs,  int count)  $default,) {final _that = this;
+switch (_that) {
+case _JobsResponse():
+return $default(_that.jobs,_that.count);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<JobPostItem> jobs,  int count)?  $default,) {final _that = this;
+switch (_that) {
+case _JobsResponse() when $default != null:
+return $default(_that.jobs,_that.count);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _JobsResponse implements JobsResponse {
+  const _JobsResponse({final  List<JobPostItem> jobs = const [], this.count = 0}): _jobs = jobs;
+  factory _JobsResponse.fromJson(Map<String, dynamic> json) => _$JobsResponseFromJson(json);
+
+ final  List<JobPostItem> _jobs;
+@override@JsonKey() List<JobPostItem> get jobs {
+  if (_jobs is EqualUnmodifiableListView) return _jobs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_jobs);
+}
+
+@override@JsonKey() final  int count;
+
+/// Create a copy of JobsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$JobsResponseCopyWith<_JobsResponse> get copyWith => __$JobsResponseCopyWithImpl<_JobsResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$JobsResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JobsResponse&&const DeepCollectionEquality().equals(other._jobs, _jobs)&&(identical(other.count, count) || other.count == count));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_jobs),count);
+
+@override
+String toString() {
+  return 'JobsResponse(jobs: $jobs, count: $count)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$JobsResponseCopyWith<$Res> implements $JobsResponseCopyWith<$Res> {
+  factory _$JobsResponseCopyWith(_JobsResponse value, $Res Function(_JobsResponse) _then) = __$JobsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ List<JobPostItem> jobs, int count
+});
+
+
+
+
+}
+/// @nodoc
+class __$JobsResponseCopyWithImpl<$Res>
+    implements _$JobsResponseCopyWith<$Res> {
+  __$JobsResponseCopyWithImpl(this._self, this._then);
+
+  final _JobsResponse _self;
+  final $Res Function(_JobsResponse) _then;
+
+/// Create a copy of JobsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? jobs = null,Object? count = null,}) {
+  return _then(_JobsResponse(
+jobs: null == jobs ? _self._jobs : jobs // ignore: cast_nullable_to_non_nullable
+as List<JobPostItem>,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$JobListResponse {
 
  bool get success; List<JobPostItem> get jobPosts; String? get companyName; String? get companyLogo;

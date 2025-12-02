@@ -1,10 +1,9 @@
-import 'dart:developer';
 
 import 'package:athlink/features/manage/data/datasource/job_list_remote_datasource.dart';
 import 'package:athlink/features/manage/domain/models/job_list_model.dart';
 import 'package:athlink/features/manage/domain/repository/job_list_repository.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+
 
 class JobListRepositoryImpl implements JobListRepository {
   final JobListRemoteDataSource _remoteDataSource;
@@ -12,14 +11,12 @@ class JobListRepositoryImpl implements JobListRepository {
   JobListRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<ApiResponse<JobListResponse>> getJobPosts() async {
-    try {
-      final response = await _remoteDataSource.getJobPosts();
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Get job posts error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+  Future<ApiResponse<List<JobPostItem>>> getJobPosts() async {
+    final response = await _remoteDataSource.getJobPosts();
+    return response.when(
+      success: (data) => ApiResponse.success(data: data),
+      failure: (error) => ApiResponse.failure(error: error),
+    );
   }
 
   @override
@@ -27,27 +24,15 @@ class JobListRepositoryImpl implements JobListRepository {
     required String jobId,
     required String applicationId,
   }) async {
-    try {
-      final response = await _remoteDataSource.acceptApplicant(
-        jobId: jobId,
-        applicationId: applicationId,
-      );
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Accept applicant error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await _remoteDataSource.acceptApplicant(
+      jobId: jobId,
+      applicationId: applicationId,
+    );
   }
 
   @override
   Future<ApiResponse<SponsoredAthletesResponse>> getSponsoredAthletes() async {
-    try {
-      final response = await _remoteDataSource.getSponsoredAthletes();
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Get sponsored athletes error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await _remoteDataSource.getSponsoredAthletes();
   }
 
   @override
@@ -56,46 +41,26 @@ class JobListRepositoryImpl implements JobListRepository {
     required String jobId,
     required String message,
   }) async {
-    try {
-      final response = await _remoteDataSource.sendInvitation(
-        athleteId: athleteId,
-        jobId: jobId,
-        message: message,
-      );
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Send invitation error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await _remoteDataSource.sendInvitation(
+      athleteId: athleteId,
+      jobId: jobId,
+      message: message,
+    );
   }
 
   @override
   Future<ApiResponse<SponsorInvitationsResponse>> getSponsorInvitations({
     String? status,
   }) async {
-    try {
-      final response = await _remoteDataSource.getSponsorInvitations(
-        status: status,
-      );
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Get sponsor invitations error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await _remoteDataSource.getSponsorInvitations(status: status);
   }
 
   @override
   Future<ApiResponse<WithdrawInvitationResponse>> withdrawInvitation({
     required String invitationId,
   }) async {
-    try {
-      final response = await _remoteDataSource.withdrawInvitation(
-        invitationId: invitationId,
-      );
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Withdraw invitation error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await _remoteDataSource.withdrawInvitation(
+      invitationId: invitationId,
+    );
   }
 }

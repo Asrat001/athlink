@@ -1,19 +1,22 @@
+import 'package:athlink/features/message/presentation/providers/providers.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_list_widget.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MessageScreen extends StatefulWidget {
+class MessageScreen extends ConsumerStatefulWidget {
   const MessageScreen({super.key});
 
   @override
-  State<MessageScreen> createState() => _MessageScreenState();
+  ConsumerState<MessageScreen> createState() => _MessageScreenState();
 }
 
-class _MessageScreenState extends State<MessageScreen>
+class _MessageScreenState extends ConsumerState<MessageScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -21,63 +24,6 @@ class _MessageScreenState extends State<MessageScreen>
   final TextEditingController _chatSearchController = TextEditingController();
 
   List<Map<String, dynamic>> _filteredContactsList = [];
-  List<Map<String, dynamic>> _filteredAthleteChats = [];
-  List<Map<String, dynamic>> _filteredSponsorChats = [];
-
-  List<Map<String, dynamic>> athleteChats = [
-    {
-      "name": "Maria Ofteen",
-      "message": "You : I was wondering if you can meet …",
-      "time": "4h",
-      "logo": "https://i.pravatar.cc/150?img=47",
-      "unread": 0,
-      "isOnline": true,
-    },
-    {
-      "name": "Shreen Sali",
-      "message": "Okay we will do that way.",
-      "time": "6h",
-      "logo": "https://i.pravatar.cc/150?img=12",
-      "unread": 2,
-      "isOnline": false,
-    },
-    {
-      "name": "Daniel Kiros",
-      "message": "Sure, I will send the files now.",
-      "time": "1d",
-      "logo": "https://i.pravatar.cc/150?img=33",
-      "unread": 1,
-      "isOnline": true,
-    },
-    {
-      "name": "Selam Tesema",
-      "message": "Thank you so much!",
-      "time": "2d",
-      "logo": "https://i.pravatar.cc/150?img=5",
-      "unread": 0,
-      "isOnline": false,
-    },
-  ];
-
-  List<Map<String, dynamic>> sponsorChats = [
-    {
-      "name": "JJ Solutions",
-      "message": "You : Thank you in advance!",
-      "time": "4h",
-      "logo":
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Gold_coin_icon.png/600px-Gold_coin_icon.png",
-      "unread": 0,
-      "isOnline": false,
-    },
-    {
-      "name": "Quartum PLC",
-      "message": "We appreciate",
-      "time": "6h",
-      "logo": "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-      "unread": 2,
-      "isOnline": false,
-    },
-  ];
 
   List<Map<String, dynamic>> contactsList = [
     {"name": "Maria Queen", "logo": "https://i.pravatar.cc/150?img=51"},
@@ -99,12 +45,10 @@ class _MessageScreenState extends State<MessageScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    _filteredContactsList = contactsList;
-    _filteredAthleteChats = athleteChats;
-    _filteredSponsorChats = sponsorChats;
-
-    _chatSearchController.addListener(_filterChatLists);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(conversationProvider.notifier).getConversations();
+    });
+    // _chatSearchController.addListener(_filterChatLists);
   }
 
   @override
@@ -114,25 +58,6 @@ class _MessageScreenState extends State<MessageScreen>
     _chatSearchController.dispose();
     super.dispose();
   }
-
-  void _filterChatLists() {
-    final query = _chatSearchController.text.toLowerCase();
-    setState(() {
-      _filteredAthleteChats = athleteChats.where((chat) {
-        final nameLower = chat["name"].toLowerCase();
-        final messageLower = chat["message"].toLowerCase();
-        return nameLower.contains(query) || messageLower.contains(query);
-      }).toList();
-
-      _filteredSponsorChats = sponsorChats.where((chat) {
-        final nameLower = chat["name"].toLowerCase();
-        final messageLower = chat["message"].toLowerCase();
-        return nameLower.contains(query) || messageLower.contains(query);
-      }).toList();
-    });
-  }
-
-  bool _isEmpty(List list) => list.isEmpty;
 
   void _showNewChatModal() {
     _searchController.clear();
@@ -238,7 +163,11 @@ class _MessageScreenState extends State<MessageScreen>
                     context.push(
                       Routes.chatDetailRouteName,
                       extra: {
-                        "name": contact["name"],
+                        "name":
+                            contact["name"] ??
+                            contact["sponsorProfile"]?["name"] ??
+                            contact["athleteProfile"]?["name"] ??
+                            "Unknown",
                         "logo": contact["logo"],
                         "isOnline": false,
                       },
@@ -253,9 +182,13 @@ class _MessageScreenState extends State<MessageScreen>
                       ),
                       const SizedBox(height: 6),
                       CustomText(
-                        title: contact["name"],
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        title:
+                            contact["name"] ??
+                            contact["sponsorProfile"]?["name"] ??
+                            contact["athleteProfile"]?["name"] ??
+                            "Unknown",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                         textAlign: TextAlign.center,
                         maxLines: 1,
                       ),
@@ -294,7 +227,7 @@ class _MessageScreenState extends State<MessageScreen>
                     child: _buildSearchBar(
                       controller: _chatSearchController,
                       onChanged: (value) {
-                        _filterChatLists();
+                        // _filterChatLists();
                       },
                     ),
                   ),
@@ -312,14 +245,7 @@ class _MessageScreenState extends State<MessageScreen>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: [
-                  _isEmpty(_filteredAthleteChats)
-                      ? _buildEmptyState()
-                      : _buildChatList(_filteredAthleteChats),
-                  _isEmpty(_filteredSponsorChats)
-                      ? _buildEmptyState()
-                      : _buildChatList(_filteredSponsorChats),
-                ],
+                children: [ChatListWidget(), ChatListWidget()],
               ),
             ),
           ],
@@ -395,105 +321,6 @@ class _MessageScreenState extends State<MessageScreen>
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: CustomText(
-        title: "No messages here yet...",
-        textColor: AppColors.grey600,
-        fontWeight: FontWeight.w400,
-        fontSize: 15,
-      ),
-    );
-  }
-
-  Widget _buildChatList(List chats) {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: chats.length,
-      itemBuilder: (context, index) {
-        final chat = chats[index];
-
-        return InkWell(
-          onTap: () {
-            context.push(
-              Routes.chatDetailRouteName,
-              extra: {
-                "name": chat["name"],
-                "logo": chat["logo"],
-                "isOnline": chat["isOnline"] ?? "unknown",
-              },
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            decoration: BoxDecoration(
-              color: index % 2 == 1
-                  ? AppColors.extraLightGrey.withValues(alpha: 0.3)
-                  : AppColors.transparent,
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundColor: AppColors.extraLightGrey,
-                  backgroundImage: NetworkImage(chat["logo"]),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        title: chat["name"],
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      const SizedBox(height: 3),
-                      CustomText(
-                        title: chat["message"],
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        textColor: AppColors.grey600,
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    CustomText(
-                      title: chat["time"],
-                      fontSize: 12,
-                      textColor: AppColors.grey600,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    const SizedBox(height: 4),
-                    if (chat["unread"] > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.green,
-                        ),
-                        child: CustomText(
-                          title: chat["unread"].toString(),
-                          fontSize: 12,
-                          textColor: AppColors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../routes/route_names.dart';
-import '../../../../shared/services/responsive_provider.dart';
+import '../../../../core/services/responsive_provider.dart';
 import '../../data/model/onboarding_model.dart';
 import '../provider/on_boarding_provider.dart';
 

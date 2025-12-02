@@ -1,16 +1,16 @@
 // features/sports/data/datasource/sports_remote_data_source.dart
 import 'package:athlink/features/sports/domain/models/sport_model.dart';
 import 'package:athlink/features/sports/domain/models/sport_selection_model.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 
 class SportsRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;
   SportsRemoteDataSource(this._httpClient);
 
-  Future<List<Sport>> getSports() async {
+  Future<ApiResponse<List<Sport>>> getSports() async {
     return await safeApiCall(
-      path: "/sports",
       apiCall: () async {
         return await _httpClient.client(requireAuth: true).get("/sports");
       },
@@ -28,11 +28,10 @@ class SportsRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<SportSelectionResponse> selectSports({
+  Future<ApiResponse<SportSelectionResponse>> selectSports({
     required List<String> sportIds,
   }) async {
     return await safeApiCall(
-      path: "/auth/sport",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)

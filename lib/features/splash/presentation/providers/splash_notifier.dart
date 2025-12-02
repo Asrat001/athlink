@@ -1,6 +1,6 @@
 import 'package:athlink/features/splash/presentation/providers/state/splash_state.dart';
 import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +14,9 @@ class SplashNotifier extends StateNotifier<SplashState> {
     final storageService = sl<LocalStorageService>();
     final userData = storageService.getUserData();
     final accessToken = await storageService.getAccessToken();
+
+    print("access token: $accessToken");
+    print("user data: ${userData?.toJson()}");
 
     // Delayed to ensure animations complete
     await Future.delayed(const Duration(milliseconds: 500));

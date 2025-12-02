@@ -1,15 +1,15 @@
 import 'package:athlink/features/watchlist/domain/models/watchlist_models.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/repository/base_repository.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/repository/base_repository.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 
 class WatchlistRemoteDataSource extends BaseRepository {
   final DioHttpClient _httpClient;
 
   WatchlistRemoteDataSource(this._httpClient);
 
-  Future<WatchlistResponse> getWatchlist() async {
+  Future<ApiResponse<WatchlistResponse>> getWatchlist() async {
     return await safeApiCall(
-      path: "/sponsors/watchlist",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
@@ -19,12 +19,11 @@ class WatchlistRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<AddWatchlistResponse> addToWatchlist({
+  Future<ApiResponse<AddWatchlistResponse>> addToWatchlist({
     required String athleteId,
     String? notes,
   }) async {
     return await safeApiCall(
-      path: "/sponsors/watchlist",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
@@ -37,12 +36,11 @@ class WatchlistRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<UpdateWatchlistNotesResponse> updateWatchlistNotes({
+  Future<ApiResponse<UpdateWatchlistNotesResponse>> updateWatchlistNotes({
     required String athleteId,
     required String notes,
   }) async {
     return await safeApiCall(
-      path: "/sponsors/watchlist/$athleteId",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
@@ -52,11 +50,10 @@ class WatchlistRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<DeleteWatchlistResponse> deleteAthleteFromWatchlist({
+  Future<ApiResponse<DeleteWatchlistResponse>> deleteAthleteFromWatchlist({
     required String athleteId,
   }) async {
     return await safeApiCall(
-      path: "/sponsors/watchlist/$athleteId",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)

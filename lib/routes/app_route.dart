@@ -1,8 +1,8 @@
-import 'package:athlink/features/auth/presentaion/screens/forgot_password_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/login_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/otp_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/register_screen.dart';
-import 'package:athlink/features/auth/presentaion/screens/reset_password_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/login_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/otp_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/register_screen.dart';
+import 'package:athlink/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_detail_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_screen.dart';
@@ -14,12 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/main/error_screen.dart';
 import '../features/main/main_screen.dart';
-import '../features/manage/presentation/screens/manage/manage_screen.dart';
+import '../features/manage/presentation/screens/manage_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
-import '../shared/handlers/app_router_observer.dart';
+import '../core/handlers/app_router_observer.dart';
 
 class AppRouter {
   final bool isFirstTimeUser;
@@ -76,8 +76,9 @@ class AppRouter {
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
           return MessageDetailScreen(
+            conversationId: extra["conversationId"] as String,
             name: extra["name"],
-            logo: extra["logo"],
+            logo: extra["logo"]??"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
             isOnline: extra["isOnline"],
           );
         },

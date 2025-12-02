@@ -1,3 +1,4 @@
+import 'package:athlink/core/services/socket_service.dart';
 import 'package:athlink/features/home_feed/data/datasource/feed_remote_datasource.dart';
 import 'package:athlink/features/home_feed/data/repository/feed_repository_impl.dart';
 import 'package:athlink/features/home_feed/domain/repository/feed_repository.dart';
@@ -7,6 +8,9 @@ import 'package:athlink/features/manage/data/repository/job_list_repository_impl
 import 'package:athlink/features/manage/data/repository/milestone_repository_impl.dart';
 import 'package:athlink/features/manage/domain/repository/job_list_repository.dart';
 import 'package:athlink/features/manage/domain/repository/milestone_repository.dart';
+import 'package:athlink/features/message/data/datasource/chat_remote_datasource.dart';
+import 'package:athlink/features/message/data/repository/chat_repository_impl.dart';
+import 'package:athlink/features/message/domain/repository/chat_repository.dart';
 import 'package:athlink/features/profile/data/datasource/job_post_remote_datasource.dart';
 import 'package:athlink/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:athlink/features/profile/data/repository/job_post_repository_impl.dart';
@@ -19,11 +23,11 @@ import 'package:athlink/features/watchlist/data/datasource/watchlist_remote_data
 import 'package:athlink/features/watchlist/data/repository/watchlist_repository_impl.dart';
 import 'package:athlink/features/watchlist/domain/repository/watchlist_repository.dart';
 import 'package:athlink/routes/app_route.dart';
-import 'package:athlink/shared/handlers/dio_client.dart';
-import 'package:athlink/shared/services/google_sign_in_service.dart';
-import 'package:athlink/shared/services/internet_connection_service.dart';
-import 'package:athlink/shared/services/local_storage_service.dart';
-import 'package:athlink/shared/services/token_refreshe_service.dart';
+import 'package:athlink/core/handlers/dio_client.dart';
+import 'package:athlink/core/services/google_sign_in_service.dart';
+import 'package:athlink/core/services/internet_connection_service.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/core/services/token_refreshe_service.dart';
 import 'package:athlink/shared/utils/image_palette_util.dart';
 import 'package:get_it/get_it.dart';
 import 'features/auth/data/datasource/authentication_remote_data_source.dart';
@@ -45,6 +49,7 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<AppConnectivity>(AppConnectivity());
   sl.registerSingleton<TokenRefreshService>(TokenRefreshService());
   sl.registerSingleton<GoogleAuthService>(GoogleAuthService());
+  sl.registerSingleton<SocketIoService>(SocketIoService());
 
   //data sources
   sl.registerSingleton<AuthenticationRemoteDataSource>(
@@ -70,6 +75,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<MilestoneRemoteDataSource>(
     MilestoneRemoteDataSource(sl<DioHttpClient>()),
+  );
+  sl.registerSingleton<ChatRemoteDataSource>(
+    ChatRemoteDataSource(sl<DioHttpClient>()),
   );
 
   //repositories
@@ -99,5 +107,8 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<MilestoneRepository>(
     MilestoneRepositoryImpl(sl<MilestoneRemoteDataSource>()),
+  );
+  sl.registerSingleton<ChatRepository>(
+    ChatRepositoryImpl(sl<ChatRemoteDataSource>()),
   );
 }

@@ -400,7 +400,6 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   int _currentPage = 0;
-
   // Form controllers
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
@@ -413,6 +412,9 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
   // Selected sport
   String? _selectedSportId;
   String? _selectedSportName;
+
+  // Selected currency
+  String _selectedCurrency = 'USD';
 
   // Media files
   File? _selectedImage;
@@ -528,9 +530,10 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
           ? _requirementsController.text.trim()
           : null,
       media: mediaFiles.isNotEmpty ? mediaFiles : null,
-      budget: _budgetController.text.trim().isNotEmpty
-          ? _budgetController.text.trim()
+      price: _budgetController.text.trim().isNotEmpty
+          ?double.parse(_budgetController.text.trim())
           : null,
+      currency: _selectedCurrency,
     );
 
     // Submit
@@ -625,10 +628,16 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
                     budgetController: _budgetController,
                     selectedSportId: _selectedSportId,
                     selectedSportName: _selectedSportName,
+                    selectedCurrency: _selectedCurrency,
                     onSportSelected: (sportId, sportName) {
                       setState(() {
                         _selectedSportId = sportId;
                         _selectedSportName = sportName;
+                      });
+                    },
+                    onCurrencySelected: (currency) {
+                      setState(() {
+                        _selectedCurrency = currency;
                       });
                     },
                   ),
@@ -714,6 +723,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
 }
 
 class _StepOne extends StatelessWidget {
+
   final VoidCallback onNext;
   final List<ProfileSport> sports;
   final TextEditingController titleController;
@@ -722,7 +732,9 @@ class _StepOne extends StatelessWidget {
   final TextEditingController budgetController;
   final String? selectedSportId;
   final String? selectedSportName;
+  final String selectedCurrency;
   final Function(String sportId, String sportName) onSportSelected;
+  final Function(String currency) onCurrencySelected;
 
   const _StepOne({
     required this.onNext,
@@ -733,7 +745,9 @@ class _StepOne extends StatelessWidget {
     required this.budgetController,
     required this.selectedSportId,
     required this.selectedSportName,
+    required this.selectedCurrency,
     required this.onSportSelected,
+    required this.onCurrencySelected,
   });
 
   @override
@@ -814,12 +828,21 @@ class _StepOne extends StatelessWidget {
         const SizedBox(height: 16),
 
         const CustomText(
-          title: "Budget Range",
+          title: "Budget ",
           fontWeight: FontWeight.w600,
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. \$5,000 - \$20,000", controller: budgetController),
+        _inputField("e.g. \$20,000", controller: budgetController),
+        const SizedBox(height: 16),
+
+        const CustomText(
+          title: "Currency",
+          fontWeight: FontWeight.w600,
+          textColor: AppColors.textPrimary,
+        ),
+        const SizedBox(height: 8),
+        _currencyDropdown(),
 
         // Next button as part of the scrollable content
         const SizedBox(height: 30),
@@ -880,9 +903,45 @@ class _StepOne extends StatelessWidget {
       ),
     );
   }
+
+  Widget _currencyDropdown() {
+    const currencies = ['Yuan', 'USD', 'EUR', 'GBP', 'JPY', 'ETB'];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.extraLightGrey.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedCurrency,
+          isExpanded: true,
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            color: AppColors.textGrey,
+          ),
+          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+          dropdownColor: AppColors.white,
+          items: currencies.map((String currency) {
+            return DropdownMenuItem<String>(
+              value: currency,
+              child: Text(currency),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            if (newValue != null) {
+              onCurrencySelected(newValue);
+            }
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class _StepTwo extends StatefulWidget {
+
   final VoidCallback onPost;
   final VoidCallback onCancel;
   final TextEditingController requirementsController;
@@ -928,6 +987,7 @@ class _StepTwo extends StatefulWidget {
 }
 
 class _StepTwoState extends State<_StepTwo> {
+  
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickStartDate() async {

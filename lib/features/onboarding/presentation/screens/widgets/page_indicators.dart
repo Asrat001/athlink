@@ -1,6 +1,6 @@
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../../../../../shared/services/responsive_provider.dart';
+import '../../../../../core/services/responsive_provider.dart';
 
 class PageIndicators extends StatelessWidget {
   final int currentPage;

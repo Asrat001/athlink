@@ -109,6 +109,7 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: const EdgeInsets.only(right: 20),
       child: GestureDetector(
         onTap: () => _showAthleteOverlay(context),
@@ -228,8 +229,6 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
                             isActive: _isInWatchlist,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        _iconButton(Icons.favorite_border),
                         const SizedBox(height: 12),
                         _iconButton(Icons.share),
                       ],

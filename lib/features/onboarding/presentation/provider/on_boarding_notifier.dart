@@ -1,7 +1,7 @@
 
 import 'dart:math';
 
-import 'package:athlink/shared/services/local_storage_service.dart';
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../di.dart';

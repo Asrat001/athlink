@@ -1,5 +1,5 @@
 import 'package:athlink/features/manage/domain/models/milestone_model.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 
 abstract class MilestoneRepository {
   Future<ApiResponse<CreateMilestoneResponse>> createMilestone({

@@ -1,7 +1,7 @@
 import 'package:athlink/features/home_feed/domain/repository/feed_repository.dart';
 import 'package:athlink/features/home_feed/presentation/providers/state/feed_state.dart';
-import 'package:athlink/shared/handlers/api_response.dart';
-import 'package:athlink/shared/handlers/network_exceptions.dart';
+import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FeedNotifier extends StateNotifier<FeedState> {
