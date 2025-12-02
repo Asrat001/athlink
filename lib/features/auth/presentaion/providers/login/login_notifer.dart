@@ -56,7 +56,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
           }
         },
       );
-    } 
+    }
   }
 
   Future<void> googleSignIn(BuildContext context) async {
@@ -72,7 +72,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
             isError: false,
             isSuccess: true,
           );
-      
+
           await storageService.setAccessToken(data.accessToken);
           await storageService.setRefreshToken(data.refreshToken);
           await storageService.setUserData(data.user);

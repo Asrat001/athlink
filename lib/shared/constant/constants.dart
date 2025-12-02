@@ -17,7 +17,7 @@ const double cSmallSplashRadius = 24.0;
 //hashmethod
 
 //// base url
-const String cBaseUrl = 'http://139.59.141.150:4000/api/v1/';
+const String cBaseUrl = 'http://139.59.141.150:4000/api/v1';
 const String fileBaseUrl = 'http://139.59.141.150:4000';
 
 // List Items

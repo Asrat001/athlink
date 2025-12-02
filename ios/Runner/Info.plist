@@ -28,6 +28,8 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>This app needs access to your photo library to allow you to select and upload images</string>
 	<key>UISupportedInterfaceOrientations</key>
 	
 	<array>
@@ -48,5 +50,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.127420764973-l4achffhcdvodsi7jr2t7v8b3820spfp</string>
+        </array>
+    </dict>
+</array>
 </dict>
 </plist>

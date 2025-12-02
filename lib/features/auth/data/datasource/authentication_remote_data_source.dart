@@ -27,11 +27,11 @@ class AuthenticationRemoteDataSource extends BaseRepository {
 
   Future<LoginResponse> loginWithGoogle({required String idToken}) async {
     return await safeApiCall(
-      path: "/auth/sign_in_with_google",
+      path: "/auth/sign-in-with-google",
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: false)
-            .post("/auth/sign_in_with_google", data: {"idToken": idToken});
+            .post("/auth/sign-in-with-google", data: {"idToken": idToken});
       },
       fromData: (data) => LoginResponse.fromJson(data),
     );

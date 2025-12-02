@@ -103,7 +103,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         } else {
           Future.delayed(const Duration(milliseconds: 1500), () {
             if (context.mounted) {
-              provider.resetState(); // Reset before navigation
+              provider.resetState();
               if (current.isNewUser) {
                 context.push(Routes.selectSportScreen);
               } else {

@@ -63,6 +63,7 @@ dependencies:
   audio_waveforms: ^1.3.0
   path_provider: ^2.1.5
   permission_handler: ^12.0.1
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +93,7 @@ flutter:
   assets:
     - assets/images/
     - assets/logos/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
