@@ -15,6 +15,9 @@ class SplashNotifier extends StateNotifier<SplashState> {
     final userData = storageService.getUserData();
     final accessToken = await storageService.getAccessToken();
 
+    print("access token: $accessToken");
+    print("user data: ${userData?.toJson()}");
+
     // Delayed to ensure animations complete
     await Future.delayed(const Duration(milliseconds: 500));
 

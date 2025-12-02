@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
+import 'package:athlink/core/handlers/api_response.dart';
 import 'package:dio/dio.dart';
 
 class ProfileRemoteDataSource extends BaseRepository {
@@ -10,9 +11,8 @@ class ProfileRemoteDataSource extends BaseRepository {
 
   ProfileRemoteDataSource(this._httpClient);
 
-  Future<ProfileResponse> getProfile() async {
+  Future<ApiResponse<ProfileResponse>> getProfile() async {
     return await safeApiCall(
-      path: "/auth/profile",
       apiCall: () async {
         return await _httpClient.client(requireAuth: true).get("/auth/profile");
       },
@@ -31,7 +31,7 @@ class ProfileRemoteDataSource extends BaseRepository {
     );
   }
 
-  Future<UpdateSponsorProfileResponse> updateSponsorProfile({
+  Future<ApiResponse<UpdateSponsorProfileResponse>> updateSponsorProfile({
     String? name,
     String? description,
     String? address,
@@ -39,7 +39,6 @@ class ProfileRemoteDataSource extends BaseRepository {
     File? bannerImage,
   }) async {
     return await safeApiCall(
-      path: "/sponsors/profile",
       apiCall: () async {
         final formData = FormData();
 

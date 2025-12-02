@@ -21,23 +21,17 @@ class ManageScreen extends ConsumerStatefulWidget {
 }
 
 class _ManageScreenState extends ConsumerState<ManageScreen> {
-
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint("=== INIT: Fetching initial data ===");
       ref.read(jobListProvider.notifier).fetchJobPosts();
       ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
-      debugPrint("=== INIT: Calling getSponsorInvitations ===");
       ref.read(jobListProvider.notifier).getSponsorInvitations();
       ref.read(profileProvider.notifier).getProfile();
       ref.read(feedProvider.notifier).getFeed();
     });
   }
-
-
 
   bool _isApplicationAccepted(String applicationId) {
     final jobListState = ref.watch(jobListProvider);
@@ -52,23 +46,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
   // Returns the invitation ID if found and active, null otherwise
   String? _getInvitationId(String athleteId, String jobId) {
     final jobListState = ref.watch(jobListProvider);
-
-    // Debug: Print all invitations to see what we have
-    debugPrint(
-      "=== Checking invitations for athlete: $athleteId, job: $jobId ===",
-    );
-    debugPrint("Total invitations: ${jobListState.invitations.length}");
-
-    for (var inv in jobListState.invitations) {
-      final invAthleteId = inv.athlete['_id'] as String?;
-      final invJobId = inv.jobPost is String
-          ? inv.jobPost
-          : (inv.jobPost as Map<String, dynamic>?)?['_id'] as String?;
-      debugPrint(
-        "Invitation: athlete=$invAthleteId, job=$invJobId, status=${inv.status}",
-      );
-    }
-
     // Find invitation that matches both athlete and job (ANY status)
     try {
       final invitation = jobListState.invitations.firstWhere((inv) {
@@ -81,10 +58,6 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
 
         // Check if IDs match (regardless of status)
         final matches = invAthleteId == athleteId && invJobId == jobId;
-
-        if (matches) {
-          debugPrint("FOUND INVITATION: ID ${inv.id}, status: ${inv.status}");
-        }
         return matches;
       });
       return invitation.id;

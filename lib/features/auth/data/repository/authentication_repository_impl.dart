@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:athlink/features/auth/domain/models/login_model.dart';
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -22,16 +21,7 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
     required String email,
     required String password,
   }) async {
-    try {
-      final response = await remoteDataSource.login(
-        email: email,
-        password: password,
-      );
-      return ApiResponse.success(data: response);
-    } catch (e) {
-      log("Login error: $e");
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await remoteDataSource.login(email: email, password: password);
   }
 
   @override
@@ -55,18 +45,11 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
     required String password,
     required String name,
   }) async {
-    try {
-      final response = await remoteDataSource.register(
-        email: email,
-        password: password,
-        name: name,
-      );
-   ;
-      return ApiResponse.success(data: response);
-    } catch (e) {
-  
-      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    }
+    return await remoteDataSource.register(
+      email: email,
+      password: password,
+      name: name,
+    );
   }
 
   @override
@@ -75,34 +58,20 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
       // Step 1: Attempt Google Sign-In
       final result = await googleAuthService.signInWithGoogle();
 
-      // Handle Google sign-in result (assuming it returns ApiResponse<GoogleSignInAccount>)
+      // Handle Google sign-in result
       return await result.when(
         success: (account) async {
-          try {
-            // Step 2: Retrieve ID token from Google account
-            final authentication =  account.authentication;
-            final idToken = authentication.idToken;
-            if (idToken == null) {
-              return const ApiResponse.failure(
-                error: NetworkExceptions.defaultError(
-                  "Missing Google ID token",
-                ),
-              );
-            }
-
-            // Step 3: Send ID token to your backend for verification / login
-            final serverResponse = await remoteDataSource.loginWithGoogle(
-              idToken: idToken,
-            );
-
-            // Step 4: Return backend success response
-            return ApiResponse.success(data: serverResponse);
-          } catch (e) {
-            // Backend request failed
-            return ApiResponse.failure(
-              error: NetworkExceptions.getDioException(e),
+          // Step 2: Retrieve ID token from Google account
+          final authentication = await account.authentication;
+          final idToken = authentication.idToken;
+          if (idToken == null) {
+            return const ApiResponse.failure(
+              error: NetworkExceptions.defaultError("Missing Google ID token"),
             );
           }
+
+          // Step 3: Send ID token to your backend for verification / login
+          return await remoteDataSource.loginWithGoogle(idToken: idToken);
         },
         failure: (error) {
           // Google sign-in failed (user canceled or other issue)
@@ -119,14 +88,7 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
 
   @override
   Future<ApiResponse<bool>> forgotPassword({required String email}) async {
-    try {
-      final response = await remoteDataSource.forgotPassword(email: email);
-      return ApiResponse.success(data: true);
-    } catch (error) {
-      return ApiResponse.failure(
-        error: NetworkExceptions.getDioException(error),
-      );
-    }
+    return await remoteDataSource.forgotPassword(email: email);
   }
 
   @override
@@ -134,30 +96,13 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
     required String password,
     required String otp,
   }) async {
-    try {
-      final response = await remoteDataSource.resetPassword(
-        password: password,
-        otp: otp,
-      );
-      return ApiResponse.success(data: true);
-    } catch (error) {
-      return ApiResponse.failure(
-        error: NetworkExceptions.getDioException(error),
-      );
-    }
+    return await remoteDataSource.resetPassword(password: password, otp: otp);
   }
 
   @override
   Future<ApiResponse<LoginResponse>> verifyAccount({
     required String otp,
   }) async {
-    try {
-      final response = await remoteDataSource.verifyAccount(otp: otp);
-      return ApiResponse.success(data: response);
-    } catch (error) {
-      return ApiResponse.failure(
-        error: NetworkExceptions.getDioException(error),
-      );
-    }
+    return await remoteDataSource.verifyAccount(otp: otp);
   }
 }

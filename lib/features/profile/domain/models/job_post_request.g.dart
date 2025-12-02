@@ -18,7 +18,8 @@ _JobPostRequest _$JobPostRequestFromJson(Map<String, dynamic> json) =>
       media: (json['media'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      budget: json['budget'] as String?,
+      price: (json['price'] as num?)?.toDouble(),
+      currency: json['currency'] as String?,
     );
 
 Map<String, dynamic> _$JobPostRequestToJson(_JobPostRequest instance) =>
@@ -31,7 +32,8 @@ Map<String, dynamic> _$JobPostRequestToJson(_JobPostRequest instance) =>
       'timelineEnd': instance.timelineEnd,
       'requirements': instance.requirements,
       'media': instance.media,
-      'budget': instance.budget,
+      'price': instance.price,
+      'currency': instance.currency,
     };
 
 _CreateJobPostResponse _$CreateJobPostResponseFromJson(

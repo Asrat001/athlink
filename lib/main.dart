@@ -9,7 +9,7 @@ import 'observers.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  serviceLocator();
+  await serviceLocator();
   final router = sl<AppRouter>().router;
 
   runApp(

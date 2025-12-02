@@ -1,27 +1,30 @@
-import 'dart:math';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
-import 'package:athlink/features/message/widgets/chat_bubble_file.dart';
-import 'package:athlink/features/message/widgets/chat_bubble_text.dart';
-import 'package:athlink/features/message/widgets/chat_bubble_voice.dart';
-import 'package:athlink/features/message/widgets/chat_card_google_meet.dart';
-import 'package:athlink/features/message/widgets/chat_card_proposal.dart';
-import 'package:athlink/features/message/widgets/chat_header.dart';
-import 'package:athlink/features/message/widgets/chat_input_bar.dart';
-import 'package:athlink/features/message/widgets/chat_separator.dart';
-import 'package:athlink/features/message/widgets/meet_confirmation_dialog.dart';
-import 'package:athlink/features/message/widgets/proposal_selection_bottom_sheet.dart'; // Import the new bottom sheet
+import 'package:athlink/features/message/presentation/providers/providers.dart';
+import 'package:athlink/features/message/presentation/providers/states/chat_state.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_bubble_file.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_bubble_text.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_bubble_voice.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_card_google_meet.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_card_proposal.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_header.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_input_bar.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_separator.dart';
+import 'package:athlink/features/message/presentation/widgets/meet_confirmation_dialog.dart';
+import 'package:athlink/features/message/presentation/widgets/proposal_selection_bottom_sheet.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MessageDetailScreen extends StatefulWidget {
+class MessageDetailScreen extends ConsumerStatefulWidget {
+  final String conversationId;
   final String name;
   final bool isOnline;
   final String logo;
 
   const MessageDetailScreen({
     super.key,
+    required this.conversationId,
     required this.name,
     this.isOnline = true,
     this.logo =
@@ -29,13 +32,13 @@ class MessageDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<MessageDetailScreen> createState() => _MessageDetailScreenState();
+  ConsumerState<MessageDetailScreen> createState() =>
+      _MessageDetailScreenState();
 }
 
-class _MessageDetailScreenState extends State<MessageDetailScreen>
+class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
-  late List<ChatMessage> _messages;
 
   late AnimationController _meetAnimationController;
   late Animation<Offset> _meetOffsetAnimation;
@@ -43,51 +46,11 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
   final GlobalKey _meetIconKey = GlobalKey();
   OverlayEntry? _overlayEntry;
 
-  SelectableProposalItem? _draftProposal; // New state for draft proposal
-
-  final List<ChatMessage> sampleChatMessages = [
-    // ... (Your existing sample messages)
-    ChatMessage(
-      type: ChatMessageType.dateSeparator,
-      fromMe: false,
-      dateLabel: "December 29",
-    ),
-    ChatMessage(
-      type: ChatMessageType.proposal,
-      fromMe: true,
-      proposalTitle: "Brand Ambassador Deal",
-      proposalSubtitle: "View detail",
-      proposalLogo:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
-      time: "04:33 AM",
-    ),
-    ChatMessage(
-      type: ChatMessageType.text,
-      fromMe: false,
-      text:
-          "Hello Ms. Maria, can you review the proposal and give us your opinion ASAP?",
-      time: "04:34 AM",
-    ),
-    ChatMessage(
-      type: ChatMessageType.text,
-      fromMe: true,
-      text: "Hello Mr. Tutord. I am super happy to join your team",
-      time: "06:41 PM",
-    ),
-    ChatMessage(
-      type: ChatMessageType.googleMeet,
-      fromMe: true,
-      meetLink: "https://meet.google.com/fzn-uakc-rst",
-      meetThumbnail:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Google_Meet_icon_%282020%29.svg/2048px-Google_Meet_icon_%282020%29.svg.png",
-      time: "12:23 PM",
-    ),
-  ].reversed.toList();
+  SelectableProposalItem? _draftProposal;
 
   @override
   void initState() {
     super.initState();
-    _messages = List.from(sampleChatMessages);
 
     _meetAnimationController = AnimationController(
       vsync: this,
@@ -113,52 +76,30 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
 
   void _sendText(String text) {
     if (text.trim().isEmpty) return;
-    final msg = ChatMessage(
-      type: ChatMessageType.text,
-      fromMe: true,
-      text: text.trim(),
-      time:DateFormatter.formatTime(DateTime.now()),
-    );
-    setState(() {
-      _messages.insert(0, msg);
-      _textController.clear();
-    });
+    ref
+        .read(chatProvider(widget.conversationId).notifier)
+        .sendMessage(text.trim());
+
+    _textController.clear();
   }
 
   void _sendVoiceMessage(String path, Duration duration) {
-    final msg = ChatMessage(
-      type: ChatMessageType.voiceMessage,
-      fromMe: true,
-      audioPath: path,
-      duration: duration,
-      time:DateFormatter.formatTime(DateTime.now()),
-    );
-    setState(() {
-      _messages.insert(0, msg);
-    });
+    // TODO: Implement voice message upload via API
+    // For now, skip voice upload until implemented
   }
 
-  // New method to send a proposal message
   void _sendProposalMessage(SelectableProposalItem proposal) {
     if (proposal.id.isEmpty) {
-      // Check for empty ID to clear draft
       setState(() {
         _draftProposal = null;
       });
       return;
     }
 
-    final msg = ChatMessage(
-      type: ChatMessageType.proposal,
-      fromMe: true,
-      proposalTitle: proposal.title,
-      proposalSubtitle: proposal.subtitle ?? "View detail",
-      proposalLogo: proposal.logoUrl,
-      time: DateFormatter.formatTime(DateTime.now()),
-    );
+    // TODO: Implement proposal sending via API
+    // For now, keep the draft state
     setState(() {
-      _messages.insert(0, msg);
-      _draftProposal = null; // Clear the draft after sending
+      _draftProposal = null;
     });
   }
 
@@ -178,48 +119,14 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
     );
 
     if (result != null && result.files.single.path != null) {
-      PlatformFile file = result.files.single;
-      final fileSizeKB = (file.size / 1024).toStringAsFixed(1);
-      final fileNameWithoutExtension = file.name.substring(
-        0,
-        file.name.lastIndexOf('.'),
-      );
-      final fileExtension = file.extension?.toUpperCase() ?? 'FILE';
-
-      final msg = ChatMessage(
-        type: ChatMessageType.file,
-        fromMe: true,
-        fileName: fileNameWithoutExtension,
-        fileSize: "$fileSizeKB KB",
-        fileType: fileExtension,
-        filePath: file.path,
-        time: DateFormatter.formatTime(DateTime.now()),
-      );
-
-      setState(() {
-        _messages.insert(0, msg);
-      });
+      // TODO: Implement file upload via API
+      // For now, skip file upload until implemented
     }
   }
 
   void _shareGoogleMeetLink() {
-    final random = Random();
-    final linkPart =
-        '${random.nextInt(999).toString().padLeft(3, '0')}-${random.nextInt(9999).toString().padLeft(4, '0')}-${random.nextInt(999).toString().padLeft(3, '0')}';
-    final meetLink = "https://meet.google.com/$linkPart";
-
-    final msg = ChatMessage(
-      type: ChatMessageType.googleMeet,
-      fromMe: true,
-      meetLink: meetLink,
-      meetThumbnail:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Google_Meet_icon_%282020%29.svg/2048px-Google_Meet_icon_%282020%29.svg.png",
-      time: DateFormatter.formatTime(DateTime.now()),
-    );
-
-    setState(() {
-      _messages.insert(0, msg);
-    });
+    // TODO: Implement Google Meet link sharing via API
+    // For now, skip until implemented
     _removeOverlay();
   }
 
@@ -264,19 +171,18 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
     }
   }
 
-  // New method to show the proposal selection bottom sheet
   void _showProposalSelectionSheet() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent, // Important for rounded corners
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return FractionallySizedBox(
-          heightFactor: 0.8, // Adjust as needed
+          heightFactor: 0.8,
           child: ProposalSelectionBottomSheet(
             onProposalSelected: (proposal) {
               setState(() {
-                _draftProposal = proposal; // Set the draft proposal
+                _draftProposal = proposal;
               });
             },
           ),
@@ -287,25 +193,41 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
 
   Widget _buildListItem(ChatMessage m) {
     switch (m.type) {
-      case ChatMessageType.dateSeparator:
-        return ChatSeparator(label: m.dateLabel ?? '', isHelper: false);
-      case ChatMessageType.helperMessage:
-        return ChatSeparator(label: m.helperMessage ?? '', isHelper: true);
-      case ChatMessageType.text:
+      case 'dateSeparator':
+        return ChatSeparator(label: m.proposalTitle ?? '', isHelper: false);
+      case 'helperMessage':
+        return ChatSeparator(label: m.proposalSubtitle ?? '', isHelper: true);
+      case 'text':
         return ChatBubbleText(message: m);
-      case ChatMessageType.proposal:
+      case 'proposal':
         return ChatCardProposal(message: m);
-      case ChatMessageType.googleMeet:
+      case 'googleMeet':
         return ChatCardGoogleMeet(message: m);
-      case ChatMessageType.file:
+      case 'file':
         return ChatBubbleFile(message: m);
-      case ChatMessageType.voiceMessage:
+      case 'voiceMessage':
         return ChatBubbleVoice(message: m);
+      default:
+        return ChatBubbleText(message: m); // Fallback to text
     }
+  }
+
+  Widget _buildMessageList(List<ChatMessage> messages) {
+    return ListView.builder(
+      reverse: true,
+      padding: const EdgeInsets.only(bottom: 12, top: 8),
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        final m = messages[messages.length - 1 - index];
+        return _buildListItem(m);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final chatState = ref.watch(chatProvider(widget.conversationId));
+
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       body: GestureDetector(
@@ -316,20 +238,51 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
               ChatHeader(
                 name: widget.name,
                 isOnline: widget.isOnline,
-                logo: widget.logo,
+                logo: widget.logo.isEmpty ? "" : widget.logo,
                 meetIconKey: _meetIconKey,
                 onMeetPressed: _showMeetConfirmationOverlay,
               ),
               const Divider(height: 1, color: AppColors.divider),
               Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.only(bottom: 12, top: 8),
-                  itemCount: _messages.length,
-                  itemBuilder: (context, index) {
-                    final m = _messages[index];
-                    return _buildListItem(m);
+                child: chatState.maybeWhen(
+                  initial: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  loading: (messages, typingUsers) => messages.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : _buildMessageList(messages),
+                  loaded: (messages, typingUsers, hasMore, currentPage) {
+                    return NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification is ScrollEndNotification &&
+                            notification.metrics.extentAfter < 200 &&
+                            hasMore) {
+                          ref
+                              .read(
+                                chatProvider(widget.conversationId).notifier,
+                              )
+                              .loadMoreMessages();
+                        }
+                        return false;
+                      },
+                      child: _buildMessageList(messages),
+                    );
                   },
+                  error: (message, messages, typingUsers) => Column(
+                    children: [
+                      if (messages.isNotEmpty)
+                        Expanded(child: _buildMessageList(messages)),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Text(
+                            'Error: $message',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  orElse: () => const SizedBox(),
                 ),
               ),
               ChatInputBar(
@@ -337,10 +290,9 @@ class _MessageDetailScreenState extends State<MessageDetailScreen>
                 onSendText: _sendText,
                 onFileUpload: _handleFileUpload,
                 onSendVoice: _sendVoiceMessage,
-                onShowProposalSelector:
-                    _showProposalSelectionSheet, // Pass the new method
-                onSendProposal: _sendProposalMessage, // Pass the new method
-                draftProposal: _draftProposal, // Pass the draft proposal state
+                onShowProposalSelector: _showProposalSelectionSheet,
+                onSendProposal: _sendProposalMessage,
+                draftProposal: _draftProposal,
               ),
             ],
           ),

@@ -11,6 +11,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:developer' as developer;
 
+import '../../../home_feed/widgets/athlete_card.dart';
+
 class WatchListScreen extends ConsumerStatefulWidget {
   const WatchListScreen({super.key});
 
@@ -85,11 +87,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
     final watchlistState = ref.watch(watchlistProvider);
     final watchlist = watchlistState.watchlistData?.watchlist ?? [];
 
-    developer.log(
-      'WatchListScreen: isLoading=${watchlistState.isLoading}, '
-      'hasError=${watchlistState.errorMessage != null}, '
-      'itemCount=${watchlist.length}',
-    );
+
 
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
@@ -278,7 +276,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                                             ),
                                           ],
                                         ),
-                                        child: WatchlistAthleteCard(
+                                        child: AthleteCard(
                                           key: ValueKey(athlete.id),
                                           athleteId: athlete.id,
                                           name:

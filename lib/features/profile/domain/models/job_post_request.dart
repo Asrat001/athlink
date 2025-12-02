@@ -14,7 +14,8 @@ abstract class JobPostRequest with _$JobPostRequest {
     String? timelineEnd,
     String? requirements,
     List<String>? media,
-    String? budget,
+    double? price,
+    String? currency,
   }) = _JobPostRequest;
 
   factory JobPostRequest.fromJson(Map<String, dynamic> json) =>
