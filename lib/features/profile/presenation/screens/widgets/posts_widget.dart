@@ -530,9 +530,10 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
           ? _requirementsController.text.trim()
           : null,
       media: mediaFiles.isNotEmpty ? mediaFiles : null,
-      budget: _budgetController.text.trim().isNotEmpty
-          ? _budgetController.text.trim()
+      price: _budgetController.text.trim().isNotEmpty
+          ?double.parse(_budgetController.text.trim())
           : null,
+      currency: _selectedCurrency,
     );
 
     // Submit
@@ -722,6 +723,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal>
 }
 
 class _StepOne extends StatelessWidget {
+
   final VoidCallback onNext;
   final List<ProfileSport> sports;
   final TextEditingController titleController;
@@ -826,12 +828,12 @@ class _StepOne extends StatelessWidget {
         const SizedBox(height: 16),
 
         const CustomText(
-          title: "Budget Range",
+          title: "Budget ",
           fontWeight: FontWeight.w600,
           textColor: AppColors.textPrimary,
         ),
         const SizedBox(height: 8),
-        _inputField("e.g. \$5,000 - \$20,000", controller: budgetController),
+        _inputField("e.g. \$20,000", controller: budgetController),
         const SizedBox(height: 16),
 
         const CustomText(
@@ -939,6 +941,7 @@ class _StepOne extends StatelessWidget {
 }
 
 class _StepTwo extends StatefulWidget {
+
   final VoidCallback onPost;
   final VoidCallback onCancel;
   final TextEditingController requirementsController;
@@ -984,6 +987,7 @@ class _StepTwo extends StatefulWidget {
 }
 
 class _StepTwoState extends State<_StepTwo> {
+  
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickStartDate() async {
