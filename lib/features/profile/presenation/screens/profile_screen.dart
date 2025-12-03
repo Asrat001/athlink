@@ -25,8 +25,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-
-
   File? _bannerImage;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();

@@ -4,6 +4,7 @@ import 'package:athlink/features/manage/presentation/screens/widgets/job_card_wi
 import 'package:athlink/features/manage/presentation/screens/widgets/no_jobs_card.dart';
 import 'package:athlink/features/manage/presentation/screens/widgets/stat_item.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/profile/presenation/screens/widgets/post/create_job_modal.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';

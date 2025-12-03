@@ -1,5 +1,6 @@
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/profile/presenation/screens/widgets/post/create_job_modal.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -8,11 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class NoJobsCard extends ConsumerWidget {
   const NoJobsCard({super.key});
 
-  void _openCreateJobModal(BuildContext context,WidgetRef ref) {
+  void _openCreateJobModal(BuildContext context, WidgetRef ref) {
     final profileState = ref.read(profileProvider);
     final sports = profileState.profileUser?.sport ?? [];
 
@@ -48,11 +48,8 @@ class NoJobsCard extends ConsumerWidget {
     });
   }
 
-
-
-
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double appBarHeight =
         AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
     const double tabBarHeight = 48;
@@ -81,7 +78,7 @@ class NoJobsCard extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: RoundedButton(
                   label: 'Create a job post',
-                  onPressed: () => _openCreateJobModal(context,ref),
+                  onPressed: () => _openCreateJobModal(context, ref),
                   height: 50,
                   borderRadius: 8,
                   backgroundColor: AppColors.black,
