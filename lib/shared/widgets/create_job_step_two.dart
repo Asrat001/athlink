@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:athlink/features/profile/presenation/screens/widgets/post/step_one.dart';
+import 'package:athlink/shared/widgets/create_job_step_one.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import 'media_selection_row.dart';
-import 'selected_files_info.dart';
+import '../../features/profile/presenation/screens/widgets/post/media_selection_row.dart';
+import '../../features/profile/presenation/screens/widgets/post/selected_files_info.dart';
 
 class StepTwo extends StatefulWidget {
   final TextEditingController requirementsController;

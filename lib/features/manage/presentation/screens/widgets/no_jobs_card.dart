@@ -1,6 +1,6 @@
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
-import 'package:athlink/features/profile/presenation/screens/widgets/post/create_job_modal.dart';
+import 'package:athlink/shared/widgets/create_job_modal.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';

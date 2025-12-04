@@ -1,5 +1,5 @@
 import 'package:athlink/features/profile/domain/models/profile_model.dart';
-import 'package:athlink/features/profile/presenation/screens/widgets/post/create_job_modal.dart';
+import 'package:athlink/shared/widgets/create_job_modal.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/post/empty_posts_state.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/post/posts_header.dart';
 import 'package:athlink/features/profile/presenation/screens/widgets/post/posts_list.dart';
