@@ -1,6 +1,5 @@
 import 'package:athlink/features/watchlist/domain/models/watchlist_models.dart';
 import 'package:athlink/features/watchlist/presentation/providers/watchlist_provider.dart';
-import 'package:athlink/features/watchlist/widgets/watchlist_athlete_card.dart';
 import 'package:athlink/features/home_feed/widgets/filter_drop_downs.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';

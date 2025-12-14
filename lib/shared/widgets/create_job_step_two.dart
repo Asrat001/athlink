@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:athlink/shared/widgets/create_job_step_one.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
