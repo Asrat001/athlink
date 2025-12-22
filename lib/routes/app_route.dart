@@ -1,3 +1,4 @@
+import 'package:athlink/features/auth/presentation/screens/account_type_selection_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/login_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/otp_screen.dart';
@@ -45,6 +46,10 @@ class AppRouter {
         builder: (context, state) => RegisterScreen(),
       ),
       GoRoute(
+        path: Routes.accountTypeSelectionRouteName,
+        builder: (context, state) => ChooseAccountTypeScreen(),
+      ),
+      GoRoute(
         path: Routes.forgotPasswordRouteName,
         builder: (context, state) => ForgotPasswordScreen(),
       ),
@@ -78,7 +83,9 @@ class AppRouter {
           return MessageDetailScreen(
             conversationId: extra["conversationId"] as String,
             name: extra["name"],
-            logo: extra["logo"]??"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
+            logo:
+                extra["logo"] ??
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
             isOnline: extra["isOnline"],
           );
         },

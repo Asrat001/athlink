@@ -12,8 +12,6 @@ const double cButtonPadding = 10.0;
 const double cSplashRadius = 32.0;
 const double cSmallSplashRadius = 24.0;
 
-
-
 //hashmethod
 
 //// base url

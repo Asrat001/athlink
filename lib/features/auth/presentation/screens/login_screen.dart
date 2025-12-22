@@ -170,7 +170,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    context.push(Routes.registerRouteName);
+                                    context.push(
+                                      Routes.accountTypeSelectionRouteName,
+                                    );
                                   },
                                   child: Text(
                                     'Sign Up',

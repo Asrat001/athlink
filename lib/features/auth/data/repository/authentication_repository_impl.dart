@@ -44,11 +44,13 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
     required String email,
     required String password,
     required String name,
+    required String accountType,
   }) async {
     return await remoteDataSource.register(
       email: email,
       password: password,
       name: name,
+      accountType: accountType,
     );
   }
 

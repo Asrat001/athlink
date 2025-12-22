@@ -1,4 +1,5 @@
 
+import 'package:athlink/shared/extensions/account_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'register_state.freezed.dart';
@@ -12,6 +13,7 @@ abstract class RegisterState with _$RegisterState {
     @Default(true) bool isNewUser,
     @Default(null)
     String? errorMessage,
+    AccountType? selectedAccountType,
 })= _RegisterState;
 
   const RegisterState._();

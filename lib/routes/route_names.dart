@@ -6,6 +6,7 @@ class Routes {
   static String forgotPasswordRouteName = '/forgot-password';
   static String verifyOtpRouteName = '/verify-otp';
   static String resetPasswordRouteName = '/reset-password';
+  static String accountTypeSelectionRouteName = '/account-type-selection';
 
   //main
   static String mainRouteName = '/main';

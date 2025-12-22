@@ -42,6 +42,7 @@ class AuthenticationRemoteDataSource extends BaseRepository {
     required String name,
     required String email,
     required String password,
+    required String accountType,
   }) async {
     return await safeApiCall(
       apiCall: () async {
@@ -49,7 +50,7 @@ class AuthenticationRemoteDataSource extends BaseRepository {
             .client(requireAuth: false)
             .post(
               "/auth/register",
-              data: {"email": email, "password": password},
+              data: {"email": email, "password": password, "role": accountType},
             );
       },
       fromData: (data) => RegistrationResponse.fromJson(data),

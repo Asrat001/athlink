@@ -12,6 +12,7 @@ abstract class IAuthenticationRepository {
     required String email,
     required String password,
     required String name,
+    required String accountType,
   });
 
   Future<ApiResponse<LoginResponse>> googleSignIn();

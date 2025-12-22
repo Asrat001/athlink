@@ -13,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/sports_provider.dart';
+import 'package:athlink/features/auth/presentation/providers/register/register_provider.dart';
+import 'package:athlink/shared/extensions/account_type.dart';
 
 class SelectSportScreen extends ConsumerStatefulWidget {
   const SelectSportScreen({super.key});
@@ -45,6 +47,15 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
     });
   }
 
+  AccountType? get _accountType {
+    final registerState = ref.read(registrationProvider);
+    return registerState.selectedAccountType;
+  }
+
+  bool get _isAthlete => _accountType == AccountType.athlete;
+
+  bool get _isSponsor => _accountType == AccountType.sponsor;
+
   List<String> get _selectedSportIds {
     final sportsState = ref.read(sportsProvider);
     final sports = sportsState.sports;
@@ -60,12 +71,24 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
       if (_selectedNames.contains(name)) {
         _selectedNames.remove(name);
       } else {
-        // Append new selection at end
-        _selectedNames.add(name);
+        if (_isAthlete && _selectedNames.isNotEmpty) {
+          _selectedNames.clear();
+          _selectedNames.add(name);
+        } else {
+          _selectedNames.add(name);
+        }
       }
 
       _shuffleUnselected();
     });
+  }
+
+  String _getSubtitleMessage() {
+    if (_isAthlete) {
+      return "Choose the sport you compete in. You can change this later.";
+    } else {
+      return "Choose the sport categories you want to sponsor.";
+    }
   }
 
   void _submitSelectedSports(BuildContext context) {
@@ -103,19 +126,15 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
         final aIsSameCategory = selectedCategoryIds.contains(a.sportCategoryId);
         final bIsSameCategory = selectedCategoryIds.contains(b.sportCategoryId);
 
-        if (aIsSameCategory && !bIsSameCategory) return -1; // a first
-        if (!aIsSameCategory && bIsSameCategory) return 1; // b first
-        return a.name.compareTo(b.name); // otherwise alphabetical
+        if (aIsSameCategory && !bIsSameCategory) return -1;
+        if (!aIsSameCategory && bIsSameCategory) return 1;
+        return a.name.compareTo(b.name);
       });
     } else {
-      // If no selected sports, sort alphabetically
       unselected.sort((a, b) => a.name.compareTo(b.name));
     }
 
-    // Reorder final list (selected first, then unselected)
     final reordered = [...selectedSports, ...unselected];
-
-    // Update provider
     ref.read(sportsProvider.notifier).updateSportsOrder(reordered);
   }
 
@@ -160,16 +179,11 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // You can use sport.icon if available in your model
-                  // For now using a placeholder, replace with actual icon from API
                   Image.network(
-                    sport.icon == null
-                        ? ""
-                        : "$fileBaseUrl${sport.icon}", // Adjust based on your asset structure
+                    sport.icon == null ? "" : "$fileBaseUrl${sport.icon}",
                     width: isSelected ? 28 : 35,
                     height: isSelected ? 28 : 35,
                     errorBuilder: (context, error, stackTrace) {
-                      // Fallback icon if asset not found
                       return Icon(
                         Icons.sports,
                         size: isSelected ? 28 : 35,
@@ -271,7 +285,7 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
             children: [
               for (int i = 0; i < allItems.length; i++)
                 AnimatedPositioned(
-                  key: ValueKey(allItems[i].id), // Use sport ID as key
+                  key: ValueKey(allItems[i].id),
                   duration: const Duration(milliseconds: 600),
                   curve: Curves.easeInOut,
                   left: (i % crossAxisCount) * (unselectedItemSize + spacing),
@@ -289,6 +303,19 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
   Widget build(BuildContext context) {
     final sportsState = ref.watch(sportsProvider);
     final sportSelectionState = ref.watch(sportSelectionProvider);
+    final registerState = ref.watch(registrationProvider);
+
+    // Check if account type is selected
+    if (registerState.selectedAccountType == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        AppHelpers.showErrorFlash(
+          context,
+          "Please select an account type first",
+        );
+        context.pop();
+      });
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
@@ -298,10 +325,15 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
                 child: Column(
-                  children: [
-                    // 🔍 Search bar
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(height: 15),
+
                     Container(
                       alignment: Alignment.center,
                       height: 50,
@@ -335,18 +367,14 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    const CustomText(
-                      title:
-                          "Choose the 3 sport categories you want to sponsor the most.",
-                      textAlign: TextAlign.center,
+                    CustomText(
+                      title: _getSubtitleMessage(),
+                      textAlign: TextAlign.start,
                       textColor: AppColors.textSecondary,
                       fontWeight: FontWeight.w300,
                       fontSize: 14,
                     ),
-                    const SizedBox(height: 20),
-
-                    // ✅ Scrollable grid section
+                    const SizedBox(height: 32),
                     Expanded(
                       child: LayoutBuilder(
                         builder: (context, constraints) {
@@ -404,7 +432,6 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
               ),
             ),
 
-            // Error message display for sport selection
             if (sportSelectionState.errorMessage != null) ...[
               Container(
                 width: double.infinity,

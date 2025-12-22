@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:athlink/features/auth/presentation/providers/register/state/register_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,12 +9,20 @@ import '../../../../../core/handlers/network_exceptions.dart';
 import '../../../../../core/services/internet_connection_service.dart';
 import '../../../../../core/services/local_storage_service.dart';
 import '../../../../../shared/utils/app_helpers.dart';
+import '../../../../../shared/extensions/account_type.dart';
 import '../../../domain/repository/authentication_repository.dart';
 
 class RegisterStateNotifier extends StateNotifier<RegisterState> {
   final IAuthenticationRepository _authenticationRepository;
+
   RegisterStateNotifier(this._authenticationRepository)
-    : super(RegisterState());
+    : super(const RegisterState());
+
+  void setAccountType(AccountType accountType) {
+    state = state.copyWith(selectedAccountType: accountType);
+  }
+
+  AccountType? get currentAccountType => state.selectedAccountType;
 
   Future<void> register({
     required String email,
@@ -20,15 +30,26 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     required String name,
     required BuildContext context,
   }) async {
+    log(state.selectedAccountType.toString());
+    if (state.selectedAccountType == null) {
+      AppHelpers.showErrorFlash(context, "Please select an account type");
+
+     
+      return;
+    }
+
     final connected = await sl<AppConnectivity>().connectivity();
     if (connected) {
       state = state.copyWith(isLoading: true);
+
       final response = await _authenticationRepository
           .signUpWithEmailAndPassword(
             email: email,
             password: password,
             name: name,
+            accountType: state.selectedAccountType!.value,
           );
+
       response.when(
         success: (data) {
           state = state.copyWith(
@@ -43,7 +64,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
           state = state.copyWith(
             isLoading: false,
             isSuccess: false,
-            errorMessage: error.toString(),
+            errorMessage: NetworkExceptions.getErrorMessage(error),
           );
           if (context.mounted) {
             AppHelpers.showErrorFlash(
@@ -57,7 +78,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline ,Please check your internet connection",
+          "You are currently offline, Please check your internet connection",
         );
       }
     }
@@ -103,13 +124,19 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline ,Please check your internet connection",
+          "You are currently offline, Please check your internet connection",
         );
       }
     }
   }
 
   void resetState() {
-    state = RegisterState();
+    state = state.copyWith(
+      isLoading: false,
+      errorMessage: null,
+      isSuccess: false,
+      isSocialSignIn: false,
+      isNewUser: true,
+    );
   }
 }

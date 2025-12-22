@@ -35,7 +35,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final provider = ref.read(registartionProvider.notifier);
+      final provider = ref.read(registrationProvider.notifier);
       await provider.register(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
@@ -59,7 +59,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.initState();
     // Reset state when screen is opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(registartionProvider.notifier).resetState();
+      ref.read(registrationProvider.notifier).resetState();
     });
   }
 
@@ -75,10 +75,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final registerState = ref.watch(registartionProvider);
+    final registerState = ref.watch(registrationProvider);
 
     // State listener for handling success and errors
-    ref.listen<RegisterState>(registartionProvider, (previous, current) {
+    ref.listen<RegisterState>(registrationProvider, (previous, current) {
       if (current.isSuccess) {
         AppHelpers.showSuccessToast(
           context,

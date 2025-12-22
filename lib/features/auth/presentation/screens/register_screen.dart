@@ -13,7 +13,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/utils/app_helpers.dart';
-import '../../../../shared/utils/validators_utils.dart';
 import '../../../../shared/widgets/forms/input_field.dart';
 import '../providers/register/state/register_state.dart';
 
@@ -39,7 +38,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     // return;
 
     if (_formKey.currentState!.validate()) {
-      final provider = ref.read(registartionProvider.notifier);
+      final provider = ref.read(registrationProvider.notifier);
       await provider.register(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
@@ -54,7 +53,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   void googleSignIn(WidgetRef ref, BuildContext context) async {
-    final provider = ref.read(registartionProvider.notifier);
+    final provider = ref.read(registrationProvider.notifier);
     await provider.googleSignIn(context);
   }
 
@@ -63,7 +62,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.initState();
     // Reset state when screen is opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(registartionProvider.notifier).resetState();
+      ref.read(registrationProvider.notifier).resetState();
     });
   }
 
@@ -80,12 +79,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final registerState = ref.watch(
-      registartionProvider,
+      registrationProvider,
     ); // Fixed variable name
     // State listener for handling success and errors
-    ref.listen<RegisterState>(registartionProvider, (previous, current) {
+    ref.listen<RegisterState>(registrationProvider, (previous, current) {
       if (current.isSuccess) {
-        final provider = ref.read(registartionProvider.notifier);
+        final provider = ref.read(registrationProvider.notifier);
 
         if (!current.isSocialSignIn) {
           Future.delayed(const Duration(milliseconds: 1500), () {
