@@ -1,4 +1,4 @@
-import 'package:athlink/features/message/presentation/providers/providers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +27,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     // final themeMode = ref.watch(appThemeProvider);
     return MaterialApp.router(
       title: 'Flutter TDD',
+      themeMode: ThemeMode.light,
       theme: AppTheme.lightTheme.copyWith(
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {TargetPlatform.android: CustomTransitionBuilder()},

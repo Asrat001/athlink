@@ -1,5 +1,6 @@
 import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
+import 'package:athlink/features/home_feed/presentation/providers/state/feed_state.dart';
 import 'package:athlink/features/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/manage/presentation/providers/manage_navigation_provider.dart';
 import 'package:athlink/features/manage/presentation/screens/manage_enums.dart';
@@ -14,11 +15,7 @@ import 'package:athlink/features/manage/domain/models/job_list_model.dart'
     as manage_models;
 
 class ApplicationView extends ConsumerWidget {
-  const ApplicationView({
-    super.key,
-    required this.showAthleteDetailOverlay,
-  });
-
+  const ApplicationView({super.key, required this.showAthleteDetailOverlay});
 
   final Function(
     manage_models.JobApplication jobApplication,
@@ -64,7 +61,8 @@ class ApplicationView extends ConsumerWidget {
             children: [
               // back arrow
               GestureDetector(
-                onTap: () => ref.read(manageNavigationProvider.notifier).jobsBack(),
+                onTap: () =>
+                    ref.read(manageNavigationProvider.notifier).jobsBack(),
                 child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
               ),
               const SizedBox(width: 12),
@@ -90,7 +88,9 @@ class ApplicationView extends ConsumerWidget {
                       fontSize: 16,
                     ),
                     GestureDetector(
-                      onTap: () => ref.read(manageNavigationProvider.notifier).showJobDetail(),
+                      onTap: () => ref
+                          .read(manageNavigationProvider.notifier)
+                          .showJobDetail(),
                       child: const CustomText(
                         title: 'View detail',
                         fontSize: 14,
@@ -132,14 +132,18 @@ class ApplicationView extends ConsumerWidget {
                 tab: ApplicantTab.newApplicants,
                 activeTab: activeTab,
                 label: "New applicants",
-             onTap: () => ref.read(manageNavigationProvider.notifier).setActiveApplicantTab(ApplicantTab.newApplicants),
+                onTap: () => ref
+                    .read(manageNavigationProvider.notifier)
+                    .setActiveApplicantTab(ApplicantTab.newApplicants),
               ),
               const SizedBox(width: 16),
               ApplicantTabButton(
                 tab: ApplicantTab.invitees,
                 activeTab: activeTab,
                 label: "Invitees",
-               onTap: () => ref.read(manageNavigationProvider.notifier).setActiveApplicantTab(ApplicantTab.invitees),
+                onTap: () => ref
+                    .read(manageNavigationProvider.notifier)
+                    .setActiveApplicantTab(ApplicantTab.invitees),
               ),
             ],
           ),
@@ -158,7 +162,7 @@ class ApplicationView extends ConsumerWidget {
 
   Widget _buildApplicantsList(dynamic selectedJob, WidgetRef ref) {
     final navigationState = ref.watch(manageNavigationProvider);
-  final activeTab = navigationState.activeApplicantTab;
+    final activeTab = navigationState.activeApplicantTab;
     if (activeTab == ApplicantTab.newApplicants) {
       // Show actual applicants
       if (selectedJob.applications.isEmpty) {
@@ -194,20 +198,6 @@ class ApplicationView extends ConsumerWidget {
       );
       final feedState = ref.watch(feedProvider);
 
-      if (feedState.isLoading) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (feedState.errorMessage != null) {
-        return Center(
-          child: CustomText(
-            title: 'Error loading athletes',
-            textColor: AppColors.red,
-            fontSize: 16,
-          ),
-        );
-      }
-
       // Get list of athlete IDs who have already applied
       final applicantIds = selectedJob.applications
           .map((app) => app.athlete.id)
@@ -227,35 +217,51 @@ class ApplicationView extends ConsumerWidget {
             !sponsoredAthleteIds.contains(athlete.id);
       }).toList();
 
-      if (availableAthletes.isEmpty) {
-        return Center(
-          child: CustomText(
-            title: 'No athletes found for this sport',
-            textColor: AppColors.grey,
-            fontSize: 16,
-          ),
-        );
-      }
+      return feedState.when(
+        initial: () => const Center(child: Text("setting up feed")),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+        success: (feed,_) {
+          // Check if there are any available athletes after filtering
+          if (availableAthletes.isEmpty) {
+            return Center(
+              child: CustomText(
+                title: 'No athletes found for this sport',
+                textColor: AppColors.grey,
+                fontSize: 16,
+              ),
+            );
+          }
 
-      return ListView.separated(
-        padding: const EdgeInsets.only(bottom: 24),
-        itemCount: availableAthletes.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 18),
-        itemBuilder: (context, idx) {
-          final athlete = availableAthletes[idx];
-          // For invitees, create a JobApplication wrapper without application ID
-          final fakeApplication = manage_models.JobApplication(
-            id: '', // Empty application ID for invitees
-            athlete: athlete,
-          );
-          return _applicantCardFromAPI(
-            fakeApplication,
-            selectedJob.id,
-            ref,
-            context,
-            isApplicant: false,
+          return ListView.separated(
+            padding: const EdgeInsets.only(bottom: 24),
+            itemCount: availableAthletes.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 18),
+            itemBuilder: (context, idx) {
+              final athlete = availableAthletes[idx];
+              // For invitees, create a JobApplication wrapper without application ID
+              final fakeApplication = manage_models.JobApplication(
+                id: '', // Empty application ID for invitees
+                athlete: athlete,
+              );
+              return _applicantCardFromAPI(
+                fakeApplication,
+                selectedJob.id,
+                ref,
+                context,
+                isApplicant: false,
+              );
+            },
           );
         },
+        error: (errorMessage) => Center(
+          child: CustomText(
+            title: 'Error loading athletes',
+            textColor: AppColors.red,
+            fontSize: 16,
+          ),
+        ),
       );
     }
   }
@@ -263,12 +269,18 @@ class ApplicationView extends ConsumerWidget {
   List<Athlete> _getFilteredAthletesBySport(String sportId, WidgetRef ref) {
     final feedState = ref.watch(feedProvider);
 
-    if (feedState.feedData == null || feedState.feedData!.athletes.isEmpty) {
+    // Extract feedData using maybeWhen
+    final feedData = feedState.maybeWhen(
+      success: (data,_) => data,
+      orElse: () => null,
+    );
+
+    if (feedData == null || feedData.athletes.isEmpty) {
       return [];
     }
 
     // Filter athletes that have the same sport as the job
-    return feedState.feedData!.athletes.where((athlete) {
+    return feedData.athletes.where((athlete) {
       return athlete.sport.any((sport) => sport.id == sportId);
     }).toList();
   }

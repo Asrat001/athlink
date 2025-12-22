@@ -30,18 +30,14 @@ class LocalStorageService {
       return false;
     }
 
-    debugPrint("onboarding state from local storage: ${isDoneOnboarding}");
-
     return isDoneOnboarding;
   }
 
   /// set is onboarding
   Future<void> setIsDoneOnboarding(bool value) async {
     if (_preferences == null) {
-      print("onboarding state Error Saving  value: ${value}");
       return;
     }
-    print("onboarding state value: ${value}");
     await _preferences?.setBool(LocalStorageKey.isDoneOnboarding, value);
   }
 
@@ -55,7 +51,6 @@ class LocalStorageService {
 
   /// set refresh token
   Future<void> setRefreshToken(String token) async {
-    debugPrint("refresh token: $token");
     await _flutterSecuredStorage.write(
       key: LocalStorageKey.refreshToken,
       value: token,
@@ -74,8 +69,6 @@ class LocalStorageService {
 
   /// set token
   Future<void> setAccessToken(String token) async {
-    debugPrint("token: $token");
-
     await _flutterSecuredStorage.write(
       key: LocalStorageKey.accessToken,
       value: token,
@@ -128,19 +121,16 @@ class LocalStorageService {
 
   // set app theme mode
   Future<void> setAppThemeMode(bool isDarkMode) async {
-    log('setAppThemeMode: $isDarkMode');
     if (_preferences != null) {
       await _preferences!.setBool(LocalStorageKey.themeMode, isDarkMode);
     }
   }
 
   bool getAppThemeMode() {
-    log('getAppThemeMode ${_preferences?.getBool(LocalStorageKey.themeMode)}');
     return _preferences?.getBool(LocalStorageKey.themeMode) ?? false;
   }
 
   void deleteAppThemeMode() {
-    log('deleteAppThemeMode');
     _preferences?.remove(LocalStorageKey.themeMode);
   }
 
@@ -169,20 +159,16 @@ class LocalStorageService {
 
   /// Get user data - handles JSON decoding and returns UserData object
   User? getUserData() {
-    log('getting user  data: ');
     if (_preferences == null) {
-      log('getting user  data: null error ');
       return null;
     }
     final userDataJson = _preferences?.getString(LocalStorageKey.userData);
     if (userDataJson == null) {
-      log('getting user  data: user null error ');
       return null;
     }
     try {
       return User.fromJson(jsonDecode(userDataJson));
     } catch (e) {
-      log('Error decoding user data: $e');
       return null;
     }
   }
@@ -193,5 +179,44 @@ class LocalStorageService {
       return;
     }
     await _preferences?.remove(LocalStorageKey.userData);
+  }
+
+  /// Set watchlist IDs - accepts Set<String> and stores as JSON list
+  Future<void> setWatchlistIds(Set<String> athleteIds) async {
+    if (_preferences == null) {
+      return;
+    }
+    try {
+      final idsJson = jsonEncode(athleteIds.toList());
+      await _preferences?.setString(LocalStorageKey.watchlistIds, idsJson);
+    } catch (e) {
+      debugPrint("Error saving watchlist IDs: ${e.toString()}");
+    }
+  }
+
+  /// Get watchlist IDs - returns Set<String> from JSON list
+  Future<Set<String>> getWatchlistIds() async {
+    if (_preferences == null) {
+      return {};
+    }
+    final idsJson = _preferences?.getString(LocalStorageKey.watchlistIds);
+    if (idsJson == null) {
+      return {};
+    }
+    try {
+      final List<dynamic> idsList = jsonDecode(idsJson);
+      final ids = idsList.map((id) => id.toString()).toSet();
+      return ids;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  /// Delete watchlist IDs
+  Future<void> deleteWatchlistIds() async {
+    if (_preferences == null) {
+      return;
+    }
+    await _preferences?.remove(LocalStorageKey.watchlistIds);
   }
 }

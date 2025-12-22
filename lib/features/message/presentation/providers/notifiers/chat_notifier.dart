@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/core/services/socket_service.dart';
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/domain/repository/chat_repository.dart';
 import 'package:athlink/features/message/presentation/providers/states/chat_state.dart';
-import 'package:flutter/foundation.dart';
+import 'package:athlink/features/message/presentation/providers/states/uploading_state-provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/di.dart';
 
@@ -13,16 +14,20 @@ class ChatNotifier extends StateNotifier<ChatState> {
   final ChatRepository _repository;
   final SocketIoService _socketService;
   final String _conversationId;
+  final Ref _ref;
 
   Timer? _typingTimer;
   bool _isTyping = false;
+  bool _isLoadingMore = false; // Prevent multiple concurrent loads
 
   ChatNotifier({
     required ChatRepository repository,
     required String conversationId,
+    required Ref ref,
   }) : _repository = repository,
        _socketService = sl<SocketIoService>(),
        _conversationId = conversationId,
+       _ref = ref,
        super(const ChatState.initial()) {
     _init();
   }
@@ -43,18 +48,25 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     // Load initial messages
     await loadMessages();
+
+    // Mark all unread messages as read when entering conversation
+    markAllMessagesAsRead();
   }
 
   /// Load messages from REST API
   Future<void> loadMessages({int page = 1}) async {
-    state = ChatState.loading(
-      messages: state.maybeMap(
-        loaded: (s) => s.messages,
-        error: (s) => s.messages,
-        orElse: () => [],
-      ),
-      typingUsers: _getTypingUsers(),
-    );
+    // Only show loading state for initial load (page 1)
+    // For pagination, keep the loaded state to preserve scroll position
+    if (page == 1) {
+      state = ChatState.loading(
+        messages: state.maybeMap(
+          loaded: (s) => s.messages,
+          error: (s) => s.messages,
+          orElse: () => [],
+        ),
+        typingUsers: _getTypingUsers(),
+      );
+    }
 
     final response = await _repository.getMessages(
       conversationId: _conversationId,
@@ -64,15 +76,18 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     response.when(
       success: (messages) {
+        // API returns oldest-first (chronological order) - no reversal needed!
         final currentMessages = state.maybeMap(
           loaded: (s) => s.messages,
           loading: (s) => s.messages,
           orElse: () => <ChatMessage>[],
         );
 
+        // Page 1: newest page of messages (most recent)
+        // Page 2+: older messages that should appear BEFORE current ones
         final updatedMessages = page == 1
             ? messages
-            : [...currentMessages, ...messages];
+            : [...messages, ...currentMessages];
 
         state = ChatState.loaded(
           messages: updatedMessages,
@@ -97,6 +112,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   /// Load more messages (pagination)
   Future<void> loadMoreMessages() async {
+    // Prevent multiple concurrent loads
+    if (_isLoadingMore) return;
+
     final currentPage = state.maybeMap(
       loaded: (s) => s.currentPage,
       orElse: () => 1,
@@ -108,21 +126,16 @@ class ChatNotifier extends StateNotifier<ChatState> {
     );
 
     if (hasMore) {
+      _isLoadingMore = true;
       await loadMessages(page: currentPage + 1);
+      _isLoadingMore = false;
     }
   }
 
   /// Listen for new messages from Socket.IO
   void _listenToNewMessages() {
     _socketService.onMessageReceived((message) {
-      print('🔔 MESSAGE RECEIVED VIA SOCKET');
-      print('Message ID: ${message.id}');
-      print('Message ConversationId: ${message.conversationId}');
-      print('Current ConversationId: $_conversationId');
-      print('Match: ${message.conversationId == _conversationId}');
-
       if (message.conversationId == _conversationId) {
-        print('✅ Adding message to state');
         final currentMessages = state.maybeMap(
           loaded: (s) => s.messages,
           loading: (s) => s.messages,
@@ -140,31 +153,106 @@ class ChatNotifier extends StateNotifier<ChatState> {
           ),
         );
 
-        // Mark as read
-        _socketService.markMessageAsRead(_conversationId, message.id);
-      } else {
-        print('❌ Message for different conversation - ignoring');
+        // Only mark as read if the message is NOT from the current user (incoming message)
+        final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+        if (message.sender.id != currentUserId) {
+          _socketService.markMessageAsRead(_conversationId, message.id);
+        }
       }
     });
   }
 
+  /// Mark all unread messages as read when viewing conversation
+  void markAllMessagesAsRead() {
+    final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
+    final messages = state.maybeMap(
+      loaded: (s) => s.messages,
+      orElse: () => <ChatMessage>[],
+    );
+
+    // Check if there are any messages to mark as read
+    final hasUnreadMessages = messages.any(
+      (m) => m.sender.id != currentUserId && m.status != 'read',
+    );
+
+    if (!hasUnreadMessages) return;
+
+    // Send socket events for each unread message
+    for (final message in messages) {
+      if (message.sender.id != currentUserId && message.status != 'read') {
+        _socketService.markMessageAsRead(_conversationId, message.id);
+      }
+    }
+
+    // Update local state immediately so recipient sees ✓✓
+    final updatedMessages = messages.map((message) {
+      if (message.sender.id != currentUserId && message.status != 'read') {
+        return message.copyWith(status: 'read');
+      }
+      return message;
+    }).toList();
+
+    state = ChatState.loaded(
+      messages: updatedMessages,
+      typingUsers: _getTypingUsers(),
+      hasMore: state.maybeMap(loaded: (s) => s.hasMore, orElse: () => true),
+      currentPage: state.maybeMap(
+        loaded: (s) => s.currentPage,
+        orElse: () => 1,
+      ),
+    );
+  }
+
+  /// Upload a file and update the shared upload state
+  Future<List<ChatAttachment>?> uploadFile(
+    List<({String filePath, String fileName})> files,
+  ) async {
+    // 1. Set Loading
+    _ref.read(uploadStateProvider.notifier).state = const AsyncValue.loading();
+
+    try {
+      // 2. Perform Upload
+      final response = await _repository.uploadFile(files: files);
+
+      return response.when(
+        success: (attachments) {
+          // 3. Set Success (with URL)
+          _ref.read(uploadStateProvider.notifier).state = AsyncValue.data(
+            attachments,
+          );
+          return attachments;
+        },
+        failure: (error) {
+          // 4. Set Error
+          _ref.read(uploadStateProvider.notifier).state = AsyncValue.error(
+            error,
+            StackTrace.current,
+          );
+          return null;
+        },
+      );
+    } catch (e, st) {
+      _ref.read(uploadStateProvider.notifier).state = AsyncValue.error(e, st);
+      return null;
+    }
+  }
+
   /// Send a message
-  void sendMessage(String content, {String type = 'text'}) {
-    debugPrint('📤 ChatNotifier.sendMessage called with content: "$content"');
-    debugPrint('✅ Sending message via socket...');
-    // Send via socket
+  void sendMessage(
+    String content, {
+    String type = 'text',
+    List<ChatAttachment>? mediaUrls,
+  }) {
     _socketService.sendMessage(
       conversationId: _conversationId,
       content: content,
       type: type,
+      mediaUrls: mediaUrls,
       onResponse: (response) {
         if (response['success'] == true) {
-          // ✅ Server confirmed! Add the message to UI immediately.
-          // We do this here because the server likely doesn't broadcast 'message:new' back to the sender.
           try {
             final newMessage = ChatMessage.fromJson(response['data']);
 
-            // Check if we already have it (to prevent duplicates if server DOES echo)
             final exists = state.maybeMap(
               loaded: (s) => s.messages.any((m) => m.id == newMessage.id),
               orElse: () => false,
@@ -195,7 +283,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
             print('Error parsing sent message response: $e');
           }
         } else {
-          // Handle error
           state = ChatState.error(
             message: response['error'] ?? 'Failed to send message',
             messages: state.maybeMap(
@@ -236,38 +323,78 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// Listen for typing indicators from other users
   void _listenToTyping() {
     _socketService.onTyping(
-      (conversationId) {
-        if (conversationId == _conversationId) {
-          _addTypingUser(
-            'other_user',
-          ); // You'll need to get actual user ID from socket data
+      (data) {
+        final conversationId = data['conversationId'];
+        final userId = data['userId'];
+        final userName = data['userName'] ?? 'Someone';
+
+        if (conversationId == _conversationId && userId != null) {
+          _addTypingUser(userId, userName);
         }
       },
-      (conversationId) {
-        if (conversationId == _conversationId) {
-          _removeTypingUser('other_user');
+      (data) {
+        final conversationId = data['conversationId'];
+        final userId = data['userId'];
+
+        if (conversationId == _conversationId && userId != null) {
+          _removeTypingUser(userId);
         }
       },
     );
   }
 
-  /// Listen for read receipts
+  /// Listen for read receipts and update message status
   void _listenToReadReceipts() {
     _socketService.onMessageRead((data) {
-      // Update message status to 'read'
-      // You can implement this based on your ChatMessage model
+      try {
+        final messageId = data['messageId'] as String?;
+        final conversationId = data['conversationId'] as String?;
+
+        if (messageId == null || conversationId != _conversationId) return;
+
+        // Update the message status in our state
+        final currentMessages = state.maybeMap(
+          loaded: (s) => s.messages,
+          loading: (s) => s.messages,
+          error: (s) => s.messages,
+          orElse: () => <ChatMessage>[],
+        );
+
+        // Find and update the message status
+        final updatedMessages = currentMessages.map((message) {
+          if (message.id == messageId) {
+            return message.copyWith(status: 'read');
+          }
+          return message;
+        }).toList();
+
+        state = ChatState.loaded(
+          messages: updatedMessages,
+          typingUsers: _getTypingUsers(),
+          hasMore: state.maybeMap(loaded: (s) => s.hasMore, orElse: () => true),
+          currentPage: state.maybeMap(
+            loaded: (s) => s.currentPage,
+            orElse: () => 1,
+          ),
+        );
+      } catch (e) {
+        print('Error handling read receipt: $e');
+      }
     });
   }
 
   /// Add typing user
-  void _addTypingUser(String userId) {
+  void _addTypingUser(String userId, String userName) {
     final currentTyping = _getTypingUsers();
-    if (!currentTyping.contains(userId)) {
+    if (!currentTyping.containsKey(userId)) {
+      final newTyping = Map<String, String>.from(currentTyping);
+      newTyping[userId] = userName;
+
       state = state.map(
         initial: (s) => s,
-        loading: (s) => s.copyWith(typingUsers: [...s.typingUsers, userId]),
-        loaded: (s) => s.copyWith(typingUsers: [...s.typingUsers, userId]),
-        error: (s) => s.copyWith(typingUsers: [...s.typingUsers, userId]),
+        loading: (s) => s.copyWith(typingUsers: newTyping),
+        loaded: (s) => s.copyWith(typingUsers: newTyping),
+        error: (s) => s.copyWith(typingUsers: newTyping),
       );
     }
   }
@@ -275,27 +402,26 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// Remove typing user
   void _removeTypingUser(String userId) {
     final currentTyping = _getTypingUsers();
-    state = state.map(
-      initial: (s) => s,
-      loading: (s) => s.copyWith(
-        typingUsers: s.typingUsers.where((id) => id != userId).toList(),
-      ),
-      loaded: (s) => s.copyWith(
-        typingUsers: s.typingUsers.where((id) => id != userId).toList(),
-      ),
-      error: (s) => s.copyWith(
-        typingUsers: s.typingUsers.where((id) => id != userId).toList(),
-      ),
-    );
+    if (currentTyping.containsKey(userId)) {
+      final newTyping = Map<String, String>.from(currentTyping);
+      newTyping.remove(userId);
+
+      state = state.map(
+        initial: (s) => s,
+        loading: (s) => s.copyWith(typingUsers: newTyping),
+        loaded: (s) => s.copyWith(typingUsers: newTyping),
+        error: (s) => s.copyWith(typingUsers: newTyping),
+      );
+    }
   }
 
   /// Get current typing users
-  List<String> _getTypingUsers() {
+  Map<String, String> _getTypingUsers() {
     return state.maybeMap(
       loading: (s) => s.typingUsers,
       loaded: (s) => s.typingUsers,
       error: (s) => s.typingUsers,
-      orElse: () => [],
+      orElse: () => {},
     );
   }
 

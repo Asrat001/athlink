@@ -1,11 +1,11 @@
+import 'package:athlink/features/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/home_feed/presentation/providers/feed_provider.dart';
-import 'package:athlink/features/home_feed/widgets/athlete_card.dart';
-import 'package:athlink/features/home_feed/widgets/filter_drop_downs.dart';
-import 'package:athlink/features/home_feed/widgets/sponsor_card.dart';
+import 'package:athlink/features/home_feed/presentation/providers/state/feed_state.dart';
+import 'package:athlink/features/home_feed/presentation/widgets/athlete_card.dart';
+import 'package:athlink/features/home_feed/presentation/widgets/sponsor_card.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,371 +24,345 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch feed data on screen load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(feedProvider.notifier).getFeed();
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final feedState = ref.watch(feedProvider);
+
     return Scaffold(
       backgroundColor: AppColors.greyScaffoldBackground,
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: const Color.fromARGB(255, 245, 245, 245),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                children: [
-                  // Search Bar
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isFilterOpen = !isFilterOpen;
-                            });
-                          },
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset('assets/images/search.svg'),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: IgnorePointer(
-                                    ignoring: true,
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        hintText: 'Search',
-                                        border: InputBorder.none,
-                                        hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      isFilterOpen = !isFilterOpen;
-                                    });
-                                  },
-                                  child: SvgPicture.asset(
-                                    isFilterOpen
-                                        ? "assets/images/filter_filled.svg"
-                                        : "assets/images/filter.svg",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: Icon(Icons.notifications_none_outlined),
-                        color: AppColors.primary,
-                        onPressed: () {
-                          GoRouter.of(context).push(Routes.notificationScreen);
-                        },
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  SizedBox(
-                    height: 40,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        for (final label in [
-                          'tennis',
-                          '18-20',
-                          '18-20',
-                          'Africa',
-                          'level2',
-                          'level3',
-                          'level4',
-                          'level5',
-                        ])
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Chip(
-                              label: CustomText(
-                                title: label,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              backgroundColor: Colors.grey.shade100,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: AppColors.grey.withValues(alpha: .3),
-                                ),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            _SearchHeader(
+              isFilterOpen: isFilterOpen,
+              onFilterTap: () => setState(() => isFilterOpen = !isFilterOpen),
+              onNotificationTap: () =>
+                  GoRouter.of(context).push(Routes.notificationScreen),
             ),
-
-            if (isFilterOpen)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FilterBar(
-                  filters: [
-                    FilterData("Age", ["< 18", "18 – 21", "> 18"]),
-                    FilterData("Location", ["Middle East", "Canada", "Africa"]),
-                    FilterData("Achievement", [
-                      "Regional Shampion",
-                      "Word top 8",
-                      "National cup winner",
-                    ]),
-                  ],
-                ),
-              ),
-
-            if (!isFilterOpen)
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Athletes grouped by sport
-                      _buildAthletesBySport(),
-
-                      // 🏢 Sponsors Section
-                      const Text(
-                        "Sponsors",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Sponsors aligned with your interests",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-                      _buildSponsorsSection(),
-
-                      const SizedBox(height: 20), // Extra padding at bottom
-                    ],
-                  ),
-                ),
-              ),
+            Expanded(
+              child: _buildFeedContent(feedState),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSponsorsSection() {
-    final feedState = ref.watch(feedProvider);
+  Widget _buildFeedContent(FeedState feedState) {
+    return feedState.when(
+      initial: () => const Center(child: Text("Setting up feed...")),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+      success: (feedData, athletesBySport) {
+        final sportEntries = athletesBySport.entries.toList();
 
-    if (feedState.isLoading) {
-      return SizedBox(
-        height: 300,
-        child: Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
-      );
-    }
-
-    if (feedState.errorMessage != null) {
-      return SizedBox(
-        height: 300,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: Colors.red),
-              SizedBox(height: 16),
-              Text(
-                feedState.errorMessage!,
-                style: TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(feedProvider.notifier).getFeed();
+        return CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // Athletes by sport sections - using SliverList for true lazy loading
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final entry = sportEntries[index];
+                  return _buildSportSectionContent(
+                    sportName: entry.key,
+                    athletes: entry.value,
+                  );
                 },
-                child: Text('Retry'),
+                childCount: sportEntries.length,
               ),
-            ],
+            ),
+
+            // Sponsors section
+            _buildSponsorsHeaderSliver(),
+            _buildSponsorsListSliver(feedData.sponsors),
+
+            // Bottom padding
+            const SliverPadding(padding: EdgeInsets.only(bottom: 20)),
+          ],
+        );
+      },
+      error: (errorMessage) => _buildErrorState(errorMessage),
+    );
+  }
+
+  // MARK: - Sport Section
+  Widget _buildSportSectionContent({
+    required String sportName,
+    required List<Athlete> athletes,
+  }) {
+    if (athletes.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Sport title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              sportName,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
           ),
-        ),
-      );
-    }
+          const SizedBox(height: 4),
 
-    final sponsors = feedState.feedData?.sponsors ?? [];
-
-    if (sponsors.isEmpty) {
-      return SizedBox(
-        height: 300,
-        child: Center(
-          child: Text(
-            'No sponsors available',
-            style: TextStyle(color: Colors.grey),
+          // Horizontal scrolling list of athletes
+          SizedBox(
+            height: 300,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              itemCount: athletes.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 0),
+                  child: _buildAthleteCard(athletes[index]),
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(width: 13.5),
+            ),
           ),
-        ),
-      );
-    }
-
-    return SizedBox(
-      height: 300,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: sponsors.length,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        itemBuilder: (context, index) {
-          final sponsor = sponsors[index];
-          // Get sports as category (use first sport or "Multiple Sports")
-          final category = sponsor.sport.isNotEmpty
-              ? sponsor.sport.length == 1
-                    ? sponsor.sport.first.name ?? 'Sport'
-                    : '${sponsor.sport.length} Sports'
-              : 'No Sports';
-
-          // Use first sport icon as image, or placeholder
-          final imageUrl =
-              sponsor.sport.isNotEmpty && sponsor.sport.first.icon != null
-              ? '$fileBaseUrl${sponsor.sport.first.icon}'
-              : 'https://picsum.photos/400/300';
-
-          return SponsorCard(
-            name: sponsor.name ?? sponsor.email ?? 'Unknown',
-            category: category,
-            imageUrl: imageUrl,
-          );
-        },
+        ],
       ),
     );
   }
 
-  Widget _buildAthletesBySport() {
-    final feedState = ref.watch(feedProvider);
+  Widget _buildAthleteCard(Athlete athleteData) {
+    final athlete = athleteData.athleteProfile;
+    final sport = athleteData.sport;
+   
 
-    // Don't show anything while loading for athletes (only show loading for first load)
-    if (feedState.isLoading && feedState.feedData == null) {
-      return const SizedBox.shrink();
-    }
+    // Extract data with fallbacks
+    final name = athlete?.name?? 'Unknown Athlete';
+    final age = athlete?.age?.toString() ?? '';
+    final position = athlete?.position ?? 'Position';
+    final club = athlete?.club ?? 'Club';
+    final level = athlete?.level;
+    final rating = athlete?.rating;
+    final sportCategory = sport.map((e) => e.name).join(", ");
+    final achievements = athlete?.achievements ?? [];
+    final sponsorshipDone = athlete?.sponsorshipDone ?? 0;
+    final highestSocialMediaPresence = athlete?.highestSocialMediaPresence ?? '0';
 
-    final athletes = feedState.feedData?.athletes ?? [];
+    // Build image URL
+    final imageUrl = athlete?.profileImageUrl != null
+        ? '$fileBaseUrl${athlete!.profileImageUrl}'
+        : 'https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png';
 
-    // Hide section entirely if no athletes
-    if (athletes.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    // Build flag URL (using sport icon or default)
+    final flagUrl = 'https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg';
+        
 
-    // Group athletes by sport
-    final Map<String, List<dynamic>> athletesBySport = {};
-    for (var athlete in athletes) {
-      for (var sport in athlete.sport) {
-        final sportName = sport.name ?? 'Unknown Sport';
-        if (!athletesBySport.containsKey(sportName)) {
-          athletesBySport[sportName] = [];
-        }
-        athletesBySport[sportName]!.add({'athlete': athlete, 'sport': sport});
-      }
-    }
+    return AthleteCard(
+      athleteId: athleteData.id,
+      name: name.isEmpty ? 'Unknown Athlete' : name,
+      club: club.isEmpty ? 'Unknown Club' : club,
+      age: age.isEmpty ? 'Unavailable' : age,
+      flag: flagUrl,
+      image: imageUrl,
+      achievements: achievements,
+      position: position,
+      level: level,
+      rating: rating??0,
+      sponsorshipDone: sponsorshipDone.toString(),
+      highestSocialMediaPresence: highestSocialMediaPresence,
+      sportCategory: sportCategory,
+      onTap: (){
 
-    // Build sections for each sport
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: athletesBySport.entries.map((entry) {
-        final sportName = entry.key;
-        final athletesInSport = entry.value;
+      },
+    );
+  }
 
-        return Column(
+  // MARK: - Sponsors Section
+  Widget _buildSponsorsHeaderSliver() {
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      sliver: SliverToBoxAdapter(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              sportName,
-              style: const TextStyle(
+            const Text(
+              "Sponsors",
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 370,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(5),
-                shrinkWrap: true,
-                itemCount: athletesInSport.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 20),
-                itemBuilder: (context, index) {
-                  final item = athletesInSport[index];
-                  final athlete = item['athlete'];
-                  final sport = item['sport'];
-
-                  // Use athlete profile data or fallback to athlete data
-                  final profile = athlete.athleteProfile;
-                  final name =
-                      profile?.name ?? athlete.name ?? 'Unknown Athlete';
-                  final age = profile?.age?.toString() ?? '0';
-                  final position = profile?.position ?? 'Position';
-                  final level = profile?.level;
-                  final sportCategory = sport.name;
-
-                  // Get image URL
-                  final imageUrl = profile?.profileImageUrl != null
-                      ? '$fileBaseUrl${profile!.profileImageUrl}'
-                      : 'https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--male-boy-cartoon-character-illustrations-5652137.png';
-
-                  // Get flag - use sport icon or default flag
-                  final flagUrl = sport.icon != null
-                      ? '$fileBaseUrl${sport.icon}'
-                      : 'https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg';
-
-                  // Get achievements from athlete profile
-                  final achievements = profile?.achievements ?? [];
-
-                  return AthleteCard(
-                    athleteId: athlete.id,
-                    name: name,
-                    club: position,
-                    age: age,
-                    flag: flagUrl,
-                    image: imageUrl,
-                    achievements: achievements,
-                    position: position,
-                    level: level,
-                    sportCategory: sportCategory,
-                  );
-                },
+            const SizedBox(height: 4),
+            Text(
+              "Sponsors aligned with your interests",
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade600,
               ),
             ),
-            const SizedBox(height: 24),
           ],
-        );
-      }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSponsorsListSliver(List<dynamic> sponsors) {
+    if (sponsors.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 250,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: sponsors.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          itemBuilder: (context, index) {
+            final sponsor = sponsors[index];
+
+            // Extract sponsor data
+            final category = sponsor.sport.isNotEmpty
+                ? sponsor.sport.length == 1
+                    ? sponsor.sport.first.name ?? 'Sport'
+                    : '${sponsor.sport.length} Sports'
+                : 'No Sports';
+
+            final imageUrl = sponsor.sport.isNotEmpty &&
+                    sponsor.sport.first.icon != null
+                ? '$fileBaseUrl${sponsor.sport.first.icon}'
+                : 'https://picsum.photos/400/300';
+
+            return SponsorCard(
+              name: sponsor.name ?? 'Unknown Name',
+              category: category,
+              imageUrl: imageUrl,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // MARK: - Error State
+  Widget _buildErrorState(String errorMessage) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 48, color: Colors.red),
+          const SizedBox(height: 16),
+          Text(
+            errorMessage,
+            style: const TextStyle(fontSize: 16, color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => ref.read(feedProvider.notifier).getFeed(),
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// MARK: - Search Header Widget
+class _SearchHeader extends StatelessWidget {
+  final bool isFilterOpen;
+  final VoidCallback onFilterTap;
+  final VoidCallback onNotificationTap;
+
+  const _SearchHeader({
+    required this.isFilterOpen,
+    required this.onFilterTap,
+    required this.onNotificationTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color.fromARGB(255, 245, 245, 245),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: _SearchBar(
+              isFilterOpen: isFilterOpen,
+              onFilterTap: onFilterTap,
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_outlined),
+            color: AppColors.primary,
+            onPressed: onNotificationTap,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  final bool isFilterOpen;
+  final VoidCallback onFilterTap;
+
+  const _SearchBar({
+    required this.isFilterOpen,
+    required this.onFilterTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        
+      },
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            SvgPicture.asset('assets/images/search.svg'),
+            const SizedBox(width: 8),
+            Expanded(
+              child: IgnorePointer(
+                ignoring: true,
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Search',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: onFilterTap,
+              child: SvgPicture.asset(
+                isFilterOpen
+                    ? "assets/images/filter_filled.svg"
+                    : "assets/images/filter.svg",
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

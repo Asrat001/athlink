@@ -1,3 +1,4 @@
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/message_sender.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,7 +15,7 @@ abstract class ChatMessage with _$ChatMessage {
     required MessageSender sender,
     required String content,
     required String type, // 'text', 'image', 'file', etc.
-    String? mediaUrl,
+    List<ChatAttachment>? media,
     @Default('sent') String status, // 'sent', 'delivered', 'read'
     required DateTime createdAt,
     required DateTime updatedAt,

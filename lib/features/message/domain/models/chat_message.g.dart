@@ -12,7 +12,9 @@ _ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) => _ChatMessage(
   sender: MessageSender.fromJson(json['sender'] as Map<String, dynamic>),
   content: json['content'] as String,
   type: json['type'] as String,
-  mediaUrl: json['mediaUrl'] as String?,
+  media: (json['media'] as List<dynamic>?)
+      ?.map((e) => ChatAttachment.fromJson(e as Map<String, dynamic>))
+      .toList(),
   status: json['status'] as String? ?? 'sent',
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -38,7 +40,7 @@ Map<String, dynamic> _$ChatMessageToJson(_ChatMessage instance) =>
       'sender': instance.sender,
       'content': instance.content,
       'type': instance.type,
-      'mediaUrl': instance.mediaUrl,
+      'media': instance.media,
       'status': instance.status,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),

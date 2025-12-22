@@ -9,12 +9,12 @@ class ChatState with _$ChatState {
 
   const factory ChatState.loading({
     @Default([]) List<ChatMessage> messages,
-    @Default([]) List<String> typingUsers,
+    @Default({}) Map<String, String> typingUsers,
   }) = _Loading;
 
   const factory ChatState.loaded({
     required List<ChatMessage> messages,
-    @Default([]) List<String> typingUsers,
+    @Default({}) Map<String, String> typingUsers,
     @Default(true) bool hasMore,
     @Default(1) int currentPage,
   }) = _Loaded;
@@ -22,6 +22,6 @@ class ChatState with _$ChatState {
   const factory ChatState.error({
     required String message,
     @Default([]) List<ChatMessage> messages,
-    @Default([]) List<String> typingUsers,
+    @Default({}) Map<String, String> typingUsers,
   }) = _Error;
 }

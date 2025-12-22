@@ -1,5 +1,6 @@
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/features/message/data/datasource/chat_remote_datasource.dart';
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/domain/models/contact.dart';
 import 'package:athlink/features/message/domain/models/conversation.dart';
@@ -40,13 +41,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<ApiResponse<String>> uploadFile({
-    required String filePath,
-    required String fileName,
+  Future<ApiResponse<List<ChatAttachment>>> uploadFile({
+    required List<({String filePath, String fileName})> files,
   }) async {
     return await _remoteDataSource.uploadFile(
-      filePath: filePath,
-      fileName: fileName,
+        files: files,
     );
   }
 

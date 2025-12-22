@@ -1,6 +1,7 @@
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/domain/models/contact.dart';
 import 'package:athlink/features/message/domain/models/conversation.dart';
@@ -72,22 +73,32 @@ class ChatRemoteDataSource extends BaseRepository {
   }
 
   /// Upload a file
-  Future<ApiResponse<String>> uploadFile({
-    required String filePath,
-    required String fileName,
+  Future<ApiResponse<List<ChatAttachment>>> uploadFile({
+  required List<({String filePath, String fileName})> files,
   }) async {
+    final multipartFiles = await Future.wait(
+    files.map((f) => MultipartFile.fromFile(f.filePath, filename: f.fileName)),
+  );
     final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      'files': multipartFiles,
     });
 
     return await safeApiCall(
       apiCall: () async {
-        return await _httpClient.client().post(
-          '/messages/upload/file',
-          data: formData,
-        );
+        return await _httpClient
+            .client(requireAuth: true)
+            .post('/chat/upload',
+             data: formData);
       },
-      fromData: (data) => data['data']['fileUrl'] as String,
+      fromData: (data) {
+        final uploadData = data['data'];
+        if (uploadData is List) {
+          if (uploadData.isEmpty) throw Exception("Upload returned empty list");
+          return uploadData.map((json) => ChatAttachment.fromJson(json)).toList();
+        } else {
+          throw Exception("Upload returned empty list");
+        }
+      },
     );
   }
 

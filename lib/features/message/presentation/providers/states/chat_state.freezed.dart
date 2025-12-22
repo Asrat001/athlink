@@ -128,7 +128,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( List<ChatMessage> messages,  List<String> typingUsers)?  loading,TResult Function( List<ChatMessage> messages,  List<String> typingUsers,  bool hasMore,  int currentPage)?  loaded,TResult Function( String message,  List<ChatMessage> messages,  List<String> typingUsers)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( List<ChatMessage> messages,  Map<String, String> typingUsers)?  loading,TResult Function( List<ChatMessage> messages,  Map<String, String> typingUsers,  bool hasMore,  int currentPage)?  loaded,TResult Function( String message,  List<ChatMessage> messages,  Map<String, String> typingUsers)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
@@ -152,7 +152,7 @@ return error(_that.message,_that.messages,_that.typingUsers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( List<ChatMessage> messages,  List<String> typingUsers)  loading,required TResult Function( List<ChatMessage> messages,  List<String> typingUsers,  bool hasMore,  int currentPage)  loaded,required TResult Function( String message,  List<ChatMessage> messages,  List<String> typingUsers)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( List<ChatMessage> messages,  Map<String, String> typingUsers)  loading,required TResult Function( List<ChatMessage> messages,  Map<String, String> typingUsers,  bool hasMore,  int currentPage)  loaded,required TResult Function( String message,  List<ChatMessage> messages,  Map<String, String> typingUsers)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
@@ -175,7 +175,7 @@ return error(_that.message,_that.messages,_that.typingUsers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( List<ChatMessage> messages,  List<String> typingUsers)?  loading,TResult? Function( List<ChatMessage> messages,  List<String> typingUsers,  bool hasMore,  int currentPage)?  loaded,TResult? Function( String message,  List<ChatMessage> messages,  List<String> typingUsers)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( List<ChatMessage> messages,  Map<String, String> typingUsers)?  loading,TResult? Function( List<ChatMessage> messages,  Map<String, String> typingUsers,  bool hasMore,  int currentPage)?  loaded,TResult? Function( String message,  List<ChatMessage> messages,  Map<String, String> typingUsers)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
@@ -225,7 +225,7 @@ String toString() {
 
 
 class _Loading implements ChatState {
-  const _Loading({final  List<ChatMessage> messages = const [], final  List<String> typingUsers = const []}): _messages = messages,_typingUsers = typingUsers;
+  const _Loading({final  List<ChatMessage> messages = const [], final  Map<String, String> typingUsers = const {}}): _messages = messages,_typingUsers = typingUsers;
   
 
  final  List<ChatMessage> _messages;
@@ -235,11 +235,11 @@ class _Loading implements ChatState {
   return EqualUnmodifiableListView(_messages);
 }
 
- final  List<String> _typingUsers;
-@JsonKey() List<String> get typingUsers {
-  if (_typingUsers is EqualUnmodifiableListView) return _typingUsers;
+ final  Map<String, String> _typingUsers;
+@JsonKey() Map<String, String> get typingUsers {
+  if (_typingUsers is EqualUnmodifiableMapView) return _typingUsers;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_typingUsers);
+  return EqualUnmodifiableMapView(_typingUsers);
 }
 
 
@@ -273,7 +273,7 @@ abstract mixin class _$LoadingCopyWith<$Res> implements $ChatStateCopyWith<$Res>
   factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
 @useResult
 $Res call({
- List<ChatMessage> messages, List<String> typingUsers
+ List<ChatMessage> messages, Map<String, String> typingUsers
 });
 
 
@@ -294,7 +294,7 @@ class __$LoadingCopyWithImpl<$Res>
   return _then(_Loading(
 messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
 as List<ChatMessage>,typingUsers: null == typingUsers ? _self._typingUsers : typingUsers // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Map<String, String>,
   ));
 }
 
@@ -305,7 +305,7 @@ as List<String>,
 
 
 class _Loaded implements ChatState {
-  const _Loaded({required final  List<ChatMessage> messages, final  List<String> typingUsers = const [], this.hasMore = true, this.currentPage = 1}): _messages = messages,_typingUsers = typingUsers;
+  const _Loaded({required final  List<ChatMessage> messages, final  Map<String, String> typingUsers = const {}, this.hasMore = true, this.currentPage = 1}): _messages = messages,_typingUsers = typingUsers;
   
 
  final  List<ChatMessage> _messages;
@@ -315,11 +315,11 @@ class _Loaded implements ChatState {
   return EqualUnmodifiableListView(_messages);
 }
 
- final  List<String> _typingUsers;
-@JsonKey() List<String> get typingUsers {
-  if (_typingUsers is EqualUnmodifiableListView) return _typingUsers;
+ final  Map<String, String> _typingUsers;
+@JsonKey() Map<String, String> get typingUsers {
+  if (_typingUsers is EqualUnmodifiableMapView) return _typingUsers;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_typingUsers);
+  return EqualUnmodifiableMapView(_typingUsers);
 }
 
 @JsonKey() final  bool hasMore;
@@ -355,7 +355,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $ChatStateCopyWith<$Res> 
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<ChatMessage> messages, List<String> typingUsers, bool hasMore, int currentPage
+ List<ChatMessage> messages, Map<String, String> typingUsers, bool hasMore, int currentPage
 });
 
 
@@ -376,7 +376,7 @@ class __$LoadedCopyWithImpl<$Res>
   return _then(_Loaded(
 messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
 as List<ChatMessage>,typingUsers: null == typingUsers ? _self._typingUsers : typingUsers // ignore: cast_nullable_to_non_nullable
-as List<String>,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
 as bool,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -389,7 +389,7 @@ as int,
 
 
 class _Error implements ChatState {
-  const _Error({required this.message, final  List<ChatMessage> messages = const [], final  List<String> typingUsers = const []}): _messages = messages,_typingUsers = typingUsers;
+  const _Error({required this.message, final  List<ChatMessage> messages = const [], final  Map<String, String> typingUsers = const {}}): _messages = messages,_typingUsers = typingUsers;
   
 
  final  String message;
@@ -400,11 +400,11 @@ class _Error implements ChatState {
   return EqualUnmodifiableListView(_messages);
 }
 
- final  List<String> _typingUsers;
-@JsonKey() List<String> get typingUsers {
-  if (_typingUsers is EqualUnmodifiableListView) return _typingUsers;
+ final  Map<String, String> _typingUsers;
+@JsonKey() Map<String, String> get typingUsers {
+  if (_typingUsers is EqualUnmodifiableMapView) return _typingUsers;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_typingUsers);
+  return EqualUnmodifiableMapView(_typingUsers);
 }
 
 
@@ -438,7 +438,7 @@ abstract mixin class _$ErrorCopyWith<$Res> implements $ChatStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
- String message, List<ChatMessage> messages, List<String> typingUsers
+ String message, List<ChatMessage> messages, Map<String, String> typingUsers
 });
 
 
@@ -460,7 +460,7 @@ class __$ErrorCopyWithImpl<$Res>
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
 as List<ChatMessage>,typingUsers: null == typingUsers ? _self._typingUsers : typingUsers // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as Map<String, String>,
   ));
 }
 

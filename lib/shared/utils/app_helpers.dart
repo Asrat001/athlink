@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 
-
 class AppHelpers {
   AppHelpers._();
 
@@ -145,7 +144,31 @@ class AppHelpers {
     dismissKeyboard(context);
   }
 
-  static void showVerificationSnackBar(BuildContext context, String message, {bool isError = false}) {
+  /// Formats file size in bytes to human-readable string
+  /// e.g., 13264 -> "12.95 KB", 1048576 -> "1.00 MB"
+  static String formatFileSize(int? bytes) {
+    if (bytes == null || bytes <= 0) return '0 B';
+
+    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    var i = 0;
+    double size = bytes.toDouble();
+
+    while (size >= 1024 && i < suffixes.length - 1) {
+      size /= 1024;
+      i++;
+    }
+
+    // Use 0 decimals for bytes, 2 for everything else
+    return i == 0
+        ? '${size.toInt()} ${suffixes[i]}'
+        : '${size.toStringAsFixed(2)} ${suffixes[i]}';
+  }
+
+  static void showVerificationSnackBar(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.clearSnackBars();
 
@@ -165,7 +188,6 @@ class AppHelpers {
   }
 }
 
-
 class Address {
   final String? street;
   final String? city;
@@ -173,13 +195,7 @@ class Address {
   final String? zipCode;
   final String? fullAddress;
 
-  Address({
-    this.street,
-    this.city,
-    this.state,
-    this.zipCode,
-    this.fullAddress,
-  });
+  Address({this.street, this.city, this.state, this.zipCode, this.fullAddress});
 
   static Address parseAddress(String? fullAddress) {
     if (fullAddress == null || fullAddress.isEmpty) {
@@ -194,20 +210,14 @@ class Address {
       final street = parts[0].trim();
 
       if (parts.length < 2) {
-        return Address(
-          street: street,
-          fullAddress: fullAddress,
-        );
+        return Address(street: street, fullAddress: fullAddress);
       }
 
       // Handle the city, state, and zip (second part)
       final locationParts = parts[1].trim().split(' ');
 
       if (locationParts.length < 2) {
-        return Address(
-          street: street,
-          fullAddress: fullAddress,
-        );
+        return Address(street: street, fullAddress: fullAddress);
       }
 
       // The zip code will be the last element
@@ -217,7 +227,10 @@ class Address {
       final state = locationParts[locationParts.length - 2].trim();
 
       // The city will be everything else after removing state and zip
-      final city = locationParts.sublist(0, locationParts.length - 2).join(' ').trim();
+      final city = locationParts
+          .sublist(0, locationParts.length - 2)
+          .join(' ')
+          .trim();
 
       return Address(
         street: street,

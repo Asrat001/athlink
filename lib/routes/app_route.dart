@@ -13,8 +13,8 @@ import 'package:athlink/features/watchlist/presentation/screens/watch_list_scree
 import 'package:athlink/routes/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../features/main/error_screen.dart';
-import '../features/main/main_screen.dart';
+import 'error_screen.dart';
+import 'main_screen.dart';
 import '../features/manage/presentation/screens/manage_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/profile/presenation/screens/profile_screen.dart';

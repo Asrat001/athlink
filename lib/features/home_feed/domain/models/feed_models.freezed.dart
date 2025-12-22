@@ -1719,7 +1719,7 @@ as int?,
 /// @nodoc
 mixin _$AthleteProfile {
 
- String? get name; String? get profileImageUrl; int? get age; String? get position; String? get level; double? get rating; String? get countryFlag; List<Achievement> get achievements;
+ String? get name; String? get profileImageUrl; int? get age; String? get position; String? get level; double? get rating; String? get countryFlag; int get sponsorshipDone; String get highestSocialMediaPresence; String get club; List<Achievement> get achievements;
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1732,16 +1732,16 @@ $AthleteProfileCopyWith<AthleteProfile> get copyWith => _$AthleteProfileCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.countryFlag, countryFlag) || other.countryFlag == countryFlag)&&const DeepCollectionEquality().equals(other.achievements, achievements));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.countryFlag, countryFlag) || other.countryFlag == countryFlag)&&(identical(other.sponsorshipDone, sponsorshipDone) || other.sponsorshipDone == sponsorshipDone)&&(identical(other.highestSocialMediaPresence, highestSocialMediaPresence) || other.highestSocialMediaPresence == highestSocialMediaPresence)&&(identical(other.club, club) || other.club == club)&&const DeepCollectionEquality().equals(other.achievements, achievements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,countryFlag,const DeepCollectionEquality().hash(achievements));
+int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,countryFlag,sponsorshipDone,highestSocialMediaPresence,club,const DeepCollectionEquality().hash(achievements));
 
 @override
 String toString() {
-  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, countryFlag: $countryFlag, achievements: $achievements)';
+  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, countryFlag: $countryFlag, sponsorshipDone: $sponsorshipDone, highestSocialMediaPresence: $highestSocialMediaPresence, club: $club, achievements: $achievements)';
 }
 
 
@@ -1752,7 +1752,7 @@ abstract mixin class $AthleteProfileCopyWith<$Res>  {
   factory $AthleteProfileCopyWith(AthleteProfile value, $Res Function(AthleteProfile) _then) = _$AthleteProfileCopyWithImpl;
 @useResult
 $Res call({
- String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, String? countryFlag, List<Achievement> achievements
+ String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, String? countryFlag, int sponsorshipDone, String highestSocialMediaPresence, String club, List<Achievement> achievements
 });
 
 
@@ -1769,7 +1769,7 @@ class _$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? countryFlag = freezed,Object? achievements = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? countryFlag = freezed,Object? sponsorshipDone = null,Object? highestSocialMediaPresence = null,Object? club = null,Object? achievements = null,}) {
   return _then(_self.copyWith(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
@@ -1778,7 +1778,10 @@ as int?,position: freezed == position ? _self.position : position // ignore: cas
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as double?,countryFlag: freezed == countryFlag ? _self.countryFlag : countryFlag // ignore: cast_nullable_to_non_nullable
-as String?,achievements: null == achievements ? _self.achievements : achievements // ignore: cast_nullable_to_non_nullable
+as String?,sponsorshipDone: null == sponsorshipDone ? _self.sponsorshipDone : sponsorshipDone // ignore: cast_nullable_to_non_nullable
+as int,highestSocialMediaPresence: null == highestSocialMediaPresence ? _self.highestSocialMediaPresence : highestSocialMediaPresence // ignore: cast_nullable_to_non_nullable
+as String,club: null == club ? _self.club : club // ignore: cast_nullable_to_non_nullable
+as String,achievements: null == achievements ? _self.achievements : achievements // ignore: cast_nullable_to_non_nullable
 as List<Achievement>,
   ));
 }
@@ -1864,10 +1867,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  List<Achievement> achievements)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  int sponsorshipDone,  String highestSocialMediaPresence,  String club,  List<Achievement> achievements)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.achievements);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.sponsorshipDone,_that.highestSocialMediaPresence,_that.club,_that.achievements);case _:
   return orElse();
 
 }
@@ -1885,10 +1888,10 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  List<Achievement> achievements)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  int sponsorshipDone,  String highestSocialMediaPresence,  String club,  List<Achievement> achievements)  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile():
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.achievements);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.sponsorshipDone,_that.highestSocialMediaPresence,_that.club,_that.achievements);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1905,10 +1908,10 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  List<Achievement> achievements)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? profileImageUrl,  int? age,  String? position,  String? level,  double? rating,  String? countryFlag,  int sponsorshipDone,  String highestSocialMediaPresence,  String club,  List<Achievement> achievements)?  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
-return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.achievements);case _:
+return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.level,_that.rating,_that.countryFlag,_that.sponsorshipDone,_that.highestSocialMediaPresence,_that.club,_that.achievements);case _:
   return null;
 
 }
@@ -1920,7 +1923,7 @@ return $default(_that.name,_that.profileImageUrl,_that.age,_that.position,_that.
 @JsonSerializable()
 
 class _AthleteProfile implements AthleteProfile {
-  const _AthleteProfile({this.name, this.profileImageUrl, this.age, this.position, this.level, this.rating, this.countryFlag, final  List<Achievement> achievements = const []}): _achievements = achievements;
+  const _AthleteProfile({this.name, this.profileImageUrl, this.age, this.position, this.level, this.rating, this.countryFlag, this.sponsorshipDone = 0, this.highestSocialMediaPresence = "", this.club = "", final  List<Achievement> achievements = const []}): _achievements = achievements;
   factory _AthleteProfile.fromJson(Map<String, dynamic> json) => _$AthleteProfileFromJson(json);
 
 @override final  String? name;
@@ -1930,6 +1933,9 @@ class _AthleteProfile implements AthleteProfile {
 @override final  String? level;
 @override final  double? rating;
 @override final  String? countryFlag;
+@override@JsonKey() final  int sponsorshipDone;
+@override@JsonKey() final  String highestSocialMediaPresence;
+@override@JsonKey() final  String club;
  final  List<Achievement> _achievements;
 @override@JsonKey() List<Achievement> get achievements {
   if (_achievements is EqualUnmodifiableListView) return _achievements;
@@ -1951,16 +1957,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.countryFlag, countryFlag) || other.countryFlag == countryFlag)&&const DeepCollectionEquality().equals(other._achievements, _achievements));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AthleteProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.age, age) || other.age == age)&&(identical(other.position, position) || other.position == position)&&(identical(other.level, level) || other.level == level)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.countryFlag, countryFlag) || other.countryFlag == countryFlag)&&(identical(other.sponsorshipDone, sponsorshipDone) || other.sponsorshipDone == sponsorshipDone)&&(identical(other.highestSocialMediaPresence, highestSocialMediaPresence) || other.highestSocialMediaPresence == highestSocialMediaPresence)&&(identical(other.club, club) || other.club == club)&&const DeepCollectionEquality().equals(other._achievements, _achievements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,countryFlag,const DeepCollectionEquality().hash(_achievements));
+int get hashCode => Object.hash(runtimeType,name,profileImageUrl,age,position,level,rating,countryFlag,sponsorshipDone,highestSocialMediaPresence,club,const DeepCollectionEquality().hash(_achievements));
 
 @override
 String toString() {
-  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, countryFlag: $countryFlag, achievements: $achievements)';
+  return 'AthleteProfile(name: $name, profileImageUrl: $profileImageUrl, age: $age, position: $position, level: $level, rating: $rating, countryFlag: $countryFlag, sponsorshipDone: $sponsorshipDone, highestSocialMediaPresence: $highestSocialMediaPresence, club: $club, achievements: $achievements)';
 }
 
 
@@ -1971,7 +1977,7 @@ abstract mixin class _$AthleteProfileCopyWith<$Res> implements $AthleteProfileCo
   factory _$AthleteProfileCopyWith(_AthleteProfile value, $Res Function(_AthleteProfile) _then) = __$AthleteProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, String? countryFlag, List<Achievement> achievements
+ String? name, String? profileImageUrl, int? age, String? position, String? level, double? rating, String? countryFlag, int sponsorshipDone, String highestSocialMediaPresence, String club, List<Achievement> achievements
 });
 
 
@@ -1988,7 +1994,7 @@ class __$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? countryFlag = freezed,Object? achievements = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? profileImageUrl = freezed,Object? age = freezed,Object? position = freezed,Object? level = freezed,Object? rating = freezed,Object? countryFlag = freezed,Object? sponsorshipDone = null,Object? highestSocialMediaPresence = null,Object? club = null,Object? achievements = null,}) {
   return _then(_AthleteProfile(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
@@ -1997,7 +2003,10 @@ as int?,position: freezed == position ? _self.position : position // ignore: cas
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as double?,countryFlag: freezed == countryFlag ? _self.countryFlag : countryFlag // ignore: cast_nullable_to_non_nullable
-as String?,achievements: null == achievements ? _self._achievements : achievements // ignore: cast_nullable_to_non_nullable
+as String?,sponsorshipDone: null == sponsorshipDone ? _self.sponsorshipDone : sponsorshipDone // ignore: cast_nullable_to_non_nullable
+as int,highestSocialMediaPresence: null == highestSocialMediaPresence ? _self.highestSocialMediaPresence : highestSocialMediaPresence // ignore: cast_nullable_to_non_nullable
+as String,club: null == club ? _self.club : club // ignore: cast_nullable_to_non_nullable
+as String,achievements: null == achievements ? _self._achievements : achievements // ignore: cast_nullable_to_non_nullable
 as List<Achievement>,
   ));
 }

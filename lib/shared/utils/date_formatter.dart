@@ -83,15 +83,43 @@ class DateFormatter {
   ///
   /// Example: DateTime(2025, 1, 15, 14, 30) → "2:30 PM"
   static String formatTime(DateTime date) {
-    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+    final hour = date.hour > 12
+        ? date.hour - 12
+        : (date.hour == 0 ? 12 : date.hour);
     final minute = date.minute.toString().padLeft(2, '0');
     final period = date.hour >= 12 ? 'PM' : 'AM';
     return '$hour:$minute $period';
   }
 
+  /// Smart chat timestamp formatter
+  /// Shows contextual time based on how recent the message is:
+  /// - Today → "2:30 PM"
+  /// - Yesterday → "Yesterday, 2:30 PM"
+  /// - This week → "Mon, 2:30 PM"
+  /// - Older → "Jan 15, 2:30 PM"
+  static String formatChatTimestamp(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(date.year, date.month, date.day);
+    final difference = today.difference(messageDate).inDays;
 
+    final timeStr = formatTime(date);
 
-
+    if (difference == 0) {
+      // Today - just show time
+      return timeStr;
+    } else if (difference == 1) {
+      // Yesterday
+      return 'Yesterday, $timeStr';
+    } else if (difference < 7) {
+      // This week - show day name
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      return '${days[date.weekday - 1]}, $timeStr';
+    } else {
+      // Older - show month and day
+      return '${_monthsShort[date.month - 1]} ${date.day}, $timeStr';
+    }
+  }
 
   /// Get relative time string (e.g., "2 hours ago", "3 days ago")
   ///

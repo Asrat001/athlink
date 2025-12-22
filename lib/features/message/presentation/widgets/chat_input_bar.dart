@@ -13,6 +13,7 @@ class ChatInputBar extends StatefulWidget {
   final TextEditingController textController;
   final Function(String) onSendText;
   final VoidCallback onFileUpload;
+  final VoidCallback onImageUpload;
   final Function(String path, Duration duration) onSendVoice;
   final Function(SelectableProposalItem) onSendProposal;
   final VoidCallback onShowProposalSelector;
@@ -23,6 +24,7 @@ class ChatInputBar extends StatefulWidget {
     required this.textController,
     required this.onSendText,
     required this.onFileUpload,
+    required this.onImageUpload,
     required this.onSendVoice,
     required this.onSendProposal,
     required this.onShowProposalSelector,
@@ -114,7 +116,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
       child: Container(
         // REMOVED FIXED HEIGHT - LET THE CONTENT DETERMINE HEIGHT
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(50),
           border: Border.all(
             color: AppColors.grey.withValues(alpha: .4),
             width: 1,
@@ -122,7 +124,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 8,
+          vertical: 4,
         ), // Added vertical padding
         child: Column(
           mainAxisSize: MainAxisSize.min, // Use min to wrap content
@@ -147,10 +149,23 @@ class _ChatInputBarState extends State<ChatInputBar> {
                     icon: SvgPicture.asset("assets/images/file.svg"),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
+                      minWidth: 24,
+                      minHeight: 24,
                     ),
                   ),
+                const SizedBox(width: 1),
+                IconButton(
+                  onPressed: widget.onImageUpload,
+                  icon: const Icon(
+                    Icons.camera_alt_outlined,
+                    color: AppColors.grey,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 24,
+                    minHeight: 24,
+                  ),
+                ),
 
                 // Input Area or Recording Timer
                 Expanded(
@@ -191,6 +206,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                           child: TextField(
                             controller: widget.textController,
                             textInputAction: TextInputAction.send,
+
                             onSubmitted: (text) {
                               if (hasDraftProposal) {
                                 widget.onSendProposal(widget.draftProposal!);
@@ -205,9 +221,9 @@ class _ChatInputBarState extends State<ChatInputBar> {
                             maxLines: null, // Allow multiple lines
                             keyboardType: TextInputType.multiline,
                             decoration: InputDecoration(
-                              hintText: "Type your message here...",
+                              hintText: "message here...",
                               hintStyle: GoogleFonts.inter(
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: AppColors.grey600,
                                 fontWeight: FontWeight.w400,
                               ),
