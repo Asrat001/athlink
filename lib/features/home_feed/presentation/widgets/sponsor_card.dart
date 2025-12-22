@@ -22,19 +22,12 @@ class SponsorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 130,
+            height: 80,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -80,13 +73,16 @@ class SponsorCard extends StatelessWidget {
 
           const SizedBox(height: 30),
           // Name
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              color: AppColors.textPrimary,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
 
@@ -102,18 +98,15 @@ class SponsorCard extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Buttons Row
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconButton(Icons.share_outlined),
-                const SizedBox(width: 12),
-                _iconButton(Icons.chat_bubble_outline),
-                const SizedBox(width: 12),
-                _iconButton(Icons.favorite_border),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _iconButton(Icons.share_outlined),
+              const SizedBox(width: 12),
+              _iconButton(Icons.chat_bubble_outline),
+              const SizedBox(width: 12),
+              _iconButton(Icons.favorite_border),
+            ],
           ),
         ],
       ),

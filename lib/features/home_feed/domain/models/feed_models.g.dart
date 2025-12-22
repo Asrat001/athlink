@@ -100,6 +100,10 @@ _AthleteProfile _$AthleteProfileFromJson(Map<String, dynamic> json) =>
       level: json['level'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
       countryFlag: json['countryFlag'] as String?,
+      sponsorshipDone: (json['sponsorshipDone'] as num?)?.toInt() ?? 0,
+      highestSocialMediaPresence:
+          json['highestSocialMediaPresence'] as String? ?? "",
+      club: json['club'] as String? ?? "",
       achievements:
           (json['achievements'] as List<dynamic>?)
               ?.map((e) => Achievement.fromJson(e as Map<String, dynamic>))
@@ -116,6 +120,9 @@ Map<String, dynamic> _$AthleteProfileToJson(_AthleteProfile instance) =>
       'level': instance.level,
       'rating': instance.rating,
       'countryFlag': instance.countryFlag,
+      'sponsorshipDone': instance.sponsorshipDone,
+      'highestSocialMediaPresence': instance.highestSocialMediaPresence,
+      'club': instance.club,
       'achievements': instance.achievements,
     };
 

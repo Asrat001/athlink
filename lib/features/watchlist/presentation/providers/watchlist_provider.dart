@@ -4,9 +4,10 @@ import 'package:athlink/features/watchlist/presentation/providers/state/watchlis
 import 'package:athlink/features/watchlist/presentation/providers/watchlist_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Export watchlistIdsProvider from watchlist_notifier.dart
+export 'watchlist_notifier.dart' show watchlistIdsProvider;
+
 final watchlistProvider =
-    StateNotifierProvider<WatchlistNotifier, WatchlistState>((
-  ref,
-) {
-  return WatchlistNotifier(sl<WatchlistRepository>());
-});
+    StateNotifierProvider<WatchlistNotifier, WatchlistState>((ref) {
+      return WatchlistNotifier(sl<WatchlistRepository>(), ref);
+    });

@@ -1,4 +1,5 @@
 import 'package:athlink/core/handlers/api_response.dart';
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/domain/models/contact.dart';
 import 'package:athlink/features/message/domain/models/conversation.dart';
@@ -22,9 +23,8 @@ abstract class ChatRepository {
   Future<ApiResponse<ChatMessage>> sendMessage(SendMessageRequest request);
 
   /// Upload a file and get the file URL
-  Future<ApiResponse<String>> uploadFile({
-    required String filePath,
-    required String fileName,
+  Future<ApiResponse<List<ChatAttachment>>> uploadFile({
+    required List<({String filePath, String fileName})> files,
   });
 
   /// Upload an audio file and get the audio URL

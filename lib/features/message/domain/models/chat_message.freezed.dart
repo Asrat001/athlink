@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$ChatMessage {
 
 @JsonKey(name: '_id') String get id; String get conversationId; MessageSender get sender; String get content; String get type;// 'text', 'image', 'file', etc.
- String? get mediaUrl; String get status;// 'sent', 'delivered', 'read'
+ List<ChatAttachment>? get media; String get status;// 'sent', 'delivered', 'read'
  DateTime get createdAt; DateTime get updatedAt;// UI-specific fields for special message types
  String? get proposalId; String? get proposalTitle; String? get proposalSubtitle; String? get proposalLogo; String? get meetLink; String? get meetThumbnail; String? get fileName; String? get fileSize; String? get fileType; String? get audioPath; Duration? get duration;
 /// Create a copy of ChatMessage
@@ -31,16 +31,16 @@ $ChatMessageCopyWith<ChatMessage> get copyWith => _$ChatMessageCopyWithImpl<Chat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatMessage&&(identical(other.id, id) || other.id == id)&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.content, content) || other.content == content)&&(identical(other.type, type) || other.type == type)&&(identical(other.mediaUrl, mediaUrl) || other.mediaUrl == mediaUrl)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.proposalId, proposalId) || other.proposalId == proposalId)&&(identical(other.proposalTitle, proposalTitle) || other.proposalTitle == proposalTitle)&&(identical(other.proposalSubtitle, proposalSubtitle) || other.proposalSubtitle == proposalSubtitle)&&(identical(other.proposalLogo, proposalLogo) || other.proposalLogo == proposalLogo)&&(identical(other.meetLink, meetLink) || other.meetLink == meetLink)&&(identical(other.meetThumbnail, meetThumbnail) || other.meetThumbnail == meetThumbnail)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.audioPath, audioPath) || other.audioPath == audioPath)&&(identical(other.duration, duration) || other.duration == duration));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatMessage&&(identical(other.id, id) || other.id == id)&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.content, content) || other.content == content)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.proposalId, proposalId) || other.proposalId == proposalId)&&(identical(other.proposalTitle, proposalTitle) || other.proposalTitle == proposalTitle)&&(identical(other.proposalSubtitle, proposalSubtitle) || other.proposalSubtitle == proposalSubtitle)&&(identical(other.proposalLogo, proposalLogo) || other.proposalLogo == proposalLogo)&&(identical(other.meetLink, meetLink) || other.meetLink == meetLink)&&(identical(other.meetThumbnail, meetThumbnail) || other.meetThumbnail == meetThumbnail)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.audioPath, audioPath) || other.audioPath == audioPath)&&(identical(other.duration, duration) || other.duration == duration));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,conversationId,sender,content,type,mediaUrl,status,createdAt,updatedAt,proposalId,proposalTitle,proposalSubtitle,proposalLogo,meetLink,meetThumbnail,fileName,fileSize,fileType,audioPath,duration]);
+int get hashCode => Object.hashAll([runtimeType,id,conversationId,sender,content,type,const DeepCollectionEquality().hash(media),status,createdAt,updatedAt,proposalId,proposalTitle,proposalSubtitle,proposalLogo,meetLink,meetThumbnail,fileName,fileSize,fileType,audioPath,duration]);
 
 @override
 String toString() {
-  return 'ChatMessage(id: $id, conversationId: $conversationId, sender: $sender, content: $content, type: $type, mediaUrl: $mediaUrl, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, proposalId: $proposalId, proposalTitle: $proposalTitle, proposalSubtitle: $proposalSubtitle, proposalLogo: $proposalLogo, meetLink: $meetLink, meetThumbnail: $meetThumbnail, fileName: $fileName, fileSize: $fileSize, fileType: $fileType, audioPath: $audioPath, duration: $duration)';
+  return 'ChatMessage(id: $id, conversationId: $conversationId, sender: $sender, content: $content, type: $type, media: $media, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, proposalId: $proposalId, proposalTitle: $proposalTitle, proposalSubtitle: $proposalSubtitle, proposalLogo: $proposalLogo, meetLink: $meetLink, meetThumbnail: $meetThumbnail, fileName: $fileName, fileSize: $fileSize, fileType: $fileType, audioPath: $audioPath, duration: $duration)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $ChatMessageCopyWith<$Res>  {
   factory $ChatMessageCopyWith(ChatMessage value, $Res Function(ChatMessage) _then) = _$ChatMessageCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String conversationId, MessageSender sender, String content, String type, String? mediaUrl, String status, DateTime createdAt, DateTime updatedAt, String? proposalId, String? proposalTitle, String? proposalSubtitle, String? proposalLogo, String? meetLink, String? meetThumbnail, String? fileName, String? fileSize, String? fileType, String? audioPath, Duration? duration
+@JsonKey(name: '_id') String id, String conversationId, MessageSender sender, String content, String type, List<ChatAttachment>? media, String status, DateTime createdAt, DateTime updatedAt, String? proposalId, String? proposalTitle, String? proposalSubtitle, String? proposalLogo, String? meetLink, String? meetThumbnail, String? fileName, String? fileSize, String? fileType, String? audioPath, Duration? duration
 });
 
 
@@ -68,15 +68,15 @@ class _$ChatMessageCopyWithImpl<$Res>
 
 /// Create a copy of ChatMessage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? conversationId = null,Object? sender = null,Object? content = null,Object? type = null,Object? mediaUrl = freezed,Object? status = null,Object? createdAt = null,Object? updatedAt = null,Object? proposalId = freezed,Object? proposalTitle = freezed,Object? proposalSubtitle = freezed,Object? proposalLogo = freezed,Object? meetLink = freezed,Object? meetThumbnail = freezed,Object? fileName = freezed,Object? fileSize = freezed,Object? fileType = freezed,Object? audioPath = freezed,Object? duration = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? conversationId = null,Object? sender = null,Object? content = null,Object? type = null,Object? media = freezed,Object? status = null,Object? createdAt = null,Object? updatedAt = null,Object? proposalId = freezed,Object? proposalTitle = freezed,Object? proposalSubtitle = freezed,Object? proposalLogo = freezed,Object? meetLink = freezed,Object? meetThumbnail = freezed,Object? fileName = freezed,Object? fileSize = freezed,Object? fileType = freezed,Object? audioPath = freezed,Object? duration = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,conversationId: null == conversationId ? _self.conversationId : conversationId // ignore: cast_nullable_to_non_nullable
 as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
 as MessageSender,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,mediaUrl: freezed == mediaUrl ? _self.mediaUrl : mediaUrl // ignore: cast_nullable_to_non_nullable
-as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as List<ChatAttachment>?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,proposalId: freezed == proposalId ? _self.proposalId : proposalId // ignore: cast_nullable_to_non_nullable
@@ -184,10 +184,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  String? mediaUrl,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  List<ChatAttachment>? media,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChatMessage() when $default != null:
-return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.mediaUrl,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
+return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.media,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
   return orElse();
 
 }
@@ -205,10 +205,10 @@ return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  String? mediaUrl,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  List<ChatAttachment>? media,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)  $default,) {final _that = this;
 switch (_that) {
 case _ChatMessage():
-return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.mediaUrl,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
+return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.media,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -225,10 +225,10 @@ return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  String? mediaUrl,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  String conversationId,  MessageSender sender,  String content,  String type,  List<ChatAttachment>? media,  String status,  DateTime createdAt,  DateTime updatedAt,  String? proposalId,  String? proposalTitle,  String? proposalSubtitle,  String? proposalLogo,  String? meetLink,  String? meetThumbnail,  String? fileName,  String? fileSize,  String? fileType,  String? audioPath,  Duration? duration)?  $default,) {final _that = this;
 switch (_that) {
 case _ChatMessage() when $default != null:
-return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.mediaUrl,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
+return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.type,_that.media,_that.status,_that.createdAt,_that.updatedAt,_that.proposalId,_that.proposalTitle,_that.proposalSubtitle,_that.proposalLogo,_that.meetLink,_that.meetThumbnail,_that.fileName,_that.fileSize,_that.fileType,_that.audioPath,_that.duration);case _:
   return null;
 
 }
@@ -240,7 +240,7 @@ return $default(_that.id,_that.conversationId,_that.sender,_that.content,_that.t
 @JsonSerializable()
 
 class _ChatMessage extends ChatMessage {
-  const _ChatMessage({@JsonKey(name: '_id') required this.id, required this.conversationId, required this.sender, required this.content, required this.type, this.mediaUrl, this.status = 'sent', required this.createdAt, required this.updatedAt, this.proposalId, this.proposalTitle, this.proposalSubtitle, this.proposalLogo, this.meetLink, this.meetThumbnail, this.fileName, this.fileSize, this.fileType, this.audioPath, this.duration}): super._();
+  const _ChatMessage({@JsonKey(name: '_id') required this.id, required this.conversationId, required this.sender, required this.content, required this.type, final  List<ChatAttachment>? media, this.status = 'sent', required this.createdAt, required this.updatedAt, this.proposalId, this.proposalTitle, this.proposalSubtitle, this.proposalLogo, this.meetLink, this.meetThumbnail, this.fileName, this.fileSize, this.fileType, this.audioPath, this.duration}): _media = media,super._();
   factory _ChatMessage.fromJson(Map<String, dynamic> json) => _$ChatMessageFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
@@ -249,7 +249,16 @@ class _ChatMessage extends ChatMessage {
 @override final  String content;
 @override final  String type;
 // 'text', 'image', 'file', etc.
-@override final  String? mediaUrl;
+ final  List<ChatAttachment>? _media;
+// 'text', 'image', 'file', etc.
+@override List<ChatAttachment>? get media {
+  final value = _media;
+  if (value == null) return null;
+  if (_media is EqualUnmodifiableListView) return _media;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 @override@JsonKey() final  String status;
 // 'sent', 'delivered', 'read'
 @override final  DateTime createdAt;
@@ -280,16 +289,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatMessage&&(identical(other.id, id) || other.id == id)&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.content, content) || other.content == content)&&(identical(other.type, type) || other.type == type)&&(identical(other.mediaUrl, mediaUrl) || other.mediaUrl == mediaUrl)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.proposalId, proposalId) || other.proposalId == proposalId)&&(identical(other.proposalTitle, proposalTitle) || other.proposalTitle == proposalTitle)&&(identical(other.proposalSubtitle, proposalSubtitle) || other.proposalSubtitle == proposalSubtitle)&&(identical(other.proposalLogo, proposalLogo) || other.proposalLogo == proposalLogo)&&(identical(other.meetLink, meetLink) || other.meetLink == meetLink)&&(identical(other.meetThumbnail, meetThumbnail) || other.meetThumbnail == meetThumbnail)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.audioPath, audioPath) || other.audioPath == audioPath)&&(identical(other.duration, duration) || other.duration == duration));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatMessage&&(identical(other.id, id) || other.id == id)&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.content, content) || other.content == content)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.proposalId, proposalId) || other.proposalId == proposalId)&&(identical(other.proposalTitle, proposalTitle) || other.proposalTitle == proposalTitle)&&(identical(other.proposalSubtitle, proposalSubtitle) || other.proposalSubtitle == proposalSubtitle)&&(identical(other.proposalLogo, proposalLogo) || other.proposalLogo == proposalLogo)&&(identical(other.meetLink, meetLink) || other.meetLink == meetLink)&&(identical(other.meetThumbnail, meetThumbnail) || other.meetThumbnail == meetThumbnail)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.audioPath, audioPath) || other.audioPath == audioPath)&&(identical(other.duration, duration) || other.duration == duration));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,conversationId,sender,content,type,mediaUrl,status,createdAt,updatedAt,proposalId,proposalTitle,proposalSubtitle,proposalLogo,meetLink,meetThumbnail,fileName,fileSize,fileType,audioPath,duration]);
+int get hashCode => Object.hashAll([runtimeType,id,conversationId,sender,content,type,const DeepCollectionEquality().hash(_media),status,createdAt,updatedAt,proposalId,proposalTitle,proposalSubtitle,proposalLogo,meetLink,meetThumbnail,fileName,fileSize,fileType,audioPath,duration]);
 
 @override
 String toString() {
-  return 'ChatMessage(id: $id, conversationId: $conversationId, sender: $sender, content: $content, type: $type, mediaUrl: $mediaUrl, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, proposalId: $proposalId, proposalTitle: $proposalTitle, proposalSubtitle: $proposalSubtitle, proposalLogo: $proposalLogo, meetLink: $meetLink, meetThumbnail: $meetThumbnail, fileName: $fileName, fileSize: $fileSize, fileType: $fileType, audioPath: $audioPath, duration: $duration)';
+  return 'ChatMessage(id: $id, conversationId: $conversationId, sender: $sender, content: $content, type: $type, media: $media, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, proposalId: $proposalId, proposalTitle: $proposalTitle, proposalSubtitle: $proposalSubtitle, proposalLogo: $proposalLogo, meetLink: $meetLink, meetThumbnail: $meetThumbnail, fileName: $fileName, fileSize: $fileSize, fileType: $fileType, audioPath: $audioPath, duration: $duration)';
 }
 
 
@@ -300,7 +309,7 @@ abstract mixin class _$ChatMessageCopyWith<$Res> implements $ChatMessageCopyWith
   factory _$ChatMessageCopyWith(_ChatMessage value, $Res Function(_ChatMessage) _then) = __$ChatMessageCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, String conversationId, MessageSender sender, String content, String type, String? mediaUrl, String status, DateTime createdAt, DateTime updatedAt, String? proposalId, String? proposalTitle, String? proposalSubtitle, String? proposalLogo, String? meetLink, String? meetThumbnail, String? fileName, String? fileSize, String? fileType, String? audioPath, Duration? duration
+@JsonKey(name: '_id') String id, String conversationId, MessageSender sender, String content, String type, List<ChatAttachment>? media, String status, DateTime createdAt, DateTime updatedAt, String? proposalId, String? proposalTitle, String? proposalSubtitle, String? proposalLogo, String? meetLink, String? meetThumbnail, String? fileName, String? fileSize, String? fileType, String? audioPath, Duration? duration
 });
 
 
@@ -317,15 +326,15 @@ class __$ChatMessageCopyWithImpl<$Res>
 
 /// Create a copy of ChatMessage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? conversationId = null,Object? sender = null,Object? content = null,Object? type = null,Object? mediaUrl = freezed,Object? status = null,Object? createdAt = null,Object? updatedAt = null,Object? proposalId = freezed,Object? proposalTitle = freezed,Object? proposalSubtitle = freezed,Object? proposalLogo = freezed,Object? meetLink = freezed,Object? meetThumbnail = freezed,Object? fileName = freezed,Object? fileSize = freezed,Object? fileType = freezed,Object? audioPath = freezed,Object? duration = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? conversationId = null,Object? sender = null,Object? content = null,Object? type = null,Object? media = freezed,Object? status = null,Object? createdAt = null,Object? updatedAt = null,Object? proposalId = freezed,Object? proposalTitle = freezed,Object? proposalSubtitle = freezed,Object? proposalLogo = freezed,Object? meetLink = freezed,Object? meetThumbnail = freezed,Object? fileName = freezed,Object? fileSize = freezed,Object? fileType = freezed,Object? audioPath = freezed,Object? duration = freezed,}) {
   return _then(_ChatMessage(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,conversationId: null == conversationId ? _self.conversationId : conversationId // ignore: cast_nullable_to_non_nullable
 as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
 as MessageSender,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,mediaUrl: freezed == mediaUrl ? _self.mediaUrl : mediaUrl // ignore: cast_nullable_to_non_nullable
-as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,media: freezed == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
+as List<ChatAttachment>?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,proposalId: freezed == proposalId ? _self.proposalId : proposalId // ignore: cast_nullable_to_non_nullable

@@ -88,6 +88,9 @@ abstract class AthleteProfile with _$AthleteProfile {
     String? level,
     double? rating,
     String? countryFlag,
+    @Default(0) int sponsorshipDone,
+    @Default("") String highestSocialMediaPresence,
+    @Default("") String club,
     @Default([]) List<Achievement> achievements,
   }) = _AthleteProfile;
 

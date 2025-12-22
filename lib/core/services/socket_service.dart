@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -20,17 +23,11 @@ class SocketIoService {
 
     _socket!.connect();
 
-    _socket!.onConnect((_) {
-      print('Socket Connected');
-    });
+    _socket!.onConnect((_) {});
 
-    _socket!.onDisconnect((_) {
-      print('Socket Disconnected');
-    });
+    _socket!.onDisconnect((_) {});
 
-    _socket!.onConnectError((data) {
-      print('Socket Connection Error: $data');
-    });
+    _socket!.onConnectError((data) {});
   }
 
   // Send a message
@@ -38,13 +35,18 @@ class SocketIoService {
     required String conversationId,
     required String content,
     required String type,
+    List<ChatAttachment>? mediaUrls,
     Function(dynamic)? onResponse,
   }) {
     _socket?.emitWithAck(
       'message:send',
-      {'conversationId': conversationId, 'content': content, 'type': type},
+      {
+        'conversationId': conversationId,
+        'content': content,
+        'type': type,
+        'media': mediaUrls,
+      },
       ack: (response) {
-
         if (onResponse != null) {
           onResponse(response);
         }
@@ -55,8 +57,6 @@ class SocketIoService {
   // Listen for new messages
   void onMessageReceived(Function(ChatMessage) callback) {
     _socket?.on('message:new', (data) {
-      print('🔌 SOCKET EVENT: message:new received');
-      print('Data: $data');
       try {
         final message = ChatMessage.fromJson(data);
         callback(message);
@@ -68,12 +68,9 @@ class SocketIoService {
 
   // Join conversation
   void joinConversation(String conversationId) {
-    print('🔌 Emitting conversation:join for $conversationId');
     if (_socket?.connected == true) {
       _socket?.emit('conversation:join', {'conversationId': conversationId});
-    } else {
-      print('❌ Socket not connected when trying to join conversation');
-    }
+    } else {}
   }
 
   // Leave conversation
@@ -106,18 +103,18 @@ class SocketIoService {
   }
 
   void onTyping(
-    Function(String conversationId) onStart,
-    Function(String conversationId) onStop,
+    Function(Map<String, dynamic> data) onStart,
+    Function(Map<String, dynamic> data) onStop,
   ) {
     _socket?.on('typing:start', (data) {
-      if (data != null && data['conversationId'] != null) {
-        onStart(data['conversationId']);
+      if (data != null) {
+        onStart(Map<String, dynamic>.from(data));
       }
     });
 
     _socket?.on('typing:stop', (data) {
-      if (data != null && data['conversationId'] != null) {
-        onStop(data['conversationId']);
+      if (data != null) {
+        onStop(Map<String, dynamic>.from(data));
       }
     });
   }

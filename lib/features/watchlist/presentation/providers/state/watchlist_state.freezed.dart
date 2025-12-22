@@ -14,76 +14,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WatchlistState {
 
- bool get isLoading; bool get isSuccess; WatchlistData? get watchlistData; String? get errorMessage;
-/// Create a copy of WatchlistState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$WatchlistStateCopyWith<WatchlistState> get copyWith => _$WatchlistStateCopyWithImpl<WatchlistState>(this as WatchlistState, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.watchlistData, watchlistData) || other.watchlistData == watchlistData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistState);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,watchlistData,errorMessage);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistState(isLoading: $isLoading, isSuccess: $isSuccess, watchlistData: $watchlistData, errorMessage: $errorMessage)';
+  return 'WatchlistState()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $WatchlistStateCopyWith<$Res>  {
-  factory $WatchlistStateCopyWith(WatchlistState value, $Res Function(WatchlistState) _then) = _$WatchlistStateCopyWithImpl;
-@useResult
-$Res call({
- bool isLoading, bool isSuccess, WatchlistData? watchlistData, String? errorMessage
-});
-
-
-$WatchlistDataCopyWith<$Res>? get watchlistData;
-
-}
-/// @nodoc
-class _$WatchlistStateCopyWithImpl<$Res>
-    implements $WatchlistStateCopyWith<$Res> {
-  _$WatchlistStateCopyWithImpl(this._self, this._then);
-
-  final WatchlistState _self;
-  final $Res Function(WatchlistState) _then;
-
-/// Create a copy of WatchlistState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isSuccess = null,Object? watchlistData = freezed,Object? errorMessage = freezed,}) {
-  return _then(_self.copyWith(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
-as bool,watchlistData: freezed == watchlistData ? _self.watchlistData : watchlistData // ignore: cast_nullable_to_non_nullable
-as WatchlistData?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-/// Create a copy of WatchlistState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$WatchlistDataCopyWith<$Res>? get watchlistData {
-    if (_self.watchlistData == null) {
-    return null;
-  }
-
-  return $WatchlistDataCopyWith<$Res>(_self.watchlistData!, (value) {
-    return _then(_self.copyWith(watchlistData: value));
-  });
-}
+class $WatchlistStateCopyWith<$Res>  {
+$WatchlistStateCopyWith(WatchlistState _, $Res Function(WatchlistState) __);
 }
 
 
@@ -101,11 +55,14 @@ extension WatchlistStatePatterns on WatchlistState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WatchlistState value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Success value)?  success,TResult Function( _Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _WatchlistState() when $default != null:
-return $default(_that);case _:
+case _Initial() when initial != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Success() when success != null:
+return success(_that);case _Error() when error != null:
+return error(_that);case _:
   return orElse();
 
 }
@@ -123,11 +80,14 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WatchlistState value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Success value)  success,required TResult Function( _Error value)  error,}){
 final _that = this;
 switch (_that) {
-case _WatchlistState():
-return $default(_that);case _:
+case _Initial():
+return initial(_that);case _Loading():
+return loading(_that);case _Success():
+return success(_that);case _Error():
+return error(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -144,11 +104,14 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WatchlistState value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Success value)?  success,TResult? Function( _Error value)?  error,}){
 final _that = this;
 switch (_that) {
-case _WatchlistState() when $default != null:
-return $default(_that);case _:
+case _Initial() when initial != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Success() when success != null:
+return success(_that);case _Error() when error != null:
+return error(_that);case _:
   return null;
 
 }
@@ -165,10 +128,13 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  WatchlistData? watchlistData,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( WatchlistData watchlistData)?  success,TResult Function( String errorMessage)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _WatchlistState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorMessage);case _:
+case _Initial() when initial != null:
+return initial();case _Loading() when loading != null:
+return loading();case _Success() when success != null:
+return success(_that.watchlistData);case _Error() when error != null:
+return error(_that.errorMessage);case _:
   return orElse();
 
 }
@@ -186,10 +152,13 @@ return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorM
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  WatchlistData? watchlistData,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( WatchlistData watchlistData)  success,required TResult Function( String errorMessage)  error,}) {final _that = this;
 switch (_that) {
-case _WatchlistState():
-return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorMessage);case _:
+case _Initial():
+return initial();case _Loading():
+return loading();case _Success():
+return success(_that.watchlistData);case _Error():
+return error(_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +175,13 @@ return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorM
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isSuccess,  WatchlistData? watchlistData,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( WatchlistData watchlistData)?  success,TResult? Function( String errorMessage)?  error,}) {final _that = this;
 switch (_that) {
-case _WatchlistState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorMessage);case _:
+case _Initial() when initial != null:
+return initial();case _Loading() when loading != null:
+return loading();case _Success() when success != null:
+return success(_that.watchlistData);case _Error() when error != null:
+return error(_that.errorMessage);case _:
   return null;
 
 }
@@ -220,69 +192,127 @@ return $default(_that.isLoading,_that.isSuccess,_that.watchlistData,_that.errorM
 /// @nodoc
 
 
-class _WatchlistState implements WatchlistState {
-  const _WatchlistState({this.isLoading = false, this.isSuccess = false, this.watchlistData, this.errorMessage});
+class _Initial implements WatchlistState {
+  const _Initial();
   
 
-@override@JsonKey() final  bool isLoading;
-@override@JsonKey() final  bool isSuccess;
-@override final  WatchlistData? watchlistData;
-@override final  String? errorMessage;
 
-/// Create a copy of WatchlistState
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$WatchlistStateCopyWith<_WatchlistState> get copyWith => __$WatchlistStateCopyWithImpl<_WatchlistState>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.watchlistData, watchlistData) || other.watchlistData == watchlistData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,watchlistData,errorMessage);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistState(isLoading: $isLoading, isSuccess: $isSuccess, watchlistData: $watchlistData, errorMessage: $errorMessage)';
+  return 'WatchlistState.initial()';
 }
 
 
 }
+
+
+
 
 /// @nodoc
-abstract mixin class _$WatchlistStateCopyWith<$Res> implements $WatchlistStateCopyWith<$Res> {
-  factory _$WatchlistStateCopyWith(_WatchlistState value, $Res Function(_WatchlistState) _then) = __$WatchlistStateCopyWithImpl;
-@override @useResult
-$Res call({
- bool isLoading, bool isSuccess, WatchlistData? watchlistData, String? errorMessage
-});
 
 
-@override $WatchlistDataCopyWith<$Res>? get watchlistData;
+class _Loading implements WatchlistState {
+  const _Loading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WatchlistState.loading()';
+}
+
 
 }
-/// @nodoc
-class __$WatchlistStateCopyWithImpl<$Res>
-    implements _$WatchlistStateCopyWith<$Res> {
-  __$WatchlistStateCopyWithImpl(this._self, this._then);
 
-  final _WatchlistState _self;
-  final $Res Function(_WatchlistState) _then;
+
+
+
+/// @nodoc
+
+
+class _Success implements WatchlistState {
+  const _Success({required this.watchlistData});
+  
+
+ final  WatchlistData watchlistData;
 
 /// Create a copy of WatchlistState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isSuccess = null,Object? watchlistData = freezed,Object? errorMessage = freezed,}) {
-  return _then(_WatchlistState(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
-as bool,watchlistData: freezed == watchlistData ? _self.watchlistData : watchlistData // ignore: cast_nullable_to_non_nullable
-as WatchlistData?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.watchlistData, watchlistData) || other.watchlistData == watchlistData));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,watchlistData);
+
+@override
+String toString() {
+  return 'WatchlistState.success(watchlistData: $watchlistData)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SuccessCopyWith<$Res> implements $WatchlistStateCopyWith<$Res> {
+  factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
+@useResult
+$Res call({
+ WatchlistData watchlistData
+});
+
+
+$WatchlistDataCopyWith<$Res> get watchlistData;
+
+}
+/// @nodoc
+class __$SuccessCopyWithImpl<$Res>
+    implements _$SuccessCopyWith<$Res> {
+  __$SuccessCopyWithImpl(this._self, this._then);
+
+  final _Success _self;
+  final $Res Function(_Success) _then;
+
+/// Create a copy of WatchlistState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? watchlistData = null,}) {
+  return _then(_Success(
+watchlistData: null == watchlistData ? _self.watchlistData : watchlistData // ignore: cast_nullable_to_non_nullable
+as WatchlistData,
   ));
 }
 
@@ -290,15 +320,78 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$WatchlistDataCopyWith<$Res>? get watchlistData {
-    if (_self.watchlistData == null) {
-    return null;
-  }
-
-  return $WatchlistDataCopyWith<$Res>(_self.watchlistData!, (value) {
+$WatchlistDataCopyWith<$Res> get watchlistData {
+  
+  return $WatchlistDataCopyWith<$Res>(_self.watchlistData, (value) {
     return _then(_self.copyWith(watchlistData: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _Error implements WatchlistState {
+  const _Error({required this.errorMessage});
+  
+
+ final  String errorMessage;
+
+/// Create a copy of WatchlistState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,errorMessage);
+
+@override
+String toString() {
+  return 'WatchlistState.error(errorMessage: $errorMessage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ErrorCopyWith<$Res> implements $WatchlistStateCopyWith<$Res> {
+  factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
+@useResult
+$Res call({
+ String errorMessage
+});
+
+
+
+
+}
+/// @nodoc
+class __$ErrorCopyWithImpl<$Res>
+    implements _$ErrorCopyWith<$Res> {
+  __$ErrorCopyWithImpl(this._self, this._then);
+
+  final _Error _self;
+  final $Res Function(_Error) _then;
+
+/// Create a copy of WatchlistState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? errorMessage = null,}) {
+  return _then(_Error(
+errorMessage: null == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
 }
 
 // dart format on

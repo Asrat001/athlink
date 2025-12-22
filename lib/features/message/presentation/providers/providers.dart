@@ -18,5 +18,6 @@ final chatProvider = StateNotifierProvider.family
       return ChatNotifier(
         repository: sl<ChatRepository>(),
         conversationId: conversationId,
+        ref: ref,
       );
     });

@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:athlink/di.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
+import 'package:athlink/features/message/presentation/widgets/chat_message_footer.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -33,7 +33,7 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
   @override
   void didUpdateWidget(covariant ChatBubbleVoice oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.message.mediaUrl != oldWidget.message.mediaUrl) {
+    if (widget.message.media != oldWidget.message.media) {
       _stopAndReload();
     }
   }
@@ -54,8 +54,8 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
 
   Future<void> _initAudio() async {
     try {
-      if (widget.message.mediaUrl != null) {
-        final decodedUrl = Uri.decodeFull(widget.message.mediaUrl!);
+      if (widget.message.media != null) {
+        final decodedUrl = Uri.decodeFull(widget.message.media!.first.url);
         await _player.setUrl(fileBaseUrl + decodedUrl);
         _duration = widget.message.duration ?? Duration.zero;
 
@@ -193,13 +193,7 @@ class _ChatBubbleVoiceState extends State<ChatBubbleVoice> {
                           color: fgColor.withValues(alpha: 0.7),
                         ),
                       ),
-                      Text(
-                        DateFormatter.formatShort(widget.message.createdAt),
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: fgColor.withValues(alpha: 0.7),
-                        ),
-                      ),
+                      ChatMessageFooter(message: widget.message, isMe: isMe),
                     ],
                   ),
                 ],

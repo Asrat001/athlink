@@ -1,3 +1,4 @@
+import 'package:athlink/features/message/domain/models/conversation.dart';
 import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/providers/states/conversation_state.dart';
 import 'package:athlink/routes/route_names.dart';
@@ -20,96 +21,102 @@ class ChatListWidget extends ConsumerWidget {
         return const Center(child: CircularProgressIndicator());
       },
       loaded: (conversations, messages) {
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          itemCount: conversations.length,
-          itemBuilder: (context, index) {
-            final conversation = conversations[index];
-
-            return InkWell(
-              onTap: () {
-                context.push(
-                  Routes.chatDetailRouteName,
-                  extra: {
-                    "name":conversation.participant.name ,
-                    "logo": conversation.participant.profileImage,
-                    "isOnline": false,
-                    "conversationId": conversation.id,
-                  },
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: index % 2 == 1
-                      ? AppColors.extraLightGrey.withValues(alpha: 0.3)
-                      : AppColors.transparent,
-                ),
-                child: Row(
-                  children: [
-            
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: AppColors.extraLightGrey,
-                        backgroundImage: NetworkImage(
-                        "http://139.59.141.150:4000/uploads/profileImage-1761680272690-720968508.png"
-                        ),
-                      ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            title:conversation.participant.name,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+        return RefreshIndicator(
+          onRefresh: () async{
+            ref.read(conversationProvider.notifier).getConversations();
+          },
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: conversations.length,
+            itemBuilder: (context, index) {
+              final conversation = conversations[index];
+          
+              return InkWell(
+                onTap: () {
+                  context.push(
+                    Routes.chatDetailRouteName,
+                    extra: {
+                      "name":conversation.participant.name ,
+                      "logo": conversation.participant.profileImage,
+                      "isOnline": false,
+                      "conversationId": conversation.id,
+                    },
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: index % 2 == 1
+                        ? AppColors.extraLightGrey.withValues(alpha: 0.3)
+                        : AppColors.transparent,
+                  ),
+                  child: Row(
+                    children: [
+              
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: AppColors.extraLightGrey,
+                          backgroundImage: NetworkImage(
+                          "http://139.59.141.150:4000/uploads/profileImage-1761680272690-720968508.png"
                           ),
-                          const SizedBox(height: 3),
-                          CustomText(
-                            title: conversation.lastMessage?.content ?? "",
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            textColor: AppColors.grey600,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        CustomText(
-                          title:DateFormatter.formatTime(conversation.lastMessage?.createdAt??DateTime.now()),   
-                          fontSize: 12,
-                          textColor: AppColors.grey600,
-                          fontWeight: FontWeight.w400,
                         ),
-                        const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.green,
-                            ),
-                            child: CustomText(
-                              title: conversation.unreadCount.toString(),
-                              fontSize: 12,
-                              textColor: AppColors.white,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              title:conversation.participant.name,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
+                            const SizedBox(height: 3),
+                            CustomText(
+                              title: getLastConversationMessage(conversation.lastMessage),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              textColor: AppColors.grey600,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          CustomText(
+                            title:DateFormatter.formatTime(conversation.lastMessage?.createdAt??DateTime.now()),   
+                            fontSize: 12,
+                            textColor: AppColors.grey600,
+                            fontWeight: FontWeight.w400,
                           ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(height: 4),
+                           if(conversation.unreadCount>0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.green,
+                              ),
+                              child: CustomText(
+                                title: conversation.unreadCount.toString(),
+                                fontSize: 12,
+                                textColor: AppColors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
       error: (error) {
@@ -132,4 +139,26 @@ class ChatListWidget extends ConsumerWidget {
       orElse: () => const SizedBox(),
     );
   }
+
+
+  String getLastConversationMessage(LastMessage? lastMessage){
+    if(lastMessage==null){
+      return "";
+    }
+    switch (lastMessage.type) {
+     case "text":
+       return lastMessage.content;
+     case "image":
+       return "Image";
+     case "video":
+       return "Video";
+     case "audio":
+       return "Audio";
+     case "document":
+       return "Document";
+     default:
+       return "";
+    }
+  }
+
 }
