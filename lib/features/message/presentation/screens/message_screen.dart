@@ -2,8 +2,10 @@ import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/widgets/chat_list_widget.dart';
 import 'package:athlink/features/message/presentation/widgets/search_bar.dart';
 import 'package:athlink/features/message/presentation/widgets/select_athlets_sheet.dart';
+import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,34 +20,30 @@ class MessageScreen extends ConsumerStatefulWidget {
 class _MessageScreenState extends ConsumerState<MessageScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  final TextEditingController _searchController = TextEditingController();
   final TextEditingController _chatSearchController = TextEditingController();
-
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(conversationProvider.notifier).getConversations();
+      ref.read(profileProvider.notifier).getProfile();
     });
-    // _chatSearchController.addListener(_filterChatLists);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _searchController.dispose();
     _chatSearchController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   void _showNewChatModal() {
-
     _searchController.clear();
-    
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -59,23 +57,9 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
           maxChildSize: 0.9,
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                void handleFilter(String query) {
-                  // final lowerQuery = query.toLowerCase();
-                  // // setModalState(() {
-                  // //   _filteredContactsList = contactsList.where((contact) {
-                  // //     final nameLower = contact["name"].toLowerCase();
-                  // //     return nameLower.contains(lowerQuery);
-                  // //   }).toList();
-                  // // });
-                }
-
-                return SelectAthletsSheet(
-                  scrollController: scrollController,
-                  onSearchChanged: handleFilter,
-                );
-              },
+            return SelectAthletsSheet(
+              scrollController: scrollController,
+              onSearchChanged: (val) {},
             );
           },
         );
@@ -83,84 +67,192 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        shape: const CircleBorder(),
-        child: SvgPicture.asset("assets/images/chat-add.svg"),
-        onPressed: () {
-          _showNewChatModal();
-        },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: AppColors.white,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ChatSearchBar(
-                      hint: "Search message",
-                      controller: _chatSearchController,
-                      onChanged: (value) {
-                        // _filterChatLists();
-                      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Icon(
-                    Icons.notifications_none,
-                    color: AppColors.grey600,
-                  ),
-                ],
+                  ],
+                ),
+                padding: const EdgeInsets.only(bottom: 24, top: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Chat",
+                            style: GoogleFonts.inter(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.black,
+                            ),
+                          ),
+                          _buildNotificationIcon(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ChatSearchBar(
+                        hint: "Search message",
+                        controller: _chatSearchController,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            _buildTabs(),
-            const Divider(height: 1, color: AppColors.extraLightGrey),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [ChatListWidget(), ChatListWidget()],
+
+              const SizedBox(height: 12),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TabBar(
+                                controller: _tabController,
+                                isScrollable: true,
+                                indicatorColor: AppColors.primary,
+                                indicatorWeight: 3,
+                                labelColor: AppColors.black,
+                                unselectedLabelColor: AppColors.grey,
+                                labelStyle: GoogleFonts.inter(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                dividerColor: AppColors.transparent,
+                                tabAlignment: TabAlignment.start,
+                                tabs: const [
+                                  Tab(text: "All"),
+                                  Tab(text: "Sponsors"),
+                                  Tab(text: "Athletes"),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: _showNewChatModal,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: AppColors.grey600.withValues(
+                                      alpha: .3,
+                                    ),
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: SvgPicture.asset(
+                                  "assets/images/chat-add.svg",
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.black,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: AppColors
+                            .lightBackground, // Replaced Color(0xFFF5F5F5)
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: const [
+                            ChatListWidget(),
+                            ChatListWidget(),
+                            ChatListWidget(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-
-
-  Widget _buildTabs() {
-
-    return TabBar(
-      controller: _tabController,
-      indicatorColor: AppColors.transparent,
-      indicatorWeight: 2,
-      labelColor: AppColors.black,
-      unselectedLabelColor: AppColors.grey600.withValues(alpha: .5),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 20),
-      tabs: [
-        Tab(
-          child: Text(
-            "Athlete",
-            style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+  Widget _buildNotificationIcon() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: AppColors.grey600.withValues(alpha: .3),
+          width: 1.5,
         ),
-        Tab(
-          child: Text(
-            "Sponsor",
-            style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Icon(Icons.notifications_none, color: AppColors.black),
+          Positioned(
+            right: 2,
+            top: 0,
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: AppColors.red,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.white, width: 1.5),
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
