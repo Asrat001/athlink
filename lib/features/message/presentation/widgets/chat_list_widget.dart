@@ -178,14 +178,14 @@ class ChatListWidget extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.all(1.5),
               decoration: const BoxDecoration(
-                color: AppColors.white, // Replaced Colors.white
+                color: AppColors.white, 
                 shape: BoxShape.circle,
               ),
               child: CircleAvatar(
                 radius: 15,
                 backgroundColor: Colors
                     .blue
-                    .shade50, // Could use AppColors.lightBlue if available
+                    .shade50, 
                 backgroundImage: participantImageUrl.isNotEmpty
                     ? NetworkImage(participantImageUrl)
                     : null,
@@ -193,7 +193,7 @@ class ChatListWidget extends ConsumerWidget {
                     ? Icon(
                         Icons.person,
                         size: 15,
-                        color: AppColors.primary, // Replaced Colors.blue
+                        color: AppColors.primary, 
                       )
                     : null,
               ),
