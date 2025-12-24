@@ -210,9 +210,9 @@ class ChatListWidget extends ConsumerWidget {
       case "text":
         return lastMessage.content;
       case "image":
-        return "📷 Image";
+        return "Image";
       case "video":
-        return "🎥 Video";
+        return "Video";
       default:
         return "";
     }

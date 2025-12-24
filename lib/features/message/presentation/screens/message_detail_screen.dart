@@ -94,14 +94,13 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
   }
 
   void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      // For normal ListView, maxScrollExtent is the bottom (newest messages)
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    // if (_scrollController.hasClients) {
+    //   _scrollController.animateTo(
+    //     _scrollController.position.maxScrollExtent,
+    //     duration: const Duration(milliseconds: 300),
+    //     curve: Curves.easeOut,
+    //   );
+    // }
   }
 
   void _sendText(String text) {
@@ -325,6 +324,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
         return false;
       },
       child: ListView.builder(
+        reverse: true,
         controller: _scrollController,
         // NO reverse - normal list with oldest at top, newest at bottom
         padding: const EdgeInsets.only(bottom: 12, top: 8),
@@ -379,7 +379,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
                       const Center(child: CircularProgressIndicator()),
                   loading: (messages, typingUsers) => messages.isEmpty
                       ? const Center(child: CircularProgressIndicator())
-                      : _buildMessageList(messages),
+                      : _buildMessageList(messages.reversed.toList()),
                   loaded: (messages, typingUsers, hasMore, currentPage) {
                     // Scroll to bottom on initial load OR when new messages arrive
                     final shouldScrollToBottom =
@@ -394,12 +394,17 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
                     }
                     _lastMessageCount = messages.length;
 
-                    return _buildMessageList(messages, hasMore: hasMore);
+                    return _buildMessageList(
+                      messages.reversed.toList(),
+                      hasMore: hasMore,
+                    );
                   },
                   error: (message, messages, typingUsers) => Column(
                     children: [
                       if (messages.isNotEmpty)
-                        Expanded(child: _buildMessageList(messages)),
+                        Expanded(
+                          child: _buildMessageList(messages.reversed.toList()),
+                        ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Center(
