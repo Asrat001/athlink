@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:athlink/features/auth/presentation/screens/widgets/account_card.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -38,7 +36,7 @@ class _ChooseAccountTypeScreenState
 
       context.push(Routes.registerRouteName);
     } else {
-      AppHelpers.showErrorToast(context, 'Please select an account type');
+      AppHelpers.showErrorToast(context, 'Please select role');
     }
   }
 
@@ -60,7 +58,7 @@ class _ChooseAccountTypeScreenState
                 children: <Widget>[
                   const SizedBox(height: 24),
                   CustomText(
-                    title: 'Choose account type',
+                    title: 'Choose role',
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     textColor: AppColors.black,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/features/auth/presentation/providers/login/state/login_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -39,7 +41,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
           );
           if (context.mounted) {
             AppHelpers.showSuccessToast(context, "Login Successful");
-            context.go(Routes.dashBoardRouteName);
+            if (data.user.role == 'athlete') {
+              context.go(Routes.athleteDashBoardRouteName);
+            } else {
+              context.go(Routes.dashBoardRouteName);
+            }
           }
         },
         failure: (error) {
@@ -87,7 +93,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
               if (data.user.isNewUser) {
                 context.go(Routes.selectSportScreen);
               } else {
-                context.go(Routes.dashBoardRouteName);
+                if (data.user.role == 'athlete') {
+                  context.go(Routes.athleteDashBoardRouteName);
+                } else {
+                  context.go(Routes.dashBoardRouteName);
+                }
               }
             });
           }

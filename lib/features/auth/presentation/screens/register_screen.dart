@@ -1,5 +1,6 @@
 import 'package:athlink/features/auth/presentation/providers/register/register_provider.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/extensions/account_type.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/validators_utils.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
@@ -51,6 +52,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       });
     }
   }
+
+  AccountType? get _accountType {
+    final registerState = ref.read(registrationProvider);
+    return registerState.selectedAccountType;
+  }
+
+  bool get _isAthlete => _accountType == AccountType.athlete;
 
   void googleSignIn(WidgetRef ref, BuildContext context) async {
     final provider = ref.read(registrationProvider.notifier);
@@ -150,7 +158,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             RoundedTextFormField(
                               controller: _companyController,
                               radius: 50,
-                              hintText: "Company Name",
+                              hintText: _isAthlete
+                                  ? "Your Name"
+                                  : "Company Name",
                               textInputType: TextInputType.name,
                               prefixIcon: SvgPicture.asset(
                                 "assets/logos/org.svg",

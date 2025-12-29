@@ -303,19 +303,7 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
   Widget build(BuildContext context) {
     final sportsState = ref.watch(sportsProvider);
     final sportSelectionState = ref.watch(sportSelectionProvider);
-    final registerState = ref.watch(registrationProvider);
-
-    // Check if account type is selected
-    if (registerState.selectedAccountType == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        AppHelpers.showErrorFlash(
-          context,
-          "Please select an account type first",
-        );
-        context.pop();
-      });
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    // final registerState = ref.watch(registrationProvider);
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,

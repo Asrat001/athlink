@@ -4,6 +4,7 @@ import 'package:athlink/features/auth/presentation/screens/login_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/register_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/reset_password_screen.dart';
+import 'package:athlink/features/home_feed/presentation/screens/athlete_home_screen.dart';
 import 'package:athlink/features/home_feed/presentation/screens/home_feed_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_detail_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_screen.dart';
@@ -131,6 +132,12 @@ class AppRouter {
             token: extra?['token'] ?? '',
             otp: extra?['otp'] ?? '',
           );
+        },
+      ),
+      GoRoute(
+        path: Routes.athleteDashBoardRouteName,
+        builder: (context, state) {
+          return AthleteDashboardScreen();
         },
       ),
       StatefulShellRoute.indexedStack(

@@ -12,6 +12,7 @@ class Routes {
   static String mainRouteName = '/main';
   static String feedRouteName = '/manage';
   static String dashBoardRouteName = '/dashboard';
+  static String athleteDashBoardRouteName = '/athlete-dashboard';
   static String watchListRouteName = '/watchlist';
   static String messageRouteName = '/message';
   static String profileRouteName = '/profile';
