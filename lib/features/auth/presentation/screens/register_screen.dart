@@ -112,7 +112,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             if (context.mounted) {
               provider.resetState();
               if (current.isNewUser) {
-                context.push(Routes.selectSportScreen);
+                context.push(Routes.accountTypeSelectionRouteName, extra: true);
               } else {
                 context.push(Routes.dashBoardRouteName);
               }
@@ -235,7 +235,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    context.push(Routes.loginRouteName);
+                                    context.go(Routes.loginRouteName);
                                   },
                                   child: Text(
                                     'Login',

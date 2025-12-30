@@ -48,7 +48,12 @@ class AppRouter {
       ),
       GoRoute(
         path: Routes.accountTypeSelectionRouteName,
-        builder: (context, state) => ChooseAccountTypeScreen(),
+        builder: (context, state) {
+          final isGoogleSignup = state.extra as bool?;
+          return ChooseAccountTypeScreen(
+            isGoogleSignup: isGoogleSignup ?? false,
+          );
+        },
       ),
       GoRoute(
         path: Routes.forgotPasswordRouteName,

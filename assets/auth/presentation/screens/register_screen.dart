@@ -1,21 +1,21 @@
 import 'package:athlink/features/auth/presentation/providers/register/register_provider.dart';
-import 'package:athlink/features/auth/presentation/providers/register/state/register_state.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/extensions/account_type.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/validators_utils.dart';
 import 'package:athlink/shared/widgets/custom_app_bar.dart';
-import 'package:athlink/shared/widgets/forms/custom_email_field.dart';
-import 'package:athlink/shared/widgets/forms/custom_password_field.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:athlink/shared/widgets/forms/social_login_button.dart'
     show SocialLoginButton;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/utils/app_helpers.dart';
+import '../../../../shared/widgets/forms/input_field.dart';
+import '../providers/register/state/register_state.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   RegisterScreen({super.key});
@@ -26,6 +26,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _companyController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -34,6 +35,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _autoValidate = false;
 
   void register(BuildContext context) async {
+    // context.push(Routes.selectSportScreen);
+    // return;
+
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(registrationProvider.notifier);
       await provider.register(
@@ -43,15 +47,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         context: context,
       );
     } else {
-      // Enable auto validation after first failed attempt
       setState(() {
         _autoValidate = true;
       });
     }
   }
 
-  String? _confirmPasswordValidator(String? value) {
-    return Validators.confirmPassword(value, _passwordController.text);
+  AccountType? get _accountType {
+    final registerState = ref.read(registrationProvider);
+    return registerState.selectedAccountType;
+  }
+
+  bool get _isAthlete => _accountType == AccountType.athlete;
+
+  void googleSignIn(WidgetRef ref, BuildContext context) async {
+    final provider = ref.read(registrationProvider.notifier);
+    await provider.googleSignIn(context);
   }
 
   @override
@@ -75,21 +86,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final registerState = ref.watch(registrationProvider);
-
+    final registerState = ref.watch(
+      registrationProvider,
+    ); // Fixed variable name
     // State listener for handling success and errors
     ref.listen<RegisterState>(registrationProvider, (previous, current) {
       if (current.isSuccess) {
-        AppHelpers.showSuccessToast(
-          context,
-          "Registration Successful, Please Login",
-        );
-        // Navigate to login after a short delay to show the toast
-        Future.delayed(const Duration(milliseconds: 1500), () {
-          if (context.mounted) {
-            context.push(Routes.loginRouteName);
-          }
-        });
+        final provider = ref.read(registrationProvider.notifier);
+
+        if (!current.isSocialSignIn) {
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            if (context.mounted) {
+              provider.resetState(); // Reset before navigation
+              context.push(
+                Routes.verifyOtpRouteName,
+                extra: {
+                  'email': _emailController.text.trim(),
+                  "purpose": "registration",
+                },
+              );
+            }
+          });
+        } else {
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            if (context.mounted) {
+              provider.resetState();
+              if (current.isNewUser) {
+                context.push(Routes.accountTypeSelectionRouteName, extra: true);
+              } else {
+                context.push(Routes.dashBoardRouteName);
+              }
+            }
+          });
+        }
       }
     });
 
@@ -104,7 +133,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 400),
                   child: IgnorePointer(
-                    ignoring: registerState.isLoading,
+                    ignoring: registerState
+                        .isLoading, // Now using correct variable name
                     child: Form(
                       key: _formKey,
                       autovalidateMode: _autoValidate
@@ -116,7 +146,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 6,
+                          spacing: 8,
                           children: [
                             CustomText(
                               title: "Sign Up",
@@ -124,71 +154,94 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               fontWeight: FontWeight.w700,
                               textColor: AppColors.textPrimary,
                             ),
-
-                            SizedBox(height: 3),
-                            CustomTextField(
-                              label: "Company Name",
-                              icon: Image.asset("assets/images/company.png"),
-                              controller: _nameController,
-                              validator: (value) => Validators.requiredField(
-                                value,
-                                fieldName: "Company name",
+                            SizedBox(height: 6),
+                            RoundedTextFormField(
+                              controller: _companyController,
+                              radius: 50,
+                              hintText: _isAthlete
+                                  ? "Your Name"
+                                  : "Company Name",
+                              textInputType: TextInputType.name,
+                              prefixIcon: SvgPicture.asset(
+                                "assets/logos/org.svg",
+                                width: 16,
+                                height: 16,
                               ),
+                              validator: Validators.requiredField,
                             ),
-
-                            SizedBox(height: 3),
-                            CustomEmailField(
+                            RoundedTextFormField(
                               controller: _emailController,
+                              radius: 50,
+                              hintText: "Email Address",
+                              textInputType: TextInputType.emailAddress,
+                              prefixIcon: SvgPicture.asset(
+                                "assets/logos/email.svg",
+                                width: 16,
+                                height: 16,
+                              ),
                               validator: Validators.email,
                             ),
-                            SizedBox(height: 3),
-                            CustomPasswordField(
+                            RoundedTextFormField(
                               controller: _passwordController,
-                              label: "Password",
+                              radius: 50,
+                              hintText: "Password",
+                              textInputType: TextInputType.visiblePassword,
+                              enableObscureTextToggle: true,
+                              prefixIcon: SvgPicture.asset(
+                                "assets/logos/lock.svg",
+                                width: 16,
+                                height: 16,
+                              ),
                               validator: Validators.password,
                             ),
-                            SizedBox(height: 3),
-                            CustomPasswordField(
-                              label: "Confirm Password",
+                            RoundedTextFormField(
                               controller: _confirmPasswordController,
-                              validator: _confirmPasswordValidator,
+                              radius: 50,
+                              hintText: "Confirm Password",
+                              textInputType: TextInputType.visiblePassword,
+                              enableObscureTextToggle: true,
+                              prefixIcon: SvgPicture.asset(
+                                "assets/logos/lock.svg",
+                                width: 16,
+                                height: 16,
+                              ),
+                              validator: (value) => Validators.confirmPassword(
+                                value,
+                                _passwordController.text,
+                              ),
                             ),
-
-                            SizedBox(height: 7),
-
+                            SizedBox(height: 15),
                             RoundedButton(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              backgroundColor: AppColors.buttonBackground,
-                              padding: EdgeInsets.symmetric(vertical: 14),
-                              label: registerState.isLoading
-                                  ? "Creating Account..."
-                                  : "Sign Up",
-                              onPressed: () => register(context),
+                              height: 45,
                               width: double.infinity,
-                              submitting: registerState.isLoading,
+                              submitting:
+                                  registerState.isLoading, // Fixed here too
+                              label: "Sign Up",
+                              onPressed: () {
+                                register(
+                                  context,
+                                ); // Fixed: removed extra ref parameter
+                              },
                             ),
-
-                            SizedBox(height: 7),
-
+                            SizedBox(height: 6),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 CustomText(
                                   title: 'Already have an account?  ',
                                   fontWeight: FontWeight.w300,
-                                  textColor: AppColors.textSecondary,
-                                  fontSize: 14,
+                                  textColor: Colors.grey[600],
+                                  fontSize: 12,
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    context.push(Routes.loginRouteName);
+                                    context.go(Routes.loginRouteName);
                                   },
                                   child: Text(
                                     'Login',
-                                    style: GoogleFonts.inter(
-                                      color: AppColors.textPrimary,
-                                      fontSize: 14,
+                                    style: GoogleFonts.roboto(
+                                      color: AppColors.black,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline,
                                     ),
@@ -196,9 +249,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ],
                             ),
-
-                            SizedBox(height: 10),
-
                             Row(
                               children: [
                                 const Expanded(
@@ -219,33 +269,38 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ],
                             ),
-
-                            SizedBox(height: 7),
+                            SizedBox(height: 4),
                             SocialLoginButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                googleSignIn(ref, context);
+                              },
                               text: "Continue with Google",
                               icon: Image.asset(
                                 "assets/images/google_icon.png",
                               ),
-                              backgroundColor: AppColors.socialButtonBackground,
-                              textColor: AppColors.socialButtonText,
-                              borderColor: AppColors.socialButtonBorder,
+                              height: 48,
+                              borderRadius: 10,
                             ),
                             SizedBox(height: 7),
                             SocialLoginButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                AppHelpers.showInfoToast(
+                                  context,
+                                  "Coming Soon",
+                                );
+                              },
                               text: "Continue with Apple",
+                              height: 48,
+                              borderRadius: 10,
                               icon: Image.asset("assets/images/apple_icon.png"),
                             ),
-
-                            SizedBox(height: 7),
-
+                            SizedBox(height: 2),
                             CustomText(
                               textAlign: TextAlign.center,
                               title:
                                   'By signing up, you agree to Athlink\'s Terms & Privacy Policy',
                               fontWeight: FontWeight.w300,
-                              textColor: AppColors.textSecondary,
+                              textColor: Colors.grey[600],
                               fontSize: 12,
                             ),
                           ],

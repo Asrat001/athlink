@@ -10,27 +10,28 @@ class SplashNotifier extends StateNotifier<SplashState> {
   SplashNotifier() : super(const SplashState());
 
   Future<void> getUserStatus(BuildContext context) async {
-    // Check authentication status first
     final storageService = sl<LocalStorageService>();
     final userData = storageService.getUserData();
     final accessToken = await storageService.getAccessToken();
 
-    print("access token: $accessToken");
-    print("user data: ${userData?.toJson()}");
-
-    // Delayed to ensure animations complete
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (context.mounted) {
       if (userData != null && accessToken != null) {
-        // User is authenticated, go to main screens
-        if (userData.role == 'athlete') {
+        if (userData.role != "" &&
+            userData.isNewUser &&
+            userData.role != null) {
+          context.go(Routes.selectSportScreen);
+        } else if (userData.isNewUser == true ||
+            userData.role == "" ||
+            userData.role == null) {
+          context.go(Routes.accountTypeSelectionRouteName, extra: true);
+        } else if (userData.role == 'athlete') {
           context.go(Routes.athleteDashBoardRouteName);
         } else {
           context.go(Routes.dashBoardRouteName);
         }
       } else {
-        // User is guest or not authenticated, allow guest access to main screens may be i i liked
         context.go(Routes.loginRouteName);
       }
     }

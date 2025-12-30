@@ -18,7 +18,7 @@ Map<String, dynamic> _$ProfileResponseToJson(_ProfileResponse instance) =>
 _ProfileUser _$ProfileUserFromJson(Map<String, dynamic> json) => _ProfileUser(
   id: json['_id'] as String,
   email: json['email'] as String,
-  role: json['role'] as String,
+  role: json['role'] as String?,
   authProvider: json['authProvider'] as String? ?? 'google',
   isEmailVerified: json['isEmailVerified'] as bool? ?? false,
   sport:
