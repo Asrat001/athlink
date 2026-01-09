@@ -39,12 +39,17 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-    signingConfigs {
+   signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
+            // Using .getProperty() is safer than using [] with an unsafe cast
+            keyAlias = keystoreProperties.getProperty("keyAlias") ?: ""
+            keyPassword = keystoreProperties.getProperty("keyPassword") ?: ""
+            storePassword = keystoreProperties.getProperty("storePassword") ?: ""
+            
+            val stFile = keystoreProperties.getProperty("storeFile")
+            if (stFile != null) {
+                storeFile = file(stFile)
+            }
         }
     }
 

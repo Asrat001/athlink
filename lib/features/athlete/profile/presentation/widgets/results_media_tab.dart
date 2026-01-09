@@ -6,11 +6,13 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 class ResultMediaTab extends StatelessWidget {
   final List<File> mediaFiles;
   final VoidCallback onUpload;
+  final Function(int index) onDelete;
 
   const ResultMediaTab({
     super.key,
     required this.mediaFiles,
     required this.onUpload,
+    required this.onDelete,
   });
 
   @override
@@ -26,26 +28,58 @@ class ResultMediaTab extends StatelessWidget {
       ),
       itemCount: mediaFiles.length + 1,
       itemBuilder: (context, index) {
+        // The last item is always the "Add More" button
         if (index == mediaFiles.length) {
-          return GestureDetector(
-            onTap: onUpload,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.darkGreyCard,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.white.withValues(alpha: 0.1),
-                ),
-              ),
-              child: const Icon(Icons.add, color: AppColors.white, size: 30),
-            ),
-          );
+          return _buildAddMoreButton();
         }
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.file(mediaFiles[index], fit: BoxFit.cover),
-        );
+
+        return _buildMediaItem(index);
       },
+    );
+  }
+
+  Widget _buildMediaItem(int index) {
+    return Stack(
+      children: [
+        // The Image
+        Positioned.fill(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(mediaFiles[index], fit: BoxFit.cover),
+          ),
+        ),
+
+        // The Cancel/Delete Icon
+        Positioned(
+          top: 4,
+          right: 4,
+          child: GestureDetector(
+            onTap: () => onDelete(index),
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: AppColors.black.withValues(alpha: 0.6),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.close, color: AppColors.white, size: 16),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddMoreButton() {
+    return GestureDetector(
+      onTap: onUpload,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.darkGreyCard,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+        ),
+        child: const Icon(Icons.add, color: AppColors.white, size: 30),
+      ),
     );
   }
 

@@ -106,7 +106,15 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
             onLinkUpdated: (newLink) =>
                 setState(() => _currentResultsLink = newLink),
           ),
-          ResultMediaTab(mediaFiles: _uploadedMedia, onUpload: _pickMedia),
+          ResultMediaTab(
+            mediaFiles: _uploadedMedia,
+            onUpload: _pickMedia,
+            onDelete: (index) {
+              setState(() {
+                _uploadedMedia.removeAt(index);
+              });
+            },
+          ),
           ResultSummaryTab(
             controller: _summaryController,
             onSave: _saveAndExit,
