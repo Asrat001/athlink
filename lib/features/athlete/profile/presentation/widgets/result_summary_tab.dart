@@ -1,14 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
 
 class ResultSummaryTab extends StatelessWidget {
   final TextEditingController controller;
-  const ResultSummaryTab({super.key, required this.controller});
+  final VoidCallback onSave;
+
+  const ResultSummaryTab({
+    super.key,
+    required this.controller,
+    required this.onSave,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,8 +31,7 @@ class ResultSummaryTab extends StatelessWidget {
             maxLines: 8,
             style: const TextStyle(color: AppColors.white),
             decoration: InputDecoration(
-              hintText:
-                  "Write your thoughts, highlights, and notes about this competition ...",
+              hintText: "Write your highlights and notes here...",
               hintStyle: TextStyle(
                 color: AppColors.white.withValues(alpha: 0.24),
                 fontSize: 13,
@@ -37,18 +42,12 @@ class ResultSummaryTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(
-                  color: AppColors.white.withValues(alpha: 0.1),
-                ),
-              ),
             ),
           ),
           const SizedBox(height: 30),
           Center(
             child: GestureDetector(
-              onTap: () {},
+              onTap: onSave,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 40,

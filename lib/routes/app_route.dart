@@ -1,3 +1,4 @@
+import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_profile_screen.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_result_detail_screen.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_results_screen.dart';

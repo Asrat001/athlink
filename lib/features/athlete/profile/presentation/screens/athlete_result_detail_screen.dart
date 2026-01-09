@@ -1,12 +1,12 @@
 import 'dart:io';
-import 'package:athlink/features/athlete/profile/presentation/widgets/result_full_details_tab.dart';
-import 'package:athlink/features/athlete/profile/presentation/widgets/result_summary_tab.dart';
-import 'package:athlink/features/athlete/profile/presentation/widgets/results_media_tab.dart';
+import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/features/athlete/profile/presentation/screens/athlete_results_screen.dart';
+import '../widgets/result_full_details_tab.dart';
+import '../widgets/results_media_tab.dart';
+import '../widgets/result_summary_tab.dart';
 
 class AthleteResultDetailScreen extends StatefulWidget {
   final ResultData result;
@@ -20,14 +20,28 @@ class AthleteResultDetailScreen extends StatefulWidget {
 class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final List<File> _uploadedMedia = [];
+  late List<File> _uploadedMedia;
+  late TextEditingController _summaryController;
+  String? _currentResultsLink;
   final ImagePicker _picker = ImagePicker();
-  final TextEditingController _summaryController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    _uploadedMedia = List.from(widget.result.media);
+    _summaryController = TextEditingController(text: widget.result.summary);
+    _currentResultsLink = widget.result.resultsLink;
+  }
+
+  void _saveAndExit() {
+    final finalResult = widget.result.copyWith(
+      media: _uploadedMedia,
+      summary: _summaryController.text,
+      resultsLink: _currentResultsLink,
+    );
+    Navigator.pop(context, finalResult);
   }
 
   Future<void> _pickMedia() async {
@@ -38,48 +52,44 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
   }
 
   @override
-  void dispose() {
-    _tabController.dispose();
-    _summaryController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.white,
+            size: 20,
+          ),
+          onPressed: _saveAndExit,
         ),
         title: CustomText(
           title: widget.result.competition,
-          fontSize: 18, // Slightly smaller for better AppBar fitting
+          fontSize: 18,
           textColor: AppColors.white,
           fontWeight: FontWeight.bold,
         ),
         bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: AppColors.orangeGradientStart,
-          indicatorWeight: 3,
-          labelColor: AppColors.orangeGradientStart,
-          unselectedLabelColor: AppColors.white.withValues(alpha: 0.5),
-          dividerColor: AppColors.white.withValues(
-            alpha: 0.1,
-          ), // Subtle divider
           labelStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Outfit', // Assuming your project uses a specific font
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
           ),
           unselectedLabelStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
+          controller: _tabController,
+          indicatorColor: AppColors.orangeGradientStart,
+          indicatorWeight: 3,
+
+          labelColor: AppColors.orangeGradientStart,
+
+          unselectedLabelColor: AppColors.white.withValues(alpha: 0.5),
+          dividerColor: AppColors.white.withValues(alpha: 0.1),
           tabs: const [
             Tab(text: "Full results"),
             Tab(text: "Media"),
@@ -90,9 +100,17 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          ResultFullDetailsTab(result: widget.result),
+          ResultFullDetailsTab(
+            result: widget.result,
+            currentLink: _currentResultsLink,
+            onLinkUpdated: (newLink) =>
+                setState(() => _currentResultsLink = newLink),
+          ),
           ResultMediaTab(mediaFiles: _uploadedMedia, onUpload: _pickMedia),
-          ResultSummaryTab(controller: _summaryController),
+          ResultSummaryTab(
+            controller: _summaryController,
+            onSave: _saveAndExit,
+          ),
         ],
       ),
     );

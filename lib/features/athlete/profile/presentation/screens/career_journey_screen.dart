@@ -1,28 +1,9 @@
+import 'package:athlink/features/athlete/profile/domain/models/career_record.dart';
 import 'package:athlink/features/athlete/profile/presentation/widgets/career_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import '../widgets/add_career_modal.dart';
-
-class CareerRecord {
-  final String logoUrl;
-  final String position;
-  final String team;
-  final String location;
-  final String duration;
-  final String achievements;
-  final String description;
-
-  CareerRecord({
-    required this.logoUrl,
-    required this.position,
-    required this.team,
-    required this.location,
-    required this.duration,
-    required this.achievements,
-    required this.description,
-  });
-}
 
 class CareerJourneyScreen extends StatefulWidget {
   const CareerJourneyScreen({super.key});

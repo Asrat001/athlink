@@ -1,17 +1,24 @@
-import 'package:athlink/features/athlete/profile/presentation/screens/athlete_results_screen.dart';
-import 'package:athlink/features/athlete/profile/presentation/widgets/action_button.dart';
+import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/info_tile.dart';
-import 'package:flutter/material.dart';
 
 class ResultFullDetailsTab extends StatelessWidget {
   final ResultData result;
-  const ResultFullDetailsTab({super.key, required this.result});
+  final String? currentLink;
+  final Function(String) onLinkUpdated;
+
+  const ResultFullDetailsTab({
+    super.key,
+    required this.result,
+    this.currentLink,
+    required this.onLinkUpdated,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,41 +40,220 @@ class ResultFullDetailsTab extends StatelessWidget {
             textColor: AppColors.orangeGradientStart,
           ),
           const SizedBox(height: 10),
-          CustomText(
-            title: "Link to the official competition results page.",
-            fontSize: 13,
-            textColor: AppColors.white.withValues(alpha: 0.7),
-          ),
-          const SizedBox(height: 30),
-          Center(
-            child: ActionButton(
-              label: "Add results link",
-              icon: Icons.add,
-              onTap: () {},
+
+          if (currentLink != null && currentLink!.isNotEmpty)
+            _buildLinkDisplay(context)
+          else
+            _buildAddLinkPrompt(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLinkDisplay(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.link, color: AppColors.orangeGradientStart),
+          const SizedBox(width: 12),
+          Expanded(
+            child: CustomText(
+              title: currentLink!,
+              fontSize: 14,
+              textColor: AppColors.white,
+              maxLines: 1,
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit, size: 18, color: AppColors.white),
+            onPressed: () => _showLinkDialog(context),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildAddLinkPrompt(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          title: "Link to the official competition results page.",
+          fontSize: 13,
+          textColor: AppColors.white.withValues(alpha: 0.7),
+        ),
+        const SizedBox(height: 30),
+        Center(
+          child: GestureDetector(
+            onTap: () => _showLinkDialog(context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.darkGreyCard,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: AppColors.white.withValues(alpha: 0.1),
+                ),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_link, color: AppColors.white, size: 20),
+                  SizedBox(width: 10),
+                  CustomText(
+                    title: "Add results link",
+                    textColor: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showLinkDialog(BuildContext context) {
+    final controller = TextEditingController(text: currentLink);
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.darkGreyCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Dialog Header Icon
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.orangeGradientStart.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.link,
+                  color: AppColors.orangeGradientStart,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const CustomText(
+                title: "Competition Link",
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.white,
+              ),
+              const SizedBox(height: 8),
+              CustomText(
+                title: "Enter the URL for the official results.",
+                fontSize: 13,
+                textColor: AppColors.white.withValues(alpha: 0.5),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+
+              // Styled TextField
+              TextField(
+                controller: controller,
+                autofocus: true,
+                style: const TextStyle(color: AppColors.white, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: "https://example.com/results",
+                  hintStyle: TextStyle(
+                    color: AppColors.white.withValues(alpha: 0.2),
+                  ),
+                  filled: true,
+                  fillColor: AppColors.black.withValues(alpha: 0.3),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.white.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: AppColors.orangeGradientStart,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: CustomText(
+                        title: "Cancel",
+                        textColor: AppColors.white.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.orangeGradientStart,
+                        foregroundColor: AppColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        onLinkUpdated(controller.text);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildRow(
-    String lab1,
-    String val1,
-    String lab2,
-    String val2, {
+    String l1,
+    String v1,
+    String l2,
+    String v2, {
     bool isDateOrange = false,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Using Expanded to prevent overlap on small screens
         Expanded(
-          child: InfoTile(label: lab1, value: val1),
+          child: InfoTile(label: l1, value: v1),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: InfoTile(label: lab2, value: val2, isOrange: isDateOrange),
+          child: InfoTile(label: l2, value: v2, isOrange: isDateOrange),
         ),
       ],
     );
@@ -75,7 +261,6 @@ class ResultFullDetailsTab extends StatelessWidget {
 
   Widget _buildLocationRow(ResultData result) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
@@ -85,9 +270,7 @@ class ResultFullDetailsTab extends StatelessWidget {
               CustomText(
                 title: "LOCATION",
                 fontSize: 12,
-                textColor: AppColors.white.withValues(
-                  alpha: 0.38,
-                ), // Standardized muted text
+                textColor: AppColors.white.withValues(alpha: 0.38),
               ),
               const SizedBox(height: 8),
               Row(
@@ -97,17 +280,16 @@ class ResultFullDetailsTab extends StatelessWidget {
                     child: Image.network(
                       result.flagUrl,
                       width: 24,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.flag,
-                        size: 16,
-                        color: AppColors.white.withValues(alpha: 0.5),
-                      ),
+                      height: 16,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.flag, size: 16, color: Colors.grey),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: CustomText(
-                      title: "Turkey",
+                      title: result.location,
                       fontSize: 14,
                       textColor: AppColors.orangeGradientStart,
                     ),

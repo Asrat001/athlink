@@ -1,4 +1,4 @@
-import 'package:athlink/features/athlete/profile/presentation/screens/athlete_results_screen.dart';
+import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
