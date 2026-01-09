@@ -1,7 +1,7 @@
 import 'package:athlink/features/message/domain/models/conversation.dart';
 import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/providers/states/conversation_state.dart';
-import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';

@@ -12,11 +12,18 @@ class Routes {
   static String mainRouteName = '/main';
   static String feedRouteName = '/manage';
   static String dashBoardRouteName = '/dashboard';
-  static String athleteDashBoardRouteName = '/athlete-dashboard';
+
   static String watchListRouteName = '/watchlist';
   static String messageRouteName = '/message';
   static String profileRouteName = '/profile';
   static String splashRouteName = '/splash';
   static String notificationScreen = "/notification-screen";
   static String chatDetailRouteName = '/chat-detail';
+
+  //athlete
+  static String athleteDashBoardRouteName = '/athlete-dashboard';
+  static String athleteProfileRouteName = '/athlete-profile';
+  static String careerJourneyRouteName = '/career-journey';
+  static String athleteResultsRouteName = '/athlete-results';
+  static String athleteResultDetialRouteName = '/result-detail';
 }

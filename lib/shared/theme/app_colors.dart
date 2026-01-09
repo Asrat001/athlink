@@ -51,15 +51,14 @@ class AppColors {
   static const greyScaffoldBackground = Color.fromARGB(255, 245, 245, 245);
 
   static const Color lightBackground = Color(0xFFF5F5F5);
-  static const Color muteAction = Color.fromARGB(
-    255,
-    22,
-    164,
-    155,
-  ); // Cyan color for mute
+  static const Color muteAction = Color.fromARGB(255, 22, 164, 155);
 
   static const Color amber = Colors.amber;
-  static const Color buttonGrey = Color(0xFF9E9E9E); // Grey for cancel button
-  static const Color lightMute = Color(0xFFE1F5FE); // Light cyan background
-  static const Color lightError = Color(0xFFFFEBEE); // Light red background
+  static const Color buttonGrey = Color(0xFF9E9E9E);
+  static const Color lightMute = Color(0xFFE1F5FE);
+  static const Color lightError = Color(0xFFFFEBEE);
+
+  static const Color orangeGradientStart = Color(0xFFF68F19);
+  static const Color orangeGradientEnd = Color(0xFFED5D0E);
+  static const Color darkGreyCard = Color(0xFF121212);
 }

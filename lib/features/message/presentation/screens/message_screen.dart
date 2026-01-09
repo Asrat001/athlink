@@ -2,7 +2,7 @@ import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/widgets/chat_list_widget.dart';
 import 'package:athlink/features/message/presentation/widgets/search_bar.dart';
 import 'package:athlink/features/message/presentation/widgets/select_athlets_sheet.dart';
-import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
