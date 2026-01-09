@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:athlink/features/profile/domain/models/job_post_request.dart';
-import 'package:athlink/features/profile/domain/models/profile_model.dart';
-import 'package:athlink/features/profile/presenation/providers/job_post_provider.dart';
-import 'package:athlink/features/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/sponsor/profile/domain/models/job_post_request.dart';
+import 'package:athlink/features/sponsor/profile/domain/models/profile_model.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/job_post_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/widgets/create_job_modal_layout.dart';
 import 'package:athlink/shared/widgets/create_job_step_one.dart';
 import 'package:athlink/shared/widgets/create_job_step_two.dart';

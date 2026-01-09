@@ -1,11 +1,8 @@
-// features/auth/presentation/providers/reset_password/reset_password_provider.dart
 import 'package:athlink/features/auth/presentation/providers/reset_password/state/reset_password_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:athlink/di.dart';
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
-import 'package:athlink/core/services/internet_connection_service.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 

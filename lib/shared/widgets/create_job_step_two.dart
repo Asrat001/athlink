@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import '../../features/profile/presenation/screens/widgets/post/media_selection_row.dart';
-import '../../features/profile/presenation/screens/widgets/post/selected_files_info.dart';
+import '../../features/sponsor/profile/presenation/screens/widgets/post/media_selection_row.dart';
+import '../../features/sponsor/profile/presenation/screens/widgets/post/selected_files_info.dart';
 
 class StepTwo extends StatefulWidget {
   final TextEditingController requirementsController;

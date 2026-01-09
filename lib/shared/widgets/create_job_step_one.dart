@@ -1,4 +1,4 @@
-import 'package:athlink/features/profile/domain/models/profile_model.dart';
+import 'package:athlink/features/sponsor/profile/domain/models/profile_model.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
