@@ -8,7 +8,7 @@ class FundingProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.darkGreyCard,
         borderRadius: BorderRadius.circular(24),
@@ -17,25 +17,28 @@ class FundingProgressCard extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 4,
             children: [
               const CustomText(
                 title: 'LA 2028 Olympics',
                 fontSize: 18,
                 textColor: AppColors.white,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: CustomText(
-                  title: 'April 2028 - May 2028',
-                  fontSize: 10,
-                  textColor: AppColors.white.withOpacity(0.38),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: CustomText(
+                    title: 'April 2028 - May 2028',
+                    fontSize: 10,
+                    textColor: AppColors.white.withOpacity(0.38),
+                  ),
                 ),
               ),
             ],

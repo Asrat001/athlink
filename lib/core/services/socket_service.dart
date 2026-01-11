@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
@@ -115,6 +114,42 @@ class SocketIoService {
     _socket?.on('typing:stop', (data) {
       if (data != null) {
         onStop(Map<String, dynamic>.from(data));
+      }
+    });
+  }
+
+  // Online Status
+  void getOnlineStatus(
+    List<String> userIds,
+    Function(Map<String, bool>) onResult,
+  ) {
+    _socket?.emitWithAck(
+      'users:getOnlineStatus',
+      {'userIds': userIds},
+      ack: (response) {
+        if (response['success'] == true && response['data'] != null) {
+          final data = Map<String, dynamic>.from(response['data']);
+          final statusMap = data.map(
+            (key, value) => MapEntry(key, value as bool),
+          );
+          onResult(statusMap);
+        }
+      },
+    );
+  }
+
+  void onUserOnlineStatusChanged(
+    Function(String userId, bool isOnline) callback,
+  ) {
+    _socket?.on('user:online', (data) {
+      if (data != null && data['userId'] != null) {
+        callback(data['userId'], true);
+      }
+    });
+
+    _socket?.on('user:offline', (data) {
+      if (data != null && data['userId'] != null) {
+        callback(data['userId'], false);
       }
     });
   }

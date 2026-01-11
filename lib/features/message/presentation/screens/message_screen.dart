@@ -5,7 +5,6 @@ import 'package:athlink/features/message/presentation/widgets/select_athlets_she
 import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,155 +68,153 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: AppColors.white,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0.0,
       ),
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(24),
+                  bottomRight: Radius.circular(24),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.only(bottom: 24, top: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Chat",
+                          style: GoogleFonts.inter(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.black,
+                          ),
+                        ),
+                        _buildNotificationIcon(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ChatSearchBar(
+                      hint: "Search message",
+                      controller: _chatSearchController,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    
+            const SizedBox(height: 12),
+            Expanded(
+              child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      offset: const Offset(0, -4),
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.only(bottom: 24, top: 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 12),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.only(left: 10, right: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Chat",
-                            style: GoogleFonts.inter(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black,
+                          Expanded(
+                            child: TabBar(
+                              controller: _tabController,
+                              isScrollable: true,
+                              indicatorColor: AppColors.primary,
+                              indicatorWeight: 3,
+                              labelColor: AppColors.black,
+                              unselectedLabelColor: AppColors.grey,
+                              labelStyle: GoogleFonts.inter(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              dividerColor: AppColors.transparent,
+                              tabAlignment: TabAlignment.start,
+                              tabs: const [
+                                Tab(text: "All"),
+                                Tab(text: "Sponsors"),
+                                Tab(text: "Athletes"),
+                              ],
                             ),
                           ),
-                          _buildNotificationIcon(),
+                          GestureDetector(
+                            onTap: _showNewChatModal,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.grey600.withValues(
+                                    alpha: .3,
+                                  ),
+                                  width: 1.5,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: SvgPicture.asset(
+                                "assets/images/chat-add.svg",
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.black,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ChatSearchBar(
-                        hint: "Search message",
-                        controller: _chatSearchController,
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors
+                          .lightBackground, // Replaced Color(0xFFF5F5F5)
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: const [
+                          ChatListWidget(),
+                          ChatListWidget(),
+                          ChatListWidget(),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 12),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, -4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 20),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TabBar(
-                                controller: _tabController,
-                                isScrollable: true,
-                                indicatorColor: AppColors.primary,
-                                indicatorWeight: 3,
-                                labelColor: AppColors.black,
-                                unselectedLabelColor: AppColors.grey,
-                                labelStyle: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                dividerColor: AppColors.transparent,
-                                tabAlignment: TabAlignment.start,
-                                tabs: const [
-                                  Tab(text: "All"),
-                                  Tab(text: "Sponsors"),
-                                  Tab(text: "Athletes"),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _showNewChatModal,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: AppColors.grey600.withValues(
-                                      alpha: .3,
-                                    ),
-                                    width: 1.5,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: SvgPicture.asset(
-                                  "assets/images/chat-add.svg",
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColors.black,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: AppColors
-                            .lightBackground, // Replaced Color(0xFFF5F5F5)
-                      ),
-                      Expanded(
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: const [
-                            ChatListWidget(),
-                            ChatListWidget(),
-                            ChatListWidget(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -17,6 +17,20 @@ class ChatListWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final conversationState = ref.watch(conversationProvider);
+    final onlineStatus = ref.watch(onlineStatusProvider);
+
+    // Listen for conversation changes to fetch online status
+    ref.listen<ConversationState>(conversationProvider, (previous, next) {
+      next.maybeWhen(
+        loaded: (conversations, _) {
+          final userIds = conversations.map((c) => c.participant.id).toList();
+          if (userIds.isNotEmpty) {
+            ref.read(onlineStatusProvider.notifier).checkOnlineStatus(userIds);
+          }
+        },
+        orElse: () {},
+      );
+    });
 
     final profileState = ref.watch(profileProvider);
     final currentUserImg =
@@ -36,7 +50,8 @@ class ChatListWidget extends ConsumerWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 2),
             itemBuilder: (context, index) {
               final conversation = conversations[index];
-              final bool isOnline = index % 2 == 0;
+              final bool isOnline =
+                  onlineStatus[conversation.participant.id] ?? false;
 
               return InkWell(
                 onTap: () {
@@ -47,6 +62,7 @@ class ChatListWidget extends ConsumerWidget {
                       "logo": conversation.participant.profileImage,
                       "isOnline": isOnline,
                       "conversationId": conversation.id,
+                      "userId": conversation.participant.id,
                     },
                   );
                 },
@@ -178,23 +194,17 @@ class ChatListWidget extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.all(1.5),
               decoration: const BoxDecoration(
-                color: AppColors.white, 
+                color: AppColors.white,
                 shape: BoxShape.circle,
               ),
               child: CircleAvatar(
                 radius: 15,
-                backgroundColor: Colors
-                    .blue
-                    .shade50, 
+                backgroundColor: Colors.blue.shade50,
                 backgroundImage: participantImageUrl.isNotEmpty
                     ? NetworkImage(participantImageUrl)
                     : null,
                 child: participantImageUrl.isEmpty
-                    ? Icon(
-                        Icons.person,
-                        size: 15,
-                        color: AppColors.primary, 
-                      )
+                    ? Icon(Icons.person, size: 15, color: AppColors.primary)
                     : null,
               ),
             ),

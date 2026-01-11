@@ -102,6 +102,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
             isSuccess: true,
             isSocialSignIn: true,
             isNewUser: data.user.isNewUser,
+            
           );
           if (context.mounted) {
             AppHelpers.showSuccessToast(context, "Login Successful");

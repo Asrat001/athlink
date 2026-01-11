@@ -1,4 +1,5 @@
 
+import 'package:athlink/features/auth/domain/models/registration_response.dart';
 import 'package:athlink/shared/extensions/account_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,6 +12,7 @@ abstract class RegisterState with _$RegisterState {
     @Default(false) bool isSuccess,
     @Default(false) bool isSocialSignIn,
     @Default(true) bool isNewUser,
+    User? user,
     @Default(null)
     String? errorMessage,
     AccountType? selectedAccountType,

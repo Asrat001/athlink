@@ -99,6 +99,7 @@ class AppRouter {
                 extra["logo"] ??
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png",
             isOnline: extra["isOnline"],
+            userId: extra["userId"],
           );
         },
       ),

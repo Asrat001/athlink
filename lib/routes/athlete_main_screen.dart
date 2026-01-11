@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +17,12 @@ class AthleteMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0.0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+         systemNavigationBarColor: Colors.black,
+        ),
+      ),
       body: PopScope(canPop: false, child: navigationShell),
       bottomNavigationBar: _buildBottomBar(context),
     );

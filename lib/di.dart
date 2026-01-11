@@ -17,6 +17,9 @@ import 'package:athlink/features/sponsor/profile/data/repository/job_post_reposi
 import 'package:athlink/features/sponsor/profile/data/repository/profile_repository_impl.dart';
 import 'package:athlink/features/sponsor/profile/domain/repository/job_post_repository.dart';
 import 'package:athlink/features/sponsor/profile/domain/repository/profile_repository.dart';
+import 'package:athlink/features/athlete/profile/data/datasource/athlete_profile_remote_data_source.dart';
+import 'package:athlink/features/athlete/profile/data/repository/athlete_profile_repository_impl.dart';
+import 'package:athlink/features/athlete/profile/domain/repository/athlet_profile_repository.dart';
 import 'package:athlink/features/sports/data/datasource/sports_remote_data_source.dart';
 import 'package:athlink/features/sports/domain/repository/sports_repository.dart';
 import 'package:athlink/features/sponsor/watchlist/data/datasource/watchlist_remote_datasource.dart';
@@ -79,6 +82,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<ChatRemoteDataSource>(
     ChatRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<AthleteProfileRemoteDataSource>(
+    AthleteProfileRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -110,5 +116,8 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<ChatRepository>(
     ChatRepositoryImpl(sl<ChatRemoteDataSource>()),
+  );
+  sl.registerSingleton<AthletProfileRepository>(
+    AthleteProfileRepositoryImpl(sl<AthleteProfileRemoteDataSource>()),
   );
 }

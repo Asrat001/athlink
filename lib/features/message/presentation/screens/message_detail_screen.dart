@@ -27,6 +27,7 @@ class MessageDetailScreen extends ConsumerStatefulWidget {
   final String name;
   final bool isOnline;
   final String logo;
+  final String? userId;
 
   const MessageDetailScreen({
     super.key,
@@ -35,6 +36,7 @@ class MessageDetailScreen extends ConsumerStatefulWidget {
     this.isOnline = true,
     this.logo =
         'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Quartz_logo.svg/512px-Quartz_logo.svg.png',
+    this.userId,
   });
 
   @override
@@ -358,6 +360,11 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
       );
     });
 
+    final onlineStatus = ref.watch(onlineStatusProvider);
+    final isUserOnline = widget.userId != null
+        ? (onlineStatus[widget.userId] ?? widget.isOnline)
+        : widget.isOnline;
+
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       body: GestureDetector(
@@ -367,7 +374,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
             children: [
               ChatHeader(
                 name: widget.name,
-                isOnline: widget.isOnline,
+                isOnline: isUserOnline,
                 logo: widget.logo.isEmpty ? "" : widget.logo,
                 meetIconKey: _meetIconKey,
                 onMeetPressed: _showMeetConfirmationOverlay,

@@ -113,7 +113,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               provider.resetState();
               if (current.isNewUser) {
                 context.push(Routes.accountTypeSelectionRouteName, extra: true);
-              } else {
+              } else  {
                 context.push(Routes.dashBoardRouteName);
               }
             }
