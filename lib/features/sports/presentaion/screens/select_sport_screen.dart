@@ -14,7 +14,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../di.dart';
-import '../../../auth/domain/models/login_model.dart';
 import '../providers/sports_provider.dart';
 import 'package:athlink/features/auth/presentation/providers/register/register_provider.dart';
 import 'package:athlink/shared/extensions/account_type.dart';
