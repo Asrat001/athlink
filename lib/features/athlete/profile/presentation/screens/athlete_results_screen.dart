@@ -1,32 +1,43 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/features/athlete/profile/presentation/providers/competition_results_provider.dart';
+import 'package:athlink/features/athlete/profile/presentation/providers/state/competition_results_state.dart';
 import 'package:athlink/features/athlete/profile/presentation/widgets/result_widget.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/add_result_modal.dart';
 
-class AthleteResultsScreen extends StatefulWidget {
+class AthleteResultsScreen extends ConsumerStatefulWidget {
   const AthleteResultsScreen({super.key});
 
   @override
-  State<AthleteResultsScreen> createState() => _AthleteResultsScreenState();
+  ConsumerState<AthleteResultsScreen> createState() =>
+      _AthleteResultsScreenState();
 }
 
-class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
-  final List<ResultData> _results = [
-    ResultData(
-      date: '7/Feb/2023',
-      position: '4/47',
-      competition: 'Regional Champions league',
-      division: "Women's Open",
-      flagUrl: 'https://flagcdn.com/w40/tr.png',
-    ),
-  ];
+class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final localStorage = sl<LocalStorageService>();
+      final user = localStorage.getUserData();
+      if (user != null) {
+        ref.read(competitionResultsProvider.notifier).loadResults(user.id);
+      }
+    });
+  }
 
-  /// Opens the modal to add a new result or edit an existing one
-  void _showAddResultModal({ResultData? record, int? index}) {
+  void _showAddResultModal({ResultData? record}) {
+    final localStorage = sl<LocalStorageService>();
+    final user = localStorage.getUserData();
+    if (user == null) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -35,20 +46,49 @@ class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
       builder: (context) => AddResultModal(
         initialRecord: record,
         onSave: (newResult) {
-          setState(() {
-            if (index != null) {
-              _results[index] = newResult;
-            } else {
-              _results.add(newResult);
-            }
-          });
+          final data = {
+            'competitionName': newResult.competition,
+            'date': newResult.date,
+            'position': int.tryParse(newResult.position.split('/').first) ?? 1,
+            'totalCompetitors':
+                int.tryParse(newResult.position.split('/').last) ?? 1,
+            'division': newResult.division,
+            'competitionSummary': newResult.summary,
+            'resultLink': newResult.resultsLink,
+          };
+
+          if (record != null) {
+            // Update existing - need resultId
+            ref
+                .read(competitionResultsProvider.notifier)
+                .updateResult(
+                  athleteId: user.id,
+                  resultId: "",
+                  data: data,
+                  media: null,
+                  onSuccess: () {
+                    if (mounted) Navigator.pop(context);
+                  },
+                );
+          } else {
+            // Create new
+            ref
+                .read(competitionResultsProvider.notifier)
+                .createResult(
+                  athleteId: user.id,
+                  data: data,
+                  media: null, // TODO: Handle media files
+                  onSuccess: () {
+                    if (mounted) Navigator.pop(context);
+                  },
+                );
+          }
         },
       ),
     );
   }
 
-  /// Quick options sheet for editing/deleting on long press
-  void _showOptionsSheet(ResultData record, int index) {
+  void _showOptionsSheet(ResultData record) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.darkGreyCard,
@@ -77,7 +117,7 @@ class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
               ),
               onTap: () {
                 Navigator.pop(context);
-                _showAddResultModal(record: record, index: index);
+                _showAddResultModal(record: record);
               },
             ),
             ListTile(
@@ -88,7 +128,7 @@ class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
                 fontSize: 16,
               ),
               onTap: () {
-                setState(() => _results.removeAt(index));
+                // TODO: Implement delete API call
                 Navigator.pop(context);
               },
             ),
@@ -101,6 +141,8 @@ class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(competitionResultsProvider);
+
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
@@ -122,67 +164,116 @@ class _AthleteResultsScreenState extends State<AthleteResultsScreen> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-            child: CustomText(
-              title: _results.isNotEmpty
-                  ? "Maria’s complete competition history and achievements"
-                  : "Your complete competition history and achievements",
-              fontSize: 15,
-              textColor: AppColors.white.withValues(alpha: 0.7),
-            ),
+      body: state.when(
+        loading: () => const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.orangeGradientStart,
           ),
-
-          // Conditional UI based on whether results list is empty
-          Expanded(
-            child: _results.isEmpty
-                ? ResultEmptyState(onAdd: () => _showAddResultModal())
-                : Column(
-                    children: [
-                      const ResultTableHeader(),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          // Added +1 to the count to include the bottom "Add More" button
-                          itemCount: _results.length + 1,
-                          itemBuilder: (context, index) {
-                            // If it's the last item, show the bottom action button
-                            if (index == _results.length) {
-                              return ResultBottomActions(
-                                label: "Add more Result",
-                                onAdd: () => _showAddResultModal(),
-                                showCircleButton: true,
-                              );
-                            }
-
-                            final data = _results[index];
-                            return GestureDetector(
-                              onTap: () async {
-                                final updatedData = await context
-                                    .push<ResultData>(
-                                      Routes.athleteResultDetialRouteName,
-                                      extra: data,
-                                    );
-
-                                if (updatedData != null && mounted) {
-                                  setState(() {
-                                    _results[index] = updatedData;
-                                  });
+        ),
+        error: (message) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: AppColors.red, size: 48),
+              const SizedBox(height: 16),
+              CustomText(
+                title: message,
+                textColor: AppColors.white,
+                fontSize: 16,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  final localStorage = sl<LocalStorageService>();
+                  final user = localStorage.getUserData();
+                  if (user != null) {
+                    ref
+                        .read(competitionResultsProvider.notifier)
+                        .loadResults(user.id);
+                  }
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        loaded: (data) {
+          final results = data.data;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                child: CustomText(
+                  title: results.isNotEmpty
+                      ? "Maria's complete competition history and achievements"
+                      : "Your complete competition history and achievements",
+                  fontSize: 15,
+                  textColor: AppColors.white.withValues(alpha: 0.7),
+                ),
+              ),
+              Expanded(
+                child: results.isEmpty
+                    ? ResultEmptyState(onAdd: () => _showAddResultModal())
+                    : Column(
+                        children: [
+                          const ResultTableHeader(),
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              itemCount: results.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == results.length) {
+                                  return ResultBottomActions(
+                                    label: "Add more Result",
+                                    onAdd: () => _showAddResultModal(),
+                                    showCircleButton: true,
+                                  );
                                 }
+
+                                final result = results[index];
+                                final resultData = ResultData(
+                                  date: result.date,
+                                  position:
+                                      '${result.position}/${result.totalCompetitors}',
+                                  competition: result.competitionName,
+                                  division: result.division,
+                                  flagUrl:
+                                      'https://flagcdn.com/w40/tr.png', // TODO: Get from API
+                                  location: '', // Not in API model
+                                  media:
+                                      [], // TODO: Convert media URLs to Files
+                                  summary: result.competitionSummary,
+                                  resultsLink: result.resultLink,
+                                );
+
+                                return GestureDetector(
+                                  onTap: () async {
+                                    final updatedData = await context
+                                        .push<ResultData>(
+                                          Routes.athleteResultDetialRouteName,
+                                          extra: resultData,
+                                        );
+
+                                    if (updatedData != null && mounted) {
+                                      // TODO: Update via API
+                                    }
+                                  },
+                                  onLongPress: () =>
+                                      _showOptionsSheet(resultData),
+                                  child: ResultItem(data: resultData),
+                                );
                               },
-                              onLongPress: () => _showOptionsSheet(data, index),
-                              child: ResultItem(data: data),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -102,7 +102,11 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                   localImage: _profileImage,
                 ),
                 SizedBox(height: 50),
-                _isEditing
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                             _isEditing
                     ? ProfileEditSection(
                         nameController: _nameController,
                         locationController: _locationController,
@@ -124,7 +128,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                 ],
 
                 if (_isEditing) _buildEditActions(),
-
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
               ],
             );
@@ -189,6 +195,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                           "bio": _bioController.text,
                           // Add other fields as needed
                         },
+                        profileImage: _profileImage,
                         onSuccess: () {
                           setState(() {
                             _isEditing = false;

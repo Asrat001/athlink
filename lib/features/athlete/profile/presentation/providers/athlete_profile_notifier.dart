@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/features/athlete/profile/domain/repository/athlet_profile_repository.dart';
@@ -32,11 +33,13 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfileState> {
     required String athleteId,
     required Map<String, dynamic> data,
     required void Function() onSuccess,
+    File? profileImage,
   }) async {
     state = const AthleteProfileState.loading();
     final response = await _repository.updateAthleteProfile(
       athleteId: athleteId,
       data: data,
+      profileImage: profileImage,
     );
     response.when(
       success: (data) {

@@ -1,19 +1,21 @@
-class CareerRecord {
-  final String logoUrl;
-  final String position;
-  final String team;
-  final String location;
-  final String duration;
-  final String achievements;
-  final String description;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CareerRecord({
-    required this.logoUrl,
-    required this.position,
-    required this.team,
-    required this.location,
-    required this.duration,
-    required this.achievements,
-    required this.description,
-  });
+part 'career_record.freezed.dart';
+part 'career_record.g.dart';
+
+@freezed
+abstract class CareerJourneyModel with _$CareerJourneyModel {
+  const factory CareerJourneyModel({
+    @JsonKey(name: '_id') required String id,
+    @JsonKey(name: 'athlete') required String athleteId,
+    String? logo,
+    required String position,
+    required String teamName,
+    required String year,
+    required String achievements,
+    required String description,
+  }) = _CareerJourneyModel;
+
+  factory CareerJourneyModel.fromJson(Map<String, dynamic> json) =>
+      _$CareerJourneyModelFromJson(json);
 }
