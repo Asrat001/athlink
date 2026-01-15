@@ -4,6 +4,7 @@ import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/career_journey_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -22,8 +23,7 @@ class GlobalFootprintMap extends ConsumerStatefulWidget {
 class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
   List<LatLng> roadPoints = [];
   bool isRouteLoading = false;
-  final String mapboxToken =
-      "pk.eyJ1Ijoicm95YWxyaWRlMjAiLCJhIjoiY21lNXJiamVlMDJvaTJqb3BncnZ2NGhhMSJ9.oIa_u0hX1FHwi2LftJbvZQ";
+  final String mapboxToken = dotenv.env['MAPBOX_TOKEN']!;
 
   @override
   void initState() {

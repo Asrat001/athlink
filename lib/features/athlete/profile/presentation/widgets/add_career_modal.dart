@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:athlink/features/athlete/profile/domain/models/career_record_ui.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
@@ -42,7 +43,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
   int? _endYear;
   bool _isCurrentlyThere = false;
 
-  final String _googleApiKey = "AIzaSyCadihu3aTpQbUcC0GfoULhxEkEnvqQqAc";
+  final String _googleApiKey = dotenv.env['GOOGLE_MAP_API_KEY'] ?? "";
   List<dynamic> _placePredictions = [];
   String _sessionToken = const Uuid().v4();
   Timer? _debounce;
