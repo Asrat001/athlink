@@ -13,6 +13,7 @@ abstract class CareerJourneyModel with _$CareerJourneyModel {
     required String teamName,
     required String year,
     required String achievements,
+    String? location,
     required String description,
   }) = _CareerJourneyModel;
 

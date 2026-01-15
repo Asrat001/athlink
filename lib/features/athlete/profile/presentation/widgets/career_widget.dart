@@ -67,7 +67,7 @@ class CareerCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     CustomText(
-                      title: record.location,
+                      title: record.location ?? "",
                       fontSize: 12,
                       textColor: AppColors.white.withValues(alpha: 0.5),
                     ),

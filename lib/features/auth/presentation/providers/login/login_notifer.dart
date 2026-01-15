@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/features/auth/presentation/providers/login/state/login_state.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -22,7 +24,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     required BuildContext context,
   }) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
       final storageService = sl<LocalStorageService>();
       final response = await _authenticationRepository
@@ -65,9 +67,10 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> googleSignIn(BuildContext context) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
       final response = await _authenticationRepository.googleSignIn();
+      log(response.toString());
       final storageService = sl<LocalStorageService>();
       response.when(
         success: (data) async {

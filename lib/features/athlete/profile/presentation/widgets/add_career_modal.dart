@@ -1,11 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:athlink/features/athlete/profile/domain/models/career_record_ui.dart';
-import 'package:athlink/features/athlete/profile/presentation/screens/career_journey_screen.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
+import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 class AddCareerModal extends StatefulWidget {
   final Function(CareerRecord) onSave;
@@ -23,7 +26,12 @@ class _AddCareerModalState extends State<AddCareerModal> {
 
   late TextEditingController _positionController;
   late TextEditingController _teamController;
-  late TextEditingController _locationController;
+
+  // This will store the concatenated "lat,lng,name" string
+  late TextEditingController _locationDataController;
+  // This is just for the UI text field display
+  late TextEditingController _locationNameController;
+
   late TextEditingController _yearController;
   late TextEditingController _achievementsController;
   late TextEditingController _descriptionController;
@@ -34,6 +42,12 @@ class _AddCareerModalState extends State<AddCareerModal> {
   int? _endYear;
   bool _isCurrentlyThere = false;
 
+  final String _googleApiKey = "AIzaSyCadihu3aTpQbUcC0GfoULhxEkEnvqQqAc";
+  List<dynamic> _placePredictions = [];
+  String _sessionToken = const Uuid().v4();
+  Timer? _debounce;
+  bool _isSearching = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,9 +57,20 @@ class _AddCareerModalState extends State<AddCareerModal> {
     _teamController = TextEditingController(
       text: widget.initialRecord?.team ?? '',
     );
-    _locationController = TextEditingController(
+
+    _locationDataController = TextEditingController(
       text: widget.initialRecord?.location ?? '',
     );
+
+    String initialDisplayName = widget.initialRecord?.location ?? '';
+    if (initialDisplayName.contains(',')) {
+      final parts = initialDisplayName.split(',');
+      if (parts.length >= 3) {
+        initialDisplayName = parts.sublist(2).join(',').trim();
+      }
+    }
+    _locationNameController = TextEditingController(text: initialDisplayName);
+
     _yearController = TextEditingController(
       text: widget.initialRecord?.duration ?? '',
     );
@@ -61,19 +86,56 @@ class _AddCareerModalState extends State<AddCareerModal> {
     }
   }
 
-  void _parseDuration(String duration) {
-    try {
-      final parts = duration.split(' - ');
-      if (parts.length == 2) {
-        _startYear = int.tryParse(parts[0]);
-        if (parts[1].toLowerCase() == 'present') {
-          _isCurrentlyThere = true;
-        } else {
-          _endYear = int.tryParse(parts[1]);
-        }
+  void _onLocationChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value.isNotEmpty) {
+        _getAutocomplete(value);
+      } else {
+        setState(() => _placePredictions = []);
       }
-    } catch (_) {}
+    });
   }
+
+  Future<void> _getAutocomplete(String input) async {
+    setState(() => _isSearching = true);
+    final url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$_googleApiKey&sessiontoken=$_sessionToken";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(
+          () => _placePredictions = json.decode(response.body)['predictions'],
+        );
+      }
+    } finally {
+      setState(() => _isSearching = false);
+    }
+  }
+
+  Future<void> _getPlaceDetails(String placeId, String description) async {
+    final url =
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=$_googleApiKey&sessiontoken=$_sessionToken";
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final lat = data['result']['geometry']['location']['lat'];
+      final lng = data['result']['geometry']['location']['lng'];
+
+      // CONCATENATION LOGIC: lat,lng,name
+      final concatenatedLocation = "$lat,$lng,$description";
+
+      setState(() {
+        _locationNameController.text = description;
+        _locationDataController.text = concatenatedLocation;
+        _placePredictions = [];
+        _sessionToken = const Uuid().v4();
+      });
+      FocusScope.of(context).unfocus();
+    }
+  }
+
+  // --- UI BUILDING ---
 
   @override
   Widget build(BuildContext context) {
@@ -88,17 +150,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
+          _buildHandle(),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.only(
@@ -122,38 +174,8 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       fontWeight: FontWeight.bold,
                     ),
                     const SizedBox(height: 24),
-
-                    Center(
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: AppColors.darkGreyCard,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.white.withValues(alpha: 0.1),
-                            ),
-                            image: _selectedImage != null
-                                ? DecorationImage(
-                                    image: FileImage(_selectedImage!),
-                                    fit: BoxFit.cover,
-                                  )
-                                : null,
-                          ),
-                          child: _selectedImage == null
-                              ? const Icon(
-                                  Icons.image_outlined,
-                                  color: AppColors.lightGrey,
-                                  size: 30,
-                                )
-                              : null,
-                        ),
-                      ),
-                    ),
+                    _buildImagePicker(),
                     const SizedBox(height: 25),
-
                     _buildLabel("Add Your Position"),
                     CustomTextField(
                       label: 'Center Back',
@@ -163,7 +185,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       validator: (v) => v!.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
-
                     _buildLabel("Add Name of the team"),
                     CustomTextField(
                       label: 'Green Bay Packers',
@@ -173,32 +194,12 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       validator: (v) => v!.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
-
                     _buildLabel("Location"),
-                    CustomTextField(
-                      label: 'Wisconsin, USA',
-                      controller: _locationController,
-                      borderRadius: 12,
-                      textColor: AppColors.white,
-                      validator: (v) => v!.isEmpty ? 'Required' : null,
-                    ),
+                    _buildPlacesField(),
                     const SizedBox(height: 16),
-
                     _buildLabel("Add year"),
-                    GestureDetector(
-                      onTap: _showYearRangePicker,
-                      child: AbsorbPointer(
-                        child: CustomTextField(
-                          label: 'Select Year Range',
-                          controller: _yearController,
-                          borderRadius: 12,
-                          textColor: AppColors.white,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
-                      ),
-                    ),
+                    _buildYearPickerTrigger(),
                     const SizedBox(height: 16),
-
                     _buildLabel("Achievements"),
                     CustomTextField(
                       label: 'MVP, Top Scorer...',
@@ -207,7 +208,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       textColor: AppColors.white,
                     ),
                     const SizedBox(height: 16),
-
                     _buildLabel("Add description"),
                     CustomTextField(
                       label: 'Details about your role...',
@@ -217,26 +217,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       maxLines: 3,
                     ),
                     const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildBtn(
-                            "Save Journey",
-                            AppColors.darkGreyCard,
-                            _handleSave,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: _buildBtn(
-                            "Cancel",
-                            AppColors.transparent,
-                            () => Navigator.pop(context),
-                            isBordered: true,
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildActionButtons(),
                   ],
                 ),
               ),
@@ -247,6 +228,197 @@ class _AddCareerModalState extends State<AddCareerModal> {
     );
   }
 
+  Widget _buildPlacesField() {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+          ),
+          child: TextFormField(
+            controller: _locationNameController,
+            onChanged: _onLocationChanged,
+            style: const TextStyle(color: AppColors.white, fontSize: 14),
+
+            decoration: InputDecoration(
+              hintText: 'Search Location...',
+              hintStyle: TextStyle(
+                color: AppColors.white.withValues(alpha: 0.3),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.lightGrey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.white, width: 1),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.error),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.error, width: 1),
+              ),
+              suffixIcon: _isSearching
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    )
+                  : const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.lightGrey,
+                    ),
+            ),
+          ),
+        ),
+        if (_placePredictions.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            constraints: const BoxConstraints(maxHeight: 200),
+            decoration: BoxDecoration(
+              color: AppColors.darkGreyCard,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: _placePredictions.length,
+              separatorBuilder: (context, index) => Divider(
+                color: AppColors.white.withValues(alpha: 0.05),
+                height: 1,
+              ),
+              itemBuilder: (context, index) {
+                final p = _placePredictions[index];
+                return ListTile(
+                  leading: const Icon(
+                    Icons.place,
+                    color: AppColors.lightGrey,
+                    size: 18,
+                  ),
+                  title: Text(
+                    p['description'],
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 13,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () =>
+                      _getPlaceDetails(p['place_id'], p['description']),
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _handleSave() {
+    if (_formKey.currentState!.validate()) {
+      widget.onSave(
+        CareerRecord(
+          logoUrl:
+              _selectedImage?.path ??
+              widget.initialRecord?.logoUrl ??
+              'https://i.ibb.co/vzB7pGq/packers-logo.png',
+          position: _positionController.text,
+          team: _teamController.text,
+          location:
+              _locationDataController.text, // Sending the "lat,lng,name" string
+          duration: _yearController.text,
+          achievements: _achievementsController.text,
+          description: _descriptionController.text,
+        ),
+      );
+      Navigator.pop(context);
+    } else {
+      setState(() => _autovalidateMode = AutovalidateMode.onUserInteraction);
+    }
+  }
+
+  // --- REUSED UI HELPERS ---
+  Widget _buildHandle() => Center(
+    child: Container(
+      margin: const EdgeInsets.only(top: 12),
+      width: 40,
+      height: 4,
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(2),
+      ),
+    ),
+  );
+  Widget _buildImagePicker() => Center(
+    child: GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          color: AppColors.darkGreyCard,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+          image: _selectedImage != null
+              ? DecorationImage(
+                  image: FileImage(_selectedImage!),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: _selectedImage == null
+            ? const Icon(
+                Icons.image_outlined,
+                color: AppColors.lightGrey,
+                size: 30,
+              )
+            : null,
+      ),
+    ),
+  );
+  Widget _buildYearPickerTrigger() => GestureDetector(
+    onTap: _showYearRangePicker,
+    child: AbsorbPointer(
+      child: CustomTextField(
+        label: 'Select Year Range',
+        controller: _yearController,
+        borderRadius: 12,
+        textColor: AppColors.white,
+        validator: (v) => v!.isEmpty ? 'Required' : null,
+      ),
+    ),
+  );
+  Widget _buildActionButtons() => Row(
+    children: [
+      Expanded(
+        child: _buildBtn("Save Journey", AppColors.darkGreyCard, _handleSave),
+      ),
+      const SizedBox(width: 15),
+      Expanded(
+        child: _buildBtn(
+          "Cancel",
+          AppColors.transparent,
+          () => Navigator.pop(context),
+          isBordered: true,
+        ),
+      ),
+    ],
+  );
   Widget _buildLabel(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 8, left: 4),
     child: CustomText(
@@ -255,7 +427,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
       textColor: AppColors.lightGrey,
     ),
   );
-
   Widget _buildBtn(
     String text,
     Color color,
@@ -281,7 +452,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
       ),
     ),
   );
-
   Future<void> _pickImage() async {
     final XFile? file = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -290,26 +460,17 @@ class _AddCareerModalState extends State<AddCareerModal> {
     if (file != null) setState(() => _selectedImage = File(file.path));
   }
 
-  void _handleSave() {
-    if (_formKey.currentState!.validate()) {
-      widget.onSave(
-        CareerRecord(
-          logoUrl:
-              _selectedImage?.path ??
-              widget.initialRecord?.logoUrl ??
-              'https://i.ibb.co/vzB7pGq/packers-logo.png',
-          position: _positionController.text,
-          team: _teamController.text,
-          location: _locationController.text,
-          duration: _yearController.text,
-          achievements: _achievementsController.text,
-          description: _descriptionController.text,
-        ),
-      );
-      Navigator.pop(context);
-    } else {
-      setState(() => _autovalidateMode = AutovalidateMode.onUserInteraction);
-    }
+  void _parseDuration(String duration) {
+    try {
+      final parts = duration.split(' - ');
+      if (parts.length == 2) {
+        _startYear = int.tryParse(parts[0]);
+        if (parts[1].toLowerCase() == 'present')
+          _isCurrentlyThere = true;
+        else
+          _endYear = int.tryParse(parts[1]);
+      }
+    } catch (_) {}
   }
 
   void _showYearRangePicker() {
@@ -330,7 +491,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
             List<int> filteredEndYears = _startYear == null
                 ? []
                 : allYears.where((y) => y >= _startYear!).toList();
-
             return Container(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -349,9 +509,8 @@ class _AddCareerModalState extends State<AddCareerModal> {
                         child: _buildYearDropdown("Start", _startYear, (val) {
                           setModalState(() {
                             _startYear = val;
-                            if (_endYear != null && _endYear! < _startYear!) {
+                            if (_endYear != null && _endYear! < _startYear!)
                               _endYear = null;
-                            }
                           });
                         }, allYears),
                       ),
@@ -418,7 +577,6 @@ class _AddCareerModalState extends State<AddCareerModal> {
     ),
     child: const CustomText(title: "Present", textColor: AppColors.white),
   );
-
   Widget _buildYearDropdown(
     String label,
     int? value,
@@ -429,7 +587,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
     return Opacity(
       opacity: enabled ? 1.0 : 0.4,
       child: DropdownButtonFormField<int>(
-        initialValue: value,
+        value: value,
         dropdownColor: AppColors.darkGreyCard,
         iconEnabledColor: AppColors.white,
         hint: Text(

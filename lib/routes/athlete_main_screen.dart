@@ -17,10 +17,12 @@ class AthleteMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         toolbarHeight: 0.0,
         systemOverlayStyle: SystemUiOverlayStyle(
-         systemNavigationBarColor: Colors.black,
+          systemNavigationBarColor: Colors.black,
         ),
       ),
       body: PopScope(canPop: false, child: navigationShell),
@@ -31,22 +33,19 @@ class AthleteMainScreen extends StatelessWidget {
   Widget _buildBottomBar(BuildContext context) {
     return Container(
       color: Colors.black,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: const BoxDecoration(color: Colors.black),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildNavItem(0, "assets/logos/home.svg"),
-              _buildNavItem(1, "assets/logos/setting.svg"),
-              _buildNavItem(2, "assets/logos/chat.svg"),
-              _buildNavItem(3, "assets/logos/watchlist.svg"),
-              _buildNavItem(4, "assets/logos/account.svg"),
-            ],
-          ),
+      child: Container(
+        height: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: const BoxDecoration(color: Colors.black),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildNavItem(0, "assets/logos/home.svg"),
+            _buildNavItem(1, "assets/logos/setting.svg"),
+            _buildNavItem(2, "assets/logos/chat.svg"),
+            _buildNavItem(3, "assets/logos/watchlist.svg"),
+            _buildNavItem(4, "assets/logos/account.svg"),
+          ],
         ),
       ),
     );

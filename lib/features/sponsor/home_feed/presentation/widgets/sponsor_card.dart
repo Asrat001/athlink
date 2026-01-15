@@ -43,7 +43,6 @@ class SponsorCard extends StatelessWidget {
                   ),
                 ),
 
-                // Circular Logo Overlay - Centered perfectly
                 Positioned(
                   bottom: -30,
                   left: 0,

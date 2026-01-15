@@ -40,7 +40,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     }
 
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
 
       final response = await _authenticationRepository
@@ -102,7 +102,6 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
             isSuccess: true,
             isSocialSignIn: true,
             isNewUser: data.user.isNewUser,
-            
           );
           if (context.mounted) {
             AppHelpers.showSuccessToast(context, "Login Successful");
@@ -147,7 +146,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     AccountType selectedType,
   ) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
       final response = await _authenticationRepository.changeRole(
         role: selectedType.value,

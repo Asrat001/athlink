@@ -4,6 +4,7 @@ import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/athlete_profile_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/athlete_profile_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -26,7 +27,6 @@ class AthleteProfileScreen extends ConsumerStatefulWidget {
 
 class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   bool _isEditing = false;
-
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
 
@@ -37,9 +37,17 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final localStorage = sl<LocalStorageService>();
-      final user = localStorage.getUserData();
+      final user = sl<LocalStorageService>().getUserData();
       if (user != null) {
         ref.read(athleteProfileProvider.notifier).getProfile(user.id);
       }
@@ -55,15 +63,12 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   }
 
   Future<void> _handleImageUpload() async {
-    final XFile? pickedFile = await _picker.pickImage(
+    final picked = await _picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 80,
     );
-
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+    if (picked != null) {
+      setState(() => _profileImage = File(picked.path));
     }
   }
 
@@ -72,104 +77,96 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(athleteProfileProvider);
-    //  final hasNoData=state.maybeWhen(hasNoData: ()=>true,orElse: ()=>false);
 
     return Scaffold(
       backgroundColor: AppColors.black,
+
+      extendBodyBehindAppBar: true,
+
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+      ),
+
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: state.when(
-          loading: () {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              ],
-            );
-          },
+          loading: () => const SizedBox(
+            height: 600,
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
+          error: (e) => Center(
+            child: Text(
+              e.toString(),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          hasNoData: () => _buildScreenContent(isInitial: true),
           loaded: (profile) {
             if (!_isEditing) {
               _nameController.text = profile.name;
               _locationController.text = profile.location;
               _bioController.text = profile.bio;
             }
-            return Column(
-              children: [
-                ProfileHeader(
-                  isEditing: _isEditing,
-                  onPickImage: _handleImageUpload,
-                  localImage: _profileImage,
-                ),
-                SizedBox(height: 50),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                             _isEditing
-                    ? ProfileEditSection(
-                        nameController: _nameController,
-                        locationController: _locationController,
-                        bioController: _bioController,
-                      )
-                    : ProfileDisplaySection(
-                        profile: profile,
-                        onEditToggle: _toggleEdit,
-                      ),
-
-                if (!_isEditing) ...[
-                  const InstagramConnectSection(),
-                  const SizedBox(height: 32),
-                  const FundingProgressCard(),
-                  const SizedBox(height: 24),
-                  const QuickActionsGrid(),
-                  const SizedBox(height: 32),
-                  const GlobalFootprintMap(),
-                ],
-
-                if (_isEditing) _buildEditActions(),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-            );
-          },
-          error: (error) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Text(
-                  "Something went wrong: $error",
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-          hasNoData: () {
-            return Column(
-              children: [
-                ProfileHeader(
-                  isEditing: true,
-                  onPickImage: _handleImageUpload,
-                  localImage: _profileImage,
-                ),
-                SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ProfileEditSection(
-                    nameController: _nameController,
-                    locationController: _locationController,
-                    bioController: _bioController,
-                  ),
-                ),
-
-                _buildEditActions(),
-              ],
-            );
+            return _buildScreenContent(profile: profile);
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildScreenContent({dynamic profile, bool isInitial = false}) {
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
+    return Column(
+      children: [
+        SizedBox(height: statusBarHeight),
+
+        ProfileHeader(
+          isEditing: _isEditing || isInitial,
+          onPickImage: _handleImageUpload,
+          localImage: _profileImage,
+          remoteImageUrl: profile != null ? profile.profilePhoto ?? "" : "",
+        ),
+
+        const SizedBox(height: 50),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              (_isEditing || isInitial)
+                  ? ProfileEditSection(
+                      nameController: _nameController,
+                      locationController: _locationController,
+                      bioController: _bioController,
+                    )
+                  : ProfileDisplaySection(
+                      profile: profile,
+                      onEditToggle: _toggleEdit,
+                    ),
+
+              if (!_isEditing && !isInitial) ...[
+                const InstagramConnectSection(),
+                const SizedBox(height: 32),
+                const FundingProgressCard(),
+                const SizedBox(height: 24),
+                const QuickActionsGrid(),
+                const SizedBox(height: 32),
+                const GlobalFootprintMap(),
+              ],
+
+              if (_isEditing || isInitial) _buildEditActions(),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 40),
+      ],
     );
   }
 
@@ -181,9 +178,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
           Expanded(
             child: ProfilePrimaryButton(
               label: "Save Update",
+              color: AppColors.darkGreyCard,
               onTap: () {
-                final localStorage = sl<LocalStorageService>();
-                final user = localStorage.getUserData();
+                final user = sl<LocalStorageService>().getUserData();
                 if (user != null) {
                   ref
                       .read(athleteProfileProvider.notifier)
@@ -193,27 +190,21 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                           "name": _nameController.text,
                           "location": _locationController.text,
                           "bio": _bioController.text,
-                          // Add other fields as needed
                         },
                         profileImage: _profileImage,
-                        onSuccess: () {
-                          setState(() {
-                            _isEditing = false;
-                          });
-                        },
+                        onSuccess: () => setState(() => _isEditing = false),
                       );
                 }
               },
-              color: AppColors.darkGreyCard,
             ),
           ),
           const SizedBox(width: 15),
           Expanded(
             child: ProfilePrimaryButton(
               label: "Cancel",
-              onTap: _toggleEdit,
-              color: AppColors.transparent,
               isBordered: true,
+              color: AppColors.transparent,
+              onTap: _toggleEdit,
             ),
           ),
         ],

@@ -128,7 +128,6 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                 fontSize: 16,
               ),
               onTap: () {
-                // TODO: Implement delete API call
                 Navigator.pop(context);
               },
             ),

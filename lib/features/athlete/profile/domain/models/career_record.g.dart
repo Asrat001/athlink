@@ -15,6 +15,7 @@ _CareerJourneyModel _$CareerJourneyModelFromJson(Map<String, dynamic> json) =>
       teamName: json['teamName'] as String,
       year: json['year'] as String,
       achievements: json['achievements'] as String,
+      location: json['location'] as String?,
       description: json['description'] as String,
     );
 
@@ -27,5 +28,6 @@ Map<String, dynamic> _$CareerJourneyModelToJson(_CareerJourneyModel instance) =>
       'teamName': instance.teamName,
       'year': instance.year,
       'achievements': instance.achievements,
+      'location': instance.location,
       'description': instance.description,
     };

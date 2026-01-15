@@ -26,4 +26,5 @@ class Routes {
   static String careerJourneyRouteName = '/career-journey';
   static String athleteResultsRouteName = '/athlete-results';
   static String athleteResultDetialRouteName = '/result-detail';
+  static String athleteMessageRouteName = '/athlete-message';
 }

@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +10,28 @@ class ProfileHeader extends StatelessWidget {
   final VoidCallback onPickImage;
   final File? localImage;
 
+  final String? remoteImageUrl;
+
   const ProfileHeader({
     super.key,
     required this.isEditing,
     required this.onPickImage,
     this.localImage,
+    this.remoteImageUrl,
   });
+
+  ImageProvider _getProfileImage() {
+    if (localImage != null) {
+      return FileImage(localImage!);
+    }
+    log('$fileBaseUrl$remoteImageUrl');
+
+    if (remoteImageUrl != null && remoteImageUrl!.isNotEmpty) {
+      return NetworkImage('$fileBaseUrl$remoteImageUrl');
+    }
+
+    return const AssetImage('assets/images/default-athlete-icon.jpg');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +80,7 @@ class ProfileHeader extends StatelessWidget {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: AppColors.darkGreyCard,
-                    backgroundImage: localImage != null
-                        ? FileImage(localImage!) as ImageProvider
-                        : const AssetImage(
-                            'assets/images/default-athlete-icon.jpg',
-                          ),
+                    backgroundImage: _getProfileImage(),
                   ),
 
                   if (isEditing)

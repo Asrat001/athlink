@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:athlink/features/sponsor/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/sponsor/manage/presentation/providers/manage_navigation_provider.dart';
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/job_card_widget.dart';
@@ -16,8 +18,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class JobListing extends ConsumerWidget {
   const JobListing({super.key});
-
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,22 +56,34 @@ class JobListing extends ConsumerWidget {
     final apiJobs = jobListState.jobPosts;
     final companyName = jobListState.companyName ?? 'Company';
     final companyLogo = jobListState.companyLogo;
+    final List<String> randomPrices = [
+      "\$45",
+      "\$120",
+      "\$350",
+      "\$600",
+      "\$950",
+    ];
+
+    final _random = Random();
 
     final jobs = apiJobs.map((job) {
+      // 2. Pick a random price from the list above
+      String fallbackPrice = randomPrices[_random.nextInt(randomPrices.length)];
+
       return {
         "id": job.id,
         "type": "hiring",
-        "agencyLogo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
+        "agencyLogo":
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
         "agencyName": companyName,
         "location": job.location,
-        "price": job.price.isNotEmpty ? job.price : "N/A",
+        "price": job.price.isNotEmpty ? job.price : fallbackPrice,
         "title": job.title,
-        "tags": [], // No tags in API data
+        "tags": [],
         "notifications": job.applicantCount,
         "description": job.description,
       };
     }).toList();
-
     if (jobs.isEmpty) return NoJobsCard();
 
     return SingleChildScrollView(
@@ -112,10 +124,12 @@ class JobListing extends ConsumerWidget {
           Column(
             children: List.generate(
               jobs.length,
-              (index) =>
-                  JobCard(job: jobs[index],
-                  onTap: () => ref.read(manageNavigationProvider.notifier).showJobFromListing(index),
-                   ),
+              (index) => JobCard(
+                job: jobs[index],
+                onTap: () => ref
+                    .read(manageNavigationProvider.notifier)
+                    .showJobFromListing(index),
+              ),
             ),
           ),
         ],

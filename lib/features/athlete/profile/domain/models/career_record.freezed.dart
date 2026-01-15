@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CareerJourneyModel {
 
-@JsonKey(name: '_id') String get id;@JsonKey(name: 'athlete') String get athleteId; String? get logo; String get position; String get teamName; String get year; String get achievements; String get description;
+@JsonKey(name: '_id') String get id;@JsonKey(name: 'athlete') String get athleteId; String? get logo; String get position; String get teamName; String get year; String get achievements; String? get location; String get description;
 /// Create a copy of CareerJourneyModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CareerJourneyModelCopyWith<CareerJourneyModel> get copyWith => _$CareerJourneyM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareerJourneyModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.logo, logo) || other.logo == logo)&&(identical(other.position, position) || other.position == position)&&(identical(other.teamName, teamName) || other.teamName == teamName)&&(identical(other.year, year) || other.year == year)&&(identical(other.achievements, achievements) || other.achievements == achievements)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareerJourneyModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.logo, logo) || other.logo == logo)&&(identical(other.position, position) || other.position == position)&&(identical(other.teamName, teamName) || other.teamName == teamName)&&(identical(other.year, year) || other.year == year)&&(identical(other.achievements, achievements) || other.achievements == achievements)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,athleteId,logo,position,teamName,year,achievements,description);
+int get hashCode => Object.hash(runtimeType,id,athleteId,logo,position,teamName,year,achievements,location,description);
 
 @override
 String toString() {
-  return 'CareerJourneyModel(id: $id, athleteId: $athleteId, logo: $logo, position: $position, teamName: $teamName, year: $year, achievements: $achievements, description: $description)';
+  return 'CareerJourneyModel(id: $id, athleteId: $athleteId, logo: $logo, position: $position, teamName: $teamName, year: $year, achievements: $achievements, location: $location, description: $description)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CareerJourneyModelCopyWith<$Res>  {
   factory $CareerJourneyModelCopyWith(CareerJourneyModel value, $Res Function(CareerJourneyModel) _then) = _$CareerJourneyModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String? logo, String position, String teamName, String year, String achievements, String description
+@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String? logo, String position, String teamName, String year, String achievements, String? location, String description
 });
 
 
@@ -65,7 +65,7 @@ class _$CareerJourneyModelCopyWithImpl<$Res>
 
 /// Create a copy of CareerJourneyModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteId = null,Object? logo = freezed,Object? position = null,Object? teamName = null,Object? year = null,Object? achievements = null,Object? description = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteId = null,Object? logo = freezed,Object? position = null,Object? teamName = null,Object? year = null,Object? achievements = null,Object? location = freezed,Object? description = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String?,position: null == position ? _self.position : position // ignore: cas
 as String,teamName: null == teamName ? _self.teamName : teamName // ignore: cast_nullable_to_non_nullable
 as String,year: null == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
 as String,achievements: null == achievements ? _self.achievements : achievements // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String? location,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CareerJourneyModel() when $default != null:
-return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.description);case _:
+return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.location,_that.description);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamNam
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String? location,  String description)  $default,) {final _that = this;
 switch (_that) {
 case _CareerJourneyModel():
-return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.description);case _:
+return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.location,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamNam
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String? logo,  String position,  String teamName,  String year,  String achievements,  String? location,  String description)?  $default,) {final _that = this;
 switch (_that) {
 case _CareerJourneyModel() when $default != null:
-return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.description);case _:
+return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamName,_that.year,_that.achievements,_that.location,_that.description);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.athleteId,_that.logo,_that.position,_that.teamNam
 @JsonSerializable()
 
 class _CareerJourneyModel implements CareerJourneyModel {
-  const _CareerJourneyModel({@JsonKey(name: '_id') required this.id, @JsonKey(name: 'athlete') required this.athleteId, this.logo, required this.position, required this.teamName, required this.year, required this.achievements, required this.description});
+  const _CareerJourneyModel({@JsonKey(name: '_id') required this.id, @JsonKey(name: 'athlete') required this.athleteId, this.logo, required this.position, required this.teamName, required this.year, required this.achievements, this.location, required this.description});
   factory _CareerJourneyModel.fromJson(Map<String, dynamic> json) => _$CareerJourneyModelFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
@@ -226,6 +227,7 @@ class _CareerJourneyModel implements CareerJourneyModel {
 @override final  String teamName;
 @override final  String year;
 @override final  String achievements;
+@override final  String? location;
 @override final  String description;
 
 /// Create a copy of CareerJourneyModel
@@ -241,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareerJourneyModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.logo, logo) || other.logo == logo)&&(identical(other.position, position) || other.position == position)&&(identical(other.teamName, teamName) || other.teamName == teamName)&&(identical(other.year, year) || other.year == year)&&(identical(other.achievements, achievements) || other.achievements == achievements)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareerJourneyModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.logo, logo) || other.logo == logo)&&(identical(other.position, position) || other.position == position)&&(identical(other.teamName, teamName) || other.teamName == teamName)&&(identical(other.year, year) || other.year == year)&&(identical(other.achievements, achievements) || other.achievements == achievements)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,athleteId,logo,position,teamName,year,achievements,description);
+int get hashCode => Object.hash(runtimeType,id,athleteId,logo,position,teamName,year,achievements,location,description);
 
 @override
 String toString() {
-  return 'CareerJourneyModel(id: $id, athleteId: $athleteId, logo: $logo, position: $position, teamName: $teamName, year: $year, achievements: $achievements, description: $description)';
+  return 'CareerJourneyModel(id: $id, athleteId: $athleteId, logo: $logo, position: $position, teamName: $teamName, year: $year, achievements: $achievements, location: $location, description: $description)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$CareerJourneyModelCopyWith<$Res> implements $CareerJourne
   factory _$CareerJourneyModelCopyWith(_CareerJourneyModel value, $Res Function(_CareerJourneyModel) _then) = __$CareerJourneyModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String? logo, String position, String teamName, String year, String achievements, String description
+@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String? logo, String position, String teamName, String year, String achievements, String? location, String description
 });
 
 
@@ -278,7 +280,7 @@ class __$CareerJourneyModelCopyWithImpl<$Res>
 
 /// Create a copy of CareerJourneyModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteId = null,Object? logo = freezed,Object? position = null,Object? teamName = null,Object? year = null,Object? achievements = null,Object? description = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteId = null,Object? logo = freezed,Object? position = null,Object? teamName = null,Object? year = null,Object? achievements = null,Object? location = freezed,Object? description = null,}) {
   return _then(_CareerJourneyModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
@@ -287,7 +289,8 @@ as String?,position: null == position ? _self.position : position // ignore: cas
 as String,teamName: null == teamName ? _self.teamName : teamName // ignore: cast_nullable_to_non_nullable
 as String,year: null == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
 as String,achievements: null == achievements ? _self.achievements : achievements // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

@@ -33,7 +33,6 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
-      // Uses the passed color or defaults to black
       style: GoogleFonts.inter(color: textColor ?? AppColors.black),
       decoration: InputDecoration(
         labelText: label,

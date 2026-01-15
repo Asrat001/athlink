@@ -43,7 +43,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
             logoUrl: record.logo ?? '',
             position: record.position,
             team: record.teamName,
-            location: '', // Not in API model
+            location: '',
             duration: record.year,
             achievements: record.achievements,
             description: record.description,
@@ -64,29 +64,27 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
             'year': newRecord.duration,
             'achievements': newRecord.achievements,
             'description': newRecord.description,
+            'location': newRecord.location,
           };
-
           if (record != null) {
-            // Update existing
             ref
                 .read(careerJourneyProvider.notifier)
                 .updateCareer(
                   athleteId: user.id,
                   careerId: record.id,
                   data: data,
-                  logo: null, // TODO: Handle logo file
+                  logo: null,
                   onSuccess: () {
                     if (mounted) Navigator.pop(context);
                   },
                 );
           } else {
-            // Create new
             ref
                 .read(careerJourneyProvider.notifier)
                 .createCareer(
                   athleteId: user.id,
                   data: data,
-                  logo: null, // TODO: Handle logo file
+                  logo: null,
                   onSuccess: () {
                     if (mounted) Navigator.pop(context);
                   },
@@ -239,7 +237,11 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                                     logoUrl: record.logo ?? '',
                                     position: record.position,
                                     team: record.teamName,
-                                    location: '', // Not in API model
+                                    location:
+                                        record.location != null &&
+                                            record.location!.isNotEmpty
+                                        ? record.location!.split(',')[2]
+                                        : "",
                                     duration: record.year,
                                     achievements: record.achievements,
                                     description: record.description,

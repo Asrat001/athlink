@@ -18,6 +18,9 @@ import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.
 import 'package:athlink/features/sponsor/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/athlete_main_screen.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/coming_soon.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'error_screen.dart';
@@ -230,15 +233,15 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: Routes.feedRouteName,
-                builder: (context, state) => const ManageScreen(),
+                path: "/athlete-manage",
+                builder: (context, state) => ComingSoonScreen(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: Routes.messageRouteName,
+                path: Routes.athleteMessageRouteName,
                 builder: (context, state) => MessageScreen(),
               ),
             ],
@@ -246,8 +249,8 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: Routes.watchListRouteName,
-                builder: (context, state) => WatchListScreen(),
+                path: "/athlete-campaign",
+                builder: (context, state) => ComingSoonScreen(),
               ),
             ],
           ),
