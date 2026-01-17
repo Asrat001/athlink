@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -8,29 +7,37 @@ import 'package:flutter/material.dart';
 class ProfileHeader extends StatelessWidget {
   final bool isEditing;
   final VoidCallback onPickImage;
+  final VoidCallback onPickCover;
   final File? localImage;
-
+  final File? localCoverImage;
   final String? remoteImageUrl;
+  final String? remoteCoverUrl;
 
   const ProfileHeader({
     super.key,
     required this.isEditing,
     required this.onPickImage,
+    required this.onPickCover,
     this.localImage,
+    this.localCoverImage,
     this.remoteImageUrl,
+    this.remoteCoverUrl,
   });
 
   ImageProvider _getProfileImage() {
-    if (localImage != null) {
-      return FileImage(localImage!);
-    }
-    log('$fileBaseUrl$remoteImageUrl');
-
+    if (localImage != null) return FileImage(localImage!);
     if (remoteImageUrl != null && remoteImageUrl!.isNotEmpty) {
       return NetworkImage('$fileBaseUrl$remoteImageUrl');
     }
-
     return const AssetImage('assets/images/default-athlete-icon.jpg');
+  }
+
+  ImageProvider _getCoverImage() {
+    if (localCoverImage != null) return FileImage(localCoverImage!);
+    if (remoteCoverUrl != null && remoteCoverUrl!.isNotEmpty) {
+      return NetworkImage('$fileBaseUrl$remoteCoverUrl');
+    }
+    return const AssetImage('assets/images/default-athlete-cover.jpg');
   }
 
   @override
@@ -38,27 +45,60 @@ class ProfileHeader extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
-          height: 220,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/default-athlete-cover.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
+        GestureDetector(
+          onTap: isEditing ? onPickCover : null,
           child: Container(
+            height: 220,
+            width: double.infinity,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: const [0.0, 0.6, 1.0],
-                colors: [
-                  AppColors.transparent,
-                  AppColors.black.withValues(alpha: 0.3),
-                  AppColors.black,
-                ],
+              image: DecorationImage(
+                image: _getCoverImage(),
+                fit: BoxFit.cover,
               ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.6, 1.0],
+                  colors: [
+                    AppColors.transparent,
+                    AppColors.black.withValues(alpha: 0.3),
+                    AppColors.black,
+                  ],
+                ),
+              ),
+              child: isEditing
+                  ? Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.black.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.camera_alt,
+                              color: AppColors.white,
+                              size: 18,
+                            ),
+                            SizedBox(width: 8),
+                            CustomText(
+                              title: "Change Cover",
+                              fontSize: 12,
+                              textColor: AppColors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : null,
             ),
           ),
         ),
@@ -82,7 +122,6 @@ class ProfileHeader extends StatelessWidget {
                     backgroundColor: AppColors.darkGreyCard,
                     backgroundImage: _getProfileImage(),
                   ),
-
                   if (isEditing)
                     Container(
                       width: 100,

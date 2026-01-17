@@ -28,6 +28,7 @@ class AthleteProfileScreen extends ConsumerStatefulWidget {
 class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   bool _isEditing = false;
   File? _profileImage;
+  File? _coverImage;
   final ImagePicker _picker = ImagePicker();
 
   final _nameController = TextEditingController();
@@ -37,15 +38,16 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   @override
   void initState() {
     super.initState();
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
       ),
     );
+    _fetchProfile();
+  }
 
+  void _fetchProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = sl<LocalStorageService>().getUserData();
       if (user != null) {
@@ -62,17 +64,31 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _handleImageUpload() async {
+  Future<void> _handleImageUpload({required bool isCover}) async {
     final picked = await _picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 80,
     );
     if (picked != null) {
-      setState(() => _profileImage = File(picked.path));
+      setState(() {
+        if (isCover) {
+          _coverImage = File(picked.path);
+        } else {
+          _profileImage = File(picked.path);
+        }
+      });
     }
   }
 
-  void _toggleEdit() => setState(() => _isEditing = !_isEditing);
+  void _toggleEdit() {
+    if (_isEditing) {
+      setState(() {
+        _profileImage = null;
+        _coverImage = null;
+      });
+    }
+    setState(() => _isEditing = !_isEditing);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,16 +96,13 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.black,
-
       extendBodyBehindAppBar: true,
-
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: state.when(
@@ -125,16 +138,16 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
     return Column(
       children: [
         SizedBox(height: statusBarHeight),
-
         ProfileHeader(
           isEditing: _isEditing || isInitial,
-          onPickImage: _handleImageUpload,
+          onPickImage: () => _handleImageUpload(isCover: false),
+          onPickCover: () => _handleImageUpload(isCover: true),
           localImage: _profileImage,
-          remoteImageUrl: profile != null ? profile.profilePhoto ?? "" : "",
+          localCoverImage: _coverImage,
+          remoteImageUrl: profile?.profilePhoto ?? "",
+          remoteCoverUrl: profile?.coverPhoto ?? "",
         ),
-
         const SizedBox(height: 50),
-
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -149,7 +162,6 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                       profile: profile,
                       onEditToggle: _toggleEdit,
                     ),
-
               if (!_isEditing && !isInitial) ...[
                 const InstagramConnectSection(),
                 const SizedBox(height: 32),
@@ -159,12 +171,10 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                 const SizedBox(height: 32),
                 const GlobalFootprintMap(),
               ],
-
               if (_isEditing || isInitial) _buildEditActions(),
             ],
           ),
         ),
-
         const SizedBox(height: 40),
       ],
     );
@@ -192,7 +202,14 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                           "bio": _bioController.text,
                         },
                         profileImage: _profileImage,
-                        onSuccess: () => setState(() => _isEditing = false),
+                        coverImage: _coverImage,
+                        onSuccess: () {
+                          setState(() {
+                            _isEditing = false;
+                            _profileImage = null;
+                            _coverImage = null;
+                          });
+                        },
                       );
                 }
               },

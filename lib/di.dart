@@ -1,4 +1,7 @@
 import 'package:athlink/core/services/socket_service.dart';
+import 'package:athlink/features/athlete/home_screen/data/datasource/feed_remote_datasource.dart';
+import 'package:athlink/features/athlete/home_screen/data/repository/feed_repository_impl.dart';
+import 'package:athlink/features/athlete/home_screen/domain/repository/feed_repository.dart';
 import 'package:athlink/features/sponsor/home_feed/data/datasource/feed_remote_datasource.dart';
 import 'package:athlink/features/sponsor/home_feed/data/repository/feed_repository_impl.dart';
 import 'package:athlink/features/sponsor/home_feed/domain/repository/feed_repository.dart';
@@ -70,6 +73,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<FeedRemoteDataSource>(
     FeedRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<AthleteFeedRemoteDataSource>(
+    AthleteFeedRemoteDataSource(sl<DioHttpClient>()),
+  );
   sl.registerSingleton<WatchlistRemoteDataSource>(
     WatchlistRemoteDataSource(sl<DioHttpClient>()),
   );
@@ -104,6 +110,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<FeedRepository>(
     FeedRepositoryImpl(sl<FeedRemoteDataSource>()),
+  );
+  sl.registerSingleton<AthleteFeedRepository>(
+    AthleteFeedRepositoryImpl(sl<AthleteFeedRemoteDataSource>()),
   );
   sl.registerSingleton<WatchlistRepository>(
     WatchlistRepositoryImpl(sl<WatchlistRemoteDataSource>()),

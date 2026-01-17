@@ -14,6 +14,7 @@ abstract class AthletProfileRepository {
     required String athleteId,
     required Map<String, dynamic> data,
     File? profileImage,
+    File? coverImage,
   });
 
   // Career Journey methods

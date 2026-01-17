@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -38,16 +39,32 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
     required String athleteId,
     required Map<String, dynamic> data,
     File? profileImage,
+    File? coverImage,
   }) async {
     return await safeApiCall(
       apiCall: () async {
-        dynamic requestData = data;
+        dynamic requestData;
 
-        if (profileImage != null) {
-          requestData = FormData.fromMap({
-            ...data,
-            'profilePhoto': await MultipartFile.fromFile(profileImage.path),
-          });
+        if (profileImage != null || coverImage != null) {
+          Map<String, dynamic> map = {...data};
+
+          if (profileImage != null) {
+            map['profilePhoto'] = await MultipartFile.fromFile(
+              profileImage.path,
+              filename: profileImage.path.split('/').last,
+            );
+          }
+
+          if (coverImage != null) {
+            map['coverPhoto'] = await MultipartFile.fromFile(
+              coverImage.path,
+              filename: coverImage.path.split('/').last,
+            );
+          }
+
+          requestData = FormData.fromMap(map);
+        } else {
+          requestData = data;
         }
 
         return await _httpClient

@@ -1,46 +1,17 @@
-import 'package:athlink/core/services/local_storage_service.dart'; // Adjust based on your actual path
+import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
+import 'package:athlink/features/athlete/home_screen/presentation/providers/athlete_feed_provider.dart'; // Ensure correct path
 import 'package:athlink/features/auth/presentation/providers/login/login_provider.dart';
 import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
+import 'package:athlink/features/sponsor/home_feed/presentation/providers/state/feed_state.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/widgets/athlete_card.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/widgets/sponsor_card.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-
-// --- Shared Assets and Static Data ---
-const String _nikeLogo =
-    "https://www.pngarts.com/files/8/Adidas-Logo-PNG-High-Quality-Image.png";
-const String _adidasLogo =
-    "https://www.pngarts.com/files/8/Adidas-Logo-PNG-High-Quality-Image.png";
-const String _redbullLogo =
-    "https://www.pngarts.com/files/8/Adidas-Logo-PNG-High-Quality-Image.png";
-
-const String _athlete1 =
-    "https://www.pngarts.com/files/3/Marcus-Rashford-PNG-Image-Background.png";
-const String _athlete2 =
-    "https://www.pngarts.com/files/3/Harry-Kane-PNG-Image-Background.png";
-
-final List<Athlete> _allStaticAthletes = [
-  const Athlete(
-    id: 'a1',
-    athleteProfile: AthleteProfile(
-      name: 'Jane Doe',
-      club: 'Man Utd',
-      achievements: [],
-    ),
-  ),
-  const Athlete(
-    id: 'a2',
-    athleteProfile: AthleteProfile(
-      name: 'Almaz Ayana',
-      club: 'Bayern',
-      achievements: [],
-    ),
-  ),
-];
 
 class AthleteDashboardScreen extends ConsumerStatefulWidget {
   const AthleteDashboardScreen({super.key});
@@ -52,17 +23,19 @@ class AthleteDashboardScreen extends ConsumerStatefulWidget {
 
 class _AthleteDashboardScreenState
     extends ConsumerState<AthleteDashboardScreen> {
-  bool isFilterOpen = false;
   String? userName;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    // Trigger the API call
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(athelteFeedProvider.notifier).getAthleteFeed();
+    });
   }
 
   void _loadUserData() {
-    // Fetching user data via Service Locator
     final user = sl<LocalStorageService>().getUserData();
     setState(() {
       userName = user?.name;
@@ -71,6 +44,8 @@ class _AthleteDashboardScreenState
 
   @override
   Widget build(BuildContext context) {
+    final feedState = ref.watch(athelteFeedProvider);
+
     return Scaffold(
       backgroundColor: AppColors.greyScaffoldBackground,
       body: SafeArea(
@@ -79,20 +54,40 @@ class _AthleteDashboardScreenState
             _buildDashboardHeader(),
             _buildSearchHeader(),
             Expanded(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                  _buildSectionHeader("Recommended", "Top brand picks"),
-                  _buildSponsorSliver(_staticSponsorsRow1),
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                  _buildSectionHeader("Rising Peers", "Connect now"),
-                  _buildAthleteSliver(_allStaticAthletes),
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                  _buildSectionHeader("Partners", "Industry leaders"),
-                  _buildSponsorSliver(_staticSponsorsRow2),
-                  const SliverPadding(padding: EdgeInsets.only(bottom: 30)),
-                ],
+              child: feedState.when(
+                initial: () => const Center(child: Text("Initializing...")),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                ),
+                error: (msg) => Center(
+                  child: CustomText(title: msg, textColor: AppColors.error),
+                ),
+                success: (feedData, athletesBySport) {
+                  final sportEntries = athletesBySport.entries.toList();
+
+                  return CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                      // Sponsors Section (Recommended)
+                      if (feedData.sponsors.isNotEmpty) ...[
+                        _buildSectionHeader("Recommended", "Top brand picks"),
+                        _buildSponsorSliver(feedData.sponsors),
+                        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                      ],
+
+                      // Athletes Grouped by Sport (Rising Peers)
+                      for (var entry in sportEntries) ...[
+                        _buildSectionHeader(entry.key, "Connect with peers"),
+                        _buildAthleteSliver(entry.value),
+                        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                      ],
+
+                      const SliverPadding(padding: EdgeInsets.only(bottom: 30)),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -101,15 +96,22 @@ class _AthleteDashboardScreenState
     );
   }
 
+  /// ------------------------------------------------------------
+  /// UI COMPONENTS
+  /// ------------------------------------------------------------
+
   Widget _buildSearchHeader() {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AthleteSearchPage()),
-        ),
+        onTap: () {
+          // // Pass current loaded athletes to search if needed
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const AthleteSearchPage()),
+          // );
+        },
         child: Container(
           height: 50,
           decoration: BoxDecoration(
@@ -158,7 +160,6 @@ class _AthleteDashboardScreenState
                   textColor: Colors.grey,
                 ),
                 CustomText(
-                  // RENDERING DYNAMIC NAME HERE
                   title: userName ?? "Athlete",
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -214,12 +215,19 @@ class _AthleteDashboardScreenState
           separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (context, index) {
             final sponsor = sponsors[index];
+
+            // Logic to get image from sport icon or fallback
+            final imageUrl =
+                sponsor.sport.isNotEmpty && sponsor.sport.first.icon != null
+                ? '$fileBaseUrl${sponsor.sport.first.icon}'
+                : 'https://picsum.photos/400/300';
+
             return SponsorCard(
               name: sponsor.name ?? 'Brand',
-              category: "Sponsor",
-              imageUrl: sponsor.id == 's1'
-                  ? _nikeLogo
-                  : (sponsor.id == 's3' ? _adidasLogo : _redbullLogo),
+              category: sponsor.sport.isNotEmpty
+                  ? sponsor.sport.first.name ?? "Sponsor"
+                  : "Partner",
+              imageUrl: imageUrl,
             );
           },
         ),
@@ -237,117 +245,32 @@ class _AthleteDashboardScreenState
           itemCount: athletes.length,
           separatorBuilder: (_, __) => const SizedBox(width: 14),
           itemBuilder: (context, index) {
-            final athlete = athletes[index];
-            final profile = athlete.athleteProfile!;
+            final athleteData = athletes[index];
+            final profile = athleteData.athleteProfile;
+
+            // Use fallback logic for cleaner display
+            final name = profile?.name ?? 'Athlete';
+            final club = profile?.club ?? 'Independent';
+            final imageUrl = profile?.profileImageUrl != null
+                ? '$fileBaseUrl${profile!.profileImageUrl}'
+                : 'https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-5652137.png';
+
             return AthleteCard(
-              athleteId: athlete.id,
-              name: profile.name ?? 'Unknown',
-              club: profile.club,
-              age: profile.age?.toString() ?? '20',
-              flag: 'assets/images/flag.png',
-              image: athlete.id == 'a1' ? _athlete1 : _athlete2,
-              highestSocialMediaPresence: "10M+",
-              sponsorshipDone: "5",
-              rating: 4.5,
-              achievements: profile.achievements,
+              athleteId: athleteData.id,
+              name: name,
+              club: club,
+              age: profile?.age?.toString() ?? '20',
+              flag: 'assets/images/flag.png', // Or use dynamic if available
+              image: imageUrl,
+              highestSocialMediaPresence:
+                  profile?.highestSocialMediaPresence ?? "0",
+              sponsorshipDone: (profile?.sponsorshipDone ?? 0).toString(),
+              rating: profile?.rating ?? 0.0,
+              achievements: profile?.achievements ?? [],
             );
           },
         ),
       ),
-    );
-  }
-
-  final List<Sponsor> _staticSponsorsRow1 = [
-    const Sponsor(id: 's1', name: 'Nike', sport: []),
-    const Sponsor(id: 's2', name: 'Red Bull', sport: []),
-    const Sponsor(id: 's3', name: 'Adidas', sport: []),
-  ];
-
-  final List<Sponsor> _staticSponsorsRow2 = [
-    const Sponsor(id: 's2', name: 'Red Bull', sport: []),
-    const Sponsor(id: 's1', name: 'Nike', sport: []),
-    const Sponsor(id: 's3', name: 'Adidas', sport: []),
-  ];
-}
-
-class AthleteSearchPage extends StatefulWidget {
-  const AthleteSearchPage({super.key});
-
-  @override
-  State<AthleteSearchPage> createState() => _AthleteSearchPageState();
-}
-
-class _AthleteSearchPageState extends State<AthleteSearchPage> {
-  final TextEditingController _controller = TextEditingController();
-  List<Athlete> _results = _allStaticAthletes;
-
-  void _filter(String q) {
-    setState(() {
-      _results = _allStaticAthletes
-          .where(
-            (a) =>
-                a.athleteProfile!.name!.toLowerCase().contains(
-                  q.toLowerCase(),
-                ) ||
-                a.athleteProfile!.club.toLowerCase().contains(q.toLowerCase()),
-          )
-          .toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.greyScaffoldBackground,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: TextField(
-          controller: _controller,
-          onChanged: _filter,
-          autofocus: true,
-          decoration: const InputDecoration(
-            hintText: "Search athletes...",
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-      body: _results.isEmpty
-          ? const Center(
-              child: CustomText(
-                title: "No athletes found",
-                textColor: Colors.grey,
-              ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 340,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: _results.length,
-              itemBuilder: (context, index) {
-                final athlete = _results[index];
-                return AthleteCard(
-                  athleteId: athlete.id,
-                  name: athlete.athleteProfile!.name!,
-                  club: athlete.athleteProfile!.club,
-                  age: '20',
-                  flag: 'assets/images/flag.png',
-                  image: athlete.id == 'a1' ? _athlete1 : _athlete2,
-                  highestSocialMediaPresence: "10M+",
-                  sponsorshipDone: "5",
-                  rating: 4.5,
-                  achievements: const [],
-                );
-              },
-            ),
     );
   }
 }

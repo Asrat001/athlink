@@ -34,12 +34,14 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfileState> {
     required Map<String, dynamic> data,
     required void Function() onSuccess,
     File? profileImage,
+    File? coverImage,
   }) async {
     state = const AthleteProfileState.loading();
     final response = await _repository.updateAthleteProfile(
       athleteId: athleteId,
       data: data,
       profileImage: profileImage,
+      coverImage: coverImage,
     );
     response.when(
       success: (data) {

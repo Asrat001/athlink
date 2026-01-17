@@ -24,11 +24,13 @@ class AthleteProfileRepositoryImpl implements AthletProfileRepository {
     required String athleteId,
     required Map<String, dynamic> data,
     File? profileImage,
+    File? coverImage,
   }) async {
     return await _remoteDataSource.updateAthleteProfile(
       athleteId: athleteId,
       data: data,
       profileImage: profileImage,
+      coverImage: coverImage,
     );
   }
 
