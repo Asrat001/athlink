@@ -195,7 +195,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
       achievements: athlete?.achievements ?? [],
       position: athlete?.position ?? 'Position',
       level: athlete?.level,
-      rating: athlete?.rating ?? 0,
+      // rating: athlete?.rating ?? 0,
       sponsorshipDone: (athlete?.sponsorshipDone ?? 0).toString(),
       highestSocialMediaPresence: athlete?.highestSocialMediaPresence ?? '0',
       sportCategory: sport.map((e) => e.name).join(", "),

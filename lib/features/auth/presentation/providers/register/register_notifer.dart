@@ -29,7 +29,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
   Future<void> register({
     required String email,
     required String password,
-    required String name,
+    // required String name,
     required BuildContext context,
   }) async {
     log(state.selectedAccountType.toString());
@@ -47,7 +47,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
           .signUpWithEmailAndPassword(
             email: email,
             password: password,
-            name: name,
+            // name: name,
             accountType: state.selectedAccountType!.value,
           );
 

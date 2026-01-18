@@ -48,49 +48,136 @@ class _AthleteDashboardScreenState
     final feedState = ref.watch(athelteFeedProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.greyScaffoldBackground,
+      backgroundColor: AppColors.black, // Updated to match Profile black
       body: SafeArea(
-        child: feedState.when(
-          initial: () => const Center(child: CircularProgressIndicator()),
-          loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
-          ),
-          error: (msg) => Center(
-            child: CustomText(title: msg, textColor: AppColors.error),
-          ),
-          success: (feedData, athletesBySport) {
-            return Column(
-              children: [
-                _buildDashboardHeader(),
-                _buildSearchHeader(feedData.athletes, feedData.sponsors),
-                Expanded(
-                  child: RefreshIndicator(
+        child: Column(
+          children: [
+            // Sticky Header and Search (Darkened)
+            _buildDashboardHeader(),
+            _buildSearchHeader(
+              feedState.maybeWhen(
+                success: (d, _) => d.athletes,
+                orElse: () => [],
+              ),
+              feedState.maybeWhen(
+                success: (d, _) => d.sponsors,
+                orElse: () => [],
+              ),
+            ),
+
+            Expanded(
+              child: feedState.when(
+                initial: () => const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: AppColors.white),
+                ),
+                error: (msg) => _buildEmptyOrErrorState(
+                  message: msg,
+                  icon: Icons.error_outline,
+                  isError: true,
+                ),
+                success: (feedData, athletesBySport) {
+                  if (feedData.athletes.isEmpty && feedData.sponsors.isEmpty) {
+                    return _buildEmptyOrErrorState(
+                      message: "No athletes or brands found.",
+                      icon: Icons.search_off_rounded,
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    color: AppColors.primary,
+                    backgroundColor: AppColors.darkGreyCard,
                     onRefresh: () =>
                         ref.read(athelteFeedProvider.notifier).getAthleteFeed(),
                     child: CustomScrollView(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
                       slivers: [
-                        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
                         if (feedData.sponsors.isNotEmpty) ...[
                           _buildSectionHeader("Recommended", "Top brand picks"),
                           _buildSponsorSliver(feedData.sponsors),
-                          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                          const SliverToBoxAdapter(child: SizedBox(height: 24)),
                         ],
+
                         for (var entry in athletesBySport.entries) ...[
                           _buildSectionHeader(entry.key, "Connect with peers"),
                           _buildAthleteSliver(entry.value),
-                          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                          const SliverToBoxAdapter(child: SizedBox(height: 24)),
                         ],
+
                         const SliverPadding(
-                          padding: EdgeInsets.only(bottom: 30),
+                          padding: EdgeInsets.only(bottom: 40),
                         ),
                       ],
                     ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyOrErrorState({
+    required String message,
+    required IconData icon,
+    bool isError = false,
+  }) {
+    return RefreshIndicator(
+      onRefresh: () => ref.read(athelteFeedProvider.notifier).getAthleteFeed(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 70,
+                color: isError ? AppColors.error : Colors.white24,
+              ),
+              const SizedBox(height: 16),
+              CustomText(
+                title: isError ? "Connection Error" : "No content available",
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                textColor: Colors.white,
+              ),
+              const SizedBox(height: 8),
+              CustomText(
+                title: message,
+                textAlign: TextAlign.center,
+                textColor: Colors.white60,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () =>
+                    ref.read(athelteFeedProvider.notifier).getAthleteFeed(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
                   ),
                 ),
-              ],
-            );
-          },
+                child: const Text("Refresh Feed"),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -100,22 +187,19 @@ class _AthleteDashboardScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0))),
+        color: AppColors.black,
+        border: Border(bottom: BorderSide(color: Colors.white10)),
       ),
       child: Row(
         children: [
           PopupMenuButton<int>(
             offset: const Offset(0, 50),
+            color: AppColors.darkGreyCard, // Dark popup background
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             onSelected: (value) {
-              if (value == 0) {
-                final shell = StatefulNavigationShell.of(context);
-
-                shell.goBranch(4);
-              }
+              if (value == 0) StatefulNavigationShell.of(context).goBranch(4);
               if (value == 1) ref.read(loginProvider.notifier).signOut(context);
             },
             itemBuilder: (context) => [
@@ -125,15 +209,18 @@ class _AthleteDashboardScreenState
                   children: [
                     Icon(
                       Icons.person_outline,
-                      color: AppColors.primary,
+                      color: AppColors.white,
                       size: 22,
                     ),
                     const SizedBox(width: 12),
-                    const Text("Go to Profile"),
+                    const Text(
+                      "Go to Profile",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
-              const PopupMenuDivider(),
+              const PopupMenuDivider(color: Colors.white10),
               PopupMenuItem(
                 value: 1,
                 child: Row(
@@ -160,15 +247,16 @@ class _AthleteDashboardScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomText(
-                  title: "Welcome back,",
+                  title: "Welcome back",
                   fontSize: 12,
-                  textColor: Colors.grey,
+                  textColor: Colors.white60,
                 ),
-                CustomText(
-                  title: userName ?? "Athlete",
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                // CustomText(
+                //   title: userName ?? "Athlete",
+                //   fontSize: 16,
+                //   fontWeight: FontWeight.bold,
+                //   textColor: Colors.white,
+                // ),
               ],
             ),
           ),
@@ -176,7 +264,7 @@ class _AthleteDashboardScreenState
             onPressed: () => context.push(Routes.notificationScreen),
             icon: const Icon(
               Icons.notifications_none_rounded,
-              color: Colors.black87,
+              color: Colors.white,
             ),
           ),
         ],
@@ -186,7 +274,7 @@ class _AthleteDashboardScreenState
 
   Widget _buildSearchHeader(List<Athlete> athletes, List<Sponsor> sponsors) {
     return Container(
-      color: Colors.white,
+      color: AppColors.black,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: InkWell(
         onTap: () => context.push(
@@ -196,22 +284,29 @@ class _AthleteDashboardScreenState
         child: Container(
           height: 50,
           decoration: BoxDecoration(
-            color: AppColors.greyScaffoldBackground,
+            color: AppColors.darkGreyCard, // Matching the profile section cards
             borderRadius: BorderRadius.circular(14),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
-              const Icon(Icons.search, color: Colors.grey),
+              const Icon(Icons.search, color: Colors.white60),
               const SizedBox(width: 8),
               const Expanded(
                 child: CustomText(
                   title: 'Search athletes or sponsors...',
-                  textColor: Colors.grey,
+                  textColor: Colors.white60,
                   fontSize: 14,
                 ),
               ),
-              SvgPicture.asset("assets/images/filter.svg", height: 20),
+              SvgPicture.asset(
+                "assets/images/filter.svg",
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white60,
+                  BlendMode.srcIn,
+                ),
+              ),
             ],
           ),
         ),
@@ -219,27 +314,28 @@ class _AthleteDashboardScreenState
     );
   }
 
-  Widget _buildSectionHeader(String title, String subtitle) => SliverPadding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-    sliver: SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            title: title,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            textColor: AppColors.primary,
+  Widget _buildSectionHeader(String title, String subtitle) =>
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                title: title,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                textColor: Colors.white,
+              ),
+              CustomText(
+                title: subtitle,
+                fontSize: 12,
+                textColor: Colors.white38,
+              ),
+            ],
           ),
-          CustomText(
-            title: subtitle,
-            fontSize: 12,
-            textColor: Colors.grey.shade600,
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Widget _buildSponsorSliver(List<Sponsor> sponsors) => SliverToBoxAdapter(
     child: SizedBox(
@@ -252,13 +348,12 @@ class _AthleteDashboardScreenState
         itemBuilder: (context, index) {
           final sponsor = sponsors[index];
           return SponsorCard(
-            name: sponsor.name ?? 'Brand',
+            name: sponsor.sponsorProfile?.name ?? 'Brand',
             category: sponsor.sport.isNotEmpty
                 ? sponsor.sport.first.name ?? "Sponsor"
                 : "Partner",
-            imageUrl:
-                sponsor.sport.isNotEmpty && sponsor.sport.first.icon != null
-                ? '$fileBaseUrl${sponsor.sport.first.icon}'
+            imageUrl: sponsor.sponsorProfile?.profileImageUrl != null
+                ? "$fileBaseUrl${sponsor.sponsorProfile?.profileImageUrl}"
                 : 'https://picsum.photos/400/300',
           );
         },
@@ -268,7 +363,7 @@ class _AthleteDashboardScreenState
 
   Widget _buildAthleteSliver(List<Athlete> athletes) => SliverToBoxAdapter(
     child: SizedBox(
-      height: 340,
+      height: 350, // Slightly taller for dark layout spacing
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -289,15 +384,11 @@ class _AthleteDashboardScreenState
             highestSocialMediaPresence:
                 profile?.highestSocialMediaPresence ?? "0",
             sponsorshipDone: (profile?.sponsorshipDone ?? 0).toString(),
-            rating: profile?.rating ?? 0.0,
             achievements: profile?.achievements ?? [],
-            onTap: () {
-              // Navigating to profile as a viewer
-              context.push(
-                Routes.viewAthleteScreen,
-                extra: {'athleteId': athlete.id, 'isSelf': false},
-              );
-            },
+            onTap: () => context.push(
+              Routes.viewAthleteScreen,
+              extra: {'athleteId': athlete.id, 'isSelf': false},
+            ),
           );
         },
       ),

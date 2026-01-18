@@ -12,7 +12,7 @@ abstract class IAuthenticationRepository {
   Future<ApiResponse<RegistrationResponse>> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    // required String name,
     required String accountType,
   });
 

@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/home_screen/data/datasource/feed_remote_datasource.dart';
+import 'package:athlink/features/athlete/home_screen/domain/models/connection_models.dart';
 import 'package:athlink/features/athlete/home_screen/domain/repository/feed_repository.dart';
 import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -11,5 +12,12 @@ class AthleteFeedRepositoryImpl implements AthleteFeedRepository {
   @override
   Future<ApiResponse<FeedResponse>> getAthleteFeed() async {
     return await _remoteDataSource.getAthleteFeed();
+  }
+
+  @override
+  Future<ApiResponse<ConnectionResponse>> sendConnectionRequest(
+    String athleteId,
+  ) async {
+    return await _remoteDataSource.sendConnectionRequest(athleteId);
   }
 }

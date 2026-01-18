@@ -44,6 +44,8 @@ abstract class SponsorStats with _$SponsorStats {
 abstract class SponsorProfile with _$SponsorProfile {
   const factory SponsorProfile({
     SponsorStats? stats,
+    String? name,
+    String? profileImageUrl,
     @Default([]) List<dynamic> jobPosts,
   }) = _SponsorProfile;
 

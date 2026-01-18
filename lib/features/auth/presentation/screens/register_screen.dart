@@ -26,8 +26,8 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _companyController = TextEditingController();
-  final _nameController = TextEditingController();
+  // final _companyController = TextEditingController();
+  // final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -41,7 +41,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(registrationProvider.notifier);
       await provider.register(
-        name: _nameController.text.trim(),
+        // name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         context: context,
@@ -76,7 +76,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    // _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -113,7 +113,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               provider.resetState();
               if (current.isNewUser) {
                 context.push(Routes.accountTypeSelectionRouteName, extra: true);
-              } else  {
+              } else {
                 context.push(Routes.dashBoardRouteName);
               }
             }
@@ -155,20 +155,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               textColor: AppColors.textPrimary,
                             ),
                             SizedBox(height: 6),
-                            RoundedTextFormField(
-                              controller: _companyController,
-                              radius: 50,
-                              hintText: _isAthlete
-                                  ? "Your Name"
-                                  : "Company Name",
-                              textInputType: TextInputType.name,
-                              prefixIcon: SvgPicture.asset(
-                                "assets/logos/org.svg",
-                                width: 16,
-                                height: 16,
-                              ),
-                              validator: Validators.requiredField,
-                            ),
+                            // RoundedTextFormField(
+                            //   controller: _companyController,
+                            //   radius: 50,
+                            //   hintText: _isAthlete
+                            //       ? "Your Name"
+                            //       : "Company Name",
+                            //   textInputType: TextInputType.name,
+                            //   prefixIcon: SvgPicture.asset(
+                            //     "assets/logos/org.svg",
+                            //     width: 16,
+                            //     height: 16,
+                            //   ),
+                            //   validator: Validators.requiredField,
+                            // ),
                             RoundedTextFormField(
                               controller: _emailController,
                               radius: 50,

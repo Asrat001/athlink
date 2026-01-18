@@ -44,13 +44,13 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
   Future<ApiResponse<RegistrationResponse>> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    // required String name,
     required String accountType,
   }) async {
     return await remoteDataSource.register(
       email: email,
       password: password,
-      name: name,
+      // name: name,
       accountType: accountType,
     );
   }

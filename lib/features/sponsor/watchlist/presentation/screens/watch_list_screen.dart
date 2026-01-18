@@ -24,9 +24,10 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
   bool isFilterOpen = false;
 
   // ✅ ValueNotifier for action state - better performance for list
-  final activeActionNotifier = ValueNotifier<({int? index, String? type})>(
-    (index: null, type: null),
-  );
+  final activeActionNotifier = ValueNotifier<({int? index, String? type})>((
+    index: null,
+    type: null,
+  ));
 
   @override
   void initState() {
@@ -84,9 +85,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
         child: Column(
           children: [
             _buildHeader(watchlistState),
-            Expanded(
-              child: _buildContent(watchlistState),
-            ),
+            Expanded(child: _buildContent(watchlistState)),
           ],
         ),
       ),
@@ -96,9 +95,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
   // MARK: - Content Builder (using clean union state)
   Widget _buildContent(WatchlistState watchlistState) {
     return watchlistState.when(
-      initial: () => const Center(
-        child: Text('Setting up watchlist...'),
-      ),
+      initial: () => const Center(child: Text('Setting up watchlist...')),
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppColors.primary),
       ),
@@ -109,7 +106,6 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
           return _buildEmptyState();
         }
         // return SizedBox.shrink();
-
 
         return RefreshIndicator(
           onRefresh: () async {
@@ -244,11 +240,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.bookmark_border,
-            color: AppColors.grey,
-            size: 64,
-          ),
+          Icon(Icons.bookmark_border, color: AppColors.grey, size: 64),
           const SizedBox(height: 16),
           CustomText(
             title: 'No athletes in your watchlist',
@@ -266,11 +258,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: AppColors.error,
-            size: 48,
-          ),
+          const Icon(Icons.error_outline, color: AppColors.error, size: 48),
           const SizedBox(height: 16),
           CustomText(
             title: errorMessage,
@@ -336,7 +324,7 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
   void _onActiveActionChanged() {
     final activeAction = widget.activeActionNotifier.value;
     final newIsActive = activeAction.index == widget.index;
-    
+
     // ✅ Only rebuild if this item's state actually changed
     if (newIsActive != _isActive || activeAction.type != _actionType) {
       setState(() {
@@ -358,34 +346,26 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
           curve: const Interval(0.0, 1.0, curve: Curves.easeInOutCubic),
         );
 
-        final slideAnimation = Tween<Offset>(
-          begin: const Offset(0, 0.08),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: const Interval(0.15, 1.0, curve: Curves.easeOutCubic),
-          ),
-        );
+        final slideAnimation =
+            Tween<Offset>(
+              begin: const Offset(0, 0.08),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: const Interval(0.15, 1.0, curve: Curves.easeOutCubic),
+              ),
+            );
 
-        final scaleAnimation = Tween<double>(
-          begin: 0.98,
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutBack,
-          ),
+        final scaleAnimation = Tween<double>(begin: 0.98, end: 1.0).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         );
 
         return FadeTransition(
           opacity: fadeAnimation,
           child: SlideTransition(
             position: slideAnimation,
-            child: ScaleTransition(
-              scale: scaleAnimation,
-              child: child,
-            ),
+            child: ScaleTransition(scale: scaleAnimation, child: child),
           ),
         );
       },
@@ -421,9 +401,12 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
           alignment: Alignment.center,
           child: AthleteCard(
             key: ValueKey(widget.athlete.id),
-            size:MediaQuery.of(context).size.width*0.89,
+            size: MediaQuery.of(context).size.width * 0.89,
             athleteId: widget.athlete.id,
-            name: widget.athlete.athleteProfile?.name ?? widget.athlete.name ?? 'Unknown',
+            name:
+                widget.athlete.athleteProfile?.name ??
+                widget.athlete.name ??
+                'Unknown',
             club: widget.athlete.sport.isNotEmpty
                 ? widget.athlete.sport.first.name ?? 'Unknown Sport'
                 : 'Unknown Sport',
@@ -434,12 +417,13 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
             image: widget.athlete.athleteProfile?.profileImageUrl != null
                 ? '$fileBaseUrl${widget.athlete.athleteProfile?.profileImageUrl}'
                 : '',
-            rating: widget.athlete.athleteProfile?.rating ?? 0.0,
+            // rating: widget.athlete.athleteProfile?.rating ?? 0.0,
             achievements: widget.athlete.athleteProfile?.achievements ?? [],
             position: widget.athlete.athleteProfile?.position,
             level: widget.athlete.athleteProfile?.level,
-            sportCategory:
-                widget.athlete.sport.isNotEmpty ? widget.athlete.sport.first.name : null,
+            sportCategory: widget.athlete.sport.isNotEmpty
+                ? widget.athlete.sport.first.name
+                : null,
             highestSocialMediaPresence: '0 followers',
           ),
         ),
@@ -450,7 +434,9 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
   Widget _buildConfirmationCard() {
     final isDelete = _actionType == "delete" || _actionType == "deleting";
     final athleteName =
-        widget.item.athlete?.athleteProfile?.name ?? widget.item.athlete?.name ?? 'Unknown';
+        widget.item.athlete?.athleteProfile?.name ??
+        widget.item.athlete?.name ??
+        'Unknown';
 
     final bgColor = isDelete ? AppColors.lightError : AppColors.lightMute;
     final textColor = isDelete ? AppColors.red : AppColors.muteAction;
@@ -517,7 +503,8 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () => widget.onConfirm(widget.index, widget.watchlist),
+                  onPressed: () =>
+                      widget.onConfirm(widget.index, widget.watchlist),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: textColor,
                     foregroundColor: AppColors.white,

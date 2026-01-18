@@ -42,7 +42,7 @@ class AuthenticationRemoteDataSource extends BaseRepository {
   }
 
   Future<ApiResponse<RegistrationResponse>> register({
-    required String name,
+    // required String name,
     required String email,
     required String password,
     required String accountType,

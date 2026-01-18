@@ -48,11 +48,18 @@ _SponsorProfile _$SponsorProfileFromJson(Map<String, dynamic> json) =>
       stats: json['stats'] == null
           ? null
           : SponsorStats.fromJson(json['stats'] as Map<String, dynamic>),
+      name: json['name'] as String?,
+      profileImageUrl: json['profileImageUrl'] as String?,
       jobPosts: json['jobPosts'] as List<dynamic>? ?? const [],
     );
 
 Map<String, dynamic> _$SponsorProfileToJson(_SponsorProfile instance) =>
-    <String, dynamic>{'stats': instance.stats, 'jobPosts': instance.jobPosts};
+    <String, dynamic>{
+      'stats': instance.stats,
+      'name': instance.name,
+      'profileImageUrl': instance.profileImageUrl,
+      'jobPosts': instance.jobPosts,
+    };
 
 _Sponsor _$SponsorFromJson(Map<String, dynamic> json) => _Sponsor(
   id: json['_id'] as String?,

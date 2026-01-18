@@ -30,26 +30,22 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize with all data
     _performSearch('');
   }
 
   void _performSearch(String query) {
     final q = query.toLowerCase();
 
-    // Filter Sponsors
     final filteredSponsors = widget.initialSponsors.where((s) {
       return (s.name?.toLowerCase().contains(q) ?? false);
     }).toList();
 
-    // Filter Athletes
     final filteredAthletes = widget.initialAthletes.where((a) {
       final name = a.athleteProfile?.name?.toLowerCase() ?? '';
       final club = a.athleteProfile?.club?.toLowerCase() ?? '';
       return name.contains(q) || club.contains(q);
     }).toList();
 
-    // Group filtered athletes by sport (Dashboard Structure)
     final Map<String, List<Athlete>> grouped = {};
     for (var athlete in filteredAthletes) {
       for (var sport in athlete.sport) {
@@ -70,7 +66,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.greyScaffoldBackground,
+      backgroundColor: AppColors.black, // Dark background
       body: SafeArea(
         child: Column(
           children: [
@@ -86,37 +82,35 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
     );
   }
 
-  /// ------------------------------------------------------------
-  /// HEADER (MATCHES DASHBOARD STYLE)
-  /// ------------------------------------------------------------
   Widget _buildSearchHeader() {
     return Container(
-      color: Colors.white,
+      color: AppColors.black,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const BackButton(color: Colors.black),
+          const BackButton(color: Colors.white), // Light back button
           Expanded(
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.greyScaffoldBackground,
+                color: AppColors.darkGreyCard, // Darker input field
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Colors.grey, size: 20),
+                  const Icon(Icons.search, color: Colors.white54, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       onChanged: _performSearch,
                       autofocus: true,
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                      cursorColor: AppColors.primary,
                       decoration: const InputDecoration(
                         hintText: "Search athletes or brands...",
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: TextStyle(color: Colors.white38),
                         border: InputBorder.none,
                         isDense: true,
                       ),
@@ -127,7 +121,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
                       icon: const Icon(
                         Icons.close,
                         size: 18,
-                        color: Colors.grey,
+                        color: Colors.white54,
                       ),
                       onPressed: () {
                         _searchController.clear();
@@ -152,30 +146,22 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-
-          // Horizontal Sponsors Row
           if (_filteredSponsors.isNotEmpty) ...[
             _buildSectionHeader("Brands & Sponsors", "Top matching partners"),
             _buildSponsorRow(),
             const SizedBox(height: 24),
           ],
-
-          // Grouped Horizontal Athlete Rows
           for (var entry in sportEntries) ...[
             _buildSectionHeader(entry.key, "Athletes in this category"),
             _buildAthleteRow(entry.value),
             const SizedBox(height: 24),
           ],
-
           const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  /// ------------------------------------------------------------
-  /// SECTION BUILDERS
-  /// ------------------------------------------------------------
   Widget _buildSectionHeader(String title, String subtitle) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -184,14 +170,14 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
         children: [
           CustomText(
             title: title,
-            fontSize: 16,
+            fontSize: 18, // Slightly larger for better hierarchy
             fontWeight: FontWeight.bold,
-            textColor: AppColors.primary,
+            textColor: Colors.white, // Match profile style
           ),
           CustomText(
             title: subtitle,
             fontSize: 12,
-            textColor: Colors.grey.shade600,
+            textColor: Colors.white38, // Dimmed secondary text
           ),
         ],
       ),
@@ -227,7 +213,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
 
   Widget _buildAthleteRow(List<Athlete> athletes) {
     return SizedBox(
-      height: 340,
+      height: 350, // Matched Dashboard height adjustment
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -245,12 +231,11 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
             name: profile?.name ?? 'Athlete',
             club: profile?.club ?? 'Independent',
             age: profile?.age?.toString() ?? '20',
-            flag: 'assets/images/flag.png', // Or use dynamic flag if available
+            flag: 'assets/images/flag.png',
             image: imageUrl,
             highestSocialMediaPresence:
                 profile?.highestSocialMediaPresence ?? "0",
             sponsorshipDone: (profile?.sponsorshipDone ?? 0).toString(),
-            rating: profile?.rating ?? 0.0,
             achievements: profile?.achievements ?? [],
           );
         },
@@ -266,12 +251,12 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
           Icon(
             Icons.search_off_rounded,
             size: 60,
-            color: Colors.grey.withValues(alpha: 0.5),
+            color: Colors.white24, // Consistent dimmed icon
           ),
           const SizedBox(height: 16),
           const CustomText(
             title: "No results found",
-            textColor: Colors.grey,
+            textColor: Colors.white54,
             fontSize: 16,
           ),
         ],
