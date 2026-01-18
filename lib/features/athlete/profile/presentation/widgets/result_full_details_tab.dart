@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -7,17 +8,24 @@ import 'package:athlink/shared/widgets/info_tile.dart';
 class ResultFullDetailsTab extends StatelessWidget {
   final ResultData result;
   final String? currentLink;
-  final Function(String) onLinkUpdated;
+  final Function(String)? onLinkUpdated;
+  final bool isSelf;
 
   const ResultFullDetailsTab({
     super.key,
     required this.result,
     this.currentLink,
-    required this.onLinkUpdated,
+    this.onLinkUpdated,
+    this.isSelf = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    logger(isSelf);
+    // Determine if we should even show the "Official Results" section
+    // If it's not self and there's no link, we can keep the header but show the empty message
+    final hasLink = currentLink != null && currentLink!.isNotEmpty;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -41,7 +49,7 @@ class ResultFullDetailsTab extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          if (currentLink != null && currentLink!.isNotEmpty)
+          if (hasLink)
             _buildLinkDisplay(context)
           else
             _buildAddLinkPrompt(context),
@@ -70,10 +78,12 @@ class ResultFullDetailsTab extends StatelessWidget {
               maxLines: 1,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.edit, size: 18, color: AppColors.white),
-            onPressed: () => _showLinkDialog(context),
-          ),
+          // Edit button is strictly for the owner
+          if (isSelf)
+            IconButton(
+              icon: const Icon(Icons.edit, size: 18, color: AppColors.white),
+              onPressed: () => _showLinkDialog(context),
+            ),
         ],
       ),
     );
@@ -84,43 +94,54 @@ class ResultFullDetailsTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
-          title: "Link to the official competition results page.",
+          title: isSelf
+              ? "Link to the official competition results page."
+              : "No official results link provided by the athlete.",
           fontSize: 13,
           textColor: AppColors.white.withValues(alpha: 0.7),
         ),
-        const SizedBox(height: 30),
-        Center(
-          child: GestureDetector(
-            onTap: () => _showLinkDialog(context),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.darkGreyCard,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: AppColors.white.withValues(alpha: 0.1),
+
+        if (isSelf) ...[
+          const SizedBox(height: 30),
+          Center(
+            child: GestureDetector(
+              onTap: () => _showLinkDialog(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
                 ),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add_link, color: AppColors.white, size: 20),
-                  SizedBox(width: 10),
-                  CustomText(
-                    title: "Add results link",
-                    textColor: AppColors.white,
-                    fontWeight: FontWeight.w600,
+                decoration: BoxDecoration(
+                  color: AppColors.darkGreyCard,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: AppColors.white.withValues(alpha: 0.1),
                   ),
-                ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add_link, color: AppColors.white, size: 20),
+                    SizedBox(width: 10),
+                    CustomText(
+                      title: "Add results link",
+                      textColor: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }
 
   void _showLinkDialog(BuildContext context) {
+    // Safety check: Don't allow dialog to open if not self
+    if (!isSelf || onLinkUpdated == null) return;
+
     final controller = TextEditingController(text: currentLink);
 
     showDialog(
@@ -134,7 +155,6 @@ class ResultFullDetailsTab extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Dialog Header Icon
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -154,16 +174,7 @@ class ResultFullDetailsTab extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 textColor: AppColors.white,
               ),
-              const SizedBox(height: 8),
-              CustomText(
-                title: "Enter the URL for the official results.",
-                fontSize: 13,
-                textColor: AppColors.white.withValues(alpha: 0.5),
-                textAlign: TextAlign.center,
-              ),
               const SizedBox(height: 24),
-
-              // Styled TextField
               TextField(
                 controller: controller,
                 autofocus: true,
@@ -194,8 +205,6 @@ class ResultFullDetailsTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Action Buttons
               Row(
                 children: [
                   Expanded(
@@ -213,21 +222,15 @@ class ResultFullDetailsTab extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.orangeGradientStart,
-                        foregroundColor: AppColors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        elevation: 0,
                       ),
                       onPressed: () {
-                        onLinkUpdated(controller.text);
+                        onLinkUpdated!(controller.text);
                         Navigator.pop(context);
                       },
-                      child: const Text(
-                        "Save",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      child: const Text("Save"),
                     ),
                   ),
                 ],

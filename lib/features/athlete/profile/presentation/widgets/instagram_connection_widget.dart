@@ -4,7 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 
 class InstagramConnectSection extends StatefulWidget {
-  const InstagramConnectSection({super.key});
+  final bool isSelf;
+  final bool initiallyConnected;
+
+  const InstagramConnectSection({
+    super.key,
+    this.isSelf = false,
+    this.initiallyConnected = false,
+  });
 
   @override
   State<InstagramConnectSection> createState() =>
@@ -12,9 +19,17 @@ class InstagramConnectSection extends StatefulWidget {
 }
 
 class _InstagramConnectSectionState extends State<InstagramConnectSection> {
-  bool isConnected = false;
+  late bool isConnected;
+
+  @override
+  void initState() {
+    super.initState();
+    isConnected = widget.initiallyConnected;
+  }
 
   void _showLogoutSheet() {
+    if (!widget.isSelf) return;
+
     HapticFeedback.heavyImpact();
     showModalBottomSheet(
       context: context,
@@ -32,7 +47,7 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.lightGrey.withValues(alpha: 0.3),
+                color: AppColors.lightGrey.withAlpha((0.3 * 255).round()),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -58,7 +73,7 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.red.withValues(alpha: 0.1),
+                backgroundColor: AppColors.red.withAlpha((0.1 * 255).round()),
                 foregroundColor: AppColors.red,
                 minimumSize: const Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(
@@ -93,23 +108,34 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
       child: Column(
         children: [
           const SizedBox(height: 40),
-          if (!isConnected) ...[
-            const CustomText(
-              title: 'Link your Instagram account',
+
+          if (isConnected)
+            _buildInstagramProfileCard()
+          else ...[
+            CustomText(
+              title: widget.isSelf
+                  ? 'Link your Instagram account'
+                  : 'Instagram Not Connected',
               fontSize: 18,
               textColor: AppColors.white,
               fontWeight: FontWeight.w600,
             ),
             const SizedBox(height: 6),
-            const CustomText(
-              title: 'Show your highlights and build trust with sponsors.',
+            CustomText(
+              title: widget.isSelf
+                  ? 'Show your highlights and build trust with sponsors.'
+                  : 'This athlete hasn\'t linked their Instagram profile yet.',
               fontSize: 13,
               textColor: AppColors.lightGrey,
               fontWeight: FontWeight.w400,
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+
+            if (widget.isSelf) ...[
+              const SizedBox(height: 16),
+              _buildConnectButton(),
+            ],
           ],
-          isConnected ? _buildInstagramProfileCard() : _buildConnectButton(),
         ],
       ),
     );
@@ -117,7 +143,9 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
 
   Widget _buildConnectButton() {
     return ElevatedButton(
-      onPressed: () => setState(() => isConnected = true),
+      onPressed: () {
+        setState(() => isConnected = true);
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.darkGreyCard,
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
@@ -136,18 +164,20 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
 
   Widget _buildInstagramProfileCard() {
     return GestureDetector(
-      onLongPress: _showLogoutSheet,
+      // Long press to disconnect is only available for the owner
+      onLongPress: widget.isSelf ? _showLogoutSheet : null,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
           color: AppColors.darkGreyCard,
           borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: AppColors.white.withValues(alpha: 0.08)),
+          border: Border.all(
+            color: AppColors.white.withAlpha((0.08 * 255).round()),
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Using a Hero-like circle for the Instagram icon
             Container(
               padding: const EdgeInsets.all(2),
               decoration: const BoxDecoration(
@@ -166,15 +196,17 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
                   'assets/images/instagram.png',
                   width: 28,
                   height: 28,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.camera_alt, color: Colors.white),
                 ),
               ),
             ),
             const SizedBox(width: 16),
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CustomText(
+                CustomText(
                   title: 'Maria M.',
                   fontSize: 22,
                   textColor: AppColors.white,

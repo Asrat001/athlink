@@ -27,4 +27,6 @@ class Routes {
   static String athleteResultsRouteName = '/athlete-results';
   static String athleteResultDetialRouteName = '/result-detail';
   static String athleteMessageRouteName = '/athlete-message';
+  static String athleteSearchScreen = '/athlete-search';
+  static String viewAthleteScreen = '/view-athlete';
 }

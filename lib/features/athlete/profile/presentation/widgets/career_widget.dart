@@ -7,7 +7,9 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 
 class CareerCard extends StatelessWidget {
   final CareerRecord record;
-  const CareerCard({super.key, required this.record});
+  final bool isSelf;
+
+  const CareerCard({super.key, required this.record, this.isSelf = true});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class CareerCard extends StatelessWidget {
                     CustomText(
                       title: record.duration,
                       fontSize: 12,
-                      textColor: AppColors.white.withValues(alpha: 0.6),
+                      textColor: AppColors.white.withAlpha((0.6 * 255).round()),
                     ),
                   ],
                 ),
@@ -55,7 +57,7 @@ class CareerCard extends StatelessWidget {
                 CustomText(
                   title: record.team,
                   fontSize: 15,
-                  textColor: AppColors.white.withValues(alpha: 0.7),
+                  textColor: AppColors.white.withAlpha((0.7 * 255).round()),
                 ),
                 const SizedBox(height: 2),
                 Row(
@@ -63,13 +65,13 @@ class CareerCard extends StatelessWidget {
                     Icon(
                       Icons.location_on_outlined,
                       size: 14,
-                      color: AppColors.white.withValues(alpha: 0.5),
+                      color: AppColors.white.withAlpha((0.5 * 255).round()),
                     ),
                     const SizedBox(width: 4),
                     CustomText(
                       title: record.location ?? "",
                       fontSize: 12,
-                      textColor: AppColors.white.withValues(alpha: 0.5),
+                      textColor: AppColors.white.withAlpha((0.5 * 255).round()),
                     ),
                   ],
                 ),
@@ -78,15 +80,15 @@ class CareerCard extends StatelessWidget {
                   CustomText(
                     title: record.description,
                     fontSize: 13,
-                    textColor: AppColors.white.withValues(alpha: 0.6),
+                    textColor: AppColors.white.withAlpha((0.6 * 255).round()),
                     maxLines: 2,
                   ),
                 ],
                 const SizedBox(height: 12),
-                const Align(
+                Align(
                   alignment: Alignment.centerRight,
                   child: CustomText(
-                    title: 'See more',
+                    title: isSelf ? 'Edit details' : 'See more',
                     fontSize: 12,
                     textColor: AppColors.orangeGradientEnd,
                     fontWeight: FontWeight.w600,
@@ -102,8 +104,14 @@ class CareerCard extends StatelessWidget {
 }
 
 class CareerEmptyState extends StatelessWidget {
-  final VoidCallback onAdd;
-  const CareerEmptyState({super.key, required this.onAdd});
+  final VoidCallback? onAdd;
+  final bool isSelf; 
+
+  const CareerEmptyState({
+    super.key,
+    this.onAdd,
+    this.isSelf = true, 
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,22 +124,27 @@ class CareerEmptyState extends StatelessWidget {
             width: 180,
             height: 180,
             colorFilter: ColorFilter.mode(
-              AppColors.white.withValues(alpha: 0.2),
+              AppColors.white.withAlpha((0.2 * 255).round()),
               BlendMode.srcIn,
             ),
           ),
           const SizedBox(height: 24),
           CustomText(
-            title: 'No Career record yet.',
+            title: isSelf
+                ? 'No Career record yet.'
+                : 'No career records found for this athlete.',
             fontSize: 18,
-            textColor: AppColors.white.withValues(alpha: 0.38),
+            textColor: AppColors.white.withAlpha((0.38 * 255).round()),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
-          CareerBottomActions(
-            label: 'Add career Record',
-            onAdd: onAdd,
-            showCircle: false,
-          ),
+          if (isSelf && onAdd != null) ...[
+            const SizedBox(height: 40),
+            CareerBottomActions(
+              label: 'Add career Record',
+              onAdd: onAdd!,
+              showCircle: false,
+            ),
+          ],
         ],
       ),
     );
@@ -167,13 +180,13 @@ class CareerBottomActions extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.white.withValues(alpha: 0.38),
+                      color: AppColors.white.withAlpha((0.38 * 255).round()),
                       width: 2,
                     ),
                   ),
                   child: Icon(
                     Icons.add,
-                    color: AppColors.white.withValues(alpha: 0.7),
+                    color: AppColors.white.withAlpha((0.7 * 255).round()),
                     size: 40,
                   ),
                 ),
@@ -189,7 +202,7 @@ class CareerBottomActions extends StatelessWidget {
                   color: AppColors.darkGreyCard,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: AppColors.white.withValues(alpha: 0.1),
+                    color: AppColors.white.withAlpha((0.1 * 255).round()),
                   ),
                 ),
                 child: Row(

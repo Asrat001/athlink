@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/career_journey_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -10,11 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:http/http.dart' as http;
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 
 class GlobalFootprintMap extends ConsumerStatefulWidget {
-  const GlobalFootprintMap({super.key});
+  final String? athleteId;
+  final bool isSelf;
+
+  const GlobalFootprintMap({super.key, this.athleteId, this.isSelf = true});
 
   @override
   ConsumerState<GlobalFootprintMap> createState() => _GlobalFootprintMapState();
@@ -25,49 +27,81 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
   bool isRouteLoading = false;
   final String mapboxToken = dotenv.env['MAPBOX_TOKEN']!;
 
+  // Dio instance and CancelToken for memory management
+  final Dio _dio = Dio();
+  CancelToken? _cancelToken;
+
   @override
   void initState() {
     super.initState();
+    _fetchFootprint();
+  }
+
+  @override
+  void dispose() {
+    _cancelToken?.cancel("Widget disposed"); // Cancel pending requests
+    super.dispose();
+  }
+
+  void _fetchFootprint() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final localStorage = sl<LocalStorageService>();
-      final user = localStorage.getUserData();
-      if (user != null) {
-        ref.read(careerJourneyProvider.notifier).loadCareerJourney(user.id);
+      final loggedInUser = localStorage.getUserData();
+      final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+
+      if (targetId != null) {
+        ref.read(careerJourneyProvider.notifier).loadCareerJourney(targetId);
       }
     });
   }
 
-  // Fetch the actual road path from Mapbox Directions API
   Future<void> _getRoadRoute(List<LatLng> waypoints) async {
     if (waypoints.length < 2 || roadPoints.isNotEmpty) return;
 
     setState(() => isRouteLoading = true);
+    _cancelToken = CancelToken();
 
     final String coords = waypoints
         .map((p) => "${p.longitude},${p.latitude}")
         .join(';');
-    final url =
-        "https://api.mapbox.com/directions/v5/mapbox/driving/$coords?geometries=polyline&overview=full&access_token=$mapboxToken";
+
+    final url = "https://api.mapbox.com/directions/v5/mapbox/driving/$coords";
 
     try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final String encodedPoly = data['routes'][0]['geometry'];
+      final response = await _dio.get(
+        url,
+        queryParameters: {
+          'geometries': 'polyline',
+          'overview': 'full',
+          'access_token': mapboxToken,
+        },
+        cancelToken: _cancelToken,
+      );
 
-        // Decode the polyline string into coordinates
+      if (response.statusCode == 200) {
+        // Dio automatically decodes JSON response.data
+        final String encodedPoly = response.data['routes'][0]['geometry'];
         final List<List<num>> decodedCoords = decodePolyline(encodedPoly);
 
-        setState(() {
-          roadPoints = decodedCoords
-              .map((c) => LatLng(c[0].toDouble(), c[1].toDouble()))
-              .toList();
-          isRouteLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            roadPoints = decodedCoords
+                .map((c) => LatLng(c[0].toDouble(), c[1].toDouble()))
+                .toList();
+            isRouteLoading = false;
+          });
+        }
       }
+    } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) {
+        debugPrint("Request cancelled: ${e.message}");
+      } else {
+        debugPrint("Dio error fetching road route: ${e.message}");
+      }
+      if (mounted) setState(() => isRouteLoading = false);
     } catch (e) {
-      debugPrint("Error fetching road route: $e");
-      setState(() => isRouteLoading = false);
+      debugPrint("Unexpected error: $e");
+      if (mounted) setState(() => isRouteLoading = false);
     }
   }
 
@@ -97,7 +131,6 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
 
         if (markerPoints.isEmpty) return const SizedBox.shrink();
 
-        // Trigger road fetching logic
         if (roadPoints.isEmpty && !isRouteLoading) {
           _getRoadRoute(markerPoints);
         }
@@ -105,8 +138,8 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomText(
-              title: 'Global Footprint',
+            CustomText(
+              title: widget.isSelf ? 'Global Footprint' : 'Athlete Footprint',
               fontSize: 16,
               textColor: AppColors.orangeGradientStart,
               fontWeight: FontWeight.bold,
@@ -126,9 +159,9 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
                   FlutterMap(
                     options: MapOptions(
                       initialCenter: markerPoints.first,
-                      initialZoom: 13,
+                      initialZoom: 5,
                       maxZoom: 20,
-                      minZoom: 3,
+                      minZoom: 2,
                     ),
                     children: [
                       TileLayer(
@@ -138,7 +171,6 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
                       PolylineLayer(
                         polylines: [
                           Polyline(
-                            // Use roadPoints if available, otherwise fallback to straight lines
                             points: roadPoints.isNotEmpty
                                 ? roadPoints
                                 : markerPoints,

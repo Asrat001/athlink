@@ -4,12 +4,14 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 
 class ResultSummaryTab extends StatelessWidget {
   final TextEditingController controller;
-  final VoidCallback onSave;
+  final VoidCallback? onSave;
+  final bool isSelf; // Added isSelf
 
   const ResultSummaryTab({
     super.key,
     required this.controller,
-    required this.onSave,
+    this.onSave,
+    this.isSelf = true, // Default to true
   });
 
   @override
@@ -29,9 +31,12 @@ class ResultSummaryTab extends StatelessWidget {
           TextField(
             controller: controller,
             maxLines: 8,
+            readOnly: !isSelf, // Disable editing if not self
             style: const TextStyle(color: AppColors.white),
             decoration: InputDecoration(
-              hintText: "Write your highlights and notes here...",
+              hintText: isSelf
+                  ? "Write your highlights and notes here..."
+                  : "No summary provided for this competition.",
               hintStyle: TextStyle(
                 color: AppColors.white.withValues(alpha: 0.24),
                 fontSize: 13,
@@ -44,31 +49,35 @@ class ResultSummaryTab extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 30),
-          Center(
-            child: GestureDetector(
-              onTap: onSave,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.darkGreyCard,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: AppColors.white.withValues(alpha: 0.1),
+
+          // Only show the Save button if it's the user's own profile
+          if (isSelf && onSave != null) ...[
+            const SizedBox(height: 30),
+            Center(
+              child: GestureDetector(
+                onTap: onSave,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 14,
                   ),
-                ),
-                child: const CustomText(
-                  title: "Save Summary",
-                  fontSize: 14,
-                  textColor: AppColors.white,
-                  fontWeight: FontWeight.w600,
+                  decoration: BoxDecoration(
+                    color: AppColors.darkGreyCard,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: AppColors.white.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: const CustomText(
+                    title: "Save Summary",
+                    fontSize: 14,
+                    textColor: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

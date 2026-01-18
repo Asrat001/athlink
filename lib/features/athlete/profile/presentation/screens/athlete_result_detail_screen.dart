@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -10,7 +11,15 @@ import '../widgets/result_summary_tab.dart';
 
 class AthleteResultDetailScreen extends StatefulWidget {
   final ResultData result;
-  const AthleteResultDetailScreen({super.key, required this.result});
+  final bool isSelf;
+  final String? athleteId; // Added athleteId
+
+  const AthleteResultDetailScreen({
+    super.key,
+    required this.result,
+    this.isSelf = true,
+    this.athleteId, // Optional athleteId
+  });
 
   @override
   State<AthleteResultDetailScreen> createState() =>
@@ -28,11 +37,22 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    // Log the state and ID for debugging
+    logger("isSelf: ${widget.isSelf}, athleteId: ${widget.athleteId}");
 
+    _tabController = TabController(length: 3, vsync: this);
     _uploadedMedia = List.from(widget.result.media);
     _summaryController = TextEditingController(text: widget.result.summary);
     _currentResultsLink = widget.result.resultsLink;
+  }
+
+  void _handleBack() {
+    // Only return data if it's the owner editing; otherwise just pop
+    if (widget.isSelf) {
+      _saveAndExit();
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   void _saveAndExit() {
@@ -45,6 +65,8 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
   }
 
   Future<void> _pickMedia() async {
+    if (!widget.isSelf) return;
+
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() => _uploadedMedia.add(File(image.path)));
@@ -64,7 +86,7 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
             color: AppColors.white,
             size: 20,
           ),
-          onPressed: _saveAndExit,
+          onPressed: _handleBack,
         ),
         title: CustomText(
           title: widget.result.competition,
@@ -85,9 +107,7 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
           controller: _tabController,
           indicatorColor: AppColors.orangeGradientStart,
           indicatorWeight: 3,
-
           labelColor: AppColors.orangeGradientStart,
-
           unselectedLabelColor: AppColors.white.withValues(alpha: 0.5),
           dividerColor: AppColors.white.withValues(alpha: 0.1),
           tabs: const [
@@ -102,22 +122,28 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
         children: [
           ResultFullDetailsTab(
             result: widget.result,
+            isSelf: widget.isSelf,
             currentLink: _currentResultsLink,
-            onLinkUpdated: (newLink) =>
-                setState(() => _currentResultsLink = newLink),
+            onLinkUpdated: widget.isSelf
+                ? (newLink) => setState(() => _currentResultsLink = newLink)
+                : null,
           ),
           ResultMediaTab(
             mediaFiles: _uploadedMedia,
-            onUpload: _pickMedia,
-            onDelete: (index) {
-              setState(() {
-                _uploadedMedia.removeAt(index);
-              });
-            },
+            isSelf: widget.isSelf,
+            onUpload: widget.isSelf ? _pickMedia : null,
+            onDelete: widget.isSelf
+                ? (index) {
+                    setState(() {
+                      _uploadedMedia.removeAt(index);
+                    });
+                  }
+                : null,
           ),
           ResultSummaryTab(
             controller: _summaryController,
-            onSave: _saveAndExit,
+            isSelf: widget.isSelf,
+            onSave: widget.isSelf ? _saveAndExit : null,
           ),
         ],
       ),

@@ -5,14 +5,16 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 
 class ResultMediaTab extends StatelessWidget {
   final List<File> mediaFiles;
-  final VoidCallback onUpload;
-  final Function(int index) onDelete;
+  final VoidCallback? onUpload;
+  final Function(int index)? onDelete;
+  final bool isSelf; // Added isSelf
 
   const ResultMediaTab({
     super.key,
     required this.mediaFiles,
-    required this.onUpload,
-    required this.onDelete,
+    this.onUpload,
+    this.onDelete,
+    this.isSelf = true, // Default to true
   });
 
   @override
@@ -26,10 +28,10 @@ class ResultMediaTab extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: mediaFiles.length + 1,
+      // If not self, don't add the extra slot for the "Add" button
+      itemCount: isSelf ? mediaFiles.length + 1 : mediaFiles.length,
       itemBuilder: (context, index) {
-        // The last item is always the "Add More" button
-        if (index == mediaFiles.length) {
+        if (isSelf && index == mediaFiles.length) {
           return _buildAddMoreButton();
         }
 
@@ -41,7 +43,6 @@ class ResultMediaTab extends StatelessWidget {
   Widget _buildMediaItem(int index) {
     return Stack(
       children: [
-        // The Image
         Positioned.fill(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -49,22 +50,27 @@ class ResultMediaTab extends StatelessWidget {
           ),
         ),
 
-        // The Cancel/Delete Icon
-        Positioned(
-          top: 4,
-          right: 4,
-          child: GestureDetector(
-            onTap: () => onDelete(index),
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: AppColors.black.withValues(alpha: 0.6),
-                shape: BoxShape.circle,
+        // Only show delete icon if it's the user's own profile
+        if (isSelf && onDelete != null)
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: () => onDelete!(index),
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: AppColors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: AppColors.white,
+                  size: 16,
+                ),
               ),
-              child: const Icon(Icons.close, color: AppColors.white, size: 16),
             ),
           ),
-        ),
       ],
     );
   }
@@ -86,7 +92,7 @@ class ResultMediaTab extends StatelessWidget {
   Widget _buildEmptyState() {
     return Center(
       child: GestureDetector(
-        onTap: onUpload,
+        onTap: isSelf ? onUpload : null, // Disable tap for viewers
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 40),
           padding: const EdgeInsets.all(40),
@@ -95,24 +101,28 @@ class ResultMediaTab extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.cloud_upload_outlined,
+                isSelf
+                    ? Icons.cloud_upload_outlined
+                    : Icons.image_not_supported_outlined,
                 color: AppColors.orangeGradientStart,
                 size: 40,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               CustomText(
-                title: "Upload Media",
+                title: isSelf ? "Upload Media" : "No Media Available",
                 fontSize: 16,
                 textColor: AppColors.white,
                 fontWeight: FontWeight.bold,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               CustomText(
-                title: "Select photos or videos from your gallery",
+                title: isSelf
+                    ? "Select photos or videos from your gallery"
+                    : "The athlete hasn't uploaded any media for this result yet.",
                 fontSize: 12,
                 textColor: Colors.white38,
                 textAlign: TextAlign.center,

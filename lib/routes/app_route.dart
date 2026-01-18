@@ -1,3 +1,4 @@
+import 'package:athlink/features/athlete/home_screen/search/presentation/screens/search_athlete_screen.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_profile_screen.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_result_detail_screen.dart';
@@ -10,6 +11,7 @@ import 'package:athlink/features/auth/presentation/screens/otp_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/register_screen.dart';
 import 'package:athlink/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:athlink/features/athlete/home_screen/presentation/screens/athlete_home_screen.dart';
+import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/screens/home_feed_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_detail_screen.dart';
 import 'package:athlink/features/message/presentation/screens/message_screen.dart';
@@ -18,9 +20,7 @@ import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.
 import 'package:athlink/features/sponsor/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/athlete_main_screen.dart';
 import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/coming_soon.dart';
-import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'error_screen.dart';
@@ -42,6 +42,16 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: Routes.splashRouteName,
     routes: [
+      GoRoute(
+        path: Routes.viewAthleteScreen,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return AthleteProfileScreen(
+            athleteId: extra?['athleteId'] as String?,
+            isSelf: extra?['isSelf'] as bool? ?? true,
+          );
+        },
+      ),
       GoRoute(
         path: Routes.splashRouteName,
         builder: (context, state) => const SplashScreen(),
@@ -153,21 +163,45 @@ class AppRouter {
       GoRoute(
         path: Routes.athleteResultDetialRouteName,
         builder: (context, state) {
-          // Receiving the ResultData object from the 'extra' parameter
-          final result = state.extra as ResultData;
-          return AthleteResultDetailScreen(result: result);
+          final extra = state.extra as Map<String, dynamic>;
+
+          return AthleteResultDetailScreen(
+            result: extra['result'] as ResultData,
+            isSelf: extra['isSelf'] as bool? ?? true,
+            athleteId:
+                extra['athleteId'] as String?, // Pass the ID to the screen
+          );
         },
       ),
       GoRoute(
         path: Routes.careerJourneyRouteName,
         builder: (context, state) {
-          return CareerJourneyScreen();
+          final extra = state.extra as Map<String, dynamic>?;
+          return CareerJourneyScreen(
+            athleteId: extra?['athleteId'] as String?,
+            isSelf: extra?['isSelf'] as bool? ?? false,
+          );
         },
       ),
       GoRoute(
         path: Routes.athleteResultsRouteName,
         builder: (context, state) {
-          return AthleteResultsScreen();
+          final extra = state.extra as Map<String, dynamic>?;
+          return AthleteResultsScreen(
+            athleteId: extra?['athleteId'] as String?,
+            isSelf: extra?['isSelf'] as bool? ?? true,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: Routes.athleteSearchScreen,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>;
+          return AthleteSearchScreen(
+            initialAthletes: data['athletes'] as List<Athlete>,
+            initialSponsors: data['sponsors'] as List<Sponsor>,
+          );
         },
       ),
 
@@ -259,7 +293,13 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: Routes.athleteProfileRouteName,
-                builder: (context, state) => const AthleteProfileScreen(),
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>?;
+                  return AthleteProfileScreen(
+                    athleteId: extra?['athleteId'] as String?,
+                    isSelf: extra?['isSelf'] as bool? ?? true,
+                  );
+                },
               ),
             ],
           ),

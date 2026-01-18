@@ -142,8 +142,10 @@ class ResultItem extends StatelessWidget {
 }
 
 class ResultEmptyState extends StatelessWidget {
-  final VoidCallback onAdd;
-  const ResultEmptyState({super.key, required this.onAdd});
+  final VoidCallback? onAdd;
+  final bool isSelf;
+
+  const ResultEmptyState({super.key, this.onAdd, this.isSelf = true});
 
   @override
   Widget build(BuildContext context) {
@@ -151,27 +153,27 @@ class ResultEmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            "assets/images/results_icon.svg",
-            width: 180,
-            height: 180,
-            colorFilter: ColorFilter.mode(
-              AppColors.white.withValues(alpha: 0.1),
-              BlendMode.srcIn,
-            ),
+          Icon(
+            Icons.emoji_events_outlined,
+            size: 100,
+            color: AppColors.white.withValues(alpha: 0.2),
           ),
           const SizedBox(height: 24),
           CustomText(
-            title: 'No results here yet.',
+            title: isSelf
+                ? 'No competition results yet.'
+                : 'No results found for this athlete.',
             fontSize: 18,
-            textColor: AppColors.white.withValues(alpha: 0.3),
+            textColor: AppColors.white.withValues(alpha: 0.38),
           ),
-          const SizedBox(height: 40),
-          ResultBottomActions(
-            label: "Add results",
-            onAdd: onAdd,
-            showCircleButton: false,
-          ),
+          if (isSelf && onAdd != null) ...[
+            const SizedBox(height: 40),
+            ResultBottomActions(
+              label: 'Add Result',
+              onAdd: onAdd!,
+              showCircleButton: false,
+            ),
+          ],
         ],
       ),
     );

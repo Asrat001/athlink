@@ -3,6 +3,7 @@ import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/athlete_profile_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/athlete_profile_state.dart';
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,9 +17,13 @@ import 'package:athlink/features/athlete/profile/presentation/widgets/funding_pr
 import 'package:athlink/features/athlete/profile/presentation/widgets/quick_actions_grid.dart';
 import 'package:athlink/features/athlete/profile/presentation/widgets/global_footprint_map.dart';
 import 'package:athlink/features/athlete/profile/presentation/widgets/profile_primary_button.dart';
+import 'package:go_router/go_router.dart';
 
 class AthleteProfileScreen extends ConsumerStatefulWidget {
-  const AthleteProfileScreen({super.key});
+  final String? athleteId;
+  final bool isSelf;
+
+  const AthleteProfileScreen({super.key, this.athleteId, this.isSelf = true});
 
   @override
   ConsumerState<AthleteProfileScreen> createState() =>
@@ -37,21 +42,18 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
 
   @override
   void initState() {
+    logger(widget.isSelf);
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
     _fetchProfile();
   }
 
   void _fetchProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user = sl<LocalStorageService>().getUserData();
-      if (user != null) {
-        ref.read(athleteProfileProvider.notifier).getProfile(user.id);
+      final loggedInUser = sl<LocalStorageService>().getUserData();
+      final targetId = widget.athleteId ?? loggedInUser?.id;
+
+      if (targetId != null) {
+        ref.read(athleteProfileProvider.notifier).getProfile(targetId);
       }
     });
   }
@@ -65,6 +67,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   }
 
   Future<void> _handleImageUpload({required bool isCover}) async {
+    // SECURITY: Do not allow image picking if not viewing own profile
+    if (!widget.isSelf) return;
+
     final picked = await _picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 80,
@@ -81,6 +86,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   }
 
   void _toggleEdit() {
+    // SECURITY: Do not allow entering edit mode if not viewing own profile
+    if (!widget.isSelf) return;
+
     if (_isEditing) {
       setState(() {
         _profileImage = null;
@@ -100,7 +108,13 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 0,
+        // Show back button only if viewing someone else's profile (pushed onto stack)
+        leading: widget.isSelf
+            ? null
+            : IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                onPressed: () => context.pop(),
+              ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: SingleChildScrollView(
@@ -139,7 +153,8 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
       children: [
         SizedBox(height: statusBarHeight),
         ProfileHeader(
-          isEditing: _isEditing || isInitial,
+          // Pass isSelf to ensure header icons are hidden/disabled
+          isEditing: widget.isSelf && (_isEditing || isInitial),
           onPickImage: () => _handleImageUpload(isCover: false),
           onPickCover: () => _handleImageUpload(isCover: true),
           localImage: _profileImage,
@@ -152,7 +167,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              (_isEditing || isInitial)
+              (widget.isSelf && (_isEditing || isInitial))
                   ? ProfileEditSection(
                       nameController: _nameController,
                       locationController: _locationController,
@@ -160,18 +175,30 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                     )
                   : ProfileDisplaySection(
                       profile: profile,
+
+                      isSelf: widget.isSelf,
                       onEditToggle: _toggleEdit,
                     ),
               if (!_isEditing && !isInitial) ...[
-                const InstagramConnectSection(),
+                InstagramConnectSection(
+                  isSelf: widget.isSelf,
+                  initiallyConnected: false,
+                ),
                 const SizedBox(height: 32),
                 const FundingProgressCard(),
                 const SizedBox(height: 24),
-                const QuickActionsGrid(),
+                QuickActionsGrid(
+                  athleteId: widget.athleteId,
+                  isSelf: widget.isSelf,
+                ),
                 const SizedBox(height: 32),
-                const GlobalFootprintMap(),
+                GlobalFootprintMap(
+                  isSelf: widget.isSelf,
+                  athleteId: widget.athleteId,
+                ),
               ],
-              if (_isEditing || isInitial) _buildEditActions(),
+              if (widget.isSelf && (_isEditing || isInitial))
+                _buildEditActions(),
             ],
           ),
         ),

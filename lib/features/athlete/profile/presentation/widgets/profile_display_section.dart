@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 class ProfileDisplaySection extends StatelessWidget {
   final ProfileModel profile;
   final VoidCallback onEditToggle;
+  final bool isSelf; // Added this parameter
 
   const ProfileDisplaySection({
     super.key,
     required this.profile,
     required this.onEditToggle,
+    this.isSelf = false, // Default to false for safety
   });
 
   @override
@@ -29,19 +31,21 @@ class ProfileDisplaySection extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            IconButton(
-              onPressed: onEditToggle,
-              icon: Icon(
-                Icons.edit_outlined,
-                color: AppColors.white.withValues(alpha: 0.7),
+            // Only show the edit button if the user is viewing their own profile
+            if (isSelf)
+              IconButton(
+                onPressed: onEditToggle,
+                icon: Icon(
+                  Icons.edit_outlined,
+                  color: AppColors.white.withAlpha((0.7 * 255).round()),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 4),
         Row(
           children: [
-            Icon(
+            const Icon(
               Icons.location_on,
               size: 18,
               color: AppColors.orangeGradientStart,
@@ -59,7 +63,7 @@ class ProfileDisplaySection extends StatelessWidget {
         CustomText(
           title: profile.bio,
           fontSize: 15,
-          textColor: AppColors.white.withValues(alpha: 0.7),
+          textColor: AppColors.white.withAlpha((0.7 * 255).round()),
           fontWeight: FontWeight.w400,
         ),
       ],

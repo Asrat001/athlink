@@ -5,6 +5,7 @@ import 'package:athlink/features/athlete/profile/domain/models/career_record.dar
 import 'package:athlink/features/athlete/profile/presentation/providers/career_journey_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
 import 'package:athlink/features/athlete/profile/presentation/widgets/career_widget.dart';
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -12,7 +13,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/add_career_modal.dart';
 
 class CareerJourneyScreen extends ConsumerStatefulWidget {
-  const CareerJourneyScreen({super.key});
+  final String? athleteId;
+  final bool isSelf;
+
+  const CareerJourneyScreen({super.key, this.athleteId, this.isSelf = true});
 
   @override
   ConsumerState<CareerJourneyScreen> createState() =>
@@ -22,22 +26,32 @@ class CareerJourneyScreen extends ConsumerStatefulWidget {
 class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
   @override
   void initState() {
+    logger("career screen ${widget.isSelf}");
     super.initState();
+    _fetchJourney();
+  }
+
+  void _fetchJourney() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final localStorage = sl<LocalStorageService>();
-      final user = localStorage.getUserData();
-      if (user != null) {
-        ref.read(careerJourneyProvider.notifier).loadCareerJourney(user.id);
+      final loggedInUser = localStorage.getUserData();
+
+      // Determine whose data to fetch
+      final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+
+      if (targetId != null) {
+        ref.read(careerJourneyProvider.notifier).loadCareerJourney(targetId);
       }
     });
   }
 
   void _showCareerModal({CareerJourneyModel? record}) {
+    if (!widget.isSelf) return;
+
     final localStorage = sl<LocalStorageService>();
     final user = localStorage.getUserData();
     if (user == null) return;
 
-    // Convert API model to UI model for the modal
     final uiRecord = record != null
         ? CareerRecord(
             logoUrl: record.logo ?? '',
@@ -54,7 +68,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.transparent,
-      barrierColor: AppColors.black.withValues(alpha: 0.8),
+      barrierColor: AppColors.black.withAlpha((0.8 * 255).round()),
       builder: (context) => AddCareerModal(
         initialRecord: uiRecord,
         onSave: (newRecord) {
@@ -74,9 +88,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                   careerId: record.id,
                   data: data,
                   logo: null,
-                  onSuccess: () {
-                    if (mounted) Navigator.pop(context);
-                  },
+                  onSuccess: () => Navigator.pop(context),
                 );
           } else {
             ref
@@ -85,9 +97,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                   athleteId: user.id,
                   data: data,
                   logo: null,
-                  onSuccess: () {
-                    if (mounted) Navigator.pop(context);
-                  },
+                  onSuccess: () => Navigator.pop(context),
                 );
           }
         },
@@ -96,6 +106,8 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
   }
 
   void _showOptionsSheet(CareerJourneyModel record) {
+    if (!widget.isSelf) return;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.darkGreyCard,
@@ -111,7 +123,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
               height: 4,
               width: 40,
               decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.1),
+                color: AppColors.white.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -120,7 +132,6 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
               title: const CustomText(
                 title: 'Edit Journey',
                 textColor: AppColors.white,
-                fontSize: 16,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -132,12 +143,8 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
               title: const CustomText(
                 title: 'Delete Record',
                 textColor: AppColors.red,
-                fontSize: 16,
               ),
-              onTap: () {
-                // TODO: Implement delete API call
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context), // Add Delete API call here
             ),
             const SizedBox(height: 20),
           ],
@@ -155,7 +162,6 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        centerTitle: false,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new,
@@ -178,31 +184,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
           ),
         ),
         error: (message) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: AppColors.red, size: 48),
-              const SizedBox(height: 16),
-              CustomText(
-                title: message,
-                textColor: AppColors.white,
-                fontSize: 16,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  final localStorage = sl<LocalStorageService>();
-                  final user = localStorage.getUserData();
-                  if (user != null) {
-                    ref
-                        .read(careerJourneyProvider.notifier)
-                        .loadCareerJourney(user.id);
-                  }
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+          child: CustomText(title: message, textColor: Colors.white),
         ),
         loaded: (data) {
           final careers = data.data;
@@ -215,24 +197,37 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                   vertical: 10,
                 ),
                 child: CustomText(
-                  title: 'Your complete work records appear here.',
+                  title: widget.isSelf
+                      ? 'Your complete work records appear here.'
+                      : 'Professional career timeline and records.',
                   fontSize: 15,
-                  textColor: AppColors.white.withValues(alpha: 0.7),
+                  textColor: AppColors.white.withAlpha((0.7 * 255).round()),
                 ),
               ),
               Expanded(
                 child: careers.isEmpty
-                    ? CareerEmptyState(onAdd: () => _showCareerModal())
+                    ? CareerEmptyState(
+                        isSelf: widget.isSelf,
+                        onAdd: () => _showCareerModal(),
+                      )
                     : Stack(
                         children: [
                           ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 150),
+                            padding: EdgeInsets.fromLTRB(
+                              20,
+                              10,
+                              20,
+                              widget.isSelf ? 150 : 20,
+                            ),
                             itemCount: careers.length,
                             itemBuilder: (context, index) {
                               final record = careers[index];
                               return GestureDetector(
-                                onLongPress: () => _showOptionsSheet(record),
+                                onLongPress: widget.isSelf
+                                    ? () => _showOptionsSheet(record)
+                                    : null,
                                 child: CareerCard(
+                                  isSelf: widget.isSelf,
                                   record: CareerRecord(
                                     logoUrl: record.logo ?? '',
                                     position: record.position,
@@ -240,7 +235,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                                     location:
                                         record.location != null &&
                                             record.location!.isNotEmpty
-                                        ? record.location!.split(',')[2]
+                                        ? record.location!.split(',').last
                                         : "",
                                     duration: record.year,
                                     achievements: record.achievements,
@@ -250,10 +245,11 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                               );
                             },
                           ),
-                          CareerBottomActions(
-                            label: 'Add more Career',
-                            onAdd: () => _showCareerModal(),
-                          ),
+                          if (widget.isSelf)
+                            CareerBottomActions(
+                              label: 'Add more Career',
+                              onAdd: () => _showCareerModal(),
+                            ),
                         ],
                       ),
               ),

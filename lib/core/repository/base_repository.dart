@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
@@ -12,6 +13,7 @@ abstract class BaseRepository {
   }) async {
     try {
       final response = await apiCall();
+      logger(response.data);
       _validateResponseData(response.data, path: response.requestOptions.path);
       final parsedData = fromData(response.data);
       return ApiResponse.success(data: parsedData);

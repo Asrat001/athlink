@@ -13,7 +13,10 @@ import 'package:go_router/go_router.dart';
 import '../widgets/add_result_modal.dart';
 
 class AthleteResultsScreen extends ConsumerStatefulWidget {
-  const AthleteResultsScreen({super.key});
+  final String? athleteId;
+  final bool isSelf;
+
+  const AthleteResultsScreen({super.key, this.athleteId, this.isSelf = true});
 
   @override
   ConsumerState<AthleteResultsScreen> createState() =>
@@ -24,16 +27,25 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchResults();
+  }
+
+  void _fetchResults() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final localStorage = sl<LocalStorageService>();
-      final user = localStorage.getUserData();
-      if (user != null) {
-        ref.read(competitionResultsProvider.notifier).loadResults(user.id);
+      final loggedInUser = localStorage.getUserData();
+
+      final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+
+      if (targetId != null) {
+        ref.read(competitionResultsProvider.notifier).loadResults(targetId);
       }
     });
   }
 
   void _showAddResultModal({ResultData? record}) {
+    if (!widget.isSelf) return;
+
     final localStorage = sl<LocalStorageService>();
     final user = localStorage.getUserData();
     if (user == null) return;
@@ -58,29 +70,24 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
           };
 
           if (record != null) {
-            // Update existing - need resultId
             ref
                 .read(competitionResultsProvider.notifier)
                 .updateResult(
                   athleteId: user.id,
-                  resultId: "",
+                  resultId:
+                      "", // Ensure your provider/model handles ID correctly
                   data: data,
                   media: null,
-                  onSuccess: () {
-                    if (mounted) Navigator.pop(context);
-                  },
+                  onSuccess: () => Navigator.pop(context),
                 );
           } else {
-            // Create new
             ref
                 .read(competitionResultsProvider.notifier)
                 .createResult(
                   athleteId: user.id,
                   data: data,
-                  media: null, // TODO: Handle media files
-                  onSuccess: () {
-                    if (mounted) Navigator.pop(context);
-                  },
+                  media: null,
+                  onSuccess: () => Navigator.pop(context),
                 );
           }
         },
@@ -89,6 +96,8 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
   }
 
   void _showOptionsSheet(ResultData record) {
+    if (!widget.isSelf) return;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.darkGreyCard,
@@ -113,7 +122,6 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
               title: const CustomText(
                 title: 'Edit Result',
                 textColor: AppColors.white,
-                fontSize: 16,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -125,11 +133,8 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
               title: const CustomText(
                 title: 'Delete Result',
                 textColor: AppColors.red,
-                fontSize: 16,
               ),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             const SizedBox(height: 20),
           ],
@@ -147,7 +152,6 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        centerTitle: false,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new,
@@ -170,31 +174,7 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
           ),
         ),
         error: (message) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: AppColors.red, size: 48),
-              const SizedBox(height: 16),
-              CustomText(
-                title: message,
-                textColor: AppColors.white,
-                fontSize: 16,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  final localStorage = sl<LocalStorageService>();
-                  final user = localStorage.getUserData();
-                  if (user != null) {
-                    ref
-                        .read(competitionResultsProvider.notifier)
-                        .loadResults(user.id);
-                  }
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+          child: CustomText(title: message, textColor: AppColors.white),
         ),
         loaded: (data) {
           final results = data.data;
@@ -204,16 +184,21 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
                 child: CustomText(
-                  title: results.isNotEmpty
-                      ? "Maria's complete competition history and achievements"
-                      : "Your complete competition history and achievements",
+                  title: widget.isSelf
+                      ? "Your complete competition history and achievements"
+                      : "Competition history and achievements.",
                   fontSize: 15,
                   textColor: AppColors.white.withValues(alpha: 0.7),
                 ),
               ),
               Expanded(
                 child: results.isEmpty
-                    ? ResultEmptyState(onAdd: () => _showAddResultModal())
+                    ? ResultEmptyState(
+                        isSelf: widget.isSelf,
+                        onAdd: widget.isSelf
+                            ? () => _showAddResultModal()
+                            : null,
+                      )
                     : Column(
                         children: [
                           const ResultTableHeader(),
@@ -222,9 +207,11 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                               ),
-                              itemCount: results.length + 1,
+                              itemCount: widget.isSelf
+                                  ? results.length + 1
+                                  : results.length,
                               itemBuilder: (context, index) {
-                                if (index == results.length) {
+                                if (widget.isSelf && index == results.length) {
                                   return ResultBottomActions(
                                     label: "Add more Result",
                                     onAdd: () => _showAddResultModal(),
@@ -239,29 +226,27 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                                       '${result.position}/${result.totalCompetitors}',
                                   competition: result.competitionName,
                                   division: result.division,
-                                  flagUrl:
-                                      'https://flagcdn.com/w40/tr.png', // TODO: Get from API
-                                  location: '', // Not in API model
-                                  media:
-                                      [], // TODO: Convert media URLs to Files
+                                  flagUrl: 'https://flagcdn.com/w40/tr.png',
+                                  location: '',
+                                  media: [],
                                   summary: result.competitionSummary,
                                   resultsLink: result.resultLink,
                                 );
 
                                 return GestureDetector(
-                                  onTap: () async {
-                                    final updatedData = await context
-                                        .push<ResultData>(
-                                          Routes.athleteResultDetialRouteName,
-                                          extra: resultData,
-                                        );
-
-                                    if (updatedData != null && mounted) {
-                                      // TODO: Update via API
-                                    }
+                                  onTap: () {
+                                    context.push(
+                                      Routes.athleteResultDetialRouteName,
+                                      extra: {
+                                        'result': resultData,
+                                        'isSelf': widget.isSelf,
+                                        'athleteId': widget.athleteId,
+                                      },
+                                    );
                                   },
-                                  onLongPress: () =>
-                                      _showOptionsSheet(resultData),
+                                  onLongPress: widget.isSelf
+                                      ? () => _showOptionsSheet(resultData)
+                                      : null,
                                   child: ResultItem(data: resultData),
                                 );
                               },
