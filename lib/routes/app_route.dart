@@ -1,3 +1,5 @@
+import 'package:athlink/features/athlete/campaign/presentation/screens/athlete_campaign_detail_screen.dart';
+import 'package:athlink/features/athlete/campaign/presentation/screens/athlete_campaign_screen.dart';
 import 'package:athlink/features/athlete/home_screen/search/presentation/screens/search_athlete_screen.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_profile_screen.dart';
@@ -149,6 +151,14 @@ class AppRouter {
       ),
 
       GoRoute(
+        path: Routes.athleteCampaignDetailScreen,
+        builder: (context, state) {
+          final title = state.extra as String? ?? "Campaign";
+          return AthleteCampaignDetailScreen(campaignTitle: title);
+        },
+      ),
+
+      GoRoute(
         path: Routes.resetPasswordRouteName,
         builder: (context, state) {
           final extra = state.extra as Map<String, String>?;
@@ -283,8 +293,8 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: "/athlete-campaign",
-                builder: (context, state) => ComingSoonScreen(),
+                path: Routes.athleteCampaignsScreen,
+                builder: (context, state) => AthleteCampaignsScreen(),
               ),
             ],
           ),

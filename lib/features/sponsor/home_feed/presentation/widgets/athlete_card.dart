@@ -19,18 +19,22 @@ class AthleteCard extends ConsumerStatefulWidget {
   final List<Achievement> achievements;
   final String? position;
   final String? level;
+  final String? location;
   final String? sportCategory;
   final VoidCallback? onTap;
   final String highestSocialMediaPresence;
   final double size;
+  bool isAthlete;
 
-  const AthleteCard({
+  AthleteCard({
     super.key,
     this.athleteId,
     required this.name,
     required this.club,
     required this.age,
     required this.flag,
+    this.isAthlete = false,
+    this.location,
     required this.image,
     this.sponsorshipDone = "",
     this.achievements = const [],
@@ -117,17 +121,16 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
                             child: _buildTopInfo(scale),
                           ),
 
-                          Positioned(
-                            top: 16 * scale,
-                            right: 16 * scale,
-                            child: _buildFlag(28 * scale),
-                          ),
-
+                          // Positioned(
+                          //   top: 16 * scale,
+                          //   right: 16 * scale,
+                          //   child: _buildFlag(28 * scale),
+                          // ),
                           Positioned(
                             right: 12 * scale,
                             top: 0,
                             bottom: 0,
-                            child: _buildActionButtons(scale),
+                            child: _buildActionButtons(scale, widget.isAthlete),
                           ),
                         ],
                       ),
@@ -184,7 +187,7 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
           textColor: Colors.white.withValues(alpha: 0.8),
         ),
         CustomText(
-          title: 'Age: ${widget.age}',
+          title: widget.location ?? "",
           fontSize: 11,
           textColor: Colors.white.withValues(alpha: 0.8),
         ),
@@ -192,18 +195,18 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
     );
   }
 
-  Widget _buildFlag(double flagSize) {
-    return ClipOval(
-      child: Image.asset(
-        "assets/images/flag.png",
-        height: flagSize,
-        width: flagSize,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
+  // Widget _buildFlag(double flagSize) {
+  //   return ClipOval(
+  //     child: Image.asset(
+  //       "assets/images/flag.png",
+  //       height: flagSize,
+  //       width: flagSize,
+  //       fit: BoxFit.cover,
+  //     ),
+  //   );
+  // }
 
-  Widget _buildActionButtons(double scale) {
+  Widget _buildActionButtons(double scale, bool isAthlete) {
     final iconSize = 32 * scale;
     final isInWatchlist = ref
         .watch(watchlistIdsProvider)
@@ -244,24 +247,25 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
                 ),
         ),
         const SizedBox(height: 16),
-        CircularIconButton(
-          size: iconSize,
-          backgroundColor: isInWatchlist
-              ? AppColors.primary
-              : Colors.black.withValues(alpha: 0.6),
-          onPressed: () {
-            if (widget.athleteId != null) {
-              ref
-                  .read(watchlistProvider.notifier)
-                  .toggleWatchlist(athleteId: widget.athleteId!);
-            }
-          },
-          child: Icon(
-            isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
-            color: Colors.white,
-            size: 20 * scale,
+        if (!isAthlete)
+          CircularIconButton(
+            size: iconSize,
+            backgroundColor: isInWatchlist
+                ? AppColors.primary
+                : Colors.black.withValues(alpha: 0.6),
+            onPressed: () {
+              if (widget.athleteId != null) {
+                ref
+                    .read(watchlistProvider.notifier)
+                    .toggleWatchlist(athleteId: widget.athleteId!);
+              }
+            },
+            child: Icon(
+              isInWatchlist ? Icons.bookmark : Icons.bookmark_border,
+              color: Colors.white,
+              size: 20 * scale,
+            ),
           ),
-        ),
       ],
     );
   }

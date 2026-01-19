@@ -43,7 +43,7 @@ class AthleteMainScreen extends StatelessWidget {
             _buildNavItem(0, "assets/logos/home.svg"),
             _buildNavItem(1, "assets/logos/setting.svg"),
             _buildNavItem(2, "assets/logos/chat.svg"),
-            _buildNavItem(3, "assets/logos/watchlist.svg"),
+            _buildNavItem(3, "assets/logos/campaign.svg"),
             _buildNavItem(4, "assets/logos/account.svg"),
           ],
         ),

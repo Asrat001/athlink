@@ -87,6 +87,7 @@ abstract class AthleteProfile with _$AthleteProfile {
     String? profileImageUrl,
     int? age,
     String? position,
+    String? location,
     String? level,
     double? rating,
     String? countryFlag,

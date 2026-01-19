@@ -188,6 +188,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
     return AthleteCard(
       athleteId: athleteData.id,
       name: name,
+      location: athleteData.athleteProfile?.location ?? "",
       club: club,
       age: age,
       flag: 'https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg',

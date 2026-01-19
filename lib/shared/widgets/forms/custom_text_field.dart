@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final double labelFontSize;
   final double? borderRadius;
-  final Color? textColor; // Added nullable color
+  final Color? textColor;
 
   const CustomTextField({
     super.key,

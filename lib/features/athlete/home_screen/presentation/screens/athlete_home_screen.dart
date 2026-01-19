@@ -373,6 +373,8 @@ class _AthleteDashboardScreenState
           final athlete = athletes[index];
           final profile = athlete.athleteProfile;
           return AthleteCard(
+            location: athlete.athleteProfile?.location ?? "",
+            isAthlete: true,
             athleteId: athlete.id,
             name: profile?.name ?? 'Athlete',
             club: profile?.club ?? 'Independent',
