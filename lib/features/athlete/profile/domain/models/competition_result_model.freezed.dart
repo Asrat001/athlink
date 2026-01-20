@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompetitionResultModel {
 
-@JsonKey(name: '_id') String get id;@JsonKey(name: 'athlete') String get athleteId; String get competitionName; String get date; int get position; int get totalCompetitors; String get division; List<String> get media; String get competitionSummary; String? get resultLink;
+@JsonKey(name: '_id') String get id;@JsonKey(name: 'athlete') String get athleteId; String get competitionName; String get date; int get position; int get totalCompetitors; String get division; List<String> get media; String get competitionSummary; String? get resultLink; String? get location;
 /// Create a copy of CompetitionResultModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CompetitionResultModelCopyWith<CompetitionResultModel> get copyWith => _$Compet
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompetitionResultModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.competitionName, competitionName) || other.competitionName == competitionName)&&(identical(other.date, date) || other.date == date)&&(identical(other.position, position) || other.position == position)&&(identical(other.totalCompetitors, totalCompetitors) || other.totalCompetitors == totalCompetitors)&&(identical(other.division, division) || other.division == division)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.competitionSummary, competitionSummary) || other.competitionSummary == competitionSummary)&&(identical(other.resultLink, resultLink) || other.resultLink == resultLink));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompetitionResultModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.competitionName, competitionName) || other.competitionName == competitionName)&&(identical(other.date, date) || other.date == date)&&(identical(other.position, position) || other.position == position)&&(identical(other.totalCompetitors, totalCompetitors) || other.totalCompetitors == totalCompetitors)&&(identical(other.division, division) || other.division == division)&&const DeepCollectionEquality().equals(other.media, media)&&(identical(other.competitionSummary, competitionSummary) || other.competitionSummary == competitionSummary)&&(identical(other.resultLink, resultLink) || other.resultLink == resultLink)&&(identical(other.location, location) || other.location == location));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,athleteId,competitionName,date,position,totalCompetitors,division,const DeepCollectionEquality().hash(media),competitionSummary,resultLink);
+int get hashCode => Object.hash(runtimeType,id,athleteId,competitionName,date,position,totalCompetitors,division,const DeepCollectionEquality().hash(media),competitionSummary,resultLink,location);
 
 @override
 String toString() {
-  return 'CompetitionResultModel(id: $id, athleteId: $athleteId, competitionName: $competitionName, date: $date, position: $position, totalCompetitors: $totalCompetitors, division: $division, media: $media, competitionSummary: $competitionSummary, resultLink: $resultLink)';
+  return 'CompetitionResultModel(id: $id, athleteId: $athleteId, competitionName: $competitionName, date: $date, position: $position, totalCompetitors: $totalCompetitors, division: $division, media: $media, competitionSummary: $competitionSummary, resultLink: $resultLink, location: $location)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CompetitionResultModelCopyWith<$Res>  {
   factory $CompetitionResultModelCopyWith(CompetitionResultModel value, $Res Function(CompetitionResultModel) _then) = _$CompetitionResultModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String competitionName, String date, int position, int totalCompetitors, String division, List<String> media, String competitionSummary, String? resultLink
+@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String competitionName, String date, int position, int totalCompetitors, String division, List<String> media, String competitionSummary, String? resultLink, String? location
 });
 
 
@@ -65,7 +65,7 @@ class _$CompetitionResultModelCopyWithImpl<$Res>
 
 /// Create a copy of CompetitionResultModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteId = null,Object? competitionName = null,Object? date = null,Object? position = null,Object? totalCompetitors = null,Object? division = null,Object? media = null,Object? competitionSummary = null,Object? resultLink = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteId = null,Object? competitionName = null,Object? date = null,Object? position = null,Object? totalCompetitors = null,Object? division = null,Object? media = null,Object? competitionSummary = null,Object? resultLink = freezed,Object? location = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
@@ -77,6 +77,7 @@ as int,division: null == division ? _self.division : division // ignore: cast_nu
 as String,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as List<String>,competitionSummary: null == competitionSummary ? _self.competitionSummary : competitionSummary // ignore: cast_nullable_to_non_nullable
 as String,resultLink: freezed == resultLink ? _self.resultLink : resultLink // ignore: cast_nullable_to_non_nullable
+as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink,  String? location)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompetitionResultModel() when $default != null:
-return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink);case _:
+return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink,_that.location);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink,  String? location)  $default,) {final _that = this;
 switch (_that) {
 case _CompetitionResultModel():
-return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink);case _:
+return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink,_that.location);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id, @JsonKey(name: 'athlete')  String athleteId,  String competitionName,  String date,  int position,  int totalCompetitors,  String division,  List<String> media,  String competitionSummary,  String? resultLink,  String? location)?  $default,) {final _that = this;
 switch (_that) {
 case _CompetitionResultModel() when $default != null:
-return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink);case _:
+return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.position,_that.totalCompetitors,_that.division,_that.media,_that.competitionSummary,_that.resultLink,_that.location);case _:
   return null;
 
 }
@@ -218,7 +219,7 @@ return $default(_that.id,_that.athleteId,_that.competitionName,_that.date,_that.
 @JsonSerializable()
 
 class _CompetitionResultModel implements CompetitionResultModel {
-  const _CompetitionResultModel({@JsonKey(name: '_id') required this.id, @JsonKey(name: 'athlete') required this.athleteId, required this.competitionName, required this.date, required this.position, required this.totalCompetitors, required this.division, final  List<String> media = const [], required this.competitionSummary, this.resultLink}): _media = media;
+  const _CompetitionResultModel({@JsonKey(name: '_id') required this.id, @JsonKey(name: 'athlete') required this.athleteId, required this.competitionName, required this.date, required this.position, required this.totalCompetitors, required this.division, final  List<String> media = const [], required this.competitionSummary, this.resultLink, this.location}): _media = media;
   factory _CompetitionResultModel.fromJson(Map<String, dynamic> json) => _$CompetitionResultModelFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
@@ -237,6 +238,7 @@ class _CompetitionResultModel implements CompetitionResultModel {
 
 @override final  String competitionSummary;
 @override final  String? resultLink;
+@override final  String? location;
 
 /// Create a copy of CompetitionResultModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompetitionResultModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.competitionName, competitionName) || other.competitionName == competitionName)&&(identical(other.date, date) || other.date == date)&&(identical(other.position, position) || other.position == position)&&(identical(other.totalCompetitors, totalCompetitors) || other.totalCompetitors == totalCompetitors)&&(identical(other.division, division) || other.division == division)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.competitionSummary, competitionSummary) || other.competitionSummary == competitionSummary)&&(identical(other.resultLink, resultLink) || other.resultLink == resultLink));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompetitionResultModel&&(identical(other.id, id) || other.id == id)&&(identical(other.athleteId, athleteId) || other.athleteId == athleteId)&&(identical(other.competitionName, competitionName) || other.competitionName == competitionName)&&(identical(other.date, date) || other.date == date)&&(identical(other.position, position) || other.position == position)&&(identical(other.totalCompetitors, totalCompetitors) || other.totalCompetitors == totalCompetitors)&&(identical(other.division, division) || other.division == division)&&const DeepCollectionEquality().equals(other._media, _media)&&(identical(other.competitionSummary, competitionSummary) || other.competitionSummary == competitionSummary)&&(identical(other.resultLink, resultLink) || other.resultLink == resultLink)&&(identical(other.location, location) || other.location == location));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,athleteId,competitionName,date,position,totalCompetitors,division,const DeepCollectionEquality().hash(_media),competitionSummary,resultLink);
+int get hashCode => Object.hash(runtimeType,id,athleteId,competitionName,date,position,totalCompetitors,division,const DeepCollectionEquality().hash(_media),competitionSummary,resultLink,location);
 
 @override
 String toString() {
-  return 'CompetitionResultModel(id: $id, athleteId: $athleteId, competitionName: $competitionName, date: $date, position: $position, totalCompetitors: $totalCompetitors, division: $division, media: $media, competitionSummary: $competitionSummary, resultLink: $resultLink)';
+  return 'CompetitionResultModel(id: $id, athleteId: $athleteId, competitionName: $competitionName, date: $date, position: $position, totalCompetitors: $totalCompetitors, division: $division, media: $media, competitionSummary: $competitionSummary, resultLink: $resultLink, location: $location)';
 }
 
 
@@ -271,7 +273,7 @@ abstract mixin class _$CompetitionResultModelCopyWith<$Res> implements $Competit
   factory _$CompetitionResultModelCopyWith(_CompetitionResultModel value, $Res Function(_CompetitionResultModel) _then) = __$CompetitionResultModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String competitionName, String date, int position, int totalCompetitors, String division, List<String> media, String competitionSummary, String? resultLink
+@JsonKey(name: '_id') String id,@JsonKey(name: 'athlete') String athleteId, String competitionName, String date, int position, int totalCompetitors, String division, List<String> media, String competitionSummary, String? resultLink, String? location
 });
 
 
@@ -288,7 +290,7 @@ class __$CompetitionResultModelCopyWithImpl<$Res>
 
 /// Create a copy of CompetitionResultModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteId = null,Object? competitionName = null,Object? date = null,Object? position = null,Object? totalCompetitors = null,Object? division = null,Object? media = null,Object? competitionSummary = null,Object? resultLink = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteId = null,Object? competitionName = null,Object? date = null,Object? position = null,Object? totalCompetitors = null,Object? division = null,Object? media = null,Object? competitionSummary = null,Object? resultLink = freezed,Object? location = freezed,}) {
   return _then(_CompetitionResultModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,athleteId: null == athleteId ? _self.athleteId : athleteId // ignore: cast_nullable_to_non_nullable
@@ -300,6 +302,7 @@ as int,division: null == division ? _self.division : division // ignore: cast_nu
 as String,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
 as List<String>,competitionSummary: null == competitionSummary ? _self.competitionSummary : competitionSummary // ignore: cast_nullable_to_non_nullable
 as String,resultLink: freezed == resultLink ? _self.resultLink : resultLink // ignore: cast_nullable_to_non_nullable
+as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

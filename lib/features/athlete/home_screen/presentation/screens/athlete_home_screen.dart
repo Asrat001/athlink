@@ -261,6 +261,10 @@ class _AthleteDashboardScreenState
             ),
           ),
           IconButton(
+            onPressed: () => context.push(Routes.connectionRequestsScreen),
+            icon: const Icon(Icons.people_outline, color: Colors.white),
+          ),
+          IconButton(
             onPressed: () => context.push(Routes.notificationScreen),
             icon: const Icon(
               Icons.notifications_none_rounded,

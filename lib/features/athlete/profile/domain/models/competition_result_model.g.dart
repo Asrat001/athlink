@@ -21,6 +21,7 @@ _CompetitionResultModel _$CompetitionResultModelFromJson(
       const [],
   competitionSummary: json['competitionSummary'] as String,
   resultLink: json['resultLink'] as String?,
+  location: json['location'] as String?,
 );
 
 Map<String, dynamic> _$CompetitionResultModelToJson(
@@ -36,4 +37,5 @@ Map<String, dynamic> _$CompetitionResultModelToJson(
   'media': instance.media,
   'competitionSummary': instance.competitionSummary,
   'resultLink': instance.resultLink,
+  'location': instance.location,
 };

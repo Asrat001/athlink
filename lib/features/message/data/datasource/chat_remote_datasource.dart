@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
@@ -74,27 +76,28 @@ class ChatRemoteDataSource extends BaseRepository {
 
   /// Upload a file
   Future<ApiResponse<List<ChatAttachment>>> uploadFile({
-  required List<({String filePath, String fileName})> files,
+    required List<({String filePath, String fileName})> files,
   }) async {
     final multipartFiles = await Future.wait(
-    files.map((f) => MultipartFile.fromFile(f.filePath, filename: f.fileName)),
-  );
-    final formData = FormData.fromMap({
-      'files': multipartFiles,
-    });
+      files.map(
+        (f) => MultipartFile.fromFile(f.filePath, filename: f.fileName),
+      ),
+    );
+    final formData = FormData.fromMap({'files': multipartFiles});
 
     return await safeApiCall(
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
-            .post('/chat/upload',
-             data: formData);
+            .post('/chat/upload', data: formData);
       },
       fromData: (data) {
         final uploadData = data['data'];
         if (uploadData is List) {
           if (uploadData.isEmpty) throw Exception("Upload returned empty list");
-          return uploadData.map((json) => ChatAttachment.fromJson(json)).toList();
+          return uploadData
+              .map((json) => ChatAttachment.fromJson(json))
+              .toList();
         } else {
           throw Exception("Upload returned empty list");
         }
@@ -195,15 +198,18 @@ class ChatRemoteDataSource extends BaseRepository {
   }) async {
     return await safeApiCall(
       apiCall: () async {
-        return await _httpClient.client().post(
-          '/messages/conversations',
+        return await _httpClient.client(requireAuth: true).post(
+          '/chat/conversations',
           data: {
             'participantId': participantId,
             'participantType': participantType.name,
           },
         );
       },
-      fromData: (data) => Conversation.fromJson(data['data']),
+      fromData: (data) {
+        log("data: ${data['data']}");
+        return Conversation.fromJson(data['data']);
+      },
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/home_screen/search/presentation/screens/search_athlete_screen.dart';
+import 'package:athlink/features/athlete/home_screen/presentation/screens/connection_requests_screen.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_profile_screen.dart';
 import 'package:athlink/features/athlete/profile/presentation/screens/athlete_result_detail_screen.dart';
@@ -124,6 +125,10 @@ class AppRouter {
       GoRoute(
         path: Routes.notificationScreen,
         builder: (context, state) => NotificationsScreen(),
+      ),
+      GoRoute(
+        path: Routes.connectionRequestsScreen,
+        builder: (context, state) => const ConnectionRequestsScreen(),
       ),
       GoRoute(
         path: Routes.loginRouteName,

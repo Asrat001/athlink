@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/features/athlete/profile/presentation/providers/competition_results_provider.dart';
 import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -9,7 +13,7 @@ import '../widgets/result_full_details_tab.dart';
 import '../widgets/results_media_tab.dart';
 import '../widgets/result_summary_tab.dart';
 
-class AthleteResultDetailScreen extends StatefulWidget {
+class AthleteResultDetailScreen extends ConsumerStatefulWidget {
   final ResultData result;
   final bool isSelf;
   final String? athleteId; // Added athleteId
@@ -22,14 +26,16 @@ class AthleteResultDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<AthleteResultDetailScreen> createState() =>
+  ConsumerState<AthleteResultDetailScreen> createState() =>
       _AthleteResultDetailScreenState();
 }
 
-class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
+class _AthleteResultDetailScreenState
+    extends ConsumerState<AthleteResultDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<File> _uploadedMedia;
+  List<String> _mediaUrls = [];
   late TextEditingController _summaryController;
   String? _currentResultsLink;
   final ImagePicker _picker = ImagePicker();
@@ -42,8 +48,11 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
 
     _tabController = TabController(length: 3, vsync: this);
     _uploadedMedia = List.from(widget.result.media);
-    _summaryController = TextEditingController(text: widget.result.summary);
-    _currentResultsLink = widget.result.resultsLink;
+    _mediaUrls = List.from(widget.result.mediaUrls);
+    _summaryController = TextEditingController(
+      text: widget.result.competitionSummary,
+    );
+    _currentResultsLink = widget.result.resultLink;
   }
 
   void _handleBack() {
@@ -55,13 +64,27 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
     }
   }
 
-  void _saveAndExit() {
+  void _saveAndExit() async {
     final finalResult = widget.result.copyWith(
       media: _uploadedMedia,
-      summary: _summaryController.text,
-      resultsLink: _currentResultsLink,
+      mediaUrls: _mediaUrls,
+      competitionSummary: _summaryController.text,
+      resultLink: _currentResultsLink,
     );
-    Navigator.pop(context, finalResult);
+    final localStorage = sl<LocalStorageService>();
+    final loggedInUser = localStorage.getUserData();
+    ref
+        .read(competitionResultsProvider.notifier)
+        .updateResult(
+          athleteId: loggedInUser?.id ?? "",
+          resultId: widget.result.id,
+          data: finalResult.toJson(),
+          media: _uploadedMedia,
+          onSuccess: () {
+            if (!mounted) return;
+            Navigator.pop(context);
+          },
+        );
   }
 
   Future<void> _pickMedia() async {
@@ -124,18 +147,25 @@ class _AthleteResultDetailScreenState extends State<AthleteResultDetailScreen>
             result: widget.result,
             isSelf: widget.isSelf,
             currentLink: _currentResultsLink,
-            onLinkUpdated: widget.isSelf
-                ? (newLink) => setState(() => _currentResultsLink = newLink)
-                : null,
+            onLinkUpdated: (newLink) {
+              if (widget.isSelf) {
+                setState(() => _currentResultsLink = newLink);
+              }
+            },
           ),
           ResultMediaTab(
             mediaFiles: _uploadedMedia,
+            mediaUrls: _mediaUrls,
             isSelf: widget.isSelf,
             onUpload: widget.isSelf ? _pickMedia : null,
             onDelete: widget.isSelf
-                ? (index) {
+                ? (index, isFile) {
                     setState(() {
-                      _uploadedMedia.removeAt(index);
+                      if (isFile) {
+                        _uploadedMedia.removeAt(index);
+                      } else {
+                        _mediaUrls.removeAt(index);
+                      }
                     });
                   }
                 : null,

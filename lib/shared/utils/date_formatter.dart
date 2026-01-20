@@ -70,6 +70,22 @@ class DateFormatter {
     return '${date.year}-$month-$day';
   }
 
+  /// Format date to "2025-01-15T00:00:00.000Z" format (ISO 8601 UTC)
+  static String formatFullISO(DateTime date) {
+    return date.toUtc().toIso8601String();
+  }
+
+  /// Parse ISO 8601 string and format to "Jan 15, 2025"
+  static String formatFromISO(String dateString) {
+    if (dateString.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateString).toLocal();
+      return formatMedium(date);
+    } catch (_) {
+      return dateString;
+    }
+  }
+
   /// Format date and time to "Jan 15, 2025 at 2:30 PM" format
   ///
   /// Example: DateTime(2025, 1, 15, 14, 30) → "Jan 15, 2025 at 2:30 PM"
