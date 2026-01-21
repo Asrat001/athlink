@@ -1,5 +1,6 @@
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
+import 'package:athlink/shared/widgets/forms/custom_text_field.dart'; // Ensure this import path is correct
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
@@ -25,11 +26,98 @@ class AthleteCampaignsScreen extends StatefulWidget {
 }
 
 class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
+  // Initial data
   List<Campaign> campaigns = [
     Campaign(title: "LA 2028 Olympics", progress: 0.0, isActive: false),
     Campaign(title: "LA 2028 Olympics", progress: 0.0, isActive: false),
     Campaign(title: "LA 2028 Olympics", progress: 0.5, isActive: true),
   ];
+
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+
+  void _showCreateCampaignSheet() {
+    _titleController.clear(); // Reset controller when opening
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.darkGreyCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 20,
+          right: 20,
+          top: 24,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                title: "Create a Campaign",
+                fontSize: 20,
+                textColor: AppColors.white,
+                fontWeight: FontWeight.w600,
+              ),
+              const SizedBox(height: 24),
+              CustomText(
+                title: "Title",
+                fontSize: 14,
+                textColor: AppColors.white,
+                fontWeight: FontWeight.w500,
+              ),
+              const SizedBox(height: 8),
+              CustomTextField(
+                label: "Add the title of your campaign",
+                controller: _titleController,
+                textColor: AppColors.white,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter a campaign title";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 32),
+              RoundedButton(
+                label: "Create a Campaign",
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      campaigns.insert(
+                        0,
+                        Campaign(
+                          title: _titleController.text.trim(),
+                          progress: 0.0,
+                          isActive: false,
+                        ),
+                      );
+                    });
+                    Navigator.pop(context); // Close bottom sheet
+                  }
+                },
+                icon: const Icon(Icons.add, color: AppColors.white, size: 18),
+                backgroundColor: AppColors.primary, // Or match image style
+                height: 50,
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +137,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
           if (campaigns.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.add, color: AppColors.white, size: 28),
-              onPressed: () {},
+              onPressed: _showCreateCampaignSheet, // Call the modal
             ),
         ],
       ),
@@ -72,7 +160,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
           const SizedBox(height: 24),
           RoundedButton(
             label: "Create a Campaign",
-            onPressed: () {},
+            onPressed: _showCreateCampaignSheet, // Call the modal
             icon: const Icon(Icons.add, color: AppColors.white, size: 18),
             backgroundColor: AppColors.darkGreyCard,
             width: 220,
@@ -120,7 +208,7 @@ class CampaignCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.darkGreyCard, // 0xFF121212 from your AppColors
+        color: AppColors.darkGreyCard,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -154,7 +242,6 @@ class CampaignCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          // Progress Bar
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
