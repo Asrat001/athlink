@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/home_screen/presentation/providers/connection_provider.dart';
+import 'package:athlink/features/athlete/home_screen/presentation/providers/connection_providers.dart';
 import 'package:athlink/features/athlete/home_screen/presentation/providers/state/connection_state.dart';
 import 'package:athlink/features/sponsor/watchlist/presentation/providers/watchlist_provider.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,6 @@ class AthleteCard extends ConsumerStatefulWidget {
 
 class _AthleteCardState extends ConsumerState<AthleteCard> {
   bool _isConnecting = false;
-  bool _isSent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,6 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
           if (_isConnecting) {
             setState(() {
               _isConnecting = false;
-              _isSent = true;
             });
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -212,40 +211,67 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
         .watch(watchlistIdsProvider)
         .contains(widget.athleteId ?? '');
 
+    // Watch connection status for this athlete
+    final connectionStatusAsync = widget.athleteId != null
+        ? ref.watch(connectionStatusProvider(widget.athleteId!))
+        : null;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularIconButton(
-          size: iconSize,
-          // Consistent black background for buttons
-          backgroundColor: _isSent
-              ? Colors.green.withValues(alpha: 0.7)
-              : Colors.black.withValues(alpha: 0.6),
-          onPressed: (widget.athleteId == null || _isConnecting || _isSent)
-              ? null
-              : () {
-                  setState(() => _isConnecting = true);
-                  ref
-                      .read(connectionProvider.notifier)
-                      .sendConnectionRequest(widget.athleteId!);
-                },
-          child: _isConnecting
-              ? SizedBox(
+        connectionStatusAsync?.when(
+              data: (status) {
+                if (status == null) {
+                  // No connection - show connect button
+                  return _buildConnectButton(iconSize, scale);
+                }
+
+                switch (status.status) {
+                  case 'none':
+                    return _buildConnectButton(iconSize, scale);
+                  case 'pending':
+                    if (status.isRequester) {
+                      // You sent the request - show pending with cancel on long press
+                      return _buildPendingButton(
+                        iconSize,
+                        scale,
+                        status.connectionId,
+                      );
+                    } else {
+                      // They sent you a request - show accept button
+                      return _buildAcceptButton(
+                        iconSize,
+                        scale,
+                        status.connectionId,
+                      );
+                    }
+                  case 'accepted':
+                    // Connected - show check icon
+                    return _buildConnectedButton(
+                      iconSize,
+                      scale,
+                      status.connectionId,
+                    );
+                  default:
+                    return _buildConnectButton(iconSize, scale);
+                }
+              },
+              loading: () => CircularIconButton(
+                size: iconSize,
+                backgroundColor: Colors.black.withValues(alpha: 0.6),
+                onPressed: null,
+                child: SizedBox(
                   height: 16 * scale,
                   width: 16 * scale,
                   child: const CircularProgressIndicator(
                     color: Colors.white,
                     strokeWidth: 2,
                   ),
-                )
-              : Icon(
-                  _isSent
-                      ? Icons.check_circle_rounded
-                      : Icons.person_add_alt_1_rounded,
-                  color: Colors.white,
-                  size: 20 * scale,
                 ),
-        ),
+              ),
+              error: (_, __) => _buildConnectButton(iconSize, scale),
+            ) ??
+            _buildConnectButton(iconSize, scale),
         const SizedBox(height: 16),
         if (!isAthlete)
           CircularIconButton(
@@ -267,6 +293,140 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildConnectButton(double iconSize, double scale) {
+    return CircularIconButton(
+      size: iconSize,
+      backgroundColor: _isConnecting
+          ? AppColors.primary.withValues(alpha: 0.7)
+          : Colors.black.withValues(alpha: 0.6),
+      onPressed: (widget.athleteId == null || _isConnecting)
+          ? null
+          : () {
+              setState(() => _isConnecting = true);
+              ref
+                  .read(connectionProvider.notifier)
+                  .sendConnectionRequest(widget.athleteId!);
+              // Reset loading state after delay
+              Future.delayed(const Duration(seconds: 2), () {
+                if (mounted) setState(() => _isConnecting = false);
+              });
+            },
+      child: _isConnecting
+          ? SizedBox(
+              height: 16 * scale,
+              width: 16 * scale,
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            )
+          : Icon(
+              Icons.person_add_alt_1_rounded,
+              color: Colors.white,
+              size: 20 * scale,
+            ),
+    );
+  }
+
+  Widget _buildPendingButton(
+    double iconSize,
+    double scale,
+    String? connectionId,
+  ) {
+    return GestureDetector(
+      onLongPress: connectionId != null
+          ? () {
+              // Cancel request on long press
+              ref.read(connectionProvider.notifier).cancelRequest(connectionId);
+            }
+          : null,
+      child: CircularIconButton(
+        size: iconSize,
+        backgroundColor: Colors.orange.withValues(alpha: 0.7),
+        onPressed: null,
+        child: Icon(Icons.schedule, color: Colors.white, size: 20 * scale),
+      ),
+    );
+  }
+
+  Widget _buildAcceptButton(
+    double iconSize,
+    double scale,
+    String? connectionId,
+  ) {
+    return CircularIconButton(
+      size: iconSize,
+      backgroundColor: AppColors.primary.withValues(alpha: 0.7),
+      onPressed: connectionId != null
+          ? () {
+              ref.read(connectionProvider.notifier).acceptRequest(connectionId);
+            }
+          : null,
+      child: Icon(Icons.person_add, color: Colors.white, size: 20 * scale),
+    );
+  }
+
+  Widget _buildConnectedButton(
+    double iconSize,
+    double scale,
+    String? connectionId,
+  ) {
+    return GestureDetector(
+      onLongPress: connectionId != null
+          ? () {
+              // Show dialog to remove connection
+              _showRemoveConnectionDialog(connectionId);
+            }
+          : null,
+      child: CircularIconButton(
+        size: iconSize,
+        backgroundColor: Colors.green.withValues(alpha: 0.7),
+        onPressed: null,
+        child: Icon(
+          Icons.check_circle_rounded,
+          color: Colors.white,
+          size: 20 * scale,
+        ),
+      ),
+    );
+  }
+
+  void _showRemoveConnectionDialog(String connectionId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.darkGreyCard,
+        title: const CustomText(
+          title: 'Remove Connection',
+          textColor: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        content: const CustomText(
+          title: 'Are you sure you want to remove this connection?',
+          textColor: Colors.white70,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const CustomText(title: 'Cancel', textColor: Colors.white60),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ref
+                  .read(connectionProvider.notifier)
+                  .removeConnection(connectionId);
+            },
+            child: const CustomText(
+              title: 'Remove',
+              textColor: AppColors.error,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

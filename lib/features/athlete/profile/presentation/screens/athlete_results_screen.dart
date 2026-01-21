@@ -65,8 +65,9 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
             'totalCompetitors':
                 int.tryParse(newResult.position.split('/').last) ?? 1,
             'division': newResult.division,
-            'competitionSummary': newResult.summary,
-            'resultLink': newResult.resultsLink,
+            'location': newResult.location,
+            'competitionSummary': newResult.competitionSummary,
+            'resultLink': newResult.resultLink,
           };
 
           if (record != null) {
@@ -78,7 +79,9 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                       "", // Ensure your provider/model handles ID correctly
                   data: data,
                   media: null,
-                  onSuccess: () => Navigator.pop(context),
+                  onSuccess: () {
+                    // Modal already closed by itself
+                  },
                 );
           } else {
             ref
@@ -87,7 +90,9 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                   athleteId: user.id,
                   data: data,
                   media: null,
-                  onSuccess: () => Navigator.pop(context),
+                  onSuccess: () {
+                    // Modal already closed by itself
+                  },
                 );
           }
         },
@@ -221,16 +226,18 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
 
                                 final result = results[index];
                                 final resultData = ResultData(
+                                  id: result.id,
                                   date: result.date,
                                   position:
                                       '${result.position}/${result.totalCompetitors}',
                                   competition: result.competitionName,
                                   division: result.division,
                                   flagUrl: 'https://flagcdn.com/w40/tr.png',
-                                  location: '',
+                                  location: result.location ?? "",
                                   media: [],
-                                  summary: result.competitionSummary,
-                                  resultsLink: result.resultLink,
+                                  mediaUrls: result.media,
+                                  competitionSummary: result.competitionSummary,
+                                  resultLink: result.resultLink,
                                 );
 
                                 return GestureDetector(

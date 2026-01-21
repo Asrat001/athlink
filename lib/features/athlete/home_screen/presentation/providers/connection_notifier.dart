@@ -33,6 +33,94 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
     );
   }
 
+  Future<void> acceptRequest(String connectionId) async {
+    state = const ConnectionState.loading();
+
+    final response = await _athleteFeedRepository.acceptRequest(connectionId);
+
+    response.when(
+      success: (connection) {
+        state = const ConnectionState.success(
+          message: 'Connection request accepted',
+        );
+      },
+      failure: (error) {
+        state = ConnectionState.error(
+          errorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
+  Future<void> rejectRequest(String connectionId) async {
+    state = const ConnectionState.loading();
+
+    final response = await _athleteFeedRepository.rejectRequest(connectionId);
+
+    response.when(
+      success: (connection) {
+        state = const ConnectionState.success(
+          message: 'Connection request rejected',
+        );
+      },
+      failure: (error) {
+        state = ConnectionState.error(
+          errorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
+  Future<void> cancelRequest(String connectionId) async {
+    state = const ConnectionState.loading();
+
+    final response = await _athleteFeedRepository.cancelRequest(connectionId);
+
+    response.when(
+      success: (success) {
+        if (success) {
+          state = const ConnectionState.success(
+            message: 'Connection request cancelled',
+          );
+        } else {
+          state = const ConnectionState.error(
+            errorMessage: 'Failed to cancel request',
+          );
+        }
+      },
+      failure: (error) {
+        state = ConnectionState.error(
+          errorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
+  Future<void> removeConnection(String connectionId) async {
+    state = const ConnectionState.loading();
+
+    final response = await _athleteFeedRepository.removeConnection(
+      connectionId,
+    );
+
+    response.when(
+      success: (success) {
+        if (success) {
+          state = const ConnectionState.success(message: 'Connection removed');
+        } else {
+          state = const ConnectionState.error(
+            errorMessage: 'Failed to remove connection',
+          );
+        }
+      },
+      failure: (error) {
+        state = ConnectionState.error(
+          errorMessage: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
   void resetState() {
     state = const ConnectionState.initial();
   }

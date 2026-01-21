@@ -1,8 +1,10 @@
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:intl/intl.dart';
 
 class ResultTableHeader extends StatelessWidget {
   const ResultTableHeader({super.key});
@@ -84,9 +86,10 @@ class ResultItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: CustomText(
-              title: data.date,
+              title: DateFormatter.formatFromISO(data.date),
+              fontWeight: FontWeight.w400,
               textColor: AppColors.white.withValues(alpha: 0.6),
-              fontSize: 13,
+              fontSize: 12,
             ),
           ),
           Expanded(
@@ -110,20 +113,28 @@ class ResultItem extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: Image.network(
-                    data.flagUrl,
-                    width: 22,
-                    height: 14,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.flag,
-                      size: 14,
-                      color: AppColors.white.withValues(alpha: 0.3),
-                    ),
+                Text(
+                  data.location,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: AppColors.white.withValues(alpha: 0.6),
                   ),
                 ),
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(2),
+                //   child: Image.network(
+                //     data.flagUrl,
+                //     width: 22,
+                //     height: 14,
+                //     fit: BoxFit.cover,
+                //     errorBuilder: (context, error, stackTrace) => Icon(
+                //       Icons.flag,
+                //       size: 14,
+                //       color: AppColors.white.withValues(alpha: 0.3),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

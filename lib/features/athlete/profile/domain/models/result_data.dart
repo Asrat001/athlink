@@ -1,6 +1,7 @@
 import 'dart:io';
 
-class ResultData {
+class   ResultData {
+  final String id;
   final String date;
   final String position;
   final String competition;
@@ -8,10 +9,12 @@ class ResultData {
   final String flagUrl;
   final String location;
   final List<File> media;
-  final String summary;
-  final String? resultsLink;
+  final List<String> mediaUrls;
+  final String competitionSummary;
+  final String? resultLink;
 
   ResultData({
+    required this.id,
     required this.date,
     required this.position,
     required this.competition,
@@ -19,25 +22,44 @@ class ResultData {
     required this.flagUrl,
     this.location = "Turkey",
     this.media = const [],
-    this.summary = "",
-    this.resultsLink,
+    this.mediaUrls = const [],
+    this.competitionSummary = "",
+    this.resultLink,
   });
 
   ResultData copyWith({
     List<File>? media,
-    String? summary,
-    String? resultsLink,
+    List<String>? mediaUrls,
+    String? competitionSummary,
+    String? resultLink,
   }) {
     return ResultData(
+      id: id,
       date: date,
       position: position,
       competition: competition,
       division: division,
       flagUrl: flagUrl,
       location: location,
+      mediaUrls: mediaUrls ?? this.mediaUrls,
       media: media ?? this.media,
-      summary: summary ?? this.summary,
-      resultsLink: resultsLink ?? this.resultsLink,
+      competitionSummary: competitionSummary ?? this.competitionSummary,
+      resultLink: resultLink ?? this.resultLink,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date,
+      'position': position,
+      'competition': competition,
+      'division': division,
+      'flagUrl': flagUrl,
+      'location': location,
+      'media': media,
+      'competitionSummary': competitionSummary,
+      'resultLink': resultLink,
+    };
   }
 }

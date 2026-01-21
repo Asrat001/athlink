@@ -16,6 +16,7 @@ abstract class CompetitionResultModel with _$CompetitionResultModel {
     @Default([]) List<String> media,
     required String competitionSummary,
     String? resultLink,
+    String? location,
   }) = _CompetitionResultModel;
 
   factory CompetitionResultModel.fromJson(Map<String, dynamic> json) =>

@@ -1,9 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class AddResultModal extends StatefulWidget {
   final Function(ResultData) onSave;
@@ -24,6 +30,13 @@ class _AddResultModalState extends State<AddResultModal> {
   late TextEditingController _positionController;
   late TextEditingController _totalCompetitorsController;
   late TextEditingController _divisionController;
+  late TextEditingController _locationDataController;
+  late TextEditingController _locationNameController;
+  final String _googleApiKey = dotenv.env['GOOGLE_MAP_API_KEY'] ?? "";
+  List<dynamic> _placePredictions = [];
+  String _sessionToken = const Uuid().v4();
+  Timer? _debounce;
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -37,7 +50,12 @@ class _AddResultModalState extends State<AddResultModal> {
     _divisionController = TextEditingController(
       text: widget.initialRecord?.division ?? '',
     );
-
+    _locationDataController = TextEditingController(
+      text: widget.initialRecord?.location ?? '',
+    );
+    _locationNameController = TextEditingController(
+      text: widget.initialRecord?.location ?? '',
+    );
     String pos = '';
     String total = '';
     if (widget.initialRecord != null) {
@@ -50,6 +68,54 @@ class _AddResultModalState extends State<AddResultModal> {
     _positionController = TextEditingController(text: pos);
     _totalCompetitorsController = TextEditingController(text: total);
   }
+    void _onLocationChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value.isNotEmpty) {
+        _getAutocomplete(value);
+      } else {
+        setState(() => _placePredictions = []);
+      }
+    });
+  }
+
+  Future<void> _getAutocomplete(String input) async {
+    setState(() => _isSearching = true);
+    final url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$_googleApiKey&sessiontoken=$_sessionToken";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(
+          () => _placePredictions = json.decode(response.body)['predictions'],
+        );
+      }
+    } finally {
+      setState(() => _isSearching = false);
+    }
+  }
+
+  Future<void> _getPlaceDetails(String placeId, String description) async {
+    final url =
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=$_googleApiKey&sessiontoken=$_sessionToken";
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final lat = data['result']['geometry']['location']['lat'];
+      final lng = data['result']['geometry']['location']['lng'];
+
+      // CONCATENATION LOGIC: lat,lng,name
+      final concatenatedLocation = "$lat,$lng,$description";
+
+      setState(() {
+        _locationNameController.text = description;
+        _locationDataController.text = concatenatedLocation;
+        _placePredictions = [];
+        _sessionToken = const Uuid().v4();
+      });
+      FocusScope.of(context).unfocus();
+    }
+  }
 
   @override
   void dispose() {
@@ -58,6 +124,8 @@ class _AddResultModalState extends State<AddResultModal> {
     _positionController.dispose();
     _totalCompetitorsController.dispose();
     _divisionController.dispose();
+    _locationDataController.dispose();
+    _locationNameController.dispose();
     super.dispose();
   }
 
@@ -92,9 +160,11 @@ class _AddResultModalState extends State<AddResultModal> {
       final positionString =
           "${_positionController.text}/${_totalCompetitorsController.text}";
       final newResult = ResultData(
+        id: widget.initialRecord?.id ?? '',
         date: _dateController.text,
         position: positionString,
         competition: _competitionController.text,
+        location: _locationNameController.text,
         division: _divisionController.text,
         flagUrl:
             widget.initialRecord?.flagUrl ?? 'https://flagcdn.com/w40/un.png',
@@ -145,6 +215,9 @@ class _AddResultModalState extends State<AddResultModal> {
                 textColor: AppColors.white,
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
+              const SizedBox(height: 16),
+              _buildLabel("Location"),
+              _buildPlacesField(),
               const SizedBox(height: 16),
 
               _buildLabel("Date"),
@@ -197,18 +270,18 @@ class _AddResultModalState extends State<AddResultModal> {
                 children: [
                   Expanded(
                     child: _buildBtn(
-                      "Save Result",
-                      AppColors.darkGreyCard,
-                      _handleSubmit,
+                      "Cancel",
+                      AppColors.transparent,
+                      () => Navigator.pop(context),
+                      isBordered: true,
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: _buildBtn(
-                      "Cancel",
-                      AppColors.transparent,
-                      () => Navigator.pop(context),
-                      isBordered: true,
+                      "Save Result",
+                      AppColors.darkGreyCard,
+                      _handleSubmit,
                     ),
                   ),
                 ],
@@ -217,6 +290,106 @@ class _AddResultModalState extends State<AddResultModal> {
           ),
         ),
       ),
+    );
+  }
+  Widget _buildPlacesField() {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+          ),
+          child: TextFormField(
+            controller: _locationNameController,
+            onChanged: _onLocationChanged,
+            style: const TextStyle(color: AppColors.white, fontSize: 14),
+
+            decoration: InputDecoration(
+              hintText: 'Search Location...',
+              hintStyle: TextStyle(
+                color: AppColors.white.withValues(alpha: 0.3),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.lightGrey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.white, width: 1),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.error),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.error, width: 1),
+              ),
+              suffixIcon: _isSearching
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    )
+                  : const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.lightGrey,
+                    ),
+            ),
+          ),
+        ),
+        if (_placePredictions.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            constraints: const BoxConstraints(maxHeight: 200),
+            decoration: BoxDecoration(
+              color: AppColors.darkGreyCard,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: _placePredictions.length,
+              separatorBuilder: (context, index) => Divider(
+                color: AppColors.white.withValues(alpha: 0.05),
+                height: 1,
+              ),
+              itemBuilder: (context, index) {
+                final p = _placePredictions[index];
+                return ListTile(
+                  leading: const Icon(
+                    Icons.place,
+                    color: AppColors.lightGrey,
+                    size: 18,
+                  ),
+                  title: Text(
+                    p['description'],
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 13,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () =>
+                      _getPlaceDetails(p['place_id'], p['description']),
+                );
+              },
+            ),
+          ),
+      ],
     );
   }
 

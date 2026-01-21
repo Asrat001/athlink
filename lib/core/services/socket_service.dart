@@ -1,4 +1,3 @@
-
 import 'package:athlink/features/message/domain/models/chat_attachment.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -150,6 +149,42 @@ class SocketIoService {
     _socket?.on('user:offline', (data) {
       if (data != null && data['userId'] != null) {
         callback(data['userId'], false);
+      }
+    });
+  }
+
+  // Connection Events
+  /// Listen for connection request received
+  void onConnectionRequest(
+    Function(String connectionId, String requesterId) callback,
+  ) {
+    _socket?.on('connection:request', (data) {
+      if (data != null &&
+          data['connectionId'] != null &&
+          data['requesterId'] != null) {
+        callback(data['connectionId'], data['requesterId']);
+      }
+    });
+  }
+
+  /// Listen for connection accepted
+  void onConnectionAccepted(
+    Function(String connectionId, String acceptedBy) callback,
+  ) {
+    _socket?.on('connection:accepted', (data) {
+      if (data != null &&
+          data['connectionId'] != null &&
+          data['acceptedBy'] != null) {
+        callback(data['connectionId'], data['acceptedBy']);
+      }
+    });
+  }
+
+  /// Listen for connection rejected
+  void onConnectionRejected(Function(String connectionId) callback) {
+    _socket?.on('connection:rejected', (data) {
+      if (data != null && data['connectionId'] != null) {
+        callback(data['connectionId']);
       }
     });
   }

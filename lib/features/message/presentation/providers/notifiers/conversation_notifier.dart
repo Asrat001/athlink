@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/domain/models/conversation.dart';
 import 'package:athlink/features/message/domain/repository/chat_repository.dart';
+import 'package:athlink/features/message/domain/models/contact.dart';
 import 'package:athlink/features/message/presentation/providers/states/conversation_state.dart';
 
 class ConversationNotifier extends StateNotifier<ConversationState> {
@@ -60,6 +61,36 @@ class ConversationNotifier extends StateNotifier<ConversationState> {
         state = ConversationState.error(
           NetworkExceptions.getErrorMessage(error),
         );
+      },
+    );
+  }
+
+  Future<Conversation?> createOrGetConversation({
+    required String participantId,
+    required ContactType participantType,
+  }) async {
+    final response = await _chatRepository.createOrGetConversation(
+      participantId: participantId,
+      participantType: participantType,
+    );
+
+    return response.when(
+      success: (data) {
+        // Optionally update the list of conversations if we have them loaded
+        state.mapOrNull(
+          loaded: (s) {
+            final exists = s.conversations.any((c) => c.id == data.id);
+            if (!exists) {
+              state = s.copyWith(conversations: [data, ...s.conversations]);
+            }
+          },
+        );
+        return data;
+      },
+      failure: (error) {
+        // We don't update state to error here to avoid disrupting the list view
+        // Instead we return null and let the UI handle the error feedback
+        return null;
       },
     );
   }

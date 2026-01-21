@@ -31,4 +31,5 @@ class Routes {
   static String viewAthleteScreen = '/view-athlete';
   static String athleteCampaignsScreen = '/athlete-campaign';
   static String athleteCampaignDetailScreen = '/athlete-campaign-detail';
+  static String connectionRequestsScreen = '/connection-requests';
 }

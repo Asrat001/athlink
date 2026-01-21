@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
+import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -21,7 +22,6 @@ class ResultFullDetailsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger(isSelf);
     // Determine if we should even show the "Official Results" section
     // If it's not self and there's no link, we can keep the header but show the empty message
     final hasLink = currentLink != null && currentLink!.isNotEmpty;
@@ -256,7 +256,7 @@ class ResultFullDetailsTab extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: InfoTile(label: l2, value: v2, isOrange: isDateOrange),
+          child: InfoTile(label: l2, value: DateFormatter.formatFromISO(v2), isOrange: isDateOrange),
         ),
       ],
     );
@@ -278,18 +278,18 @@ class ResultFullDetailsTab extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: Image.network(
-                      result.flagUrl,
-                      width: 24,
-                      height: 16,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.flag, size: 16, color: Colors.grey),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(2),
+                  //   child: Image.network(
+                  //     result.flagUrl,
+                  //     width: 24,
+                  //     height: 16,
+                  //     fit: BoxFit.cover,
+                  //     errorBuilder: (context, error, stackTrace) =>
+                  //         const Icon(Icons.flag, size: 16, color: Colors.grey),
+                  //   ),
+                  // ),
+                  // const SizedBox(width: 8),
                   Expanded(
                     child: CustomText(
                       title: result.location,
