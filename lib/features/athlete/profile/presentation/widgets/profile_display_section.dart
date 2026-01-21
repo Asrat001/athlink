@@ -4,19 +4,22 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class ProfileDisplaySection extends StatelessWidget {
-  final ProfileModel profile;
+  final ProfileModel? profile; // Changed to nullable
   final VoidCallback onEditToggle;
-  final bool isSelf; // Added this parameter
+  final bool isSelf;
 
   const ProfileDisplaySection({
     super.key,
     required this.profile,
     required this.onEditToggle,
-    this.isSelf = false, // Default to false for safety
+    this.isSelf = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    // If profile is null, we show a loading placeholder state
+    final bool isLoading = profile == null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,25 +27,26 @@ class ProfileDisplaySection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: CustomText(
-                title: profile.name,
-                fontSize: 30,
-                textColor: AppColors.white,
-                fontWeight: FontWeight.w700,
-              ),
+              child: isLoading
+                  ? _buildPlaceholder(width: 200, height: 35)
+                  : CustomText(
+                      title: profile!.name,
+                      fontSize: 30,
+                      textColor: AppColors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
             ),
-            // Only show the edit button if the user is viewing their own profile
-            if (isSelf)
+            if (isSelf && !isLoading)
               IconButton(
                 onPressed: onEditToggle,
                 icon: Icon(
                   Icons.edit_outlined,
-                  color: AppColors.white.withAlpha((0.7 * 255).round()),
+                  color: AppColors.white.withValues(alpha: 0.7),
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Row(
           children: [
             const Icon(
@@ -51,22 +55,47 @@ class ProfileDisplaySection extends StatelessWidget {
               color: AppColors.orangeGradientStart,
             ),
             const SizedBox(width: 8),
-            CustomText(
-              title: profile.location,
-              fontSize: 14,
-              textColor: AppColors.orangeGradientStart,
-              fontWeight: FontWeight.w500,
-            ),
+            isLoading
+                ? _buildPlaceholder(width: 120, height: 16)
+                : CustomText(
+                    title: profile!.location,
+                    fontSize: 14,
+                    textColor: AppColors.orangeGradientStart,
+                    fontWeight: FontWeight.w500,
+                  ),
           ],
         ),
         const SizedBox(height: 16),
-        CustomText(
-          title: profile.bio,
-          fontSize: 15,
-          textColor: AppColors.white.withAlpha((0.7 * 255).round()),
-          fontWeight: FontWeight.w400,
-        ),
+        isLoading
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildPlaceholder(width: double.infinity, height: 14),
+                  const SizedBox(height: 8),
+                  _buildPlaceholder(width: 250, height: 14),
+                ],
+              )
+            : CustomText(
+                title: profile!.bio.isEmpty
+                    ? "No bio added yet."
+                    : profile!.bio,
+                fontSize: 15,
+                textColor: AppColors.white.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w400,
+              ),
       ],
+    );
+  }
+
+  /// Simple placeholder widget for null/loading state
+  Widget _buildPlaceholder({required double width, required double height}) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
     );
   }
 }

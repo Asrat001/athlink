@@ -639,7 +639,7 @@ $AthleteProfileCopyWith<$Res> get requester {
 /// @nodoc
 mixin _$FriendRequest {
 
-@JsonKey(name: '_id') String get id; Requester get requester; String get recipient; String get status; DateTime get requestedAt; DateTime get createdAt; DateTime get updatedAt;@JsonKey(name: '__v') int get version;
+@JsonKey(name: '_id') String get id; Requester? get requester; String get recipient; String get status; DateTime get requestedAt; DateTime get createdAt; DateTime get updatedAt;@JsonKey(name: '__v') int get version;
 /// Create a copy of FriendRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -672,11 +672,11 @@ abstract mixin class $FriendRequestCopyWith<$Res>  {
   factory $FriendRequestCopyWith(FriendRequest value, $Res Function(FriendRequest) _then) = _$FriendRequestCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, Requester requester, String recipient, String status, DateTime requestedAt, DateTime createdAt, DateTime updatedAt,@JsonKey(name: '__v') int version
+@JsonKey(name: '_id') String id, Requester? requester, String recipient, String status, DateTime requestedAt, DateTime createdAt, DateTime updatedAt,@JsonKey(name: '__v') int version
 });
 
 
-$RequesterCopyWith<$Res> get requester;
+$RequesterCopyWith<$Res>? get requester;
 
 }
 /// @nodoc
@@ -689,11 +689,11 @@ class _$FriendRequestCopyWithImpl<$Res>
 
 /// Create a copy of FriendRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? requester = null,Object? recipient = null,Object? status = null,Object? requestedAt = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? requester = freezed,Object? recipient = null,Object? status = null,Object? requestedAt = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
-as Requester,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,requester: freezed == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as Requester?,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,requestedAt: null == requestedAt ? _self.requestedAt : requestedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -706,9 +706,12 @@ as int,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RequesterCopyWith<$Res> get requester {
-  
-  return $RequesterCopyWith<$Res>(_self.requester, (value) {
+$RequesterCopyWith<$Res>? get requester {
+    if (_self.requester == null) {
+    return null;
+  }
+
+  return $RequesterCopyWith<$Res>(_self.requester!, (value) {
     return _then(_self.copyWith(requester: value));
   });
 }
@@ -793,7 +796,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  Requester requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  Requester? requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FriendRequest() when $default != null:
 return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requestedAt,_that.createdAt,_that.updatedAt,_that.version);case _:
@@ -814,7 +817,7 @@ return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requ
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  Requester requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  Requester? requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)  $default,) {final _that = this;
 switch (_that) {
 case _FriendRequest():
 return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requestedAt,_that.createdAt,_that.updatedAt,_that.version);case _:
@@ -834,7 +837,7 @@ return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requ
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  Requester requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  Requester? requester,  String recipient,  String status,  DateTime requestedAt,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: '__v')  int version)?  $default,) {final _that = this;
 switch (_that) {
 case _FriendRequest() when $default != null:
 return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requestedAt,_that.createdAt,_that.updatedAt,_that.version);case _:
@@ -849,11 +852,11 @@ return $default(_that.id,_that.requester,_that.recipient,_that.status,_that.requ
 @JsonSerializable()
 
 class _FriendRequest implements FriendRequest {
-  const _FriendRequest({@JsonKey(name: '_id') required this.id, required this.requester, required this.recipient, required this.status, required this.requestedAt, required this.createdAt, required this.updatedAt, @JsonKey(name: '__v') required this.version});
+  const _FriendRequest({@JsonKey(name: '_id') required this.id, this.requester, required this.recipient, required this.status, required this.requestedAt, required this.createdAt, required this.updatedAt, @JsonKey(name: '__v') required this.version});
   factory _FriendRequest.fromJson(Map<String, dynamic> json) => _$FriendRequestFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
-@override final  Requester requester;
+@override final  Requester? requester;
 @override final  String recipient;
 @override final  String status;
 @override final  DateTime requestedAt;
@@ -894,11 +897,11 @@ abstract mixin class _$FriendRequestCopyWith<$Res> implements $FriendRequestCopy
   factory _$FriendRequestCopyWith(_FriendRequest value, $Res Function(_FriendRequest) _then) = __$FriendRequestCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, Requester requester, String recipient, String status, DateTime requestedAt, DateTime createdAt, DateTime updatedAt,@JsonKey(name: '__v') int version
+@JsonKey(name: '_id') String id, Requester? requester, String recipient, String status, DateTime requestedAt, DateTime createdAt, DateTime updatedAt,@JsonKey(name: '__v') int version
 });
 
 
-@override $RequesterCopyWith<$Res> get requester;
+@override $RequesterCopyWith<$Res>? get requester;
 
 }
 /// @nodoc
@@ -911,11 +914,11 @@ class __$FriendRequestCopyWithImpl<$Res>
 
 /// Create a copy of FriendRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? requester = null,Object? recipient = null,Object? status = null,Object? requestedAt = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? requester = freezed,Object? recipient = null,Object? status = null,Object? requestedAt = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,}) {
   return _then(_FriendRequest(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
-as Requester,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,requester: freezed == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as Requester?,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,requestedAt: null == requestedAt ? _self.requestedAt : requestedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -929,9 +932,12 @@ as int,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RequesterCopyWith<$Res> get requester {
-  
-  return $RequesterCopyWith<$Res>(_self.requester, (value) {
+$RequesterCopyWith<$Res>? get requester {
+    if (_self.requester == null) {
+    return null;
+  }
+
+  return $RequesterCopyWith<$Res>(_self.requester!, (value) {
     return _then(_self.copyWith(requester: value));
   });
 }
@@ -941,7 +947,7 @@ $RequesterCopyWith<$Res> get requester {
 /// @nodoc
 mixin _$Requester {
 
-@JsonKey(name: '_id') String get id; AthleteProfile get athleteProfile;
+@JsonKey(name: '_id') String get id; AthleteProfile? get athleteProfile;
 /// Create a copy of Requester
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -974,11 +980,11 @@ abstract mixin class $RequesterCopyWith<$Res>  {
   factory $RequesterCopyWith(Requester value, $Res Function(Requester) _then) = _$RequesterCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String id, AthleteProfile athleteProfile
+@JsonKey(name: '_id') String id, AthleteProfile? athleteProfile
 });
 
 
-$AthleteProfileCopyWith<$Res> get athleteProfile;
+$AthleteProfileCopyWith<$Res>? get athleteProfile;
 
 }
 /// @nodoc
@@ -991,20 +997,23 @@ class _$RequesterCopyWithImpl<$Res>
 
 /// Create a copy of Requester
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteProfile = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? athleteProfile = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,athleteProfile: null == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
-as AthleteProfile,
+as String,athleteProfile: freezed == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
+as AthleteProfile?,
   ));
 }
 /// Create a copy of Requester
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AthleteProfileCopyWith<$Res> get athleteProfile {
-  
-  return $AthleteProfileCopyWith<$Res>(_self.athleteProfile, (value) {
+$AthleteProfileCopyWith<$Res>? get athleteProfile {
+    if (_self.athleteProfile == null) {
+    return null;
+  }
+
+  return $AthleteProfileCopyWith<$Res>(_self.athleteProfile!, (value) {
     return _then(_self.copyWith(athleteProfile: value));
   });
 }
@@ -1089,7 +1098,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  AthleteProfile athleteProfile)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  AthleteProfile? athleteProfile)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Requester() when $default != null:
 return $default(_that.id,_that.athleteProfile);case _:
@@ -1110,7 +1119,7 @@ return $default(_that.id,_that.athleteProfile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  AthleteProfile athleteProfile)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String id,  AthleteProfile? athleteProfile)  $default,) {final _that = this;
 switch (_that) {
 case _Requester():
 return $default(_that.id,_that.athleteProfile);case _:
@@ -1130,7 +1139,7 @@ return $default(_that.id,_that.athleteProfile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  AthleteProfile athleteProfile)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String id,  AthleteProfile? athleteProfile)?  $default,) {final _that = this;
 switch (_that) {
 case _Requester() when $default != null:
 return $default(_that.id,_that.athleteProfile);case _:
@@ -1145,11 +1154,11 @@ return $default(_that.id,_that.athleteProfile);case _:
 @JsonSerializable()
 
 class _Requester implements Requester {
-  const _Requester({@JsonKey(name: '_id') required this.id, required this.athleteProfile});
+  const _Requester({@JsonKey(name: '_id') required this.id, this.athleteProfile});
   factory _Requester.fromJson(Map<String, dynamic> json) => _$RequesterFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
-@override final  AthleteProfile athleteProfile;
+@override final  AthleteProfile? athleteProfile;
 
 /// Create a copy of Requester
 /// with the given fields replaced by the non-null parameter values.
@@ -1184,11 +1193,11 @@ abstract mixin class _$RequesterCopyWith<$Res> implements $RequesterCopyWith<$Re
   factory _$RequesterCopyWith(_Requester value, $Res Function(_Requester) _then) = __$RequesterCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String id, AthleteProfile athleteProfile
+@JsonKey(name: '_id') String id, AthleteProfile? athleteProfile
 });
 
 
-@override $AthleteProfileCopyWith<$Res> get athleteProfile;
+@override $AthleteProfileCopyWith<$Res>? get athleteProfile;
 
 }
 /// @nodoc
@@ -1201,11 +1210,11 @@ class __$RequesterCopyWithImpl<$Res>
 
 /// Create a copy of Requester
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteProfile = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? athleteProfile = freezed,}) {
   return _then(_Requester(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,athleteProfile: null == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
-as AthleteProfile,
+as String,athleteProfile: freezed == athleteProfile ? _self.athleteProfile : athleteProfile // ignore: cast_nullable_to_non_nullable
+as AthleteProfile?,
   ));
 }
 
@@ -1213,9 +1222,12 @@ as AthleteProfile,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AthleteProfileCopyWith<$Res> get athleteProfile {
-  
-  return $AthleteProfileCopyWith<$Res>(_self.athleteProfile, (value) {
+$AthleteProfileCopyWith<$Res>? get athleteProfile {
+    if (_self.athleteProfile == null) {
+    return null;
+  }
+
+  return $AthleteProfileCopyWith<$Res>(_self.athleteProfile!, (value) {
     return _then(_self.copyWith(athleteProfile: value));
   });
 }
@@ -1225,7 +1237,7 @@ $AthleteProfileCopyWith<$Res> get athleteProfile {
 /// @nodoc
 mixin _$AthleteProfile {
 
- String get name; String get profileImageUrl;
+ String? get name; String? get profileImageUrl;
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1258,7 +1270,7 @@ abstract mixin class $AthleteProfileCopyWith<$Res>  {
   factory $AthleteProfileCopyWith(AthleteProfile value, $Res Function(AthleteProfile) _then) = _$AthleteProfileCopyWithImpl;
 @useResult
 $Res call({
- String name, String profileImageUrl
+ String? name, String? profileImageUrl
 });
 
 
@@ -1275,11 +1287,11 @@ class _$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? profileImageUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? profileImageUrl = freezed,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,profileImageUrl: null == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
-as String,
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -1364,7 +1376,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String profileImageUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
 return $default(_that.name,_that.profileImageUrl);case _:
@@ -1385,7 +1397,7 @@ return $default(_that.name,_that.profileImageUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String profileImageUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? profileImageUrl)  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile():
 return $default(_that.name,_that.profileImageUrl);case _:
@@ -1405,7 +1417,7 @@ return $default(_that.name,_that.profileImageUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String profileImageUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? profileImageUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _AthleteProfile() when $default != null:
 return $default(_that.name,_that.profileImageUrl);case _:
@@ -1420,11 +1432,11 @@ return $default(_that.name,_that.profileImageUrl);case _:
 @JsonSerializable()
 
 class _AthleteProfile implements AthleteProfile {
-  const _AthleteProfile({required this.name, required this.profileImageUrl});
+  const _AthleteProfile({this.name, this.profileImageUrl});
   factory _AthleteProfile.fromJson(Map<String, dynamic> json) => _$AthleteProfileFromJson(json);
 
-@override final  String name;
-@override final  String profileImageUrl;
+@override final  String? name;
+@override final  String? profileImageUrl;
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
@@ -1459,7 +1471,7 @@ abstract mixin class _$AthleteProfileCopyWith<$Res> implements $AthleteProfileCo
   factory _$AthleteProfileCopyWith(_AthleteProfile value, $Res Function(_AthleteProfile) _then) = __$AthleteProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String profileImageUrl
+ String? name, String? profileImageUrl
 });
 
 
@@ -1476,11 +1488,11 @@ class __$AthleteProfileCopyWithImpl<$Res>
 
 /// Create a copy of AthleteProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? profileImageUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? profileImageUrl = freezed,}) {
   return _then(_AthleteProfile(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,profileImageUrl: null == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
-as String,
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

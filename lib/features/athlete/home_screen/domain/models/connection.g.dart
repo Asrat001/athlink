@@ -60,7 +60,9 @@ Map<String, dynamic> _$ConnectionRequestToJson(_ConnectionRequest instance) =>
 _FriendRequest _$FriendRequestFromJson(Map<String, dynamic> json) =>
     _FriendRequest(
       id: json['_id'] as String,
-      requester: Requester.fromJson(json['requester'] as Map<String, dynamic>),
+      requester: json['requester'] == null
+          ? null
+          : Requester.fromJson(json['requester'] as Map<String, dynamic>),
       recipient: json['recipient'] as String,
       status: json['status'] as String,
       requestedAt: DateTime.parse(json['requestedAt'] as String),
@@ -83,9 +85,9 @@ Map<String, dynamic> _$FriendRequestToJson(_FriendRequest instance) =>
 
 _Requester _$RequesterFromJson(Map<String, dynamic> json) => _Requester(
   id: json['_id'] as String,
-  athleteProfile: AthleteProfile.fromJson(
-    json['athleteProfile'] as Map<String, dynamic>,
-  ),
+  athleteProfile: json['athleteProfile'] == null
+      ? null
+      : AthleteProfile.fromJson(json['athleteProfile'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$RequesterToJson(_Requester instance) =>
@@ -96,8 +98,8 @@ Map<String, dynamic> _$RequesterToJson(_Requester instance) =>
 
 _AthleteProfile _$AthleteProfileFromJson(Map<String, dynamic> json) =>
     _AthleteProfile(
-      name: json['name'] as String,
-      profileImageUrl: json['profileImageUrl'] as String,
+      name: json['name'] as String?,
+      profileImageUrl: json['profileImageUrl'] as String?,
     );
 
 Map<String, dynamic> _$AthleteProfileToJson(_AthleteProfile instance) =>

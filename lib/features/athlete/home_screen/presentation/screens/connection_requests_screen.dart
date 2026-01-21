@@ -32,7 +32,6 @@ class _ConnectionRequestsScreenState
       ref.read(connectionRequestsProvider.notifier).getReceivedRequests();
       ref.read(sentConnectionRequestsProvider.notifier).getSentRequests();
     });
-    
   }
 
   @override
@@ -141,7 +140,12 @@ class _ConnectionRequestsScreenState
           CircleAvatar(
             radius: 28,
             backgroundColor: AppColors.primary,
-            backgroundImage: NetworkImage(fileBaseUrl+request.requester.athleteProfile.profileImageUrl),
+            backgroundImage: (() {
+              final url = request.requester?.athleteProfile?.profileImageUrl;
+              return (url != null && url.isNotEmpty)
+                  ? NetworkImage(fileBaseUrl + url)
+                  : null;
+            })(),
             child: const Icon(Icons.person, color: Colors.white),
           ),
           const SizedBox(width: 12),
@@ -150,7 +154,7 @@ class _ConnectionRequestsScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
-                  title: request.requester.athleteProfile.name,
+                  title: request.requester?.athleteProfile?.name ?? "",
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   textColor: Colors.white,

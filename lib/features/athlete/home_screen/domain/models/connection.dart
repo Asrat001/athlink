@@ -40,7 +40,7 @@ abstract class ConnectionRequest with _$ConnectionRequest {
 abstract class FriendRequest with _$FriendRequest {
   const factory FriendRequest({
     @JsonKey(name: '_id') required String id,
-    required Requester requester,
+    Requester? requester,
     required String recipient,
     required String status,
     required DateTime requestedAt,
@@ -57,7 +57,7 @@ abstract class FriendRequest with _$FriendRequest {
 abstract class Requester with _$Requester {
   const factory Requester({
     @JsonKey(name: '_id') required String id,
-    required AthleteProfile athleteProfile,
+    AthleteProfile? athleteProfile,
   }) = _Requester;
 
   factory Requester.fromJson(Map<String, dynamic> json) =>
@@ -66,10 +66,8 @@ abstract class Requester with _$Requester {
 
 @freezed
 abstract class AthleteProfile with _$AthleteProfile {
-  const factory AthleteProfile({
-    required String name,
-    required String profileImageUrl,
-  }) = _AthleteProfile;
+  const factory AthleteProfile({String? name, String? profileImageUrl}) =
+      _AthleteProfile;
 
   factory AthleteProfile.fromJson(Map<String, dynamic> json) =>
       _$AthleteProfileFromJson(json);
@@ -77,9 +75,8 @@ abstract class AthleteProfile with _$AthleteProfile {
 
 @freezed
 abstract class Recipient with _$Recipient {
-  const factory Recipient({
-    @JsonKey(name: '_id') required String id,
-  }) = _Recipient;
+  const factory Recipient({@JsonKey(name: '_id') required String id}) =
+      _Recipient;
 
   factory Recipient.fromJson(Map<String, dynamic> json) =>
       _$RecipientFromJson(json);
@@ -104,20 +101,12 @@ abstract class SendFriendRequest with _$SendFriendRequest {
 
 @freezed
 abstract class FriendRecipient with _$FriendRecipient {
-  const factory FriendRecipient({
-    @JsonKey(name: '_id') required String id,
-  }) = _FriendRecipient;
+  const factory FriendRecipient({@JsonKey(name: '_id') required String id}) =
+      _FriendRecipient;
 
   factory FriendRecipient.fromJson(Map<String, dynamic> json) =>
       _$FriendRecipientFromJson(json);
 }
-
-
-
-
-
-
-
 
 /// Model for connection status checks
 @freezed
@@ -147,7 +136,6 @@ abstract class ConnectedAthlete with _$ConnectedAthlete {
       _$ConnectedAthleteFromJson(json);
 }
 
-
 @freezed
 abstract class ConnectedUser with _$ConnectedUser {
   const factory ConnectedUser({
@@ -172,9 +160,6 @@ abstract class ConnectionUser with _$ConnectionUser {
   factory ConnectionUser.fromJson(Map<String, dynamic> json) =>
       _$ConnectionUserFromJson(json);
 }
-
-
-
 
 /// API response wrapper for connection requests list
 @freezed

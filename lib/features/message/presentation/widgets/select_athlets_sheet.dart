@@ -129,8 +129,10 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                                 "conversationId": conversation.id,
                                 "name": user.athleteProfile.name,
                                 "logo":
-                                    fileBaseUrl +
-                                    user.athleteProfile.profileImageUrl,
+                                    user.athleteProfile.profileImageUrl != null
+                                    ? fileBaseUrl +
+                                          user.athleteProfile.profileImageUrl!
+                                    : null,
                                 "isOnline": connection.user.isOnline,
                                 "userId": connection.user.id,
                               },
@@ -157,10 +159,15 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                               CircleAvatar(
                                 radius: 28,
                                 backgroundColor: AppColors.extraLightGrey,
-                                backgroundImage: NetworkImage(
-                                  fileBaseUrl +
-                                      user.athleteProfile.profileImageUrl,
-                                ),
+                                backgroundImage:
+                                    user.athleteProfile.profileImageUrl != null
+                                    ? NetworkImage(
+                                        fileBaseUrl +
+                                            user
+                                                .athleteProfile
+                                                .profileImageUrl!,
+                                      )
+                                    : null,
                                 child: const Icon(
                                   Icons.person,
                                   color: AppColors.grey600,
@@ -187,7 +194,7 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                           ),
                           const SizedBox(height: 6),
                           CustomText(
-                            title: user.athleteProfile.name,
+                            title: user.athleteProfile.name ?? "",
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             textAlign: TextAlign.center,

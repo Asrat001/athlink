@@ -188,6 +188,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
     return AthleteCard(
       athleteId: athleteData.id,
       name: name,
+      isAthlete: false,
       location: athleteData.athleteProfile?.location ?? "",
       club: club,
       age: age,

@@ -175,7 +175,6 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                     )
                   : ProfileDisplaySection(
                       profile: profile,
-
                       isSelf: widget.isSelf,
                       onEditToggle: _toggleEdit,
                     ),

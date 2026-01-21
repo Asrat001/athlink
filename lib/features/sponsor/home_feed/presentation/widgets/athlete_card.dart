@@ -25,9 +25,9 @@ class AthleteCard extends ConsumerStatefulWidget {
   final VoidCallback? onTap;
   final String highestSocialMediaPresence;
   final double size;
-  bool isAthlete;
+  final bool isAthlete; // Changed to final for best practice
 
-  AthleteCard({
+  const AthleteCard({
     super.key,
     this.athleteId,
     required this.name,
@@ -56,13 +56,12 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen for connection status changes to handle UI feedback
     ref.listen(connectionProvider, (previous, next) {
       next.maybeWhen(
         success: (message) {
           if (_isConnecting) {
-            setState(() {
-              _isConnecting = false;
-            });
+            setState(() => _isConnecting = false);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(message), backgroundColor: Colors.green),
@@ -110,26 +109,20 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
                       child: Stack(
                         children: [
                           _buildAthleteImage(mainCardHeight),
-
-                          // Consistent Black Overlay
                           _buildDarkOverlay(),
 
-                          // Content
+                          // Info Overlay
                           Padding(
                             padding: EdgeInsets.all(16 * scale),
                             child: _buildTopInfo(scale),
                           ),
 
-                          // Positioned(
-                          //   top: 16 * scale,
-                          //   right: 16 * scale,
-                          //   child: _buildFlag(28 * scale),
-                          // ),
+                          // Dynamic Action Buttons
                           Positioned(
                             right: 12 * scale,
                             top: 0,
                             bottom: 0,
-                            child: _buildActionButtons(scale, widget.isAthlete),
+                            child: _buildActionButtons(scale),
                           ),
                         ],
                       ),
@@ -185,95 +178,34 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
           fontSize: 12,
           textColor: Colors.white.withValues(alpha: 0.8),
         ),
-        CustomText(
-          title: widget.location ?? "",
-          fontSize: 11,
-          textColor: Colors.white.withValues(alpha: 0.8),
-        ),
+        if (widget.location != null && widget.location!.isNotEmpty)
+          CustomText(
+            title: widget.location!,
+            fontSize: 11,
+            textColor: Colors.white.withValues(alpha: 0.8),
+          ),
       ],
     );
   }
 
-  // Widget _buildFlag(double flagSize) {
-  //   return ClipOval(
-  //     child: Image.asset(
-  //       "assets/images/flag.png",
-  //       height: flagSize,
-  //       width: flagSize,
-  //       fit: BoxFit.cover,
-  //     ),
-  //   );
-  // }
-
-  Widget _buildActionButtons(double scale, bool isAthlete) {
+  Widget _buildActionButtons(double scale) {
     final iconSize = 32 * scale;
     final isInWatchlist = ref
         .watch(watchlistIdsProvider)
         .contains(widget.athleteId ?? '');
 
-    // Watch connection status for this athlete
-    final connectionStatusAsync = widget.athleteId != null
-        ? ref.watch(connectionStatusProvider(widget.athleteId!))
-        : null;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        connectionStatusAsync?.when(
-              data: (status) {
-                if (status == null) {
-                  // No connection - show connect button
-                  return _buildConnectButton(iconSize, scale);
-                }
+        // ONLY SHOW CONNECTION LOGIC IF IT IS AN ATHLETE
+        if (widget.isAthlete) ...[
+          _buildConnectionLogic(iconSize, scale),
+          const SizedBox(height: 16),
+        ],
 
-                switch (status.status) {
-                  case 'none':
-                    return _buildConnectButton(iconSize, scale);
-                  case 'pending':
-                    if (status.isRequester) {
-                      // You sent the request - show pending with cancel on long press
-                      return _buildPendingButton(
-                        iconSize,
-                        scale,
-                        status.connectionId,
-                      );
-                    } else {
-                      // They sent you a request - show accept button
-                      return _buildAcceptButton(
-                        iconSize,
-                        scale,
-                        status.connectionId,
-                      );
-                    }
-                  case 'accepted':
-                    // Connected - show check icon
-                    return _buildConnectedButton(
-                      iconSize,
-                      scale,
-                      status.connectionId,
-                    );
-                  default:
-                    return _buildConnectButton(iconSize, scale);
-                }
-              },
-              loading: () => CircularIconButton(
-                size: iconSize,
-                backgroundColor: Colors.black.withValues(alpha: 0.6),
-                onPressed: null,
-                child: SizedBox(
-                  height: 16 * scale,
-                  width: 16 * scale,
-                  child: const CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                ),
-              ),
-              error: (_, __) => _buildConnectButton(iconSize, scale),
-            ) ??
-            _buildConnectButton(iconSize, scale),
-        const SizedBox(height: 16),
-        if (!isAthlete)
+        // Bookmark is shown for Sponsors/Others or based on your business logic
+        // If you only want bookmark for non-athletes, wrap this in if (!widget.isAthlete)
+        if (!widget.isAthlete)
           CircularIconButton(
             size: iconSize,
             backgroundColor: isInWatchlist
@@ -296,6 +228,54 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
     );
   }
 
+  Widget _buildConnectionLogic(double iconSize, double scale) {
+    final connectionStatusAsync = widget.athleteId != null
+        ? ref.watch(connectionStatusProvider(widget.athleteId!))
+        : null;
+
+    return connectionStatusAsync?.when(
+          data: (status) {
+            if (status == null || status.status == 'none') {
+              return _buildConnectButton(iconSize, scale);
+            }
+
+            switch (status.status) {
+              case 'pending':
+                return status.isRequester
+                    ? _buildPendingButton(iconSize, scale, status.connectionId)
+                    : _buildAcceptButton(iconSize, scale, status.connectionId);
+              case 'accepted':
+                return _buildConnectedButton(
+                  iconSize,
+                  scale,
+                  status.connectionId,
+                );
+              default:
+                return _buildConnectButton(iconSize, scale);
+            }
+          },
+          loading: () => _buildLoadingIcon(iconSize, scale),
+          error: (_, __) => _buildConnectButton(iconSize, scale),
+        ) ??
+        _buildConnectButton(iconSize, scale);
+  }
+
+  Widget _buildLoadingIcon(double iconSize, double scale) {
+    return CircularIconButton(
+      size: iconSize,
+      backgroundColor: Colors.black.withValues(alpha: 0.6),
+      onPressed: null,
+      child: SizedBox(
+        height: 16 * scale,
+        width: 16 * scale,
+        child: const CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 2,
+        ),
+      ),
+    );
+  }
+
   Widget _buildConnectButton(double iconSize, double scale) {
     return CircularIconButton(
       size: iconSize,
@@ -309,20 +289,12 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
               ref
                   .read(connectionProvider.notifier)
                   .sendConnectionRequest(widget.athleteId!);
-              // Reset loading state after delay
               Future.delayed(const Duration(seconds: 2), () {
                 if (mounted) setState(() => _isConnecting = false);
               });
             },
       child: _isConnecting
-          ? SizedBox(
-              height: 16 * scale,
-              width: 16 * scale,
-              child: const CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
+          ? _buildLoadingIcon(iconSize, scale)
           : Icon(
               Icons.person_add_alt_1_rounded,
               color: Colors.white,
@@ -338,10 +310,9 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
   ) {
     return GestureDetector(
       onLongPress: connectionId != null
-          ? () {
-              // Cancel request on long press
-              ref.read(connectionProvider.notifier).cancelRequest(connectionId);
-            }
+          ? () => ref
+                .read(connectionProvider.notifier)
+                .cancelRequest(connectionId)
           : null,
       child: CircularIconButton(
         size: iconSize,
@@ -361,9 +332,9 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
       size: iconSize,
       backgroundColor: AppColors.primary.withValues(alpha: 0.7),
       onPressed: connectionId != null
-          ? () {
-              ref.read(connectionProvider.notifier).acceptRequest(connectionId);
-            }
+          ? () => ref
+                .read(connectionProvider.notifier)
+                .acceptRequest(connectionId)
           : null,
       child: Icon(Icons.person_add, color: Colors.white, size: 20 * scale),
     );
@@ -376,10 +347,7 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
   ) {
     return GestureDetector(
       onLongPress: connectionId != null
-          ? () {
-              // Show dialog to remove connection
-              _showRemoveConnectionDialog(connectionId);
-            }
+          ? () => _showRemoveConnectionDialog(connectionId)
           : null,
       child: CircularIconButton(
         size: iconSize,
@@ -440,19 +408,19 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
             title: widget.name,
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            textColor: AppColors.textPrimary,
+            textColor: Colors.white, // Adapted for dark mode dashboard
           ),
           if (widget.highestSocialMediaPresence.isNotEmpty)
             CustomText(
               title: widget.highestSocialMediaPresence,
               fontSize: 12,
-              textColor: AppColors.grey,
+              textColor: Colors.white60,
             ),
           CustomText(
             title:
                 "${widget.sponsorshipDone.isEmpty ? "0" : widget.sponsorshipDone} jobs done",
             fontSize: 12,
-            textColor: AppColors.grey,
+            textColor: Colors.white60,
           ),
         ],
       ),
