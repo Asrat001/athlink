@@ -36,3 +36,32 @@ final connectionStatusProvider =
 
       return response.when(success: (status) => status, failure: (_) => null);
     });
+
+/// Search query state provider for connections
+final connectionSearchQueryProvider = StateProvider<String>((ref) => '');
+
+/// Provider for filtered connections with search support
+final filteredConnectionsProvider = Provider.family<
+    List<ConnectedUser>,
+    String>((ref, searchQuery) {
+  final state = ref.watch(connectionsListProvider);
+  final query = searchQuery.toLowerCase().trim();
+
+  return state.maybeWhen(
+    loaded: (connections) {
+      // If no search query, return all connections
+      if (query.isEmpty) {
+        return connections;
+      }
+
+      // Filter by athlete name
+      return connections.where((connection) {
+        final nameMatch = connection.user.athleteProfile.name
+            ?.toLowerCase()
+            .contains(query) ?? false;
+        return nameMatch;
+      }).toList();
+    },
+    orElse: () => [],
+  );
+});

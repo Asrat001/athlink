@@ -12,12 +12,10 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await serviceLocator();
   final router = sl<AppRouter>().router;
-
   runApp(
     ProviderScope(
       observers: [Observers()],
       child: MyApp(goRouter: router),
     ),
   );
-  
 }

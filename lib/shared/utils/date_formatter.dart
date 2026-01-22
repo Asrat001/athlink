@@ -42,32 +42,36 @@ class DateFormatter {
   ///
   /// Example: DateTime(2025, 1, 15) → "Jan 15, 2025"
   static String formatMedium(DateTime date) {
-    return '${_monthsShort[date.month - 1]} ${date.day}, ${date.year}';
+    final localDate = date.toLocal();
+    return '${_monthsShort[localDate.month - 1]} ${localDate.day}, ${localDate.year}';
   }
 
   /// Format date to "January 15, 2025" format
   ///
   /// Example: DateTime(2025, 1, 15) → "January 15, 2025"
   static String formatLong(DateTime date) {
-    return '${_monthsFull[date.month - 1]} ${date.day}, ${date.year}';
+    final localDate = date.toLocal();
+    return '${_monthsFull[localDate.month - 1]} ${localDate.day}, ${localDate.year}';
   }
 
   /// Format date to "01/15/2025" format
   ///
   /// Example: DateTime(2025, 1, 15) → "01/15/2025"
   static String formatShort(DateTime date) {
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '$month/$day/${date.year}';
+    final localDate = date.toLocal();
+    final month = localDate.month.toString().padLeft(2, '0');
+    final day = localDate.day.toString().padLeft(2, '0');
+    return '$month/$day/${localDate.year}';
   }
 
   /// Format date to "2025-01-15" format (ISO 8601)
   ///
   /// Example: DateTime(2025, 1, 15) → "2025-01-15"
   static String formatISO(DateTime date) {
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '${date.year}-$month-$day';
+    final localDate = date.toLocal();
+    final month = localDate.month.toString().padLeft(2, '0');
+    final day = localDate.day.toString().padLeft(2, '0');
+    return '${localDate.year}-$month-$day';
   }
 
   /// Format date to "2025-01-15T00:00:00.000Z" format (ISO 8601 UTC)
@@ -99,11 +103,13 @@ class DateFormatter {
   ///
   /// Example: DateTime(2025, 1, 15, 14, 30) → "2:30 PM"
   static String formatTime(DateTime date) {
-    final hour = date.hour > 12
-        ? date.hour - 12
-        : (date.hour == 0 ? 12 : date.hour);
-    final minute = date.minute.toString().padLeft(2, '0');
-    final period = date.hour >= 12 ? 'PM' : 'AM';
+    // Convert to local timezone if the date is in UTC
+    final localDate = date.toLocal();
+    final hour = localDate.hour > 12
+        ? localDate.hour - 12
+        : (localDate.hour == 0 ? 12 : localDate.hour);
+    final minute = localDate.minute.toString().padLeft(2, '0');
+    final period = localDate.hour >= 12 ? 'PM' : 'AM';
     return '$hour:$minute $period';
   }
 
@@ -114,12 +120,14 @@ class DateFormatter {
   /// - This week → "Mon, 2:30 PM"
   /// - Older → "Jan 15, 2:30 PM"
   static String formatChatTimestamp(DateTime date) {
+    // Convert to local timezone for accurate date comparison
+    final localDate = date.toLocal();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final messageDate = DateTime(date.year, date.month, date.day);
+    final messageDate = DateTime(localDate.year, localDate.month, localDate.day);
     final difference = today.difference(messageDate).inDays;
 
-    final timeStr = formatTime(date);
+    final timeStr = formatTime(localDate);
 
     if (difference == 0) {
       // Today - just show time
@@ -130,10 +138,10 @@ class DateFormatter {
     } else if (difference < 7) {
       // This week - show day name
       const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      return '${days[date.weekday - 1]}, $timeStr';
+      return '${days[localDate.weekday - 1]}, $timeStr';
     } else {
       // Older - show month and day
-      return '${_monthsShort[date.month - 1]} ${date.day}, $timeStr';
+      return '${_monthsShort[localDate.month - 1]} ${localDate.day}, $timeStr';
     }
   }
 
@@ -144,8 +152,10 @@ class DateFormatter {
   /// - Yesterday → "1 day ago"
   /// - Last week → "7 days ago"
   static String formatRelative(DateTime date) {
+    // Convert to local timezone for accurate time difference
+    final localDate = date.toLocal();
     final now = DateTime.now();
-    final difference = now.difference(date);
+    final difference = now.difference(localDate);
 
     if (difference.inDays > 365) {
       final years = (difference.inDays / 365).floor();

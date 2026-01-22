@@ -1,3 +1,4 @@
+import 'package:athlink/features/athlete/home_screen/domain/models/connection.dart';
 import 'package:athlink/features/athlete/home_screen/presentation/providers/connection_providers.dart';
 import 'package:athlink/features/athlete/home_screen/presentation/providers/state/connection_list_state.dart';
 import 'package:athlink/features/message/presentation/widgets/search_bar.dart';
@@ -16,11 +17,12 @@ class SelectAthletsSheet extends ConsumerStatefulWidget {
   const SelectAthletsSheet({
     super.key,
     required this.scrollController,
-    required this.onSearchChanged,
+    this.isAthlet=false,
   });
 
   final ScrollController scrollController;
-  final Function(String) onSearchChanged;
+  final bool isAthlet;
+
 
   @override
   ConsumerState<SelectAthletsSheet> createState() => _SelectAthletsSheetState();
@@ -46,11 +48,26 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final searchQuery = ref.watch(connectionSearchQueryProvider);
     final connectionsState = ref.watch(connectionsListProvider);
+    final onlineStatus = ref.watch(onlineStatusProvider);
+
+    // Listen for connections loaded and check online status
+    ref.listen<ConnectionListState<ConnectedUser>>(connectionsListProvider, (previous, next) {
+      next.maybeWhen(
+        loaded: (connections) {
+          final userIds = connections.map((c) => c.user.id).toList();
+          if (userIds.isNotEmpty) {
+            ref.read(onlineStatusProvider.notifier).checkOnlineStatus(userIds);
+          }
+        },
+        orElse: () {},
+      );
+    });
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.lightBackground,
+      decoration:  BoxDecoration(
+        color:widget.isAthlet?Colors.black: AppColors.lightBackground,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -69,29 +86,38 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
               ),
             ),
           ),
-          const CustomText(
+           CustomText(
             title: "Select Friend",
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            textColor: AppColors.black,
+            textColor:widget.isAthlet?Colors.white: AppColors.black,
           ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ChatSearchBar(
               hint: "Search friends",
+              isAthlet: widget.isAthlet,
               controller: _searchController,
-              onChanged: widget.onSearchChanged,
+
+              onChanged: (query) {
+                ref.read(connectionSearchQueryProvider.notifier).state = query;
+              },
             ),
           ),
           const SizedBox(height: 16),
           Expanded(
             child: connectionsState.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+              loading: () =>  Center(
+                child: CircularProgressIndicator(color:widget.isAthlet?Colors.white: AppColors.primary),
               ),
-              loaded: (connections) {
-                if (connections.isEmpty) {
+              loaded: (_) {
+                // Watch filtered connections using the search query
+                final filteredConnections = ref.watch(
+                  filteredConnectionsProvider(searchQuery),
+                );
+
+                if (filteredConnections.isEmpty) {
                   return _buildEmptyState();
                 }
 
@@ -104,10 +130,11 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                     mainAxisSpacing: 5,
                     childAspectRatio: 1,
                   ),
-                  itemCount: connections.length,
+                  itemCount: filteredConnections.length,
                   itemBuilder: (context, index) {
-                    final connection = connections[index];
+                    final connection = filteredConnections[index];
                     final user = connection.user;
+                    final isUserOnline = onlineStatus[user.id] ?? connection.user.isOnline;
 
                     return InkWell(
                       onTap: () async {
@@ -133,7 +160,7 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                                     ? fileBaseUrl +
                                           user.athleteProfile.profileImageUrl!
                                     : null,
-                                "isOnline": connection.user.isOnline,
+                                "isOnline": isUserOnline,
                                 "userId": connection.user.id,
                               },
                             );
@@ -173,7 +200,7 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                                   color: AppColors.grey600,
                                 ),
                               ),
-                              if (connection.user.isOnline)
+                              if (isUserOnline)
                                 Positioned(
                                   right: 0,
                                   bottom: 0,
@@ -199,6 +226,7 @@ class _SelectAthletsSheetState extends ConsumerState<SelectAthletsSheet> {
                             fontWeight: FontWeight.w600,
                             textAlign: TextAlign.center,
                             maxLines: 1,
+                            textColor:widget.isAthlet?Colors.white: AppColors.black,
                           ),
                         ],
                       ),
