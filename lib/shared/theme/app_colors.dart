@@ -12,7 +12,8 @@ class AppColors {
   static const Color transparent = Colors.transparent;
 
   /// App black color
-  static const Color black = Color(0xff14171A);
+  // static const Color black = Color(0xff14171A);
+  static const Color black = Colors.black;
 
   /// App white color
   static const Color white = Color(0xffffffff);
@@ -61,4 +62,16 @@ class AppColors {
   static const Color orangeGradientStart = Color(0xFFF68F19);
   static const Color orangeGradientEnd = Color(0xFFED5D0E);
   static const Color darkGreyCard = Color(0xFF121212);
+  static const List<Color> chartPalette = [
+    Color(0xFF4A69FF), // Blue
+    Color(0xFFE53935), // Red
+    Color(0xFFBDB22F), // Mustard
+    Color(0xFF43A047), // Green
+  ];
+
+  static const Color surface = Color(0xFF1C1C1E);
+  static const Color fieldBackground = Color(0xFF121212);
+
+  static const Color textTertiary = Color(0xFFD1D1D1);
+  static const Color border = Colors.white12;
 }

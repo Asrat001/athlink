@@ -201,7 +201,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 120),
       ],
     );
   }

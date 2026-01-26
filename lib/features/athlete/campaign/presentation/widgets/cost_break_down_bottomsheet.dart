@@ -1,13 +1,20 @@
-import 'package:athlink/features/athlete/campaign/presentation/widgets/cost_item_row.dart';
+import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_theme.dart';
+import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
+import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/shared/widgets/forms/rounded_button.dart';
+import 'package:athlink/features/athlete/campaign/data/models/campaign_models.dart';
 
 class CostBreakdownBottomSheet extends StatefulWidget {
   final double totalBudget;
+  final List<CostItem> initialItems;
 
-  const CostBreakdownBottomSheet({super.key, required this.totalBudget});
+  const CostBreakdownBottomSheet({
+    super.key,
+    required this.totalBudget,
+    this.initialItems = const [],
+  });
 
   @override
   State<CostBreakdownBottomSheet> createState() =>
@@ -15,54 +22,54 @@ class CostBreakdownBottomSheet extends StatefulWidget {
 }
 
 class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
-  // Each entry is a map containing controllers for that specific row
-  final List<Map<String, TextEditingController>> _costItems = [];
+  late List<TextEditingController> _titleCtrls;
+  late List<TextEditingController> _amountCtrls;
 
   @override
   void initState() {
     super.initState();
-    _addNewRow(); // Start with one empty row as per image image_ba1a75.png
+    _titleCtrls = widget.initialItems
+        .map((e) => TextEditingController(text: e.title))
+        .toList();
+    _amountCtrls = widget.initialItems
+        .map((e) => TextEditingController(text: e.amount.toInt().toString()))
+        .toList();
+
+    if (_titleCtrls.isEmpty) _addRow();
   }
 
-  void _addNewRow() {
-    setState(() {
-      _costItems.add({
-        'title': TextEditingController(),
-        'amount': TextEditingController(),
-      });
-    });
-  }
+  void _addRow() => setState(() {
+    _titleCtrls.add(TextEditingController());
+    _amountCtrls.add(TextEditingController());
+  });
 
-  void _removeRow(int index) {
-    if (_costItems.length > 1) {
+  void _removeRow(int i) {
+    if (_titleCtrls.length > 1) {
       setState(() {
-        _costItems[index]['title']!.dispose();
-        _costItems[index]['amount']!.dispose();
-        _costItems.removeAt(index);
+        _titleCtrls.removeAt(i);
+        _amountCtrls.removeAt(i);
       });
     }
-  }
-
-  double _calculateRemaining() {
-    double spent = 0;
-    for (var item in _costItems) {
-      spent += double.tryParse(item['amount']!.text) ?? 0;
-    }
-    return widget.totalBudget - spent;
-  }
-
-  @override
-  void dispose() {
-    for (var item in _costItems) {
-      item['title']!.dispose();
-      item['amount']!.dispose();
-    }
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double remaining = _calculateRemaining();
+    double spent = 0;
+    List<CostItem> previews = [];
+
+    for (int i = 0; i < _titleCtrls.length; i++) {
+      double val = double.tryParse(_amountCtrls[i].text) ?? 0;
+      spent += val;
+      previews.add(
+        CostItem(
+          title: _titleCtrls[i].text,
+          amount: val,
+          color: AppColors.chartPalette[i % AppColors.chartPalette.length],
+        ),
+      );
+    }
+
+    final double remaining = widget.totalBudget - spent;
 
     return Container(
       padding: EdgeInsets.only(
@@ -72,7 +79,7 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       decoration: const BoxDecoration(
-        color: Colors.black,
+        color: Colors.black, // Match deep black background from images
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -81,85 +88,122 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
         children: [
           const CustomText(
             title: "Cost Breakdown",
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            textColor: AppColors.white,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           const CustomText(
-            title: "Can you break down how the funds will be allocated?",
+            title: "How much do you need for this campion?",
+            fontSize: 14,
             textColor: AppColors.grey,
+          ),
+          const SizedBox(height: 40),
+
+          // --- CHART & TOTALS SECTION ---
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomText(
+                    title: "Total Budget :",
+                    fontSize: 16,
+                    textColor: AppColors.grey,
+                  ),
+                  const SizedBox(height: 4),
+                  CustomText(
+                    title:
+                        "\$${widget.totalBudget.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}",
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    textColor: AppColors.white,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const CustomText(
+                        title: "Remaining : ",
+                        fontSize: 16,
+                        textColor: AppColors.grey,
+                      ),
+                      CustomText(
+                        title: "\$${remaining.toInt()}",
+                        fontSize: 16,
+                        textColor: remaining < 0
+                            ? AppColors.error
+                            : AppColors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 140,
+                width: 140,
+                child: CustomPaint(
+                  painter: MultiColorPiePainter(
+                    items: previews,
+                    total: widget.totalBudget,
+                    showLabels: true,
+                  ),
+                ),
+              ),
+            ],
           ),
 
           const SizedBox(height: 32),
 
-          // Budget Display Section
-          _buildBudgetSummary(widget.totalBudget, remaining),
-
-          const SizedBox(height: 24),
-
-          // Dynamic List of Cost Items
+          // --- INPUT LIST ---
           Flexible(
-            child: ListView.separated(
+            child: ListView.builder(
               shrinkWrap: true,
-              itemCount: _costItems.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                return CostItemRow(
-                  titleController: _costItems[index]['title']!,
-                  amountController: _costItems[index]['amount']!,
-                  onRemove: () => _removeRow(index),
-                  onChanged: (_) => setState(() {}),
-                );
-              },
+              itemCount: _titleCtrls.length,
+              itemBuilder: (c, i) => _buildInputRow(i),
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
-          // Add Row Button
+          // --- ADD BUTTON ---
           Center(
-            child: InkWell(
-              onTap: _addNewRow,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.darkGreyCard,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, color: Colors.white, size: 18),
-                    SizedBox(width: 4),
-                    CustomText(title: "Add", fontSize: 14),
-                  ],
-                ),
-              ),
+            child: RoundedButton(
+              label: "Add",
+              icon: const Icon(Icons.add, color: AppColors.white, size: 18),
+              backgroundColor: AppColors.darkGreyCard,
+              width: 100,
+              height: 40,
+              onPressed: _addRow,
             ),
           ),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
 
-          // Footer Buttons
+          // --- ACTION BUTTONS ---
           Row(
             children: [
               Expanded(
                 child: RoundedButton(
                   label: "Cancel",
-                  onPressed: () => Navigator.pop(context),
                   backgroundColor: Colors.transparent,
-                  borderSide: const BorderSide(color: Colors.white24),
+                  borderSide: const BorderSide(color: Colors.white12),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: RoundedButton(
                   label: "Save",
-                  onPressed: () => Navigator.pop(context),
-                  backgroundColor: AppColors.darkGreyCard,
+                  backgroundColor: AppColors
+                      .darkGreyCard, // Solid dark grey as per image_ba1a75.png
+                  onPressed: () {
+                    final validItems = previews
+                        .where((e) => e.title.isNotEmpty && e.amount > 0)
+                        .toList();
+                    Navigator.pop(context, validItems);
+                  },
                 ),
               ),
             ],
@@ -169,42 +213,35 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
     );
   }
 
-  Widget _buildBudgetSummary(double total, double remaining) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0A0A0A),
-        borderRadius: BorderRadius.circular(16),
-      ),
+  Widget _buildInputRow(int i) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                title: "Total Budget : ${total.toStringAsFixed(0)}",
-                fontSize: 12,
-                textColor: AppColors.grey,
-              ),
-              const SizedBox(height: 8),
-              CustomText(
-                title: "Remaining : ${remaining.toStringAsFixed(0)}",
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ],
-          ),
-          // Circular progress visual matching image_ba1a75.png
-          SizedBox(
-            height: 60,
-            width: 60,
-            child: CircularProgressIndicator(
-              value: remaining / total,
-              backgroundColor: Colors.white12,
-              color: AppColors.orangeGradientStart,
-              strokeWidth: 4,
+          Expanded(
+            flex: 3,
+            child: CustomTextField(
+              label: "Title",
+              controller: _titleCtrls[i],
+              textColor: AppColors.white,
+              borderRadius: 8,
             ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 2,
+            child: CustomTextField(
+              label: "Amount",
+              controller: _amountCtrls[i],
+              keyboardType: TextInputType.number,
+              textColor: AppColors.white,
+              borderRadius: 8,
+            ),
+          ),
+          IconButton(
+            onPressed: () => _removeRow(i),
+            icon: const Icon(Icons.remove, color: AppColors.grey),
           ),
         ],
       ),

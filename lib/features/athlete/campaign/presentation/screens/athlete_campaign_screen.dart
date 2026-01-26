@@ -1,7 +1,8 @@
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
-import 'package:athlink/shared/widgets/forms/custom_text_field.dart'; // Ensure this import path is correct
+import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:go_router/go_router.dart';
@@ -26,87 +27,107 @@ class AthleteCampaignsScreen extends StatefulWidget {
 }
 
 class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
-  // Initial data
   List<Campaign> campaigns = [
     Campaign(title: "LA 2028 Olympics", progress: 0.0, isActive: false),
     Campaign(title: "LA 2028 Olympics", progress: 0.0, isActive: false),
     Campaign(title: "LA 2028 Olympics", progress: 0.5, isActive: true),
+    Campaign(title: "World Championships", progress: 0.2, isActive: true),
   ];
 
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
 
   void _showCreateCampaignSheet() {
-    _titleController.clear(); // Reset controller when opening
+    _titleController.clear();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      // useRootNavigator ensures the modal covers the BottomNav bar completely
+      useRootNavigator: true,
       backgroundColor: AppColors.darkGreyCard,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) => Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 20,
-          right: 20,
-          top: 24,
         ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                title: "Create a Campaign",
-                fontSize: 20,
-                textColor: AppColors.white,
-                fontWeight: FontWeight.w600,
+        child: SingleChildScrollView(
+          child: Container(
+            // We add extra bottom padding (40) to ensure the button is
+            // well above the system "Home" line and the Nav bar height
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  CustomText(
+                    title: "Create a Campaign",
+                    fontSize: 20,
+                    textColor: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  const SizedBox(height: 24),
+                  CustomText(
+                    title: "Title",
+                    fontSize: 14,
+                    textColor: AppColors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  const SizedBox(height: 8),
+                  CustomTextField(
+                    label: "Add the title of your campaign",
+                    controller: _titleController,
+                    textColor: AppColors.white,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Please enter a campaign title";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  RoundedButton(
+                    label: "Create a Campaign",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          campaigns.insert(
+                            0,
+                            Campaign(
+                              title: _titleController.text.trim(),
+                              progress: 0.0,
+                              isActive: false,
+                            ),
+                          );
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      color: AppColors.white,
+                      size: 18,
+                    ),
+                    backgroundColor: AppColors.primary,
+                    height: 50,
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              CustomText(
-                title: "Title",
-                fontSize: 14,
-                textColor: AppColors.white,
-                fontWeight: FontWeight.w500,
-              ),
-              const SizedBox(height: 8),
-              CustomTextField(
-                label: "Add the title of your campaign",
-                controller: _titleController,
-                textColor: AppColors.white,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter a campaign title";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32),
-              RoundedButton(
-                label: "Create a Campaign",
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      campaigns.insert(
-                        0,
-                        Campaign(
-                          title: _titleController.text.trim(),
-                          progress: 0.0,
-                          isActive: false,
-                        ),
-                      );
-                    });
-                    Navigator.pop(context); // Close bottom sheet
-                  }
-                },
-                icon: const Icon(Icons.add, color: AppColors.white, size: 18),
-                backgroundColor: AppColors.primary, // Or match image style
-                height: 50,
-              ),
-              const SizedBox(height: 24),
-            ],
+            ),
           ),
         ),
       ),
@@ -127,6 +148,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
         centerTitle: false,
         backgroundColor: Colors.black,
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         title: CustomText(
           title: "My Campaign",
           fontSize: 24,
@@ -135,9 +157,12 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
         ),
         actions: [
           if (campaigns.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.add, color: AppColors.white, size: 28),
-              onPressed: _showCreateCampaignSheet, // Call the modal
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: const Icon(Icons.add, color: AppColors.white, size: 28),
+                onPressed: _showCreateCampaignSheet,
+              ),
             ),
         ],
       ),
@@ -160,7 +185,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
           const SizedBox(height: 24),
           RoundedButton(
             label: "Create a Campaign",
-            onPressed: _showCreateCampaignSheet, // Call the modal
+            onPressed: _showCreateCampaignSheet,
             icon: const Icon(Icons.add, color: AppColors.white, size: 18),
             backgroundColor: AppColors.darkGreyCard,
             width: 220,
@@ -181,7 +206,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
 
   Widget _buildCampaignList() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       itemCount: campaigns.length,
       itemBuilder: (context, index) {
         return InkWell(
@@ -191,6 +216,7 @@ class _AthleteCampaignsScreenState extends State<AthleteCampaignsScreen> {
               extra: campaigns[index].title,
             );
           },
+          borderRadius: BorderRadius.circular(20),
           child: CampaignCard(campaign: campaigns[index]),
         );
       },
@@ -210,6 +236,7 @@ class CampaignCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.darkGreyCard,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,23 +244,26 @@ class CampaignCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(
-                title: campaign.title,
-                fontSize: 18,
-                textColor: AppColors.white,
+              Expanded(
+                child: CustomText(
+                  title: campaign.title,
+                  fontSize: 18,
+                  textColor: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               Row(
                 children: [
                   Transform.scale(
-                    scale: 0.7,
+                    scale: 0.8,
                     child: Switch(
                       value: campaign.isActive,
                       onChanged: (val) {},
                       activeColor: AppColors.orangeGradientStart,
                       activeTrackColor: AppColors.orangeGradientStart
-                          .withValues(alpha: 0.3),
+                          .withValues(alpha: 0.2),
                       inactiveThumbColor: AppColors.white,
-                      inactiveTrackColor: AppColors.grey,
+                      inactiveTrackColor: AppColors.grey.withValues(alpha: 0.3),
                     ),
                   ),
                   const Icon(Icons.more_vert, color: AppColors.white, size: 20),
@@ -259,7 +289,7 @@ class CampaignCard extends StatelessWidget {
           CustomText(
             title: "${(campaign.progress * 100).toInt()}% funded",
             textColor: AppColors.grey,
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: FontWeight.w400,
           ),
         ],
