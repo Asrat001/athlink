@@ -47,13 +47,16 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
     _fetchProfile();
   }
 
+  String? get _targetId {
+    final loggedInUser = sl<LocalStorageService>().getUserData();
+    return widget.athleteId ?? loggedInUser?.id;
+  }
+
   void _fetchProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final loggedInUser = sl<LocalStorageService>().getUserData();
-      final targetId = widget.athleteId ?? loggedInUser?.id;
-
-      if (targetId != null) {
-        ref.read(athleteProfileProvider.notifier).getProfile(targetId);
+      final id = _targetId;
+      if (id != null) {
+        ref.read(athleteProfileProvider(id).notifier).getProfile(id);
       }
     });
   }
@@ -100,7 +103,19 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(athleteProfileProvider);
+    final id = _targetId;
+    if (id == null) {
+      return const Scaffold(
+        backgroundColor: AppColors.black,
+        body: Center(
+          child: Text(
+            "Profile not found",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+    final state = ref.watch(athleteProfileProvider(id));
 
     return Scaffold(
       backgroundColor: AppColors.black,
@@ -132,21 +147,25 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
               style: const TextStyle(color: Colors.white),
             ),
           ),
-          hasNoData: () => _buildScreenContent(isInitial: true),
+          hasNoData: () => _buildScreenContent(isInitial: true, id: id),
           loaded: (profile) {
             if (!_isEditing) {
               _nameController.text = profile.name;
               _locationController.text = profile.location;
               _bioController.text = profile.bio;
             }
-            return _buildScreenContent(profile: profile);
+            return _buildScreenContent(profile: profile, id: id);
           },
         ),
       ),
     );
   }
 
-  Widget _buildScreenContent({dynamic profile, bool isInitial = false}) {
+  Widget _buildScreenContent({
+    dynamic profile,
+    bool isInitial = false,
+    required String id,
+  }) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Column(
@@ -186,15 +205,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                 const SizedBox(height: 32),
                 const FundingProgressCard(),
                 const SizedBox(height: 24),
-                QuickActionsGrid(
-                  athleteId: widget.athleteId,
-                  isSelf: widget.isSelf,
-                ),
+                QuickActionsGrid(athleteId: id, isSelf: widget.isSelf),
                 const SizedBox(height: 32),
-                GlobalFootprintMap(
-                  isSelf: widget.isSelf,
-                  athleteId: widget.athleteId,
-                ),
+                GlobalFootprintMap(isSelf: widget.isSelf, athleteId: id),
               ],
               if (widget.isSelf && (_isEditing || isInitial))
                 _buildEditActions(),
@@ -216,12 +229,12 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
               label: "Save Update",
               color: AppColors.darkGreyCard,
               onTap: () {
-                final user = sl<LocalStorageService>().getUserData();
-                if (user != null) {
+                final id = _targetId;
+                if (id != null) {
                   ref
-                      .read(athleteProfileProvider.notifier)
+                      .read(athleteProfileProvider(id).notifier)
                       .updateProfile(
-                        athleteId: user.id,
+                        athleteId: id,
                         data: {
                           "name": _nameController.text,
                           "location": _locationController.text,

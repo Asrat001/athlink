@@ -4,9 +4,10 @@ import 'package:athlink/features/athlete/profile/presentation/providers/competit
 import 'package:athlink/features/athlete/profile/presentation/providers/state/competition_results_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final competitionResultsProvider =
-    StateNotifierProvider<CompetitionResultsNotifier, CompetitionResultsState>((
+final competitionResultsProvider = StateNotifierProvider.family
+    .autoDispose<CompetitionResultsNotifier, CompetitionResultsState, String>((
       ref,
+      athleteId,
     ) {
       return CompetitionResultsNotifier(sl<AthletProfileRepository>());
     });

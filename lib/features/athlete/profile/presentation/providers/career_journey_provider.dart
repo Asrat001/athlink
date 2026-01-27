@@ -4,7 +4,10 @@ import 'package:athlink/features/athlete/profile/presentation/providers/career_j
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final careerJourneyProvider =
-    StateNotifierProvider<CareerJourneyNotifier, CareerJourneyState>((ref) {
+final careerJourneyProvider = StateNotifierProvider.family
+    .autoDispose<CareerJourneyNotifier, CareerJourneyState, String>((
+      ref,
+      athleteId,
+    ) {
       return CareerJourneyNotifier(sl<AthletProfileRepository>());
     });

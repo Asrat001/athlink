@@ -1,5 +1,4 @@
 import 'package:athlink/features/athlete/campaign/data/models/campaign_models.dart';
-import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 

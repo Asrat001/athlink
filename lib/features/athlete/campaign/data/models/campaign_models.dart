@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CostItem {
+  final String? id;
   final String title;
   final double amount;
   final Color color;
-  CostItem({required this.title, required this.amount, required this.color});
+  CostItem({
+    this.id,
+    required this.title,
+    required this.amount,
+    required this.color,
+  });
 }
 
 class FinancialGoalData {
@@ -14,11 +20,13 @@ class FinancialGoalData {
 }
 
 class GoalMilestone {
+  final String? id;
   final String title;
   final DateTime date;
   final String status;
 
   GoalMilestone({
+    this.id,
     required this.title,
     required this.date,
     required this.status,

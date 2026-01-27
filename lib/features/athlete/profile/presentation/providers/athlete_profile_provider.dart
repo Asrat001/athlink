@@ -4,7 +4,10 @@ import 'package:athlink/features/athlete/profile/presentation/providers/athlete_
 import 'package:athlink/features/athlete/profile/presentation/providers/state/athlete_profile_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final athleteProfileProvider =
-    StateNotifierProvider<AthleteProfileNotifier, AthleteProfileState>((ref) {
+final athleteProfileProvider = StateNotifierProvider.family
+    .autoDispose<AthleteProfileNotifier, AthleteProfileState, String>((
+      ref,
+      athleteId,
+    ) {
       return AthleteProfileNotifier(sl<AthletProfileRepository>());
     });

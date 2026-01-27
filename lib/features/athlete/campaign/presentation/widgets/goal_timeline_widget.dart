@@ -7,8 +7,13 @@ import 'package:intl/intl.dart';
 class GoalTimelineSummary extends StatelessWidget {
   final List<GoalMilestone> milestones;
   final VoidCallback onAdd;
+  final void Function(int index)? onDelete;
 
-  const GoalTimelineSummary({required this.milestones, required this.onAdd});
+  const GoalTimelineSummary({
+    required this.milestones,
+    required this.onAdd,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +73,17 @@ class GoalTimelineSummary extends StatelessWidget {
                             ),
                           ),
                           _buildStatusChip(milestones[index].status),
+                          if (onDelete != null)
+                            IconButton(
+                              onPressed: () => onDelete!(index),
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: AppColors.error,
+                                size: 20,
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            ),
                         ],
                       ),
                     ),

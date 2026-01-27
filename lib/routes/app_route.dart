@@ -1,5 +1,6 @@
 import 'package:athlink/features/athlete/campaign/presentation/screens/athlete_campaign_detail_screen.dart';
 import 'package:athlink/features/athlete/campaign/presentation/screens/athlete_campaign_screen.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
 import 'package:athlink/features/athlete/home_screen/search/presentation/screens/search_athlete_screen.dart';
 import 'package:athlink/features/athlete/home_screen/presentation/screens/connection_requests_screen.dart';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
@@ -158,8 +159,8 @@ class AppRouter {
       GoRoute(
         path: Routes.athleteCampaignDetailScreen,
         builder: (context, state) {
-          final title = state.extra as String? ?? "Campaign";
-          return AthleteCampaignDetailScreen(campaignTitle: title);
+          final campaign = state.extra as CampaignModel;
+          return AthleteCampaignDetailScreen(campaign: campaign);
         },
       ),
 

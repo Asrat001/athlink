@@ -38,7 +38,9 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
       final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
 
       if (targetId != null) {
-        ref.read(competitionResultsProvider.notifier).loadResults(targetId);
+        ref
+            .read(competitionResultsProvider(targetId).notifier)
+            .loadResults(targetId);
       }
     });
   }
@@ -72,7 +74,7 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
 
           if (record != null) {
             ref
-                .read(competitionResultsProvider.notifier)
+                .read(competitionResultsProvider(user.id).notifier)
                 .updateResult(
                   athleteId: user.id,
                   resultId:
@@ -85,7 +87,7 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                 );
           } else {
             ref
-                .read(competitionResultsProvider.notifier)
+                .read(competitionResultsProvider(user.id).notifier)
                 .createResult(
                   athleteId: user.id,
                   data: data,
@@ -150,7 +152,14 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(competitionResultsProvider);
+    final localStorage = sl<LocalStorageService>();
+    final loggedInUser = localStorage.getUserData();
+    final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+
+    if (targetId == null)
+      return const Scaffold(body: Center(child: Text("Not found")));
+
+    final state = ref.watch(competitionResultsProvider(targetId));
 
     return Scaffold(
       backgroundColor: AppColors.black,

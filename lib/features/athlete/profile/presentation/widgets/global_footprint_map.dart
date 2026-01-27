@@ -1,5 +1,3 @@
-import 'package:athlink/core/services/local_storage_service.dart';
-import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/career_journey_provider.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
 import 'package:dio/dio.dart';
@@ -45,12 +43,10 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
 
   void _fetchFootprint() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final localStorage = sl<LocalStorageService>();
-      final loggedInUser = localStorage.getUserData();
-      final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+      final id = widget.athleteId;
 
-      if (targetId != null) {
-        ref.read(careerJourneyProvider.notifier).loadCareerJourney(targetId);
+      if (id != null) {
+        ref.read(careerJourneyProvider(id).notifier).loadCareerJourney(id);
       }
     });
   }
@@ -107,7 +103,9 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(careerJourneyProvider);
+    final id = widget.athleteId;
+    if (id == null) return const SizedBox.shrink();
+    final state = ref.watch(careerJourneyProvider(id));
 
     return state.when(
       loading: () => _buildLoadingIndicator(),

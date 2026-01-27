@@ -8,12 +8,10 @@ import 'package:flutter/material.dart';
 class SponsorshipPreferencesSummary extends StatelessWidget {
   final List<SponsorshipPreference> preferences;
   final VoidCallback onEdit; // Function to re-open modal
-  final Function(int) onDelete; // Function to remove specific item
 
   const SponsorshipPreferencesSummary({
     required this.preferences,
     required this.onEdit,
-    required this.onDelete,
   });
 
   @override
@@ -49,18 +47,6 @@ class SponsorshipPreferencesSummary extends StatelessWidget {
                     size: 18,
                   ),
                   onPressed: onEdit,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-                const SizedBox(width: 12),
-                // Functional Delete Button
-                IconButton(
-                  icon: const Icon(
-                    Icons.remove,
-                    color: AppColors.grey,
-                    size: 18,
-                  ),
-                  onPressed: () => onDelete(index),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),

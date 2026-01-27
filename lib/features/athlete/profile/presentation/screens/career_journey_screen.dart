@@ -40,7 +40,9 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
       final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
 
       if (targetId != null) {
-        ref.read(careerJourneyProvider.notifier).loadCareerJourney(targetId);
+        ref
+            .read(careerJourneyProvider(targetId).notifier)
+            .loadCareerJourney(targetId);
       }
     });
   }
@@ -82,7 +84,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
           };
           if (record != null) {
             ref
-                .read(careerJourneyProvider.notifier)
+                .read(careerJourneyProvider(user.id).notifier)
                 .updateCareer(
                   athleteId: user.id,
                   careerId: record.id,
@@ -92,7 +94,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                 );
           } else {
             ref
-                .read(careerJourneyProvider.notifier)
+                .read(careerJourneyProvider(user.id).notifier)
                 .createCareer(
                   athleteId: user.id,
                   data: data,
@@ -155,7 +157,14 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(careerJourneyProvider);
+    final localStorage = sl<LocalStorageService>();
+    final loggedInUser = localStorage.getUserData();
+    final targetId = widget.isSelf ? loggedInUser?.id : widget.athleteId;
+
+    if (targetId == null)
+      return const Scaffold(body: Center(child: Text("Not found")));
+
+    final state = ref.watch(careerJourneyProvider(targetId));
 
     return Scaffold(
       backgroundColor: AppColors.black,

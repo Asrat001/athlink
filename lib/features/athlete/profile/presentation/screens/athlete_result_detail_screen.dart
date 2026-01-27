@@ -73,10 +73,12 @@ class _AthleteResultDetailScreenState
     );
     final localStorage = sl<LocalStorageService>();
     final loggedInUser = localStorage.getUserData();
+    if (loggedInUser == null) return;
+
     ref
-        .read(competitionResultsProvider.notifier)
+        .read(competitionResultsProvider(loggedInUser.id).notifier)
         .updateResult(
-          athleteId: loggedInUser?.id ?? "",
+          athleteId: loggedInUser.id,
           resultId: widget.result.id,
           data: finalResult.toJson(),
           media: _uploadedMedia,
