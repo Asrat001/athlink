@@ -280,14 +280,14 @@ class AppRouter {
               ),
             ],
           ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: "/athlete-manage",
-                builder: (context, state) => ComingSoonScreen(),
-              ),
-            ],
-          ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: "/athlete-manage",
+          //       builder: (context, state) => ComingSoonScreen(),
+          //     ),
+          //   ],
+          // ),
           StatefulShellBranch(
             routes: [
               GoRoute(

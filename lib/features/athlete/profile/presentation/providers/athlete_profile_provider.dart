@@ -9,5 +9,5 @@ final athleteProfileProvider = StateNotifierProvider.family
       ref,
       athleteId,
     ) {
-      return AthleteProfileNotifier(sl<AthletProfileRepository>());
+      return AthleteProfileNotifier(sl<AthletProfileRepository>(), ref);
     });

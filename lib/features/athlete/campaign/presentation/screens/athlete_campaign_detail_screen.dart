@@ -495,8 +495,9 @@ class _AthleteCampaignDetailScreenState
                       ),
                     )
                     .toList();
-                if (_selectedSponsors.isNotEmpty)
+                if (_selectedSponsors.isNotEmpty) {
                   _sections["Preferred Sponsors"] = true;
+                }
 
                 if (campaign.sponsorshipPreferences != null) {
                   _preferences = [];

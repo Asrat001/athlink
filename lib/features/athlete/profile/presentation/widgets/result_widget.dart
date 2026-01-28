@@ -1,10 +1,8 @@
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:intl/intl.dart';
 
 class ResultTableHeader extends StatelessWidget {
   const ResultTableHeader({super.key});
@@ -27,6 +25,7 @@ class ResultTableHeader extends StatelessWidget {
               textColor: AppColors.orangeGradientStart,
               fontSize: 11,
               fontWeight: FontWeight.bold,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -36,6 +35,7 @@ class ResultTableHeader extends StatelessWidget {
               textColor: AppColors.orangeGradientStart,
               fontSize: 11,
               fontWeight: FontWeight.bold,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -45,6 +45,7 @@ class ResultTableHeader extends StatelessWidget {
               textColor: AppColors.orangeGradientStart,
               fontSize: 11,
               fontWeight: FontWeight.bold,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -54,6 +55,7 @@ class ResultTableHeader extends StatelessWidget {
               textColor: AppColors.orangeGradientStart,
               fontSize: 11,
               fontWeight: FontWeight.bold,
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -90,51 +92,73 @@ class ResultItem extends StatelessWidget {
               fontWeight: FontWeight.w400,
               textColor: AppColors.white.withValues(alpha: 0.6),
               fontSize: 12,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
             flex: 2,
-            child: CustomText(
-              title: data.position,
-              textColor: AppColors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            child: Builder(
+              builder: (context) {
+                if (!data.position.contains('/')) {
+                  return CustomText(
+                    title: data.position,
+                    textColor: AppColors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    textAlign: TextAlign.center,
+                  );
+                }
+                final parts = data.position.split('/');
+                return RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: parts[0],
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                      TextSpan(
+                        text: '/${parts[1]}',
+                        style: TextStyle(
+                          color: AppColors.white.withValues(alpha: 0.6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
           Expanded(
             flex: 3,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomText(
                   title: data.competition,
                   textColor: AppColors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 6),
                 Text(
                   data.location,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
                     color: AppColors.white.withValues(alpha: 0.6),
                   ),
                 ),
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(2),
-                //   child: Image.network(
-                //     data.flagUrl,
-                //     width: 22,
-                //     height: 14,
-                //     fit: BoxFit.cover,
-                //     errorBuilder: (context, error, stackTrace) => Icon(
-                //       Icons.flag,
-                //       size: 14,
-                //       color: AppColors.white.withValues(alpha: 0.3),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -144,6 +168,7 @@ class ResultItem extends StatelessWidget {
               title: data.division,
               textColor: AppColors.white.withValues(alpha: 0.4),
               fontSize: 12,
+              textAlign: TextAlign.center,
             ),
           ),
         ],

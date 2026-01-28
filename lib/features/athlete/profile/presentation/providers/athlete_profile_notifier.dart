@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/features/athlete/profile/domain/repository/athlet_profile_repository.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/athlete_profile_state.dart';
@@ -7,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AthleteProfileNotifier extends StateNotifier<AthleteProfileState> {
   final AthletProfileRepository _repository;
+  final Ref ref;
 
-  AthleteProfileNotifier(this._repository)
+  AthleteProfileNotifier(this._repository, this.ref)
     : super(AthleteProfileState.loading());
 
   Future<void> getProfile(String athleteId) async {

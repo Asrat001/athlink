@@ -191,7 +191,8 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
           child: CustomText(title: message, textColor: AppColors.white),
         ),
         loaded: (data) {
-          final results = data.data;
+          final results = List.of(data.data)
+            ..sort((a, b) => b.date.compareTo(a.date));
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

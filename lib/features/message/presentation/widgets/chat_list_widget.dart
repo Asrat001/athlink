@@ -1,4 +1,3 @@
-
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/athlete_profile_provider.dart';
@@ -27,8 +26,6 @@ class ChatListWidget extends ConsumerWidget {
     required this.searchQuery,
   });
 
-
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final conversationState = ref.watch(conversationProvider);
@@ -48,12 +45,15 @@ class ChatListWidget extends ConsumerWidget {
         orElse: () {},
       );
     });
-     final user=sl<LocalStorageService>().getUserData();
-    final isAthlet=user?.role?.contains("athlet")??false;
+    final user = sl<LocalStorageService>().getUserData();
+    final isAthlet = user?.role?.contains("athlet") ?? false;
     final sponserProfileState = ref.watch(profileProvider);
-    final athletProfileSate=ref.watch(athleteProfileProvider);
-    final currentUserImg =isAthlet?athletProfileSate.whenOrNull(loaded: (profile) => profile.profilePhoto,):
-        sponserProfileState.profileUser?.sponsorProfile?.profileImageUrl;
+    final athletProfileSate = ref.watch(athleteProfileProvider(user?.id ?? ''));
+    final currentUserImg = isAthlet
+        ? athletProfileSate.whenOrNull(
+            loaded: (profile) => profile.profilePhoto,
+          )
+        : sponserProfileState.profileUser?.sponsorProfile?.profileImageUrl;
 
     return conversationState.maybeWhen(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -61,8 +61,6 @@ class ChatListWidget extends ConsumerWidget {
         // --- If no conversations, show static data with random times ---
         // if (conversations.isEmpty) {
         //   return _buildStaticUsers(currentUserImg);
-     
-        
 
         return RefreshIndicator(
           onRefresh: () async {
@@ -82,7 +80,7 @@ class ChatListWidget extends ConsumerWidget {
                 context: context,
                 isAthlet: isAthlet,
                 name: conversation.participant.name,
-                image:fileBaseUrl+conversation.participant.profileImage,
+                image: fileBaseUrl + conversation.participant.profileImage,
                 currentUserImg: currentUserImg,
                 isOnline: isOnline,
                 time: DateFormatter.formatTime(
@@ -110,8 +108,6 @@ class ChatListWidget extends ConsumerWidget {
       orElse: () => const SizedBox(),
     );
   }
-
-
 
   /// Refactored Tile to keep UI identical between Real and Static data
   Widget _buildChatTile({
@@ -145,7 +141,7 @@ class ChatListWidget extends ConsumerWidget {
                           title: name,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          textColor:isAthlet?Colors.white:AppColors.black,
+                          textColor: isAthlet ? Colors.white : AppColors.black,
                         ),
                       ),
                       Container(
@@ -181,13 +177,15 @@ class ChatListWidget extends ConsumerWidget {
                         Container(
                           margin: const EdgeInsets.only(left: 8),
                           padding: const EdgeInsets.all(6),
-                          decoration:  BoxDecoration(
-                            color:isAthlet?Colors.white: AppColors.primary,
+                          decoration: BoxDecoration(
+                            color: isAthlet ? Colors.white : AppColors.primary,
                             shape: BoxShape.circle,
                           ),
                           child: CustomText(
                             title: unreadCount.toString(),
-                            textColor:isAthlet?Colors.black: AppColors.white,
+                            textColor: isAthlet
+                                ? Colors.black
+                                : AppColors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),

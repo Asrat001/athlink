@@ -17,7 +17,6 @@ class AthleteMainScreen extends ConsumerStatefulWidget {
 }
 
 class _AthleteMainScreenState extends ConsumerState<AthleteMainScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -35,9 +34,11 @@ class _AthleteMainScreenState extends ConsumerState<AthleteMainScreen> {
   void _fetchProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final loggedInUser = sl<LocalStorageService>().getUserData();
-      final targetId =  loggedInUser?.id;
+      final targetId = loggedInUser?.id;
       if (targetId != null) {
-        ref.read(athleteProfileProvider.notifier).getProfile(targetId);
+        ref
+            .read(athleteProfileProvider(targetId).notifier)
+            .getProfile(targetId);
       }
     });
   }
@@ -99,10 +100,9 @@ class _AthleteMainScreenState extends ConsumerState<AthleteMainScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(0, "assets/logos/home.svg"),
-            _buildNavItem(1, "assets/logos/setting.svg"),
-            _buildNavItem(2, "assets/logos/chat.svg"),
-            _buildNavItem(3, "assets/logos/campaign.svg"),
-            _buildNavItem(4, "assets/logos/account.svg"),
+            _buildNavItem(1, "assets/logos/chat.svg"),
+            _buildNavItem(2, "assets/logos/campaign.svg"),
+            _buildNavItem(3, "assets/logos/account.svg"),
           ],
         ),
       ),
