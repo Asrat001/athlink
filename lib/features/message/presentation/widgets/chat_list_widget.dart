@@ -95,7 +95,7 @@ class ChatListWidget extends ConsumerWidget {
                     Routes.chatDetailRouteName,
                     extra: {
                       "name": conversation.participant.name,
-                      "logo": conversation.participant.profileImage,
+                      "logo":fileBaseUrl+ conversation.participant.profileImage,
                       "isOnline": isOnline,
                       "conversationId": conversation.id,
                       "userId": conversation.participant.id,

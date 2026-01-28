@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ChatHeader extends StatelessWidget {
   final String name;
   final bool isOnline;
+  final bool isAthlet;
   final String logo;
   final GlobalKey meetIconKey;
   final VoidCallback onMeetPressed;
@@ -18,6 +19,7 @@ class ChatHeader extends StatelessWidget {
     required this.logo,
     required this.meetIconKey,
     required this.onMeetPressed,
+     required this.isAthlet,
   });
 
   @override
@@ -27,7 +29,7 @@ class ChatHeader extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.black),
+            icon:  Icon(Icons.arrow_back, color:isAthlet?Colors.white: AppColors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
           Stack(
@@ -61,7 +63,7 @@ class ChatHeader extends StatelessWidget {
                   title: name,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  textColor: AppColors.black,
+                  textColor:isAthlet?Colors.white: AppColors.black,
                 ),
                 const SizedBox(height: 2),
                 CustomText(

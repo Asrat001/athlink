@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:athlink/features/auth/domain/repository/authentication_repository.dart';
 import 'package:athlink/features/auth/presentation/providers/login/state/login_state.dart';
+import 'package:athlink/features/notifications/domain/repository/notification_repository.dart';
+import 'package:athlink/core/services/notification_service.dart';
+
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
@@ -40,6 +43,20 @@ class LoginNotifier extends StateNotifier<LoginState> {
             isSuccess: true,
           );
           if (context.mounted) {
+            // Update FCM Token
+            try {
+              final notificationRepo = sl<NotificationRepository>();
+              final token = await NotificationService.instance.getFcmToken();
+              if (token != null) {
+                await notificationRepo.updateFcmToken(
+                  token: token,
+                  device: AppHelpers.getDeviceType(),
+                );
+              }
+            } catch (e) {
+              log("Failed to update FCM token on login: $e");
+            }
+
             AppHelpers.showSuccessToast(context, "Login Successful");
             if (data.user.role == 'athlete') {
               context.go(Routes.athleteDashBoardRouteName);
@@ -89,6 +106,20 @@ class LoginNotifier extends StateNotifier<LoginState> {
             isSuccess: true,
           );
           if (context.mounted) {
+            // Update FCM Token
+            try {
+              final notificationRepo = sl<NotificationRepository>();
+              final token = await NotificationService.instance.getFcmToken();
+              if (token != null) {
+                await notificationRepo.updateFcmToken(
+                  token: token,
+                  device: AppHelpers.getDeviceType(),
+                );
+              }
+            } catch (e) {
+              log("Failed to update FCM token on google login: $e");
+            }
+
             AppHelpers.showSuccessToast(context, "Login Successful");
             Future.delayed(const Duration(milliseconds: 1000), () {
               if (data.user.isNewUser ||

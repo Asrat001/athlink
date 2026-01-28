@@ -40,6 +40,9 @@ import 'features/auth/data/datasource/authentication_remote_data_source.dart';
 import 'features/auth/data/repository/authentication_repository_impl.dart';
 import 'features/auth/domain/repository/authentication_repository.dart';
 import 'features/sports/data/respository/sports_repository_impl.dart';
+import 'features/notifications/data/datasource/notification_remote_datasource.dart';
+import 'features/notifications/data/repository/notification_repository_impl.dart';
+import 'features/notifications/domain/repository/notification_repository.dart';
 
 GetIt sl = GetIt.instance;
 
@@ -91,6 +94,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<AthleteProfileRemoteDataSource>(
     AthleteProfileRemoteDataSource(sl<DioHttpClient>()),
   );
+  sl.registerSingleton<NotificationRemoteDataSource>(
+    NotificationRemoteDataSource(sl<DioHttpClient>()),
+  );
 
   //repositories
   sl.registerSingleton<IAuthenticationRepository>(
@@ -128,5 +134,8 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<AthletProfileRepository>(
     AthleteProfileRepositoryImpl(sl<AthleteProfileRemoteDataSource>()),
+  );
+  sl.registerSingleton<NotificationRepository>(
+    NotificationRepositoryImpl(sl<NotificationRemoteDataSource>()),
   );
 }

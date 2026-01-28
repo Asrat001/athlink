@@ -14,6 +14,9 @@ _ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) =>
       bio: json['bio'] as String? ?? '',
       profilePhoto: json['profilePhoto'] as String?,
       coverPhoto: json['coverPhoto'] as String?,
+      sport: (json['sport'] as List<dynamic>?)
+          ?.map((e) => Sport.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ProfileModelToJson(_ProfileModel instance) =>
@@ -24,4 +27,5 @@ Map<String, dynamic> _$ProfileModelToJson(_ProfileModel instance) =>
       'bio': instance.bio,
       'profilePhoto': instance.profilePhoto,
       'coverPhoto': instance.coverPhoto,
+      'sport': instance.sport,
     };

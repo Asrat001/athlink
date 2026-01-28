@@ -18,6 +18,7 @@ class ChatInputBar extends StatefulWidget {
   final Function(SelectableProposalItem) onSendProposal;
   final VoidCallback onShowProposalSelector;
   final SelectableProposalItem? draftProposal;
+  final bool isAthlet;
 
   const ChatInputBar({
     super.key,
@@ -29,6 +30,7 @@ class ChatInputBar extends StatefulWidget {
     required this.onSendProposal,
     required this.onShowProposalSelector,
     this.draftProposal,
+    required this.isAthlet,
   });
 
   @override
@@ -216,7 +218,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                             },
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              color: AppColors.black,
+                              color:widget.isAthlet?Colors.white: AppColors.black,
                             ),
                             maxLines: null, // Allow multiple lines
                             keyboardType: TextInputType.multiline,
@@ -224,7 +226,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                               hintText: "message here...",
                               hintStyle: GoogleFonts.inter(
                                 fontSize: 12,
-                                color: AppColors.grey600,
+                                color:widget.isAthlet?Colors.white: AppColors.grey600,
                                 fontWeight: FontWeight.w400,
                               ),
                               border: InputBorder.none,

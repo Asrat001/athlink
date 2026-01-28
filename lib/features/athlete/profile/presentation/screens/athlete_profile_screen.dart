@@ -51,7 +51,6 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final loggedInUser = sl<LocalStorageService>().getUserData();
       final targetId = widget.athleteId ?? loggedInUser?.id;
-
       if (targetId != null) {
         ref.read(athleteProfileProvider.notifier).getProfile(targetId);
       }
