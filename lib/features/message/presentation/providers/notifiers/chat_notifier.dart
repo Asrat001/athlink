@@ -429,7 +429,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   void dispose() {
     _typingTimer?.cancel();
     _socketService.leaveConversation(_conversationId);
-    _socketService.disconnect();
+    // Don't disconnect socket - it's shared across the app for online status
     super.dispose();
   }
 }

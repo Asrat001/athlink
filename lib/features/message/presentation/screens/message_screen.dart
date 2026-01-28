@@ -1,3 +1,6 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
+import 'package:athlink/features/message/presentation/providers/conversation_filter.dart';
 import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/widgets/chat_list_widget.dart';
 import 'package:athlink/features/message/presentation/widgets/search_bar.dart';
@@ -57,8 +60,8 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
             return SelectAthletsSheet(
+              isAthlet: true,
               scrollController: scrollController,
-              onSearchChanged: (val) {},
             );
           },
         );
@@ -68,17 +71,21 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final user=sl<LocalStorageService>().getUserData();
+    final isAthlet=user?.role?.contains("athlet")??false;
+    final searchQuery = ref.watch(searchQueryProvider);
+
+    return Scaffold(    
       appBar: AppBar(
         toolbarHeight: 0.0,
       ),
-      backgroundColor: AppColors.white,
+      backgroundColor:isAthlet?Colors.black: AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color:isAthlet?Colors.black: AppColors.white,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
@@ -105,7 +112,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                           style: GoogleFonts.inter(
                             fontSize: 32,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.black,
+                            color:isAthlet?Colors.white: AppColors.black,
                           ),
                         ),
                         _buildNotificationIcon(),
@@ -117,7 +124,12 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: ChatSearchBar(
                       hint: "Search message",
+                      isAthlet: isAthlet,
                       controller: _chatSearchController,
+
+                      onChanged: (query) {
+                        ref.read(searchQueryProvider.notifier).state = query;
+                      },
                     ),
                   ),
                 ],
@@ -128,7 +140,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color:isAthlet?Colors.black: AppColors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -152,9 +164,9 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                             child: TabBar(
                               controller: _tabController,
                               isScrollable: true,
-                              indicatorColor: AppColors.primary,
+                              indicatorColor:isAthlet?Colors.white: AppColors.primary,
                               indicatorWeight: 3,
-                              labelColor: AppColors.black,
+                              labelColor:isAthlet?Colors.white: AppColors.black,
                               unselectedLabelColor: AppColors.grey,
                               labelStyle: GoogleFonts.inter(
                                 fontSize: 15,
@@ -175,7 +187,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: AppColors.grey600.withValues(
+                                  color:isAthlet?Colors.white: AppColors.grey600.withValues(
                                     alpha: .3,
                                   ),
                                   width: 1.5,
@@ -184,8 +196,8 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                               ),
                               child: SvgPicture.asset(
                                 "assets/images/chat-add.svg",
-                                colorFilter: const ColorFilter.mode(
-                                  AppColors.black,
+                                colorFilter:  ColorFilter.mode(
+                                  isAthlet?Colors.white: AppColors.black,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -203,10 +215,19 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                     Expanded(
                       child: TabBarView(
                         controller: _tabController,
-                        children: const [
-                          ChatListWidget(),
-                          ChatListWidget(),
-                          ChatListWidget(),
+                        children: [
+                          ChatListWidget(
+                            filter: ConversationFilter.all,
+                            searchQuery: searchQuery,
+                          ),
+                          ChatListWidget(
+                            filter: ConversationFilter.sponsors,
+                            searchQuery: searchQuery,
+                          ),
+                          ChatListWidget(
+                            filter: ConversationFilter.athletes,
+                            searchQuery: searchQuery,
+                          ),
                         ],
                       ),
                     ),

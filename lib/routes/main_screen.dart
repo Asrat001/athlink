@@ -1,58 +1,47 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/core/services/socket_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
   const MainScreen({super.key, required this.navigationShell});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeSocket();
+  }
+
+  void _initializeSocket() async {
+    final token = await sl<LocalStorageService>().getAccessToken();
+    if (token != null && token.isNotEmpty) {
+      sl<SocketIoService>().initConnection(token);
+    }
+  }
+
   void _onItemTapped(BuildContext context, int index) {
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
-  void _showCreateBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.post_add),
-              title: const Text('Create Post'),
-              onTap: () {
-                Navigator.pop(context);
-                // do something here
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.video_call),
-              title: const Text('Upload Video'),
-              onTap: () {
-                Navigator.pop(context);
-                // do something else
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PopScope(canPop: false, child: navigationShell),
+      body: PopScope(canPop: false, child: widget.navigationShell),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
+        currentIndex: widget.navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: (index) => _onItemTapped(context, index),
         items: [

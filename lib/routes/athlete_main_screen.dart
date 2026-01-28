@@ -1,16 +1,51 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/core/services/socket_service.dart';
+import 'package:athlink/di.dart';
+import 'package:athlink/features/athlete/profile/presentation/providers/athlete_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class AthleteMainScreen extends StatelessWidget {
+class AthleteMainScreen extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
   const AthleteMainScreen({super.key, required this.navigationShell});
 
+  @override
+  ConsumerState<AthleteMainScreen> createState() => _AthleteMainScreenState();
+}
+
+class _AthleteMainScreenState extends ConsumerState<AthleteMainScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSocket();
+    _fetchProfile();
+  }
+
+  void _initializeSocket() async {
+    final token = await sl<LocalStorageService>().getAccessToken();
+    if (token != null && token.isNotEmpty) {
+      sl<SocketIoService>().initConnection(token);
+    }
+  }
+
+  void _fetchProfile() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final loggedInUser = sl<LocalStorageService>().getUserData();
+      final targetId =  loggedInUser?.id;
+      if (targetId != null) {
+        ref.read(athleteProfileProvider.notifier).getProfile(targetId);
+      }
+    });
+  }
+
   void _onItemTapped(int index) {
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
@@ -33,7 +68,7 @@ class AthleteMainScreen extends StatelessWidget {
           systemNavigationBarIconBrightness: Brightness.light,
         ),
       ),
-      body: PopScope(canPop: false, child: navigationShell),
+      body: PopScope(canPop: false, child: widget.navigationShell),
       bottomNavigationBar: _buildBottomBar(context),
     );
   }
@@ -75,7 +110,7 @@ class AthleteMainScreen extends StatelessWidget {
   }
 
   Widget _buildNavItem(int index, String iconPath) {
-    final bool isSelected = navigationShell.currentIndex == index;
+    final bool isSelected = widget.navigationShell.currentIndex == index;
 
     return Expanded(
       child: GestureDetector(
