@@ -96,6 +96,13 @@ _PreferredSponsor _$PreferredSponsorFromJson(Map<String, dynamic> json) =>
       id: json['_id'] as String?,
       email: json['email'] as String?,
       role: json['role'] as String?,
+      name: json['name'] as String?,
+      profileImageUrl: json['profileImageUrl'] as String?,
+      sponsorProfile: json['sponsorProfile'] == null
+          ? null
+          : SponsorProfileModel.fromJson(
+              json['sponsorProfile'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$PreferredSponsorToJson(_PreferredSponsor instance) =>
@@ -103,6 +110,9 @@ Map<String, dynamic> _$PreferredSponsorToJson(_PreferredSponsor instance) =>
       '_id': instance.id,
       'email': instance.email,
       'role': instance.role,
+      'name': instance.name,
+      'profileImageUrl': instance.profileImageUrl,
+      'sponsorProfile': instance.sponsorProfile,
     };
 
 _SponsorshipPreferences _$SponsorshipPreferencesFromJson(

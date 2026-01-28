@@ -1208,7 +1208,7 @@ as String?,
 /// @nodoc
 mixin _$PreferredSponsor {
 
-@JsonKey(name: '_id') String? get id; String? get email; String? get role;
+@JsonKey(name: '_id') String? get id; String? get email; String? get role; String? get name; String? get profileImageUrl; SponsorProfileModel? get sponsorProfile;
 /// Create a copy of PreferredSponsor
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1221,16 +1221,16 @@ $PreferredSponsorCopyWith<PreferredSponsor> get copyWith => _$PreferredSponsorCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PreferredSponsor&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PreferredSponsor&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,role);
+int get hashCode => Object.hash(runtimeType,id,email,role,name,profileImageUrl,sponsorProfile);
 
 @override
 String toString() {
-  return 'PreferredSponsor(id: $id, email: $email, role: $role)';
+  return 'PreferredSponsor(id: $id, email: $email, role: $role, name: $name, profileImageUrl: $profileImageUrl, sponsorProfile: $sponsorProfile)';
 }
 
 
@@ -1241,11 +1241,11 @@ abstract mixin class $PreferredSponsorCopyWith<$Res>  {
   factory $PreferredSponsorCopyWith(PreferredSponsor value, $Res Function(PreferredSponsor) _then) = _$PreferredSponsorCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: '_id') String? id, String? email, String? role
+@JsonKey(name: '_id') String? id, String? email, String? role, String? name, String? profileImageUrl, SponsorProfileModel? sponsorProfile
 });
 
 
-
+$SponsorProfileModelCopyWith<$Res>? get sponsorProfile;
 
 }
 /// @nodoc
@@ -1258,15 +1258,30 @@ class _$PreferredSponsorCopyWithImpl<$Res>
 
 /// Create a copy of PreferredSponsor
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? email = freezed,Object? role = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? email = freezed,Object? role = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? sponsorProfile = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,sponsorProfile: freezed == sponsorProfile ? _self.sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
+as SponsorProfileModel?,
   ));
 }
+/// Create a copy of PreferredSponsor
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsorProfileModelCopyWith<$Res>? get sponsorProfile {
+    if (_self.sponsorProfile == null) {
+    return null;
+  }
 
+  return $SponsorProfileModelCopyWith<$Res>(_self.sponsorProfile!, (value) {
+    return _then(_self.copyWith(sponsorProfile: value));
+  });
+}
 }
 
 
@@ -1348,10 +1363,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role,  String? name,  String? profileImageUrl,  SponsorProfileModel? sponsorProfile)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PreferredSponsor() when $default != null:
-return $default(_that.id,_that.email,_that.role);case _:
+return $default(_that.id,_that.email,_that.role,_that.name,_that.profileImageUrl,_that.sponsorProfile);case _:
   return orElse();
 
 }
@@ -1369,10 +1384,10 @@ return $default(_that.id,_that.email,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role,  String? name,  String? profileImageUrl,  SponsorProfileModel? sponsorProfile)  $default,) {final _that = this;
 switch (_that) {
 case _PreferredSponsor():
-return $default(_that.id,_that.email,_that.role);case _:
+return $default(_that.id,_that.email,_that.role,_that.name,_that.profileImageUrl,_that.sponsorProfile);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1389,10 +1404,10 @@ return $default(_that.id,_that.email,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id')  String? id,  String? email,  String? role,  String? name,  String? profileImageUrl,  SponsorProfileModel? sponsorProfile)?  $default,) {final _that = this;
 switch (_that) {
 case _PreferredSponsor() when $default != null:
-return $default(_that.id,_that.email,_that.role);case _:
+return $default(_that.id,_that.email,_that.role,_that.name,_that.profileImageUrl,_that.sponsorProfile);case _:
   return null;
 
 }
@@ -1404,12 +1419,15 @@ return $default(_that.id,_that.email,_that.role);case _:
 @JsonSerializable()
 
 class _PreferredSponsor implements PreferredSponsor {
-  const _PreferredSponsor({@JsonKey(name: '_id') this.id, this.email, this.role});
+  const _PreferredSponsor({@JsonKey(name: '_id') this.id, this.email, this.role, this.name, this.profileImageUrl, this.sponsorProfile});
   factory _PreferredSponsor.fromJson(Map<String, dynamic> json) => _$PreferredSponsorFromJson(json);
 
 @override@JsonKey(name: '_id') final  String? id;
 @override final  String? email;
 @override final  String? role;
+@override final  String? name;
+@override final  String? profileImageUrl;
+@override final  SponsorProfileModel? sponsorProfile;
 
 /// Create a copy of PreferredSponsor
 /// with the given fields replaced by the non-null parameter values.
@@ -1424,16 +1442,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PreferredSponsor&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PreferredSponsor&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,role);
+int get hashCode => Object.hash(runtimeType,id,email,role,name,profileImageUrl,sponsorProfile);
 
 @override
 String toString() {
-  return 'PreferredSponsor(id: $id, email: $email, role: $role)';
+  return 'PreferredSponsor(id: $id, email: $email, role: $role, name: $name, profileImageUrl: $profileImageUrl, sponsorProfile: $sponsorProfile)';
 }
 
 
@@ -1444,11 +1462,11 @@ abstract mixin class _$PreferredSponsorCopyWith<$Res> implements $PreferredSpons
   factory _$PreferredSponsorCopyWith(_PreferredSponsor value, $Res Function(_PreferredSponsor) _then) = __$PreferredSponsorCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: '_id') String? id, String? email, String? role
+@JsonKey(name: '_id') String? id, String? email, String? role, String? name, String? profileImageUrl, SponsorProfileModel? sponsorProfile
 });
 
 
-
+@override $SponsorProfileModelCopyWith<$Res>? get sponsorProfile;
 
 }
 /// @nodoc
@@ -1461,16 +1479,31 @@ class __$PreferredSponsorCopyWithImpl<$Res>
 
 /// Create a copy of PreferredSponsor
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? email = freezed,Object? role = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? email = freezed,Object? role = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? sponsorProfile = freezed,}) {
   return _then(_PreferredSponsor(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,sponsorProfile: freezed == sponsorProfile ? _self.sponsorProfile : sponsorProfile // ignore: cast_nullable_to_non_nullable
+as SponsorProfileModel?,
   ));
 }
 
+/// Create a copy of PreferredSponsor
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SponsorProfileModelCopyWith<$Res>? get sponsorProfile {
+    if (_self.sponsorProfile == null) {
+    return null;
+  }
 
+  return $SponsorProfileModelCopyWith<$Res>(_self.sponsorProfile!, (value) {
+    return _then(_self.copyWith(sponsorProfile: value));
+  });
+}
 }
 
 

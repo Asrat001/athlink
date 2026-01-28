@@ -180,8 +180,8 @@ return failure(_that.error);case _:
 /// @nodoc
 
 
-class Success<T> implements ApiResponse<T> {
-  const Success({required this.data});
+class Success<T> extends ApiResponse<T> {
+  const Success({required this.data}): super._();
   
 
  final  T data;
@@ -246,8 +246,8 @@ as T,
 /// @nodoc
 
 
-class Failure<T> implements ApiResponse<T> {
-  const Failure({required this.error});
+class Failure<T> extends ApiResponse<T> {
+  const Failure({required this.error}): super._();
   
 
  final  NetworkExceptions error;

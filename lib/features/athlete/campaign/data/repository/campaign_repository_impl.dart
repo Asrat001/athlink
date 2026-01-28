@@ -2,6 +2,7 @@ import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/features/athlete/campaign/data/datasource/campaign_remote_data_source.dart';
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_detail_model.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/sponsor_search_response.dart';
 import 'package:athlink/features/athlete/campaign/domain/repository/campaign_repository.dart';
 
 class CampaignRepositoryImpl implements CampaignRepository {
@@ -115,6 +116,24 @@ class CampaignRepositoryImpl implements CampaignRepository {
     return await _remoteDataSource.toggleCampaignActive(
       id: id,
       isActive: isActive,
+    );
+  }
+
+  @override
+  Future<ApiResponse<SponsorSearchResponse>> searchSponsors({
+    required String query,
+  }) async {
+    return await _remoteDataSource.searchSponsors(query: query);
+  }
+
+  @override
+  Future<ApiResponse<void>> updatePreferredSponsors({
+    required String id,
+    required List<String> sponsorIds,
+  }) async {
+    return await _remoteDataSource.updatePreferredSponsors(
+      id: id,
+      sponsorIds: sponsorIds,
     );
   }
 }

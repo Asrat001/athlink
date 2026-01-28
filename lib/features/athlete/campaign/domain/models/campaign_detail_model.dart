@@ -1,4 +1,5 @@
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/sponsor_search_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'campaign_detail_model.freezed.dart';
@@ -63,6 +64,9 @@ abstract class PreferredSponsor with _$PreferredSponsor {
     @JsonKey(name: '_id') String? id,
     String? email,
     String? role,
+    String? name,
+    String? profileImageUrl,
+    SponsorProfileModel? sponsorProfile,
   }) = _PreferredSponsor;
 
   factory PreferredSponsor.fromJson(Map<String, dynamic> json) =>

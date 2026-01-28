@@ -3,7 +3,11 @@ import 'package:athlink/features/athlete/campaign/domain/models/campaign_detail_
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
 import 'package:athlink/features/athlete/campaign/presentation/providers/campaign_detail_provider.dart';
 import 'package:athlink/features/athlete/campaign/presentation/providers/state/campaign_detail_state.dart';
-import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_theme.dart';
+import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_detail/campaign_detail_tile.dart';
+import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_detail/cost_breakdown_summary.dart';
+import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_detail/financial_goal_summary_card.dart';
+import 'package:athlink/features/athlete/campaign/presentation/widgets/campaign_detail/funded_level_summary.dart';
+
 import 'package:athlink/features/athlete/campaign/presentation/widgets/cost_break_down_bottomsheet.dart';
 import 'package:athlink/features/athlete/campaign/presentation/widgets/financial_goal_bottom_sheet.dart';
 import 'package:athlink/features/athlete/campaign/presentation/widgets/goal_milestone_bottomsheet.dart';
@@ -15,9 +19,10 @@ import 'package:athlink/features/athlete/campaign/presentation/widgets/sponsorsh
 import 'package:athlink/features/athlete/campaign/presentation/widgets/sponsorship_preference_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AthleteCampaignDetailScreen extends ConsumerStatefulWidget {
@@ -54,7 +59,7 @@ class _AthleteCampaignDetailScreenState
     // Fetch campaign details when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
-          .read(campaignDetailProvider.notifier)
+          .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
           .getCampaignDetail(widget.campaign.id ?? '');
     });
   }
@@ -92,7 +97,7 @@ class _AthleteCampaignDetailScreenState
           };
 
           await ref
-              .read(campaignDetailProvider.notifier)
+              .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
               .updateSponsorshipPreferences(
                 id: widget.campaign.id ?? '',
                 preferences: prefs,
@@ -127,7 +132,7 @@ class _AthleteCampaignDetailScreenState
         initialPercentage: _fundedPercentage,
         onSave: (value) async {
           await ref
-              .read(campaignDetailProvider.notifier)
+              .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
               .updateFundedPercentage(
                 id: widget.campaign.id ?? '',
                 fundedPercentage: value,
@@ -154,18 +159,45 @@ class _AthleteCampaignDetailScreenState
   }
 
   void _handleSponsors() async {
-    final result = await showModalBottomSheet<List<Sponsor>>(
+    final result = await showModalBottomSheet<List<String>>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          PreferredSponsorsBottomSheet(alreadySelected: _selectedSponsors),
+      builder: (context) => PreferredSponsorsBottomSheet(
+        campaignId: widget.campaign.id ?? '',
+        alreadySelected: _selectedSponsors,
+      ),
     );
     if (result != null) {
-      setState(() {
-        _selectedSponsors = result;
-        _sections["Preferred Sponsors"] = true;
-      });
+      await ref
+          .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
+          .updatePreferredSponsors(
+            id: widget.campaign.id ?? '',
+            sponsorIds: result,
+            onSuccess: () {
+              setState(() => _isInitialized = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    "Preferred sponsors updated successfully",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: AppColors.success,
+                ),
+              );
+            },
+            onFailure: (error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    error,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+            },
+          );
     }
   }
 
@@ -208,7 +240,7 @@ class _AthleteCampaignDetailScreenState
 
     if (confirmed == true) {
       await ref
-          .read(campaignDetailProvider.notifier)
+          .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
           .deleteGoal(
             id: widget.campaign.id ?? '',
             goalId: goal.id!,
@@ -247,12 +279,12 @@ class _AthleteCampaignDetailScreenState
       builder: (context) => AddGoalBottomSheet(
         onSave: (goal) async {
           await ref
-              .read(campaignDetailProvider.notifier)
+              .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
               .addGoal(
                 id: widget.campaign.id ?? '',
                 title: goal.title,
                 targetDate: goal.date,
-                status: goal.status,
+                status: "PENDING",
                 onSuccess: () {
                   setState(() => _isInitialized = false);
                   if (mounted) Navigator.pop(context);
@@ -285,7 +317,7 @@ class _AthleteCampaignDetailScreenState
     );
     if (result != null) {
       ref
-          .read(campaignDetailProvider.notifier)
+          .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
           .updateFinancialGoal(
             id: widget.campaign.id ?? '',
             totalAmount: result.amount,
@@ -330,7 +362,7 @@ class _AthleteCampaignDetailScreenState
         initialItems: _costs,
         onSave: (items) async {
           await ref
-              .read(campaignDetailProvider.notifier)
+              .read(campaignDetailProvider(widget.campaign.id ?? '').notifier)
               .updateCostBreakdown(
                 id: widget.campaign.id ?? '',
                 costs: items
@@ -360,7 +392,15 @@ class _AthleteCampaignDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final detailState = ref.watch(campaignDetailProvider);
+    final detailState = ref.watch(
+      campaignDetailProvider(widget.campaign.id ?? ''),
+    );
+    ref.listen(campaignDetailProvider(widget.campaign.id ?? ''), (
+      previous,
+      next,
+    ) {
+      // Handle state changes if needed
+    });
 
     return Scaffold(
       backgroundColor: AppColors.black,
@@ -446,10 +486,12 @@ class _AthleteCampaignDetailScreenState
                 _selectedSponsors = (campaign.preferredSponsors ?? [])
                     .map(
                       (s) => Sponsor(
-                        name: (s.email ?? '').split('@').first, // Fallback name
+                        id: s.id,
+                        name: s.name ?? (s.email ?? '').split('@').first,
                         category: s.role ?? '',
-                        logoUrl:
-                            "https://via.placeholder.com/150", // Placeholder logo
+                        profileImageUrl: s.profileImageUrl != null
+                            ? "$fileBaseUrl${s.profileImageUrl}"
+                            : "https://via.placeholder.com/150",
                       ),
                     )
                     .toList();
@@ -534,81 +576,54 @@ class _AthleteCampaignDetailScreenState
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _Tile(
-          "Funded Level",
-          "Update how much your campaign is funded.",
-          _fundedPercentage > 0 ? "Edit Level" : "Add Level",
-          _sections["Funded Level"]!,
-          (v) => setState(() => _sections["Funded Level"] = v),
-          _handleFundedLevel,
+        CampaignDetailTile(
+          title: "Funded Level",
+          desc: "Update how much your campaign is funded.",
+          btnLabel: _fundedPercentage > 0 ? "Edit Level" : "Add Level",
+          isExpanded: _sections["Funded Level"]!,
+          onToggle: (v) => setState(() => _sections["Funded Level"] = v),
+          onAction: _handleFundedLevel,
           content: _fundedPercentage > 0
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: _fundedPercentage,
-                          backgroundColor: Colors.white12,
-                          valueColor: const AlwaysStoppedAnimation(
-                            Colors.orange,
-                          ),
-                          minHeight: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${(_fundedPercentage * 100).toInt()}% funded",
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
+              ? FundedLevelSummary(fundedPercentage: _fundedPercentage)
               : null,
         ),
-        _Tile(
-          "Financial Goal",
-          "Set your financial goal and duration.",
-          (_financialGoal == null || _financialGoal!.amount == 0)
+        CampaignDetailTile(
+          title: "Financial Goal",
+          desc: "Set your financial goal and duration.",
+          btnLabel: (_financialGoal == null || _financialGoal!.amount == 0)
               ? "Add Goal"
               : "Edit Goal",
-          _sections["Financial Goal"]!,
-          (v) => setState(() => _sections["Financial Goal"] = v),
-          _handleFinancialGoal,
+          isExpanded: _sections["Financial Goal"]!,
+          onToggle: (v) => setState(() => _sections["Financial Goal"] = v),
+          onAction: _handleFinancialGoal,
           content: (_financialGoal == null || _financialGoal!.amount == 0)
               ? null
-              : _FinancialGoalSummaryCard(
+              : FinancialGoalSummaryCard(
                   goal: _financialGoal!,
                   campaignTitle: campaign.title,
                 ),
         ),
-        _Tile(
-          "Cost Breakdown",
-          "Break down campaign expenses for sponsors.",
-          _costs.isEmpty ? "Add Cost breakdown" : "Edit Breakdown",
-          _sections["Cost Breakdown"]!,
-          (v) => setState(() => _sections["Cost Breakdown"] = v),
-          _handleCostBreakdown,
+        CampaignDetailTile(
+          title: "Cost Breakdown",
+          desc: "Break down campaign expenses for sponsors.",
+          btnLabel: _costs.isEmpty ? "Add Cost breakdown" : "Edit Breakdown",
+          isExpanded: _sections["Cost Breakdown"]!,
+          onToggle: (v) => setState(() => _sections["Cost Breakdown"] = v),
+          onAction: _handleCostBreakdown,
           content: _costs.isEmpty
               ? null
-              : _SummaryBody(
+              : CostBreakdownSummaryBody(
                   costs: _costs,
                   budget: _financialGoal?.amount ?? 0,
                 ),
         ),
-        _Tile(
-          "Goal",
-          "Set a career goal with a timeline.",
-          "Add Goal",
-          _sections["Goal"]!,
-          (v) => setState(() => _sections["Goal"] = v),
-          _handleAddGoal,
+        CampaignDetailTile(
+          title: "Goal",
+          desc: "Set a career goal with a timeline.",
+          btnLabel: "Add Goal",
+          isExpanded: _sections["Goal"]!,
+          onToggle: (v) => setState(() => _sections["Goal"] = v),
+          onAction: _handleAddGoal,
           content: _milestones.isEmpty
               ? null
               : GoalTimelineSummary(
@@ -617,13 +632,13 @@ class _AthleteCampaignDetailScreenState
                   onDelete: _handleDeleteGoal,
                 ),
         ),
-        _Tile(
-          "Preferred Sponsors",
-          "Select brands you're interested in.",
-          "Add Sponsors",
-          _sections["Preferred Sponsors"]!,
-          (v) => setState(() => _sections["Preferred Sponsors"] = v),
-          _handleSponsors,
+        CampaignDetailTile(
+          title: "Preferred Sponsors",
+          desc: "Select brands you're interested in.",
+          btnLabel: "Add Sponsors",
+          isExpanded: _sections["Preferred Sponsors"]!,
+          onToggle: (v) => setState(() => _sections["Preferred Sponsors"] = v),
+          onAction: _handleSponsors,
           content: _selectedSponsors.isEmpty
               ? null
               : SponsorGridSummary(
@@ -631,295 +646,21 @@ class _AthleteCampaignDetailScreenState
                   onAddMore: _handleSponsors,
                 ),
         ),
-        _Tile(
-          "Sponsorship Preferences",
-          "Define your sponsorship opportunities.",
-          "Add Preferences",
-          _sections["Sponsorship Preferences"]!,
-          (v) => setState(() => _sections["Sponsorship Preferences"] = v),
-          _handlePreferences,
+        CampaignDetailTile(
+          title: "Sponsorship Preferences",
+          desc: "Define your sponsorship opportunities.",
+          btnLabel: "Add Preferences",
+          isExpanded: _sections["Sponsorship Preferences"]!,
+          onToggle: (v) =>
+              setState(() => _sections["Sponsorship Preferences"] = v),
+          onAction: _handlePreferences,
           content: _preferences.isEmpty
               ? null
               : SponsorshipPreferencesSummary(
                   preferences: _preferences,
-                  onEdit: _handlePreferences, // Edit re-opens modal
+                  onEdit: _handlePreferences,
                 ),
         ),
-      ],
-    );
-  }
-}
-
-class _FinancialGoalSummaryCard extends StatelessWidget {
-  final FinancialGoalData goal;
-  final CampaignTitleModel? campaignTitle;
-  const _FinancialGoalSummaryCard({required this.goal, this.campaignTitle});
-
-  String _getDurationString(DateTime deadline) {
-    final now = DateTime.now();
-    if (deadline.isBefore(now)) return "Ended";
-
-    int years = deadline.year - now.year;
-    int months = deadline.month - now.month;
-    int days = deadline.day - now.day;
-
-    if (days < 0) {
-      final lastDayOfPrevMonth = DateTime(deadline.year, deadline.month, 0).day;
-      days += lastDayOfPrevMonth;
-      months--;
-    }
-
-    if (months < 0) {
-      months += 12;
-      years--;
-    }
-
-    final parts = <String>[];
-    if (years > 0) parts.add("$years ${years == 1 ? 'year' : 'years'}");
-    if (months > 0) parts.add("$months ${months == 1 ? 'month' : 'months'}");
-    if (days > 0) parts.add("$days ${days == 1 ? 'day' : 'days'}");
-
-    if (parts.isEmpty) return "Today";
-    return "${parts.join(', ')} remaining";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final durationString = _getDurationString(goal.deadline);
-    final rawFunded = campaignTitle?.fundedPercentage ?? 0.0;
-    // Normalize if the value comes as a whole number (0-100) instead of decimal (0.0-1.0)
-    final fundedPercentage = rawFunded > 1.0 ? rawFunded / 100 : rawFunded;
-    final fundedAmount = goal.amount * fundedPercentage;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                campaignTitle?.text ?? '',
-                style: const TextStyle(
-                  color: AppColors.textTertiary,
-                  fontSize: 16,
-                ),
-              ),
-              const Icon(Icons.more_vert, color: AppColors.textSecondary),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "\$${NumberFormat('#,###').format(fundedAmount)}",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Goal: \$${NumberFormat('#,###').format(goal.amount)}",
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 13,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  durationString,
-                  textAlign: TextAlign.end,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: fundedPercentage,
-              backgroundColor: Colors.white12,
-              valueColor: const AlwaysStoppedAnimation(Colors.orange),
-              minHeight: 6,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "${(fundedPercentage * 100).toInt()}% funded",
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Tile extends StatelessWidget {
-  final String title, desc, btnLabel;
-  final bool isExp;
-  final ValueChanged<bool> onToggle;
-  final VoidCallback onAct;
-  final Widget? content;
-  const _Tile(
-    this.title,
-    this.desc,
-    this.btnLabel,
-    this.isExp,
-    this.onToggle,
-    this.onAct, {
-    this.content,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () => onToggle(!isExp),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 16,
-                  ),
-                ),
-                Icon(
-                  isExp ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  color: AppColors.textSecondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (isExp) ...[
-          if (content != null) content!,
-          Text(
-            desc,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            onPressed: onAct,
-            icon: const Icon(Icons.add, size: 18),
-            label: Text(btnLabel),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.surface.withOpacity(0.5),
-              foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 48),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-        const Divider(color: AppColors.border),
-      ],
-    );
-  }
-}
-
-class _SummaryBody extends StatelessWidget {
-  final List<CostItem> costs;
-  final double budget;
-  const _SummaryBody({required this.costs, required this.budget});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Total Budget",
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-                Text(
-                  "\$${NumberFormat('#,###').format(budget)}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 70,
-              width: 70,
-              child: CustomPaint(
-                painter: MultiColorPiePainter(items: costs, total: budget),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ...costs.map(
-          (e) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: e.color,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    e.title,
-                    style: const TextStyle(
-                      color: AppColors.textTertiary,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                Text(
-                  "\$${NumberFormat('#,###').format(e.amount)}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
       ],
     );
   }

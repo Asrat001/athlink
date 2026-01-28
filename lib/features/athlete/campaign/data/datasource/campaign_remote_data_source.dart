@@ -1,5 +1,6 @@
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_detail_model.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/sponsor_search_response.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
 import 'package:athlink/core/handlers/api_response.dart';
@@ -218,6 +219,38 @@ class CampaignRemoteDataSource extends BaseRepository {
         return await _httpClient
             .client(requireAuth: true)
             .patch("/campaigns/$id/title/toggle", data: {'isActive': isActive});
+      },
+      fromData: (data) {},
+    );
+  }
+
+  Future<ApiResponse<SponsorSearchResponse>> searchSponsors({
+    required String query,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .get("/sponsors/search/by-name", queryParameters: {'name': query});
+      },
+      fromData: (data) {
+        return SponsorSearchResponse.fromJson(data);
+      },
+    );
+  }
+
+  Future<ApiResponse<void>> updatePreferredSponsors({
+    required String id,
+    required List<String> sponsorIds,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .post(
+              "/campaigns/$id/preferred-sponsors",
+              data: {'sponsors': sponsorIds},
+            );
       },
       fromData: (data) {},
     );

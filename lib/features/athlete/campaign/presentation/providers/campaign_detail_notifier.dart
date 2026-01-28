@@ -1,6 +1,7 @@
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/features/athlete/campaign/domain/repository/campaign_repository.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/sponsor_search_response.dart';
 import 'package:athlink/features/athlete/campaign/presentation/providers/campaign_provider.dart';
 import 'package:athlink/features/athlete/campaign/presentation/providers/state/campaign_detail_state.dart';
 import 'package:flutter/material.dart';
@@ -150,6 +151,35 @@ class CampaignDetailNotifier extends StateNotifier<CampaignDetailState> {
     final response = await _repository.updateFundedPercentage(
       id: id,
       fundedPercentage: fundedPercentage,
+    );
+
+    response.when(
+      success: (_) async {
+        await getCampaignDetail(id); // Refresh data
+        ref.read(campaignProvider.notifier).getCampaigns(); // Sync list screen
+        onSuccess?.call();
+      },
+      failure: (error) {
+        onFailure?.call(NetworkExceptions.getErrorMessage(error));
+      },
+    );
+  }
+
+  Future<ApiResponse<SponsorSearchResponse>> searchSponsors(
+    String query,
+  ) async {
+    return await _repository.searchSponsors(query: query);
+  }
+
+  Future<void> updatePreferredSponsors({
+    required String id,
+    required List<String> sponsorIds,
+    VoidCallback? onSuccess,
+    void Function(String)? onFailure,
+  }) async {
+    final response = await _repository.updatePreferredSponsors(
+      id: id,
+      sponsorIds: sponsorIds,
     );
 
     response.when(

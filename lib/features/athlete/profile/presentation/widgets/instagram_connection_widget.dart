@@ -33,6 +33,7 @@ class _InstagramConnectSectionState extends State<InstagramConnectSection> {
     HapticFeedback.heavyImpact();
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: AppColors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),

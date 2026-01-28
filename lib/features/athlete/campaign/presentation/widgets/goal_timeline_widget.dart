@@ -160,19 +160,36 @@ class GoalTimelineSummary extends StatelessWidget {
   }
 
   Widget _buildStatusChip(String status) {
+    Color color;
+    Color textColor;
+    String label;
+
+    switch (status.toLowerCase()) {
+      case 'inprogress':
+        color = Colors.green.withOpacity(0.2);
+        textColor = Colors.green;
+        label = "In Progress";
+        break;
+      case 'completed':
+        color = Colors.blue.withOpacity(0.2);
+        textColor = Colors.blue;
+        label = "Completed";
+        break;
+      case 'incoming':
+      default:
+        color = Colors.yellow.withOpacity(0.1);
+        textColor = Colors.yellow[700]!;
+        label = "Incoming";
+        break;
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: status == "In Progress"
-            ? Colors.green.withOpacity(0.2)
-            : Colors.yellow.withOpacity(0.1),
+        color: color,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: CustomText(
-        title: status,
-        fontSize: 12,
-        textColor: status == "In Progress" ? Colors.green : Colors.yellow[700],
-      ),
+      child: CustomText(title: label, fontSize: 12, textColor: textColor),
     );
   }
 }

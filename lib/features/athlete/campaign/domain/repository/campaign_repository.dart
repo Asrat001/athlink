@@ -1,6 +1,7 @@
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_model.dart';
 import 'package:athlink/features/athlete/campaign/domain/models/campaign_detail_model.dart';
+import 'package:athlink/features/athlete/campaign/domain/models/sponsor_search_response.dart';
 
 abstract class CampaignRepository {
   Future<ApiResponse<List<CampaignModel>>> getCampaigns();
@@ -43,5 +44,12 @@ abstract class CampaignRepository {
   Future<ApiResponse<void>> toggleCampaignActive({
     required String id,
     required bool isActive,
+  });
+  Future<ApiResponse<SponsorSearchResponse>> searchSponsors({
+    required String query,
+  });
+  Future<ApiResponse<void>> updatePreferredSponsors({
+    required String id,
+    required List<String> sponsorIds,
   });
 }

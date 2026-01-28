@@ -34,11 +34,19 @@ class GoalMilestone {
 }
 
 class Sponsor {
+  final String? id;
   final String name;
   final String category;
-  final String logoUrl;
+  final String? profileImageUrl;
+  final bool? isOnline;
 
-  Sponsor({required this.name, required this.category, required this.logoUrl});
+  Sponsor({
+    this.id,
+    required this.name,
+    required this.category,
+    this.profileImageUrl,
+    this.isOnline,
+  });
 }
 
 class SponsorshipPreference {

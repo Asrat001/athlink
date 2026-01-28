@@ -66,11 +66,15 @@ class SponsorGridSummary extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.flash_on,
-                    color: Colors.orange,
-                    size: 28,
-                  ), // Placeholder logo
+                  if (sponsor.profileImageUrl != null &&
+                      sponsor.profileImageUrl!.isNotEmpty)
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(sponsor.profileImageUrl!),
+                      backgroundColor: Colors.transparent,
+                    )
+                  else
+                    const Icon(Icons.flash_on, color: Colors.orange, size: 28),
                   const SizedBox(height: 8),
                   CustomText(
                     title: sponsor.name,
