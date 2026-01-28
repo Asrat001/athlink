@@ -15,6 +15,9 @@ class ChatBubbleText extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUserId = sl<LocalStorageService>().getUserData()?.id ?? '';
     final isMe = message.isFromMe(currentUserId);
+    // debugPrint(
+    //   "ChatBubbleText: currentUserId=$currentUserId, senderId=${message.sender.id}, isMe=$isMe",
+    // );
     final radius = BorderRadius.only(
       topLeft: Radius.circular(isMe ? 12 : 6),
       topRight: Radius.circular(isMe ? 6 : 12),

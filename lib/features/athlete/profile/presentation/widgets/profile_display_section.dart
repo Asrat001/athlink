@@ -1,7 +1,9 @@
 import 'package:athlink/features/athlete/profile/domain/models/profile_model.dart';
+import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileDisplaySection extends StatelessWidget {
   final ProfileModel? profile; // Changed to nullable
@@ -65,7 +67,26 @@ class ProfileDisplaySection extends StatelessWidget {
                   ),
           ],
         ),
+        if(profile!.sport != null)
         const SizedBox(height: 16),
+      Row(
+        spacing: 16,
+        children: [
+                  Text(
+          profile!.sport?[0].name ?? "",
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        IconButton(onPressed: () {
+         context.push(Routes.selectSportScreen);
+        }, 
+        icon: Icon(Icons.edit,size: 14,color: AppColors.white.withValues(alpha: 0.7),))
+        ],
+      ),
+        const SizedBox(height: 8),
         isLoading
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

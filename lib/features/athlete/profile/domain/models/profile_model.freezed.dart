@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileModel {
 
- String get name;@JsonKey(defaultValue: "") String get country;@JsonKey(defaultValue: "") String get location;@JsonKey(defaultValue: "") String get bio; String? get profilePhoto; String? get coverPhoto;
+ String get name;@JsonKey(defaultValue: "") String get country;@JsonKey(defaultValue: "") String get location;@JsonKey(defaultValue: "") String get bio; String? get profilePhoto; String? get coverPhoto; List<Sport>? get sport;
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ProfileModelCopyWith<ProfileModel> get copyWith => _$ProfileModelCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileModel&&(identical(other.name, name) || other.name == name)&&(identical(other.country, country) || other.country == country)&&(identical(other.location, location) || other.location == location)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileModel&&(identical(other.name, name) || other.name == name)&&(identical(other.country, country) || other.country == country)&&(identical(other.location, location) || other.location == location)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&const DeepCollectionEquality().equals(other.sport, sport));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,country,location,bio,profilePhoto,coverPhoto);
+int get hashCode => Object.hash(runtimeType,name,country,location,bio,profilePhoto,coverPhoto,const DeepCollectionEquality().hash(sport));
 
 @override
 String toString() {
-  return 'ProfileModel(name: $name, country: $country, location: $location, bio: $bio, profilePhoto: $profilePhoto, coverPhoto: $coverPhoto)';
+  return 'ProfileModel(name: $name, country: $country, location: $location, bio: $bio, profilePhoto: $profilePhoto, coverPhoto: $coverPhoto, sport: $sport)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ProfileModelCopyWith<$Res>  {
   factory $ProfileModelCopyWith(ProfileModel value, $Res Function(ProfileModel) _then) = _$ProfileModelCopyWithImpl;
 @useResult
 $Res call({
- String name,@JsonKey(defaultValue: "") String country,@JsonKey(defaultValue: "") String location,@JsonKey(defaultValue: "") String bio, String? profilePhoto, String? coverPhoto
+ String name,@JsonKey(defaultValue: "") String country,@JsonKey(defaultValue: "") String location,@JsonKey(defaultValue: "") String bio, String? profilePhoto, String? coverPhoto, List<Sport>? sport
 });
 
 
@@ -65,7 +65,7 @@ class _$ProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? country = null,Object? location = null,Object? bio = null,Object? profilePhoto = freezed,Object? coverPhoto = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? country = null,Object? location = null,Object? bio = null,Object? profilePhoto = freezed,Object? coverPhoto = freezed,Object? sport = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,8 @@ as String,location: null == location ? _self.location : location // ignore: cast
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
 as String?,coverPhoto: freezed == coverPhoto ? _self.coverPhoto : coverPhoto // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,sport: freezed == sport ? _self.sport : sport // ignore: cast_nullable_to_non_nullable
+as List<Sport>?,
   ));
 }
 
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto,  List<Sport>? sport)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileModel() when $default != null:
-return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto);case _:
+return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto,_that.sport);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.name,_that.country,_that.location,_that.bio,_that.profileP
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto,  List<Sport>? sport)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileModel():
-return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto);case _:
+return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto,_that.sport);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.name,_that.country,_that.location,_that.bio,_that.profileP
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(defaultValue: "")  String country, @JsonKey(defaultValue: "")  String location, @JsonKey(defaultValue: "")  String bio,  String? profilePhoto,  String? coverPhoto,  List<Sport>? sport)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileModel() when $default != null:
-return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto);case _:
+return $default(_that.name,_that.country,_that.location,_that.bio,_that.profilePhoto,_that.coverPhoto,_that.sport);case _:
   return null;
 
 }
@@ -214,7 +215,7 @@ return $default(_that.name,_that.country,_that.location,_that.bio,_that.profileP
 @JsonSerializable()
 
 class _ProfileModel implements ProfileModel {
-  const _ProfileModel({required this.name, @JsonKey(defaultValue: "") required this.country, @JsonKey(defaultValue: "") required this.location, @JsonKey(defaultValue: "") required this.bio, this.profilePhoto, this.coverPhoto});
+  const _ProfileModel({required this.name, @JsonKey(defaultValue: "") required this.country, @JsonKey(defaultValue: "") required this.location, @JsonKey(defaultValue: "") required this.bio, this.profilePhoto, this.coverPhoto, final  List<Sport>? sport}): _sport = sport;
   factory _ProfileModel.fromJson(Map<String, dynamic> json) => _$ProfileModelFromJson(json);
 
 @override final  String name;
@@ -223,6 +224,15 @@ class _ProfileModel implements ProfileModel {
 @override@JsonKey(defaultValue: "") final  String bio;
 @override final  String? profilePhoto;
 @override final  String? coverPhoto;
+ final  List<Sport>? _sport;
+@override List<Sport>? get sport {
+  final value = _sport;
+  if (value == null) return null;
+  if (_sport is EqualUnmodifiableListView) return _sport;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileModel&&(identical(other.name, name) || other.name == name)&&(identical(other.country, country) || other.country == country)&&(identical(other.location, location) || other.location == location)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileModel&&(identical(other.name, name) || other.name == name)&&(identical(other.country, country) || other.country == country)&&(identical(other.location, location) || other.location == location)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&const DeepCollectionEquality().equals(other._sport, _sport));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,country,location,bio,profilePhoto,coverPhoto);
+int get hashCode => Object.hash(runtimeType,name,country,location,bio,profilePhoto,coverPhoto,const DeepCollectionEquality().hash(_sport));
 
 @override
 String toString() {
-  return 'ProfileModel(name: $name, country: $country, location: $location, bio: $bio, profilePhoto: $profilePhoto, coverPhoto: $coverPhoto)';
+  return 'ProfileModel(name: $name, country: $country, location: $location, bio: $bio, profilePhoto: $profilePhoto, coverPhoto: $coverPhoto, sport: $sport)';
 }
 
 
@@ -257,7 +267,7 @@ abstract mixin class _$ProfileModelCopyWith<$Res> implements $ProfileModelCopyWi
   factory _$ProfileModelCopyWith(_ProfileModel value, $Res Function(_ProfileModel) _then) = __$ProfileModelCopyWithImpl;
 @override @useResult
 $Res call({
- String name,@JsonKey(defaultValue: "") String country,@JsonKey(defaultValue: "") String location,@JsonKey(defaultValue: "") String bio, String? profilePhoto, String? coverPhoto
+ String name,@JsonKey(defaultValue: "") String country,@JsonKey(defaultValue: "") String location,@JsonKey(defaultValue: "") String bio, String? profilePhoto, String? coverPhoto, List<Sport>? sport
 });
 
 
@@ -274,7 +284,7 @@ class __$ProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? country = null,Object? location = null,Object? bio = null,Object? profilePhoto = freezed,Object? coverPhoto = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? country = null,Object? location = null,Object? bio = null,Object? profilePhoto = freezed,Object? coverPhoto = freezed,Object? sport = freezed,}) {
   return _then(_ProfileModel(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
@@ -282,7 +292,8 @@ as String,location: null == location ? _self.location : location // ignore: cast
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
 as String?,coverPhoto: freezed == coverPhoto ? _self.coverPhoto : coverPhoto // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,sport: freezed == sport ? _self._sport : sport // ignore: cast_nullable_to_non_nullable
+as List<Sport>?,
   ));
 }
 

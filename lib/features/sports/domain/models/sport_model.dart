@@ -13,7 +13,20 @@ abstract class Sport with _$Sport {
     required DateTime createdAt,
     required DateTime updatedAt,
     @JsonKey(name: "sportCategory") required String sportCategoryId,
+    @JsonKey(name:"categoryId")SportCategory? sportCategory,
   }) = _Sport;
 
   factory Sport.fromJson(Map<String, dynamic> json) => _$SportFromJson(json);
+}
+
+
+@freezed
+abstract class SportCategory with _$SportCategory {
+  const factory SportCategory({
+    @JsonKey(name: "_id") required String id,
+    required String name,
+  }) = _SportCategory;
+
+  factory SportCategory.fromJson(Map<String, dynamic> json) =>
+      _$SportCategoryFromJson(json);
 }

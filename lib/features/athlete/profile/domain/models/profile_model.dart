@@ -1,3 +1,4 @@
+import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'profile_model.freezed.dart';
@@ -12,6 +13,8 @@ abstract class ProfileModel with _$ProfileModel {
     @JsonKey(defaultValue: "") required String bio,
     String? profilePhoto,
     String? coverPhoto,
+    List<Sport>? sport,
+
   }) = _ProfileModel;
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) =>

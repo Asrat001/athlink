@@ -1,8 +1,18 @@
-import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class AppHelpers {
   AppHelpers._();
+
+  static String getDeviceType() {
+    if (Platform.isAndroid) {
+      return 'android';
+    } else if (Platform.isIOS) {
+      return 'ios';
+    } else {
+      return 'web';
+    }
+  }
 
   // Network connection toast
   static showNoConnectionSnackBar(BuildContext context) {

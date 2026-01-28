@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:athlink/features/athlete/profile/presentation/providers/athlete_profile_provider.dart';
 import 'package:athlink/features/sports/domain/models/sport_model.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
@@ -42,11 +43,13 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
       ref.read(sportsProvider.notifier).getSports();
 
       ref.read(sportSelectionProvider.notifier).setSuccessCallback(() {
+      
         if (mounted) {
           final user = sl<LocalStorageService>().getUserData();
           if (user != null) {
             if (user.role == 'athlete') {
               context.go(Routes.athleteDashBoardRouteName);
+              ref.read(athleteProfileProvider.notifier).getProfile(user.id);
             } else if (user.role == 'sponsor') {
               context.go(Routes.dashBoardRouteName);
             } else {

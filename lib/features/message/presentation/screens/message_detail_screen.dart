@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
 import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/providers/states/chat_state.dart';
@@ -344,7 +346,8 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
   @override
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatProvider(widget.conversationId));
-
+    final user=sl<LocalStorageService>().getUserData();
+    final isAthlet=user?.role?.contains("athlet")??false;
     ref.listen(uploadStateProvider, (previous, next) {
       next.when(
         data: (attachments) {
@@ -366,7 +369,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
         : widget.isOnline;
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor:isAthlet?Colors.black:AppColors.lightBackground,
       body: GestureDetector(
         onTap: _removeOverlay,
         child: SafeArea(
@@ -378,6 +381,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
                 logo: widget.logo.isEmpty ? "" : widget.logo,
                 meetIconKey: _meetIconKey,
                 onMeetPressed: _showMeetConfirmationOverlay,
+                isAthlet: isAthlet,
               ),
               const Divider(height: 1, color: AppColors.divider),
               Expanded(
@@ -443,6 +447,7 @@ class _MessageDetailScreenState extends ConsumerState<MessageDetailScreen>
                 onShowProposalSelector: _showProposalSelectionSheet,
                 onSendProposal: _sendProposalMessage,
                 draftProposal: _draftProposal,
+                isAthlet: isAthlet,
               ),
             ],
           ),
