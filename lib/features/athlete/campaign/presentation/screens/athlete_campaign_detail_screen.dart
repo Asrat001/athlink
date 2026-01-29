@@ -284,7 +284,7 @@ class _AthleteCampaignDetailScreenState
                 id: widget.campaign.id ?? '',
                 title: goal.title,
                 targetDate: goal.date,
-                status: "PENDING",
+                status: goal.status,
                 onSuccess: () {
                   setState(() => _isInitialized = false);
                   if (mounted) Navigator.pop(context);
@@ -585,7 +585,10 @@ class _AthleteCampaignDetailScreenState
           onToggle: (v) => setState(() => _sections["Funded Level"] = v),
           onAction: _handleFundedLevel,
           content: _fundedPercentage > 0
-              ? FundedLevelSummary(fundedPercentage: _fundedPercentage)
+              ? FundedLevelSummary(
+                  fundedPercentage: _fundedPercentage,
+                  totalAmount: _financialGoal?.amount ?? 0.0,
+                )
               : null,
         ),
         CampaignDetailTile(

@@ -1,3 +1,4 @@
+import 'package:athlink/features/athlete/campaign/domain/models/campaign_detail_model.dart';
 import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,7 +15,7 @@ abstract class ProfileModel with _$ProfileModel {
     String? profilePhoto,
     String? coverPhoto,
     List<Sport>? sport,
-
+    CampaignDetailModel? latestActiveCampaign,
   }) = _ProfileModel;
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) =>

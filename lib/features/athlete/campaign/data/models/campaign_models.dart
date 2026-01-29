@@ -23,6 +23,9 @@ class GoalMilestone {
   final String? id;
   final String title;
   final DateTime date;
+
+  /// Status of the milestone.
+  /// Allowed values: 'incoming', 'inprogress', 'completed'
   final String status;
 
   GoalMilestone({

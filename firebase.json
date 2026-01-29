@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"ios":{"default":{"projectId":"athlink-notifi","appId":"1:291665971940:ios:70ad2fb76d05621e23baf1","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"athlink-notifi","configurations":{"ios":"1:291665971940:ios:70ad2fb76d05621e23baf1"}}}}}}

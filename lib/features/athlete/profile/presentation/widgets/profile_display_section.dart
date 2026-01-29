@@ -67,25 +67,31 @@ class ProfileDisplaySection extends StatelessWidget {
                   ),
           ],
         ),
-        if(profile!.sport != null)
-        const SizedBox(height: 16),
-      Row(
-        spacing: 16,
-        children: [
-                  Text(
-          profile!.sport?[0].name ?? "",
-          style: TextStyle(
-            color: AppColors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-          ),
+        if (profile!.sport != null) const SizedBox(height: 16),
+        Row(
+          spacing: 16,
+          children: [
+            Text(
+              profile!.sport?[0].name ?? "",
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            if (isSelf)
+              IconButton(
+                onPressed: () {
+                  context.push(Routes.selectSportScreen);
+                },
+                icon: Icon(
+                  Icons.edit,
+                  size: 14,
+                  color: AppColors.white.withValues(alpha: 0.7),
+                ),
+              ),
+          ],
         ),
-        IconButton(onPressed: () {
-         context.push(Routes.selectSportScreen);
-        }, 
-        icon: Icon(Icons.edit,size: 14,color: AppColors.white.withValues(alpha: 0.7),))
-        ],
-      ),
         const SizedBox(height: 8),
         isLoading
             ? Column(

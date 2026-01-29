@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 @pragma('vm:entry-point')
@@ -37,10 +40,79 @@ class NotificationService {
     await getFcmToken();
   }
 
-  Future<String?> getFcmToken() async {
-    final token = await _messaging.getToken();
-    log('FCM Token: $token');
-    return token;
+  Future<String> getFcmToken() async {
+    final messaging = FirebaseMessaging.instance;
+    debugPrint('[FCM] Initializing token retrieval...');
+
+    try {
+      // 1. Request Permissions first (Essential for iOS APNS)
+      final settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        provisional: false,
+      );
+      debugPrint('[FCM] Permission status: ${settings.authorizationStatus}');
+
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        debugPrint('[FCM] Running on iOS platform - Waiting for APNS');
+
+        // 2. iOS specific: Wait for APNS token before requesting FCM token
+        String? apnsToken;
+        int apnsRetry = 0;
+
+        // Loop to wait for APNS (Simulators will stay null, which is fine)
+        while (apnsToken == null && apnsRetry < 3) {
+          apnsToken = await messaging.getAPNSToken();
+          if (apnsToken == null) {
+            debugPrint('[FCM] APNS null, retrying in 2s... ($apnsRetry/5)');
+            await Future.delayed(const Duration(milliseconds: 500));
+            apnsRetry++;
+          }
+        }
+
+        debugPrint('[FCM] APNS Token Result: $apnsToken');
+
+        // On physical iOS, if APNS is still null, FCM will likely fail
+        if (apnsToken == null && !kDebugMode) {
+          debugPrint(
+            '[FCM] Warning: APNS is null on physical device. FCM might fail.',
+          );
+        }
+      }
+
+      // 3. Get FCM Token with internal retry logic
+      final token = await _getTokenWithRetry(messaging);
+      return token;
+    } catch (e) {
+      debugPrint('[FCM] Critical error: $e');
+      return "";
+    }
+  }
+
+  Future<String> _getTokenWithRetry(
+    FirebaseMessaging messaging, {
+    int retries = 3,
+  }) async {
+    for (int i = 1; i <= retries; i++) {
+      try {
+        debugPrint('[FCM] Attempt $i to get FCM token');
+
+        final token = await messaging.getToken();
+
+        if (token != null && token.isNotEmpty) {
+          debugPrint('[FCM] Successfully retrieved FCM token');
+          return token;
+        }
+      } catch (e) {
+        debugPrint('[FCM] Attempt $i failed: $e');
+      }
+
+      if (i < retries) {
+        await Future.delayed(Duration(milliseconds: 500));
+      }
+    }
+    return "";
   }
 
   Future<void> _requestPermission() async {

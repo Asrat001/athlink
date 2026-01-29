@@ -30,8 +30,8 @@ class GoalTimelineSummary extends StatelessWidget {
                   // Vertical Timeline Line
                   Column(
                     children: [
-                      _buildIndicator(index),
-                      if (index != milestones.length - 1 || true)
+                      _buildIndicator(milestones[index].status),
+                      if (index != milestones.length - 1)
                         Expanded(
                           child: Container(
                             width: 1,
@@ -133,19 +133,23 @@ class GoalTimelineSummary extends StatelessWidget {
     );
   }
 
-  Widget _buildIndicator(int index) {
-    // Example: first is checked, second is percentage, third is trophy
-    if (index == 0)
-      return const Icon(Icons.check_circle, color: Colors.orange, size: 30);
-    if (index == 1) return _buildPercentageIndicator("40%");
-    return const Icon(
-      Icons.emoji_events_outlined,
-      color: Colors.orange,
-      size: 30,
-    );
+  Widget _buildIndicator(String status) {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return const Icon(Icons.check_circle, color: Colors.orange, size: 30);
+      case 'inprogress':
+        return _buildProgressIndicator();
+      case 'incoming':
+      default:
+        return const Icon(
+          Icons.radio_button_unchecked,
+          color: Colors.white24,
+          size: 30,
+        );
+    }
   }
 
-  Widget _buildPercentageIndicator(String text) {
+  Widget _buildProgressIndicator() {
     return Container(
       width: 30,
       height: 30,
@@ -153,8 +157,14 @@ class GoalTimelineSummary extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.orange, width: 2),
       ),
-      child: Center(
-        child: CustomText(title: text, fontSize: 8, textColor: Colors.orange),
+      child: const Center(
+        child: Padding(
+          padding: EdgeInsets.all(6),
+          child: CircularProgressIndicator(
+            color: Colors.orange,
+            strokeWidth: 2,
+          ),
+        ),
       ),
     );
   }

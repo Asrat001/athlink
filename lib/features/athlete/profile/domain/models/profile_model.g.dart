@@ -17,6 +17,11 @@ _ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) =>
       sport: (json['sport'] as List<dynamic>?)
           ?.map((e) => Sport.fromJson(e as Map<String, dynamic>))
           .toList(),
+      latestActiveCampaign: json['latestActiveCampaign'] == null
+          ? null
+          : CampaignDetailModel.fromJson(
+              json['latestActiveCampaign'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ProfileModelToJson(_ProfileModel instance) =>
@@ -28,4 +33,5 @@ Map<String, dynamic> _$ProfileModelToJson(_ProfileModel instance) =>
       'profilePhoto': instance.profilePhoto,
       'coverPhoto': instance.coverPhoto,
       'sport': instance.sport,
+      'latestActiveCampaign': instance.latestActiveCampaign,
     };

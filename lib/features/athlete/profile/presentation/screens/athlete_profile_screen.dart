@@ -203,7 +203,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                   initiallyConnected: false,
                 ),
                 const SizedBox(height: 32),
-                const FundingProgressCard(),
+                FundingProgressCard(campaign: profile?.latestActiveCampaign),
                 const SizedBox(height: 24),
                 QuickActionsGrid(athleteId: id, isSelf: widget.isSelf),
                 const SizedBox(height: 32),

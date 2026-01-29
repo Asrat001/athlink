@@ -9,6 +9,7 @@ import 'package:athlink/features/sponsor/profile/presenation/providers/profile_p
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -71,21 +72,25 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
 
   @override
   Widget build(BuildContext context) {
-    final user=sl<LocalStorageService>().getUserData();
-    final isAthlet=user?.role?.contains("athlet")??false;
+    final user = sl<LocalStorageService>().getUserData();
+    final isAthlet = user?.role?.contains("athlet") ?? false;
     final searchQuery = ref.watch(searchQueryProvider);
 
-    return Scaffold(    
+    return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0.0,
+        backgroundColor: isAthlet ? Colors.black : AppColors.white,
+        systemOverlayStyle: isAthlet
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
-      backgroundColor:isAthlet?Colors.black: AppColors.white,
+      backgroundColor: isAthlet ? Colors.black : AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                color:isAthlet?Colors.black: AppColors.white,
+                color: isAthlet ? Colors.black : AppColors.white,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
@@ -112,7 +117,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                           style: GoogleFonts.inter(
                             fontSize: 32,
                             fontWeight: FontWeight.w600,
-                            color:isAthlet?Colors.white: AppColors.black,
+                            color: isAthlet ? Colors.white : AppColors.black,
                           ),
                         ),
                         _buildNotificationIcon(),
@@ -135,12 +140,12 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                 ],
               ),
             ),
-    
+
             const SizedBox(height: 12),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color:isAthlet?Colors.black: AppColors.white,
+                  color: isAthlet ? Colors.black : AppColors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -164,9 +169,13 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                             child: TabBar(
                               controller: _tabController,
                               isScrollable: true,
-                              indicatorColor:isAthlet?Colors.white: AppColors.primary,
+                              indicatorColor: isAthlet
+                                  ? Colors.white
+                                  : AppColors.primary,
                               indicatorWeight: 3,
-                              labelColor:isAthlet?Colors.white: AppColors.black,
+                              labelColor: isAthlet
+                                  ? Colors.white
+                                  : AppColors.black,
                               unselectedLabelColor: AppColors.grey,
                               labelStyle: GoogleFonts.inter(
                                 fontSize: 15,
@@ -187,17 +196,17 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color:isAthlet?Colors.white: AppColors.grey600.withValues(
-                                    alpha: .3,
-                                  ),
+                                  color: isAthlet
+                                      ? Colors.white
+                                      : AppColors.grey600.withValues(alpha: .3),
                                   width: 1.5,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: SvgPicture.asset(
                                 "assets/images/chat-add.svg",
-                                colorFilter:  ColorFilter.mode(
-                                  isAthlet?Colors.white: AppColors.black,
+                                colorFilter: ColorFilter.mode(
+                                  isAthlet ? Colors.white : AppColors.black,
                                   BlendMode.srcIn,
                                 ),
                               ),

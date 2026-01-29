@@ -43,13 +43,14 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
       ref.read(sportsProvider.notifier).getSports();
 
       ref.read(sportSelectionProvider.notifier).setSuccessCallback(() {
-      
         if (mounted) {
           final user = sl<LocalStorageService>().getUserData();
           if (user != null) {
             if (user.role == 'athlete') {
               context.go(Routes.athleteDashBoardRouteName);
-              ref.read(athleteProfileProvider.notifier).getProfile(user.id);
+              ref
+                  .read(athleteProfileProvider(user.id).notifier)
+                  .getProfile(user.id);
             } else if (user.role == 'sponsor') {
               context.go(Routes.dashBoardRouteName);
             } else {
@@ -182,7 +183,7 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
           border: Border.all(color: AppColors.extraLightGrey, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: AppColors.black.withOpacity(0.08),
+              color: AppColors.black.withValues(alpha: 0.08),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -350,7 +351,7 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.grey.withOpacity(0.25),
+                            color: AppColors.grey.withValues(alpha: 0.25),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -442,9 +443,11 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
                 padding: const EdgeInsets.all(12),
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                  border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: CustomText(
                   title: sportSelectionState.errorMessage!,
