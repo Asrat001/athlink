@@ -150,9 +150,9 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
           hasNoData: () => _buildScreenContent(isInitial: true, id: id),
           loaded: (profile) {
             if (!_isEditing) {
-              _nameController.text = profile.name;
-              _locationController.text = profile.location;
-              _bioController.text = profile.bio;
+              _nameController.text = profile.name ?? "";
+              _locationController.text = profile.location ?? "";
+              _bioController.text = profile.bio ?? "";
             }
             return _buildScreenContent(profile: profile, id: id);
           },

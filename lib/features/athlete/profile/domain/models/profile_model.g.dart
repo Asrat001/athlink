@@ -8,10 +8,10 @@ part of 'profile_model.dart';
 
 _ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) =>
     _ProfileModel(
-      name: json['name'] as String,
-      country: json['country'] as String? ?? '',
-      location: json['location'] as String? ?? '',
-      bio: json['bio'] as String? ?? '',
+      name: json['name'] as String?,
+      country: json['country'] as String?,
+      location: json['location'] as String?,
+      bio: json['bio'] as String?,
       profilePhoto: json['profilePhoto'] as String?,
       coverPhoto: json['coverPhoto'] as String?,
       sport: (json['sport'] as List<dynamic>?)

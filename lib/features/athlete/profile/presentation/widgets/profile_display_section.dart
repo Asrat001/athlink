@@ -32,7 +32,7 @@ class ProfileDisplaySection extends StatelessWidget {
               child: isLoading
                   ? _buildPlaceholder(width: 200, height: 35)
                   : CustomText(
-                      title: profile!.name,
+                      title: profile?.name ?? "Athlete",
                       fontSize: 30,
                       textColor: AppColors.white,
                       fontWeight: FontWeight.w700,
@@ -60,38 +60,40 @@ class ProfileDisplaySection extends StatelessWidget {
             isLoading
                 ? _buildPlaceholder(width: 120, height: 16)
                 : CustomText(
-                    title: profile!.location,
+                    title: profile?.location ?? "No location set",
                     fontSize: 14,
                     textColor: AppColors.orangeGradientStart,
                     fontWeight: FontWeight.w500,
                   ),
           ],
         ),
-        if (profile!.sport != null) const SizedBox(height: 16),
-        Row(
-          spacing: 16,
-          children: [
-            Text(
-              profile!.sport?[0].name ?? "",
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            if (isSelf)
-              IconButton(
-                onPressed: () {
-                  context.push(Routes.selectSportScreen);
-                },
-                icon: Icon(
-                  Icons.edit,
-                  size: 14,
-                  color: AppColors.white.withValues(alpha: 0.7),
+        if (profile?.sport != null && profile!.sport!.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Row(
+            spacing: 16,
+            children: [
+              Text(
+                profile!.sport?[0].name ?? "",
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-          ],
-        ),
+              if (isSelf)
+                IconButton(
+                  onPressed: () {
+                    context.push(Routes.selectSportScreen);
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    size: 14,
+                    color: AppColors.white.withValues(alpha: 0.7),
+                  ),
+                ),
+            ],
+          ),
+        ],
         const SizedBox(height: 8),
         isLoading
             ? Column(
@@ -103,9 +105,9 @@ class ProfileDisplaySection extends StatelessWidget {
                 ],
               )
             : CustomText(
-                title: profile!.bio.isEmpty
+                title: (profile?.bio ?? "").isEmpty
                     ? "No bio added yet."
-                    : profile!.bio,
+                    : profile!.bio!,
                 fontSize: 15,
                 textColor: AppColors.white.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w400,

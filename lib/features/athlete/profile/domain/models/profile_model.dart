@@ -8,10 +8,10 @@ part 'profile_model.g.dart';
 @freezed
 abstract class ProfileModel with _$ProfileModel {
   const factory ProfileModel({
-    required String name,
-    @JsonKey(defaultValue: "") required String country,
-    @JsonKey(defaultValue: "") required String location,
-    @JsonKey(defaultValue: "") required String bio,
+    String? name,
+    String? country,
+    String? location,
+    String? bio,
     String? profilePhoto,
     String? coverPhoto,
     List<Sport>? sport,
