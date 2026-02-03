@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'job_post_request.freezed.dart';
@@ -45,7 +46,8 @@ abstract class UpdateJobPostRequest with _$UpdateJobPostRequest {
     String? timelineEnd,
     String? requirements,
     List<String>? media,
-    String? budget,
+    double? price,
+    String? currency,
   }) = _UpdateJobPostRequest;
 
   factory UpdateJobPostRequest.fromJson(Map<String, dynamic> json) =>

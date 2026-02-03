@@ -208,6 +208,8 @@ class _StepTwoState extends State<StepTwo> {
                 hint: "Start Date",
                 controller: widget.startDateController,
                 onTap: _pickStartDate,
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Start date is required' : null,
               ),
             ),
             const SizedBox(width: 12),
@@ -216,6 +218,8 @@ class _StepTwoState extends State<StepTwo> {
                 hint: "End Date",
                 controller: widget.endDateController,
                 onTap: _pickEndDate,
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'End date is required' : null,
               ),
             ),
           ],
@@ -244,12 +248,14 @@ class DateField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final VoidCallback onTap;
+  final String? Function(String?)? validator;
 
   const DateField({
     super.key,
     required this.hint,
     required this.controller,
     required this.onTap,
+    this.validator,
   });
 
   @override
@@ -257,15 +263,18 @@ class DateField extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AbsorbPointer(
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           readOnly: true,
-          style: const TextStyle(color: AppColors.textPrimary),
+          validator: validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(color: AppColors.textGrey),
             filled: true,
             fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
+            errorMaxLines: 5,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,

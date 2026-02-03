@@ -1,9 +1,7 @@
-
 import 'package:athlink/features/sponsor/manage/data/datasource/job_list_remote_datasource.dart';
 import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart';
 import 'package:athlink/features/sponsor/manage/domain/repository/job_list_repository.dart';
 import 'package:athlink/core/handlers/api_response.dart';
-
 
 class JobListRepositoryImpl implements JobListRepository {
   final JobListRemoteDataSource _remoteDataSource;
@@ -62,5 +60,12 @@ class JobListRepositoryImpl implements JobListRepository {
     return await _remoteDataSource.withdrawInvitation(
       invitationId: invitationId,
     );
+  }
+
+  @override
+  Future<ApiResponse<DeleteJobResponse>> deleteJobPost({
+    required String jobId,
+  }) async {
+    return await _remoteDataSource.deleteJobPost(jobId: jobId);
   }
 }

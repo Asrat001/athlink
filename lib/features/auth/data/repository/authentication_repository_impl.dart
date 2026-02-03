@@ -78,9 +78,7 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
         },
         failure: (error) {
           // Google sign-in failed (user canceled or other issue)
-          return ApiResponse.failure(
-            error: NetworkExceptions.defaultError(error.toString()),
-          );
+          return ApiResponse.failure(error: error);
         },
       );
     } catch (e) {

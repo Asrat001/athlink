@@ -196,6 +196,27 @@ class AppHelpers {
       ),
     );
   }
+
+  static String getCurrencySymbol(String currencyCode) {
+    switch (currencyCode.toUpperCase()) {
+      case 'USD':
+        return '\$';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      case 'JPY':
+        return '¥';
+      case 'AED':
+        return 'د.إ';
+      case 'CNY':
+        return '¥';
+      case 'ETB':
+        return 'Br';
+      default:
+        return '\$';
+    }
+  }
 }
 
 class Address {

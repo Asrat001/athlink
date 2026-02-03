@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../constant/constants.dart';
 import '../../theme/app_colors.dart';
@@ -79,7 +78,7 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
       minLines: widget.minLines,
       maxLines: widget.maxLines,
       style: customTheme.textTheme.bodyMedium?.copyWith(
-        color: Colors.grey.shade600
+        color: Colors.grey.shade600,
       ),
       textInputAction: widget.textInputAction,
       obscureText: obscuringText,
@@ -92,34 +91,36 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: customTheme.textTheme.bodySmall?.copyWith(
-          color: Colors.grey.shade600
+          color: Colors.grey.shade600,
         ),
         labelText: widget.labelText,
         labelStyle: customTheme.textTheme.bodySmall?.copyWith(
-            color: Colors.grey.shade600
+          color: Colors.grey.shade600,
         ),
         floatingLabelBehavior: FloatingLabelBehavior.never,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(cBorderRadius),
-          borderSide: BorderSide(color:Colors.grey.shade800, width: 1),
+          borderSide: BorderSide(color: Colors.grey.shade800, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.radius ?? 4),
-          borderSide: BorderSide(color:Colors.grey.shade400, width: 1),
+          borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.radius ?? 4),
-          borderSide: BorderSide(color:AppColors.primary.withOpacity(0.6), width: 1),
+          borderSide: BorderSide(
+            color: AppColors.primary.withOpacity(0.6),
+            width: 1,
+          ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color:Colors.grey.shade800, width: 1),
+          borderSide: BorderSide(color: Colors.grey.shade800, width: 1),
         ),
-        errorBorder:OutlineInputBorder(
+        errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(0),
-          borderSide: BorderSide(color: Colors.red[300]!,width: 1)
-
-        ) ,
+          borderSide: BorderSide(color: Colors.red[300]!, width: 1),
+        ),
 
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10.0,
@@ -130,50 +131,49 @@ class _RoundedTextFormFieldState extends State<RoundedTextFormField> {
         counterText: widget.counterText,
         errorText: widget.errorText,
         errorStyle: widget.errorStyle,
+        errorMaxLines: 5,
 
-        prefixIcon:
-        widget.prefixIcon != null
+        prefixIcon: widget.prefixIcon != null
             ? Padding(
-          padding: const EdgeInsets.only(left: 18.0, right: 12.0),
-          child: widget.prefixIcon,
-        )
+                padding: const EdgeInsets.only(left: 18.0, right: 12.0),
+                child: widget.prefixIcon,
+              )
             : null,
         prefixIconConstraints: const BoxConstraints(
           maxWidth: double.infinity,
           maxHeight: 32.0,
         ),
 
-        suffixIcon:
-        widget.enableObscureTextToggle
+        suffixIcon: widget.enableObscureTextToggle
             ? Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Material(
-            color: Colors.transparent,
-            child: IconButton(
-              icon: AnimatedSwitcher(
-                duration: cFastAnimationDuration,
-                child: Icon(
-                  color: Colors.grey.shade500,
-                  obscuringText
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  key: Key(
-                    "ObscureTextIconButtonKeyValue=$obscuringText",
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    icon: AnimatedSwitcher(
+                      duration: cFastAnimationDuration,
+                      child: Icon(
+                        color: Colors.grey.shade500,
+                        obscuringText
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        key: Key(
+                          "ObscureTextIconButtonKeyValue=$obscuringText",
+                        ),
+                      ),
+                    ),
+                    splashRadius: 24.0,
+                    color: customTheme.colorScheme.onSurface,
+                    onPressed: () =>
+                        setState(() => obscuringText = !obscuringText),
                   ),
                 ),
-              ),
-              splashRadius: 24.0,
-              color: customTheme.colorScheme.onSurface,
-              onPressed:
-                  () => setState(() => obscuringText = !obscuringText),
-            ),
-          ),
-        )
+              )
             : widget.suffixIcon != null
             ? Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 18.0),
-          child: widget.suffixIcon,
-        )
+                padding: const EdgeInsets.only(left: 12.0, right: 18.0),
+                child: widget.suffixIcon,
+              )
             : null,
       ),
     );

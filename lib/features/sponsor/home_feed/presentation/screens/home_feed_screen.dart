@@ -11,6 +11,7 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:go_router/go_router.dart';
 
 /// ------------------------------------------------------------
@@ -119,6 +120,14 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
         child: Column(
           children: [
             _SearchHeader(
+              athletes: feedState.maybeWhen(
+                success: (data, _) => data.athletes,
+                orElse: () => [],
+              ),
+              sponsors: feedState.maybeWhen(
+                success: (data, _) => data.sponsors,
+                orElse: () => [],
+              ),
               isFilterOpen: isFilterOpen,
               onFilterTap: () => setState(() => isFilterOpen = !isFilterOpen),
               onNotificationTap: () =>
@@ -201,7 +210,10 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
       sponsorshipDone: (athlete?.sponsorshipDone ?? 0).toString(),
       highestSocialMediaPresence: athlete?.highestSocialMediaPresence ?? '0',
       sportCategory: sport.map((e) => e.name).join(", "),
-      onTap: () {},
+      onTap: () => context.push(
+        Routes.viewAthleteScreen,
+        extra: {'athleteId': athleteData.id, 'isSelf': false},
+      ),
     );
   }
 
@@ -314,11 +326,15 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
 /// SEARCH HEADER
 /// ------------------------------------------------------------
 class _SearchHeader extends StatelessWidget {
+  final List<Athlete> athletes;
+  final List<Sponsor> sponsors;
   final bool isFilterOpen;
   final VoidCallback onFilterTap;
   final VoidCallback onNotificationTap;
 
   const _SearchHeader({
+    required this.athletes,
+    required this.sponsors,
     required this.isFilterOpen,
     required this.onFilterTap,
     required this.onNotificationTap,
@@ -333,6 +349,8 @@ class _SearchHeader extends StatelessWidget {
         children: [
           Expanded(
             child: _SearchBar(
+              athletes: athletes,
+              sponsors: sponsors,
               isFilterOpen: isFilterOpen,
               onFilterTap: onFilterTap,
             ),
@@ -348,36 +366,55 @@ class _SearchHeader extends StatelessWidget {
 }
 
 class _SearchBar extends StatelessWidget {
+  final List<Athlete> athletes;
+  final List<Sponsor> sponsors;
   final bool isFilterOpen;
   final VoidCallback onFilterTap;
 
-  const _SearchBar({required this.isFilterOpen, required this.onFilterTap});
+  const _SearchBar({
+    required this.athletes,
+    required this.sponsors,
+    required this.isFilterOpen,
+    required this.onFilterTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
+    return InkWell(
+      onTap: () => context.push(
+        Routes.athleteSearchScreen,
+        extra: {
+          'athletes': athletes,
+          'sponsors': sponsors,
+          'isDarkMode': false,
+        },
       ),
-      child: Row(
-        children: [
-          SvgPicture.asset('assets/images/search.svg'),
-          const SizedBox(width: 8),
-          const Expanded(
-            child: Text('Search', style: TextStyle(color: Colors.grey)),
-          ),
-          InkWell(
-            onTap: onFilterTap,
-            child: SvgPicture.asset(
+      child: Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Colors.grey),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: CustomText(
+                title: 'Search athletes or brands...',
+                textColor: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+            SvgPicture.asset(
               isFilterOpen
                   ? "assets/images/filter_filled.svg"
                   : "assets/images/filter.svg",
+              colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

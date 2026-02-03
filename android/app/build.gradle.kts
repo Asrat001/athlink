@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.akilo.athlink"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "29.0.14206865" //"29.0.13113456 rc1"
+    ndkVersion = "28.0.13004108"
     // ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -41,14 +41,15 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-   signingConfigs {
-       create("release") {
-           keyAlias = keystoreProperties["keyAlias"] as String
-           keyPassword = keystoreProperties["keyPassword"] as String
-           storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-           storePassword = keystoreProperties["storePassword"] as String
-       }
-   }
+signingConfigs {
+        create("release") {
+            // Using 'getProperty' or safe access prevents the null pointer exception
+            keyAlias = keystoreProperties.getProperty("keyAlias") ?: ""
+            keyPassword = keystoreProperties.getProperty("keyPassword") ?: ""
+            storePassword = keystoreProperties.getProperty("storePassword") ?: ""
+            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+        }
+    }
 
 
 

@@ -1,17 +1,17 @@
-import 'dart:math';
-
 import 'package:athlink/features/sponsor/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart'
+    as manage_models;
 import 'package:athlink/features/sponsor/manage/presentation/providers/manage_navigation_provider.dart';
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/job_card_widget.dart';
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/no_jobs_card.dart';
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/stat_item.dart';
 import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/widgets/create_job_modal.dart';
-import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/posts_widget.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
-import 'package:athlink/shared/utils/url_helper.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
+import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,32 +54,31 @@ class JobListing extends ConsumerWidget {
 
     // Convert API jobs to dummy format for display
     final apiJobs = jobListState.jobPosts;
-    final companyName = jobListState.companyName ?? 'Company';
     final companyLogo = jobListState.companyLogo;
-    final List<String> randomPrices = [
-      "\$45",
-      "\$120",
-      "\$350",
-      "\$600",
-      "\$950",
-    ];
-
-    final _random = Random();
 
     final jobs = apiJobs.map((job) {
-      // 2. Pick a random price from the list above
-      String fallbackPrice = randomPrices[_random.nextInt(randomPrices.length)];
+      // Determine job image: prioritize mediaUrls, then sport icon
+      String jobImage = 'https://picsum.photos/400/300';
+      if (job.mediaUrls.isNotEmpty) {
+        jobImage = '$fileBaseUrl${job.mediaUrls.first}';
+      } else if (job.sportId.icon != null) {
+        jobImage = '$fileBaseUrl${job.sportId.icon}';
+      }
 
       return {
         "id": job.id,
         "type": "hiring",
-        "agencyLogo":
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Quartz_logo.svg/2560px-Quartz_logo.svg.png",
-        "agencyName": companyName,
+        "agencyLogo": jobImage,
+        "agencyName": job.title,
         "location": job.location,
-        "price": job.price.isNotEmpty ? job.price : fallbackPrice,
-        "title": job.title,
-        "tags": [],
+        "price": job.price.isNotEmpty
+            ? "${AppHelpers.getCurrencySymbol(job.currency)}${job.price}"
+            : "${AppHelpers.getCurrencySymbol(job.currency)}0",
+        "title": job.sportId.name,
+        "tags": [
+          if (job.timeline.startDate != null)
+            'Start: ${job.timeline.startDate!.day}/${job.timeline.startDate!.month}/${job.timeline.startDate!.year}',
+        ],
         "notifications": job.applicantCount,
         "description": job.description,
       };
@@ -120,7 +119,6 @@ class JobListing extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
 
-          // job cards
           Column(
             children: List.generate(
               jobs.length,
@@ -129,6 +127,12 @@ class JobListing extends ConsumerWidget {
                 onTap: () => ref
                     .read(manageNavigationProvider.notifier)
                     .showJobFromListing(index),
+                onDelete: () => _confirmDelete(context, ref, jobs[index]),
+                onEdit: () => _openCreateJobModal(
+                  context,
+                  ref,
+                  initialJob: apiJobs[index],
+                ),
               ),
             ),
           ),
@@ -137,7 +141,54 @@ class JobListing extends ConsumerWidget {
     );
   }
 
-  void _openCreateJobModal(BuildContext context, WidgetRef ref) {
+  void _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> job,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const CustomText(
+            title: 'Delete Job Post',
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+          content: CustomText(
+            title: 'Are you sure you want to delete "${job["agencyName"]}"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const CustomText(
+                title: 'Cancel',
+                textColor: AppColors.grey,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ref
+                    .read(jobListProvider.notifier)
+                    .deleteJobPost(jobId: job["id"]);
+              },
+              child: const CustomText(
+                title: 'Delete',
+                textColor: AppColors.red,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openCreateJobModal(
+    BuildContext context,
+    WidgetRef ref, {
+    manage_models.JobPostItem? initialJob,
+  }) {
     final profileState = ref.read(profileProvider);
     final sports = profileState.profileUser?.sport ?? [];
 
@@ -164,7 +215,7 @@ class JobListing extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => CreateJobModal(sports: sports),
+      builder: (_) => CreateJobModal(sports: sports, initialJob: initialJob),
     ).then((_) {
       // Restore the original status bar style when modal closes
       SystemChrome.setSystemUIOverlayStyle(originalStyle);

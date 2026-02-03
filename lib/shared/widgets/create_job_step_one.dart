@@ -3,6 +3,8 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:athlink/shared/utils/app_helpers.dart';
 
 class StepOne extends StatelessWidget {
   final List<ProfileSport> sports;
@@ -42,6 +44,8 @@ class StepOne extends StatelessWidget {
         InputField(
           hint: "e.g. Football Sponsorship Opportunity",
           controller: titleController,
+          validator: (value) =>
+              value?.trim().isEmpty ?? true ? 'Job title is required' : null,
         ),
         const SizedBox(height: 16),
         const SectionTitle(title: "Category"),
@@ -59,6 +63,8 @@ class StepOne extends StatelessWidget {
         InputField(
           hint: "e.g. Paris, France",
           controller: locationController,
+          validator: (value) =>
+              value?.trim().isEmpty ?? true ? 'Location is required' : null,
         ),
         const SizedBox(height: 16),
         const SectionTitle(title: "Description"),
@@ -67,13 +73,19 @@ class StepOne extends StatelessWidget {
           hint: "Write a detailed description...",
           maxLines: 4,
           controller: descriptionController,
+          validator: (value) =>
+              value?.trim().isEmpty ?? true ? 'Description is required' : null,
         ),
         const SizedBox(height: 16),
         const SectionTitle(title: "Budget "),
         const SizedBox(height: 8),
         InputField(
-          hint: "e.g. \$20,000",
+          hint: "e.g. 20000",
           controller: budgetController,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          validator: (value) =>
+              value?.trim().isEmpty ?? true ? 'Budget is required' : null,
         ),
         const SizedBox(height: 16),
         const SectionTitle(title: "Currency"),
@@ -90,7 +102,7 @@ class StepOne extends StatelessWidget {
             height: 40,
             width: 100,
             borderRadius: 10,
-            onPressed: titleController.text.trim().isEmpty ? null : onNext,
+            onPressed: onNext,
           ),
         ),
         const SizedBox(height: 20),
@@ -118,28 +130,36 @@ class InputField extends StatelessWidget {
   final String hint;
   final int maxLines;
   final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String?)? validator;
 
   const InputField({
     super.key,
     required this.hint,
     this.maxLines = 1,
     this.controller,
+    this.keyboardType,
+    this.inputFormatters,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       maxLines: maxLines,
-      style: const TextStyle(
-        fontSize: 14,
-        color: AppColors.textPrimary,
-      ),
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textGrey),
         filled: true,
         fillColor: AppColors.extraLightGrey.withValues(alpha: 0.3),
+        errorMaxLines: 5,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -223,8 +243,9 @@ class SportChip extends StatelessWidget {
               color: isSelected ? AppColors.white : AppColors.textPrimary,
             ),
           ),
-          backgroundColor:
-              isSelected ? AppColors.primary : AppColors.extraLightGrey,
+          backgroundColor: isSelected
+              ? AppColors.primary
+              : AppColors.extraLightGrey,
           side: BorderSide(
             color: isSelected ? AppColors.primary : AppColors.extraLightGrey,
           ),
@@ -247,7 +268,7 @@ class CurrencyDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const currencies = ['Yuan', 'USD', 'EUR', 'GBP', 'JPY', 'ETB'];
+    const currencies = ['CNY', 'USD', 'EUR', 'GBP', 'JPY', 'ETB'];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -263,15 +284,13 @@ class CurrencyDropdown extends StatelessWidget {
             Icons.keyboard_arrow_down,
             color: AppColors.textGrey,
           ),
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.textPrimary,
-          ),
+          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
           dropdownColor: AppColors.white,
           items: currencies.map((String currency) {
+            final symbol = AppHelpers.getCurrencySymbol(currency);
             return DropdownMenuItem<String>(
               value: currency,
-              child: Text(currency),
+              child: Text('$currency ($symbol)'),
             );
           }).toList(),
           onChanged: (String? newValue) {

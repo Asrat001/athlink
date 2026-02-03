@@ -11,11 +11,14 @@ import 'package:athlink/shared/widgets/create_job_step_two.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart'
+    as manage_models;
 
 class CreateJobModal extends ConsumerStatefulWidget {
   final List<ProfileSport> sports;
+  final manage_models.JobPostItem? initialJob;
 
-  const CreateJobModal({super.key, required this.sports});
+  const CreateJobModal({super.key, required this.sports, this.initialJob});
 
   @override
   ConsumerState<CreateJobModal> createState() => _CreateJobModalState();
@@ -24,6 +27,7 @@ class CreateJobModal extends ConsumerStatefulWidget {
 class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   late PageController _pageController;
   int _currentPage = 0;
+  final _formKey = GlobalKey<FormState>();
 
   // Step One Data
   final _titleController = TextEditingController();
@@ -49,6 +53,29 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   void initState() {
     super.initState();
     _pageController = PageController();
+
+    if (widget.initialJob != null) {
+      final job = widget.initialJob!;
+      _titleController.text = job.title;
+      _locationController.text = job.location;
+      _descriptionController.text = job.description;
+      _budgetController.text = job.price;
+      _selectedSportId = job.sportId.id;
+      _selectedSportName = job.sportId.name;
+      _selectedCurrency = job.currency;
+      _requirementsController.text = job.requirements;
+
+      if (job.timeline.startDate != null) {
+        _startDate = job.timeline.startDate;
+        _startDateController.text =
+            '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}';
+      }
+      if (job.timeline.endDate != null) {
+        _endDate = job.timeline.endDate;
+        _endDateController.text =
+            '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}';
+      }
+    }
   }
 
   @override
@@ -65,8 +92,12 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   }
 
   void _nextPage() {
-    if (_titleController.text.trim().isEmpty) {
-      _showErrorSnackbar('Please enter a job title');
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    if (_selectedSportId == null) {
+      _showErrorSnackbar('Please select a sport category');
       return;
     }
 
@@ -114,8 +145,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   }
 
   Future<void> _submitJobPost() async {
-    if (_titleController.text.trim().isEmpty) {
-      _showErrorSnackbar('Please enter a job title');
+    if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
 
@@ -127,33 +157,65 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
       mediaFiles.add(_selectedVideo!.path);
     }
 
-    final request = JobPostRequest(
-      title: _titleController.text.trim(),
-      sportId: _selectedSportId,
-      location: _locationController.text.trim().isNotEmpty
-          ? _locationController.text.trim()
-          : null,
-      description: _descriptionController.text.trim().isNotEmpty
-          ? _descriptionController.text.trim()
-          : null,
-      timelineStart: _formatDateForApi(_startDate),
-      timelineEnd: _formatDateForApi(_endDate),
-      requirements: _requirementsController.text.trim().isNotEmpty
-          ? _requirementsController.text.trim()
-          : null,
-      media: mediaFiles.isNotEmpty ? mediaFiles : null,
-      price: _budgetController.text.trim().isNotEmpty
-          ? double.parse(_budgetController.text.trim())
-          : null,
-      currency: _selectedCurrency,
-    );
+    if (widget.initialJob != null) {
+      final request = UpdateJobPostRequest(
+        title: _titleController.text.trim(),
+        sportId: _selectedSportId,
+        location: _locationController.text.trim().isNotEmpty
+            ? _locationController.text.trim()
+            : null,
+        description: _descriptionController.text.trim().isNotEmpty
+            ? _descriptionController.text.trim()
+            : null,
+        timelineStart: _formatDateForApi(_startDate),
+        timelineEnd: _formatDateForApi(_endDate),
+        requirements: _requirementsController.text.trim().isNotEmpty
+            ? _requirementsController.text.trim()
+            : null,
+        media: mediaFiles.isNotEmpty ? mediaFiles : null,
+        price: _budgetController.text.trim().isNotEmpty
+            ? double.parse(_budgetController.text.trim())
+            : null,
+        currency: _selectedCurrency,
+      );
 
-    await ref.read(jobPostProvider.notifier).createJobPost(request);
+      await ref
+          .read(jobPostProvider.notifier)
+          .updateJobPost(widget.initialJob!.id, request);
+    } else {
+      final request = JobPostRequest(
+        title: _titleController.text.trim(),
+        sportId: _selectedSportId,
+        location: _locationController.text.trim().isNotEmpty
+            ? _locationController.text.trim()
+            : null,
+        description: _descriptionController.text.trim().isNotEmpty
+            ? _descriptionController.text.trim()
+            : null,
+        timelineStart: _formatDateForApi(_startDate),
+        timelineEnd: _formatDateForApi(_endDate),
+        requirements: _requirementsController.text.trim().isNotEmpty
+            ? _requirementsController.text.trim()
+            : null,
+        media: mediaFiles.isNotEmpty ? mediaFiles : null,
+        price: _budgetController.text.trim().isNotEmpty
+            ? double.parse(_budgetController.text.trim())
+            : null,
+        currency: _selectedCurrency,
+      );
+
+      await ref.read(jobPostProvider.notifier).createJobPost(request);
+    }
+
+    if (!mounted) return;
 
     final jobPostState = ref.read(jobPostProvider);
     if (jobPostState.isSuccess) {
       _showSuccessSnackbar(
-        jobPostState.successMessage ?? 'Job post created successfully!',
+        jobPostState.successMessage ??
+            (widget.initialJob != null
+                ? 'Job post updated successfully!'
+                : 'Job post created successfully!'),
       );
       ref.read(profileProvider.notifier).getProfile();
       Navigator.pop(context);
@@ -166,84 +228,89 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   Widget build(BuildContext context) {
     final jobPostState = ref.watch(jobPostProvider);
 
-    return CreateJobModalLayout(
-      currentPage: _currentPage,
-      pageController: _pageController,
-      onPreviousPage: _previousPage,
-      onClose: () => Navigator.pop(context),
-      isLoading: jobPostState.isLoading,
-      stepOne: StepOne(
-        sports: widget.sports,
-        titleController: _titleController,
-        locationController: _locationController,
-        descriptionController: _descriptionController,
-        budgetController: _budgetController,
-        selectedSportId: _selectedSportId,
-        selectedSportName: _selectedSportName,
-        selectedCurrency: _selectedCurrency,
-        onSportSelected: (sportId, sportName) {
-          setState(() {
-            _selectedSportId = sportId;
-            _selectedSportName = sportName;
-          });
-        },
-        onCurrencySelected: (currency) {
-          setState(() {
-            _selectedCurrency = currency;
-          });
-        },
-        onNext: _nextPage,
-      ),
-      stepTwo: StepTwo(
-        requirementsController: _requirementsController,
-        startDateController: _startDateController,
-        endDateController: _endDateController,
-        selectedImage: _selectedImage,
-        selectedVideo: _selectedVideo,
-        imageBytes: _imageBytes,
-        videoThumbnail: _videoThumbnail,
-        startDate: _startDate,
-        endDate: _endDate,
-        onImageSelected: (image, bytes) {
-          setState(() {
-            _selectedImage = image;
-            _imageBytes = bytes;
-          });
-        },
-        onVideoSelected: (video, thumbnail) {
-          setState(() {
-            _selectedVideo = video;
-            _videoThumbnail = thumbnail;
-          });
-        },
-        onImageRemoved: () {
-          setState(() {
-            _selectedImage = null;
-            _imageBytes = null;
-          });
-        },
-        onVideoRemoved: () {
-          setState(() {
-            _selectedVideo = null;
-            _videoThumbnail = null;
-          });
-        },
-        onStartDateSelected: (date) {
-          setState(() {
-            _startDate = date;
-            _startDateController.text =
-                '${date.day}/${date.month}/${date.year}';
-          });
-        },
-        onEndDateSelected: (date) {
-          setState(() {
-            _endDate = date;
-            _endDateController.text = '${date.day}/${date.month}/${date.year}';
-          });
-        },
-        onPost: _submitJobPost,
-        onCancel: () => Navigator.pop(context),
+    return Form(
+      key: _formKey,
+      child: CreateJobModalLayout(
+        currentPage: _currentPage,
+        pageController: _pageController,
+        onPreviousPage: _previousPage,
+        onClose: () => Navigator.pop(context),
         isLoading: jobPostState.isLoading,
+        errorMessage: jobPostState.errorMessage,
+        stepOne: StepOne(
+          sports: widget.sports,
+          titleController: _titleController,
+          locationController: _locationController,
+          descriptionController: _descriptionController,
+          budgetController: _budgetController,
+          selectedSportId: _selectedSportId,
+          selectedSportName: _selectedSportName,
+          selectedCurrency: _selectedCurrency,
+          onSportSelected: (sportId, sportName) {
+            setState(() {
+              _selectedSportId = sportId;
+              _selectedSportName = sportName;
+            });
+          },
+          onCurrencySelected: (currency) {
+            setState(() {
+              _selectedCurrency = currency;
+            });
+          },
+          onNext: _nextPage,
+        ),
+        stepTwo: StepTwo(
+          requirementsController: _requirementsController,
+          startDateController: _startDateController,
+          endDateController: _endDateController,
+          selectedImage: _selectedImage,
+          selectedVideo: _selectedVideo,
+          imageBytes: _imageBytes,
+          videoThumbnail: _videoThumbnail,
+          startDate: _startDate,
+          endDate: _endDate,
+          onImageSelected: (image, bytes) {
+            setState(() {
+              _selectedImage = image;
+              _imageBytes = bytes;
+            });
+          },
+          onVideoSelected: (video, thumbnail) {
+            setState(() {
+              _selectedVideo = video;
+              _videoThumbnail = thumbnail;
+            });
+          },
+          onImageRemoved: () {
+            setState(() {
+              _selectedImage = null;
+              _imageBytes = null;
+            });
+          },
+          onVideoRemoved: () {
+            setState(() {
+              _selectedVideo = null;
+              _videoThumbnail = null;
+            });
+          },
+          onStartDateSelected: (date) {
+            setState(() {
+              _startDate = date;
+              _startDateController.text =
+                  '${date.day}/${date.month}/${date.year}';
+            });
+          },
+          onEndDateSelected: (date) {
+            setState(() {
+              _endDate = date;
+              _endDateController.text =
+                  '${date.day}/${date.month}/${date.year}';
+            });
+          },
+          onPost: _submitJobPost,
+          onCancel: () => Navigator.pop(context),
+          isLoading: jobPostState.isLoading,
+        ),
       ),
     );
   }

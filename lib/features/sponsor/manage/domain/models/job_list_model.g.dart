@@ -59,12 +59,13 @@ _JobPostItem _$JobPostItemFromJson(Map<String, dynamic> json) => _JobPostItem(
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
   applications:
-      (json['applications'] as List<dynamic>?)
+      (json['applicants'] as List<dynamic>?)
           ?.map((e) => JobApplication.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
   applicantCount: (json['applicantCount'] as num?)?.toInt() ?? 0,
-  price: json['price'] as String? ?? '',
+  price: json['price'] == null ? '' : _priceToString(json['price']),
+  currency: json['currency'] as String? ?? 'USD',
 );
 
 Map<String, dynamic> _$JobPostItemToJson(_JobPostItem instance) =>
@@ -78,9 +79,10 @@ Map<String, dynamic> _$JobPostItemToJson(_JobPostItem instance) =>
       'requirements': instance.requirements,
       'createdAt': instance.createdAt.toIso8601String(),
       'mediaUrls': instance.mediaUrls,
-      'applications': instance.applications,
+      'applicants': instance.applications,
       'applicantCount': instance.applicantCount,
       'price': instance.price,
+      'currency': instance.currency,
     };
 
 _SportInfo _$SportInfoFromJson(Map<String, dynamic> json) => _SportInfo(
@@ -316,3 +318,12 @@ Map<String, dynamic> _$WithdrawInvitationResponseToJson(
   'success': instance.success,
   'message': instance.message,
 };
+
+_DeleteJobResponse _$DeleteJobResponseFromJson(Map<String, dynamic> json) =>
+    _DeleteJobResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+    );
+
+Map<String, dynamic> _$DeleteJobResponseToJson(_DeleteJobResponse instance) =>
+    <String, dynamic>{'success': instance.success, 'message': instance.message};

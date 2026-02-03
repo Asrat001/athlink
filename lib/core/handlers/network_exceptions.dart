@@ -1,9 +1,10 @@
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'network_exceptions.freezed.dart';
+
 @freezed
 class NetworkExceptions with _$NetworkExceptions {
   const factory NetworkExceptions.connectionError() = ConnectionError;
@@ -62,7 +63,8 @@ class NetworkExceptions with _$NetworkExceptions {
               networkExceptions = const NetworkExceptions.requestTimeout();
               break;
             case DioExceptionType.unknown:
-              networkExceptions = const NetworkExceptions.noInternetConnection();
+              networkExceptions =
+                  const NetworkExceptions.noInternetConnection();
               break;
             case DioExceptionType.receiveTimeout:
               networkExceptions = const NetworkExceptions.sendTimeout();
@@ -82,13 +84,17 @@ class NetworkExceptions with _$NetworkExceptions {
                   networkExceptions = const NetworkExceptions.badRequest();
                   break;
                 case 401:
-                  networkExceptions = const NetworkExceptions.unauthorisedRequest();
+                  networkExceptions =
+                      const NetworkExceptions.unauthorisedRequest();
                   break;
                 case 403:
-                  networkExceptions = const NetworkExceptions.unauthorisedRequest();
+                  networkExceptions =
+                      const NetworkExceptions.unauthorisedRequest();
                   break;
                 case 404:
-                  networkExceptions = const NetworkExceptions.notFound("Not found");
+                  networkExceptions = const NetworkExceptions.notFound(
+                    "Not found",
+                  );
                   break;
                 case 409:
                   networkExceptions = const NetworkExceptions.conflict();
@@ -97,10 +103,12 @@ class NetworkExceptions with _$NetworkExceptions {
                   networkExceptions = const NetworkExceptions.requestTimeout();
                   break;
                 case 500:
-                  networkExceptions = const NetworkExceptions.internalServerError();
+                  networkExceptions =
+                      const NetworkExceptions.internalServerError();
                   break;
                 case 503:
-                  networkExceptions = const NetworkExceptions.serviceUnavailable();
+                  networkExceptions =
+                      const NetworkExceptions.serviceUnavailable();
                   break;
                 default:
                   var responseCode = error.response!.statusCode;
@@ -115,6 +123,10 @@ class NetworkExceptions with _$NetworkExceptions {
           }
         } else if (error is SocketException) {
           networkExceptions = const NetworkExceptions.noInternetConnection();
+        } else if (error is PlatformException) {
+          networkExceptions = NetworkExceptions.defaultError(
+            error.message ?? error.code,
+          );
         } else {
           networkExceptions = const NetworkExceptions.unexpectedError();
         }
@@ -127,6 +139,8 @@ class NetworkExceptions with _$NetworkExceptions {
     } else {
       if (error.toString().contains("is not a subtype of")) {
         return const NetworkExceptions.unableToProcess();
+      } else if (error.toString().contains("SocketException")) {
+        return const NetworkExceptions.noInternetConnection();
       } else {
         return const NetworkExceptions.unexpectedError();
       }

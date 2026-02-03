@@ -25,7 +25,7 @@ class JobPostRemoteDataSource extends BaseRepository {
           if (request.timelineEnd != null) 'timelineEnd': request.timelineEnd,
           if (request.requirements != null)
             'requirements': request.requirements,
-          if (request.price != null) 'budget': request.price,
+          if (request.price != null) 'price': request.price,
           if (request.currency != null) 'currency': request.currency,
         });
 
@@ -70,7 +70,8 @@ class JobPostRemoteDataSource extends BaseRepository {
           if (request.timelineEnd != null) 'timelineEnd': request.timelineEnd,
           if (request.requirements != null)
             'requirements': request.requirements,
-          if (request.budget != null) 'budget': request.budget,
+          if (request.price != null) 'price': request.price,
+          if (request.currency != null) 'currency': request.currency,
         });
 
         // Add media files if present

@@ -40,6 +40,16 @@ class ApplicationView extends ConsumerWidget {
     final selectedJob = apiJobs[selectedJobIndex];
     final companyLogo = jobListState.companyLogo;
 
+    // Determine job image: prioritize mediaUrls, then sport icon
+    String jobImage = companyLogo != null && companyLogo.isNotEmpty
+        ? UrlHelper.getFullImageUrl(companyLogo)
+        : '';
+    if (selectedJob.mediaUrls.isNotEmpty) {
+      jobImage = UrlHelper.getFullImageUrl(selectedJob.mediaUrls.first);
+    } else if (selectedJob.sportId.icon != null) {
+      jobImage = UrlHelper.getFullImageUrl(selectedJob.sportId.icon);
+    }
+
     return Column(
       key: const ValueKey('applicants_view'),
       children: [
@@ -66,15 +76,15 @@ class ApplicationView extends ConsumerWidget {
                 child: const Icon(Icons.arrow_back, color: AppColors.lightGrey),
               ),
               const SizedBox(width: 12),
-              // Company logo from API
+              // Job image / sport icon / company logo
               CircleAvatar(
                 radius: 22,
                 backgroundColor: AppColors.lightGrey,
-                backgroundImage: companyLogo != null && companyLogo.isNotEmpty
-                    ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
+                backgroundImage: jobImage.isNotEmpty
+                    ? NetworkImage(jobImage)
                     : null,
-                child: companyLogo == null || companyLogo.isEmpty
-                    ? const Icon(Icons.business, color: AppColors.grey)
+                child: jobImage.isEmpty
+                    ? const Icon(Icons.work, color: AppColors.grey)
                     : null,
               ),
               const SizedBox(width: 12),
@@ -87,15 +97,25 @@ class ApplicationView extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
-                    GestureDetector(
-                      onTap: () => ref
-                          .read(manageNavigationProvider.notifier)
-                          .showJobDetail(),
-                      child: const CustomText(
-                        title: 'View detail',
-                        fontSize: 14,
-                        textColor: AppColors.primary,
-                      ),
+                    Row(
+                      children: [
+                        CustomText(
+                          title: selectedJob.location,
+                          fontSize: 13,
+                          textColor: AppColors.grey,
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => ref
+                              .read(manageNavigationProvider.notifier)
+                              .showJobDetail(),
+                          child: const CustomText(
+                            title: 'View detail',
+                            fontSize: 13,
+                            textColor: AppColors.primary,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -222,7 +242,7 @@ class ApplicationView extends ConsumerWidget {
         loading: () => const Center(
           child: CircularProgressIndicator(color: AppColors.primary),
         ),
-        success: (feed,_) {
+        success: (feed, _) {
           // Check if there are any available athletes after filtering
           if (availableAthletes.isEmpty) {
             return Center(
@@ -271,7 +291,7 @@ class ApplicationView extends ConsumerWidget {
 
     // Extract feedData using maybeWhen
     final feedData = feedState.maybeWhen(
-      success: (data,_) => data,
+      success: (data, _) => data,
       orElse: () => null,
     );
 

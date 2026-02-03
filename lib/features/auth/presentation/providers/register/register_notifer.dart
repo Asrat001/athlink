@@ -40,7 +40,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     }
 
     final connected = await sl<AppConnectivity>().connectivity();
-    if (true) {
+    if (connected) {
       state = state.copyWith(isLoading: true);
 
       final response = await _authenticationRepository
@@ -79,7 +79,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline, Please check your internet connection",
+          "No internet connection. Please check your network settings.",
         );
       }
     }
@@ -125,7 +125,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline, Please check your internet connection",
+          "No internet connection. Please check your network settings.",
         );
       }
     }
@@ -146,7 +146,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     AccountType selectedType,
   ) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (true) {
+    if (connected) {
       state = state.copyWith(isLoading: true);
       final response = await _authenticationRepository.changeRole(
         role: selectedType.value,
@@ -173,7 +173,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline, Please check your internet connection",
+          "No internet connection. Please check your network settings.",
         );
       }
     }

@@ -217,6 +217,7 @@ class AppRouter {
           return AthleteSearchScreen(
             initialAthletes: data['athletes'] as List<Athlete>,
             initialSponsors: data['sponsors'] as List<Sponsor>,
+            isDarkMode: data['isDarkMode'] as bool? ?? true,
           );
         },
       ),

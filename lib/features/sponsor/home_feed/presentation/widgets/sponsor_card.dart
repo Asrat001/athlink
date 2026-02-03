@@ -6,12 +6,14 @@ class SponsorCard extends StatelessWidget {
   final String name;
   final String category;
   final String imageUrl;
+  final bool isDarkMode;
 
   const SponsorCard({
     super.key,
     required this.name,
     required this.category,
     required this.imageUrl,
+    this.isDarkMode = false,
   });
 
   @override
@@ -20,8 +22,9 @@ class SponsorCard extends StatelessWidget {
       width: 220,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: isDarkMode ? AppColors.black : AppColors.white,
         borderRadius: BorderRadius.circular(24),
+        border: isDarkMode ? Border.all(color: Colors.white12) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,7 +56,10 @@ class SponsorCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.black,
-                      border: Border.all(color: AppColors.white, width: 3),
+                      border: Border.all(
+                        color: isDarkMode ? AppColors.black : AppColors.white,
+                        width: 3,
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -77,10 +83,10 @@ class SponsorCard extends StatelessWidget {
             child: Text(
               name,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: AppColors.textPrimary,
+                color: isDarkMode ? Colors.white : AppColors.textPrimary,
               ),
             ),
           ),
@@ -91,7 +97,10 @@ class SponsorCard extends StatelessWidget {
           Text(
             category,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: AppColors.grey),
+            style: TextStyle(
+              fontSize: 13,
+              color: isDarkMode ? Colors.white60 : AppColors.grey,
+            ),
           ),
 
           const SizedBox(height: 10),

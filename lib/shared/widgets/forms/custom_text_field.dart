@@ -38,6 +38,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       style: GoogleFonts.inter(color: textColor ?? AppColors.black),
       decoration: InputDecoration(
+        errorMaxLines: 5,
         labelText: label,
         prefixIcon: icon,
         labelStyle: GoogleFonts.inter(

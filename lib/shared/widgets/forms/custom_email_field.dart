@@ -22,6 +22,7 @@ class CustomEmailField extends StatelessWidget {
       validator: validator,
       style: GoogleFonts.inter(color: AppColors.black),
       decoration: InputDecoration(
+        errorMaxLines: 5,
         labelText: 'Email Address',
         prefixIcon: Icon(Icons.email_outlined, color: AppColors.grey),
         labelStyle: GoogleFonts.inter(color: AppColors.grey, fontSize: 12),

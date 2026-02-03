@@ -25,6 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   @override
   void dispose() {
@@ -34,6 +35,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void login(BuildContext context) async {
+    setState(() {
+      _autovalidateMode = AutovalidateMode.onUserInteraction;
+    });
     if (_formKey.currentState!.validate()) {
       final provider = ref.read(loginProvider.notifier);
       await provider.login(
@@ -66,6 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ignoring: loginSate.isLoading,
                     child: Form(
                       key: _formKey,
+                      autovalidateMode: _autovalidateMode,
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(16.0),

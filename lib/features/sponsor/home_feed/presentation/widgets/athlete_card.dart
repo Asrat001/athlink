@@ -408,19 +408,23 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
             title: widget.name,
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            textColor: Colors.white, // Adapted for dark mode dashboard
+            textColor: widget.isAthlete ? Colors.white : AppColors.textPrimary,
           ),
           if (widget.highestSocialMediaPresence.isNotEmpty)
             CustomText(
               title: widget.highestSocialMediaPresence,
               fontSize: 12,
-              textColor: Colors.white60,
+              textColor: widget.isAthlete
+                  ? Colors.white60
+                  : AppColors.textSecondary,
             ),
           CustomText(
             title:
                 "${widget.sponsorshipDone.isEmpty ? "0" : widget.sponsorshipDone} jobs done",
             fontSize: 12,
-            textColor: Colors.white60,
+            textColor: widget.isAthlete
+                ? Colors.white60
+                : AppColors.textSecondary,
           ),
         ],
       ),

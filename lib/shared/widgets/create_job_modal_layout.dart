@@ -11,6 +11,7 @@ class CreateJobModalLayout extends StatelessWidget {
   final bool isLoading;
   final Widget stepOne;
   final Widget stepTwo;
+  final String? errorMessage;
 
   const CreateJobModalLayout({
     super.key,
@@ -21,6 +22,7 @@ class CreateJobModalLayout extends StatelessWidget {
     required this.isLoading,
     required this.stepOne,
     required this.stepTwo,
+    this.errorMessage,
   });
 
   @override
@@ -77,6 +79,39 @@ class CreateJobModalLayout extends StatelessWidget {
                 _buildStepCircle(2, isActive: currentPage == 1),
               ],
             ),
+            if (errorMessage != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      color: AppColors.error,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: CustomText(
+                        title: errorMessage!,
+                        textColor: AppColors.error,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
             Expanded(
               child: PageView(

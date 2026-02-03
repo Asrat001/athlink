@@ -24,4 +24,6 @@ abstract class JobListRepository {
   Future<ApiResponse<WithdrawInvitationResponse>> withdrawInvitation({
     required String invitationId,
   });
+
+  Future<ApiResponse<DeleteJobResponse>> deleteJobPost({required String jobId});
 }

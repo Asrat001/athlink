@@ -6,8 +6,16 @@ import 'package:flutter/material.dart';
 class JobCard extends StatelessWidget {
   final Map<String, dynamic> job;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
-  const JobCard({super.key, required this.job, required this.onTap});
+  const JobCard({
+    super.key,
+    required this.job,
+    required this.onTap,
+    this.onDelete,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class JobCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header row
-            _buildHeader(),
+            _buildHeader(context),
             const SizedBox(height: 16),
 
             // Price + title
@@ -55,7 +63,7 @@ class JobCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         SizedBox(
@@ -74,6 +82,8 @@ class JobCard extends StatelessWidget {
                   radius: 30,
                   backgroundColor: AppColors.black,
                   backgroundImage: NetworkImage(job["agencyLogo"]),
+                  onBackgroundImageError: (_, __) =>
+                      const Icon(Icons.work, color: AppColors.white),
                 ),
               ),
               Positioned(
@@ -112,8 +122,43 @@ class JobCard extends StatelessWidget {
         ),
         const Spacer(),
 
-        // More icon
-        const Icon(Icons.more_vert, size: 22, color: AppColors.lightGrey),
+        // More icon with PopupMenu
+        PopupMenuButton<String>(
+          icon: const Icon(
+            Icons.more_vert,
+            size: 22,
+            color: AppColors.lightGrey,
+          ),
+          onSelected: (value) {
+            if (value == 'delete' && onDelete != null) {
+              onDelete!();
+            } else if (value == 'edit' && onEdit != null) {
+              onEdit!();
+            }
+          },
+          itemBuilder: (BuildContext context) => [
+            const PopupMenuItem<String>(
+              value: 'edit',
+              child: Row(
+                children: [
+                  Icon(Icons.edit_outlined, color: AppColors.primary, size: 20),
+                  SizedBox(width: 8),
+                  CustomText(title: 'Edit', textColor: AppColors.primary),
+                ],
+              ),
+            ),
+            const PopupMenuItem<String>(
+              value: 'delete',
+              child: Row(
+                children: [
+                  Icon(Icons.delete_outline, color: AppColors.red, size: 20),
+                  SizedBox(width: 8),
+                  CustomText(title: 'Delete', textColor: AppColors.red),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

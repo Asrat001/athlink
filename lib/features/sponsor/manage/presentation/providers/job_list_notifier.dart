@@ -168,13 +168,31 @@ class JobListNotifier extends StateNotifier<JobListState> {
     return response.when(
       success: (data) {
         debugPrint("Invitation withdrawn: ${data.message}");
-        // Refresh invitations list after withdrawing
         getSponsorInvitations();
         return ApiResponse.success(data: data);
       },
       failure: (error) {
         debugPrint(
           "Withdraw invitation error: ${NetworkExceptions.getErrorMessage(error)}",
+        );
+        return ApiResponse.failure(error: error);
+      },
+    );
+  }
+
+  Future<ApiResponse<dynamic>> deleteJobPost({required String jobId}) async {
+    final response = await _jobListRepository.deleteJobPost(jobId: jobId);
+
+    return response.when(
+      success: (data) {
+        debugPrint("Job post deleted: ${data.message}");
+        // Refresh the job posts list after deletion
+        fetchJobPosts();
+        return ApiResponse.success(data: data);
+      },
+      failure: (error) {
+        debugPrint(
+          "Delete job post error: ${NetworkExceptions.getErrorMessage(error)}",
         );
         return ApiResponse.failure(error: error);
       },

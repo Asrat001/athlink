@@ -60,7 +60,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   );
   sl.registerSingleton<AppConnectivity>(AppConnectivity());
   sl.registerSingleton<TokenRefreshService>(TokenRefreshService());
-  sl.registerSingleton<GoogleAuthService>(GoogleAuthService());
+  sl.registerSingleton<GoogleAuthService>(
+    GoogleAuthService(sl<AppConnectivity>()),
+  );
   sl.registerSingleton<SocketIoService>(SocketIoService());
 
   //data sources

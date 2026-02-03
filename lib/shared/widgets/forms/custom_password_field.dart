@@ -33,6 +33,7 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
       validator: widget.validator,
       style: GoogleFonts.inter(color: AppColors.black),
       decoration: InputDecoration(
+        errorMaxLines: 5,
         labelText: widget.label,
         prefixIcon: Icon(Icons.lock_outline, color: AppColors.grey),
         suffixIcon: IconButton(

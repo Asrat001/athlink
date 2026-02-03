@@ -1,17 +1,19 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../handlers/api_response.dart';
 import '../handlers/network_exceptions.dart';
+import 'internet_connection_service.dart';
 
 class GoogleAuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final AppConnectivity _appConnectivity;
   bool _isGoogleSignInInitialized = false;
 
-  GoogleAuthService() {
+  GoogleAuthService(this._appConnectivity) {
     _initializeGoogleSignIn();
   }
 
@@ -47,18 +49,34 @@ class GoogleAuthService {
   }
 
   Future<ApiResponse<GoogleSignInAccount>> signInWithGoogle() async {
+    final connectivity = await _appConnectivity.connectivity();
+    if (!connectivity) {
+      return const ApiResponse.failure(
+        error: NetworkExceptions.noInternetConnection(),
+      );
+    }
+
     await _ensureGoogleSignInInitialized();
     try {
       await _googleSignIn.signOut();
       print("Google Sign-In initialized successfully");
       try {
-        final GoogleSignInAccount account = await _googleSignIn.authenticate(
-          scopeHint: ['email'], // Specify required scopes
-        );
-        print(
-          "Google Sign-In initialized successfully: ${account.displayName}",
-        );
+        final GoogleSignInAccount? account = await _googleSignIn.authenticate();
+        if (account == null) {
+          return const ApiResponse.failure(
+            error: NetworkExceptions.defaultError("Sign in canceled"),
+          );
+        }
+        print("Google Sign-In success: ${account.displayName}");
         return ApiResponse.success(data: account);
+      } on PlatformException catch (e) {
+        print("Google Sign-In failed with PlatformException: ${e.code}");
+        if (e.code == 'sign_in_canceled') {
+          return const ApiResponse.failure(
+            error: NetworkExceptions.defaultError("Sign in canceled"),
+          );
+        }
+        return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
       } catch (e) {
         print("Google Sign-In failed: $e");
         return ApiResponse.failure(error: NetworkExceptions.getDioException(e));

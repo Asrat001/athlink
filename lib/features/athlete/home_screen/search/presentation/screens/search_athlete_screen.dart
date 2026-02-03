@@ -10,11 +10,13 @@ import 'package:flutter_svg/svg.dart';
 class AthleteSearchScreen extends StatefulWidget {
   final List<Athlete> initialAthletes;
   final List<Sponsor> initialSponsors;
+  final bool isDarkMode;
 
   const AthleteSearchScreen({
     super.key,
     required this.initialAthletes,
     required this.initialSponsors,
+    this.isDarkMode = true,
   });
 
   @override
@@ -66,7 +68,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black, // Dark background
+      backgroundColor: widget.isDarkMode ? AppColors.black : AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -84,33 +86,50 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
 
   Widget _buildSearchHeader() {
     return Container(
-      color: AppColors.black,
+      color: widget.isDarkMode ? AppColors.black : AppColors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const BackButton(color: Colors.white), // Light back button
+          BackButton(
+            color: widget.isDarkMode ? Colors.white : AppColors.black,
+          ), // Light back button
           Expanded(
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.darkGreyCard, // Darker input field
+                color: widget.isDarkMode
+                    ? AppColors.darkGreyCard
+                    : AppColors.extraLightGrey, // Darker input field
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Colors.white54, size: 20),
+                  Icon(
+                    Icons.search,
+                    color: widget.isDarkMode ? Colors.white54 : Colors.grey,
+                    size: 20,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       onChanged: _performSearch,
                       autofocus: true,
-                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: widget.isDarkMode
+                            ? Colors.white
+                            : AppColors.black,
+                      ),
                       cursorColor: AppColors.primary,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: "Search athletes or brands...",
-                        hintStyle: TextStyle(color: Colors.white38),
+                        hintStyle: TextStyle(
+                          color: widget.isDarkMode
+                              ? Colors.white38
+                              : Colors.grey.shade400,
+                        ),
                         border: InputBorder.none,
                         isDense: true,
                       ),
@@ -118,10 +137,10 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
                   ),
                   if (_searchController.text.isNotEmpty)
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
                         size: 18,
-                        color: Colors.white54,
+                        color: widget.isDarkMode ? Colors.white54 : Colors.grey,
                       ),
                       onPressed: () {
                         _searchController.clear();
@@ -172,12 +191,14 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
             title: title,
             fontSize: 18, // Slightly larger for better hierarchy
             fontWeight: FontWeight.bold,
-            textColor: Colors.white, // Match profile style
+            textColor: widget.isDarkMode ? Colors.white : AppColors.black,
           ),
           CustomText(
             title: subtitle,
             fontSize: 12,
-            textColor: Colors.white38, // Dimmed secondary text
+            textColor: widget.isDarkMode
+                ? Colors.white38
+                : Colors.grey, // Dimmed secondary text
           ),
         ],
       ),
@@ -201,6 +222,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
 
           return SponsorCard(
             name: sponsor.name ?? 'Brand',
+            isDarkMode: widget.isDarkMode,
             category: sponsor.sport.isNotEmpty
                 ? sponsor.sport.first.name ?? "Sponsor"
                 : "Partner",
@@ -230,6 +252,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
             athleteId: athlete.id,
             name: profile?.name ?? 'Athlete',
             club: profile?.club ?? 'Independent',
+            isAthlete: widget.isDarkMode,
             age: profile?.age?.toString() ?? '20',
             flag: 'assets/images/flag.png',
             image: imageUrl,
@@ -251,12 +274,12 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
           Icon(
             Icons.search_off_rounded,
             size: 60,
-            color: Colors.white24, // Consistent dimmed icon
+            color: widget.isDarkMode ? Colors.white24 : Colors.grey.shade300,
           ),
           const SizedBox(height: 16),
-          const CustomText(
+          CustomText(
             title: "No results found",
-            textColor: Colors.white54,
+            textColor: widget.isDarkMode ? Colors.white54 : Colors.grey,
             fontSize: 16,
           ),
         ],

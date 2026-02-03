@@ -63,7 +63,8 @@ _UpdateJobPostRequest _$UpdateJobPostRequestFromJson(
   timelineEnd: json['timelineEnd'] as String?,
   requirements: json['requirements'] as String?,
   media: (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  budget: json['budget'] as String?,
+  price: (json['price'] as num?)?.toDouble(),
+  currency: json['currency'] as String?,
 );
 
 Map<String, dynamic> _$UpdateJobPostRequestToJson(
@@ -77,7 +78,8 @@ Map<String, dynamic> _$UpdateJobPostRequestToJson(
   'timelineEnd': instance.timelineEnd,
   'requirements': instance.requirements,
   'media': instance.media,
-  'budget': instance.budget,
+  'price': instance.price,
+  'currency': instance.currency,
 };
 
 _UpdateJobPostResponse _$UpdateJobPostResponseFromJson(

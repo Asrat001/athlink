@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_annotation_target
 import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -51,13 +52,19 @@ abstract class JobPostItem with _$JobPostItem {
     @Default('') String requirements,
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
-    @Default([]) List<JobApplication> applications,
+    @JsonKey(name: "applicants") @Default([]) List<JobApplication> applications,
     @Default(0) int applicantCount,
-    @Default('') String price,
+    @JsonKey(fromJson: _priceToString) @Default('') String price,
+    @Default('USD') String currency,
   }) = _JobPostItem;
 
   factory JobPostItem.fromJson(Map<String, dynamic> json) =>
       _$JobPostItemFromJson(json);
+}
+
+String _priceToString(dynamic price) {
+  if (price == null) return '';
+  return price.toString();
 }
 
 @freezed
@@ -228,4 +235,15 @@ abstract class WithdrawInvitationResponse with _$WithdrawInvitationResponse {
 
   factory WithdrawInvitationResponse.fromJson(Map<String, dynamic> json) =>
       _$WithdrawInvitationResponseFromJson(json);
+}
+
+@freezed
+abstract class DeleteJobResponse with _$DeleteJobResponse {
+  const factory DeleteJobResponse({
+    required bool success,
+    required String message,
+  }) = _DeleteJobResponse;
+
+  factory DeleteJobResponse.fromJson(Map<String, dynamic> json) =>
+      _$DeleteJobResponseFromJson(json);
 }

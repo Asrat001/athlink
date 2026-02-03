@@ -27,7 +27,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     required BuildContext context,
   }) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (true) {
+    if (connected) {
       state = state.copyWith(isLoading: true);
       final storageService = sl<LocalStorageService>();
       final response = await _authenticationRepository
@@ -84,7 +84,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> googleSignIn(BuildContext context) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (true) {
+    if (connected) {
       state = state.copyWith(isLoading: true);
       final response = await _authenticationRepository.googleSignIn();
       log(response.toString());
@@ -145,7 +145,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
           if (context.mounted) {
             AppHelpers.showErrorFlash(
               context,
-              "Something went wrong: ${NetworkExceptions.getErrorMessage(error)}",
+              NetworkExceptions.getErrorMessage(error),
             );
           }
         },
@@ -154,7 +154,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
       if (context.mounted) {
         AppHelpers.showErrorFlash(
           context,
-          "You are currently offline ,Please check your internet connection",
+          "No internet connection. Please check your network settings.",
         );
       }
     }

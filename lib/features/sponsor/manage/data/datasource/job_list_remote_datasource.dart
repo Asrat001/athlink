@@ -22,7 +22,9 @@ class JobListRemoteDataSource extends BaseRepository {
           data,
           (json) => (json as Map<String, dynamic>)["jobs"] as List,
         );
-        return baseResponse.data.map((e)=>manage_models.JobPostItem.fromJson(e)).toList();
+        return baseResponse.data
+            .map((e) => manage_models.JobPostItem.fromJson(e))
+            .toList();
       },
     );
   }
@@ -114,6 +116,22 @@ class JobListRemoteDataSource extends BaseRepository {
       },
       fromData: (data) {
         return manage_models.WithdrawInvitationResponse.fromJson(data);
+      },
+    );
+  }
+
+  Future<ApiResponse<manage_models.DeleteJobResponse>> deleteJobPost({
+    required String jobId,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        final response = await _httpClient
+            .client(requireAuth: true)
+            .delete("/sponsors/job-post/$jobId");
+        return response;
+      },
+      fromData: (data) {
+        return manage_models.DeleteJobResponse.fromJson(data);
       },
     );
   }

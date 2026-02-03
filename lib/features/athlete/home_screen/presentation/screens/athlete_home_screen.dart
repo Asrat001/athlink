@@ -283,7 +283,11 @@ class _AthleteDashboardScreenState
       child: InkWell(
         onTap: () => context.push(
           Routes.athleteSearchScreen,
-          extra: {'athletes': athletes, 'sponsors': sponsors},
+          extra: {
+            'athletes': athletes,
+            'sponsors': sponsors,
+            'isDarkMode': true,
+          },
         ),
         child: Container(
           height: 50,
@@ -353,6 +357,7 @@ class _AthleteDashboardScreenState
           final sponsor = sponsors[index];
           return SponsorCard(
             name: sponsor.sponsorProfile?.name ?? 'Brand',
+            isDarkMode: true,
             category: sponsor.sport.isNotEmpty
                 ? sponsor.sport.first.name ?? "Sponsor"
                 : "Partner",
