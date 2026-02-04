@@ -21,9 +21,17 @@ class ManageScreen extends ConsumerStatefulWidget {
 }
 
 class _ManageScreenState extends ConsumerState<ManageScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobListProvider.notifier).fetchJobPosts();
       ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
@@ -31,6 +39,12 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
       ref.read(profileProvider.notifier).getProfile();
       ref.read(feedProvider.notifier).getFeed();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   bool _isApplicationAccepted(String applicationId) {
@@ -98,6 +112,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextFormField(
+                              controller: _searchController,
                               decoration: const InputDecoration(
                                 hintText: 'Search',
                                 border: InputBorder.none,
@@ -163,9 +178,19 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                 children: [
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 260),
+                    layoutBuilder: (currentChild, previousChildren) {
+                      return Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          ...previousChildren,
+                          if (currentChild != null) currentChild,
+                        ],
+                      );
+                    },
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
                     child: JobsTab(
+                      searchQuery: _searchQuery,
                       showAthleteDetailOverlay:
                           (application, jobId, isApplicant) {
                             _showAthleteDetailOverlay(
@@ -211,6 +236,7 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
                         activeCount: jobListState.sponsoredAthletes.length,
                         closedCount: 0,
                         sponsorships: sponsorshipsData,
+                        searchQuery: _searchQuery,
                       );
                     },
                   ),

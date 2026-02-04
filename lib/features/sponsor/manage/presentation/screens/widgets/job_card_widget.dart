@@ -199,14 +199,11 @@ class JobCard extends StatelessWidget {
   }
 
   Widget _buildActionIcons() {
-    return const Row(
-      children: [
-        Icon(Icons.share_outlined, size: 22, color: AppColors.lightGrey),
-        SizedBox(width: 30),
-        Icon(Icons.favorite, size: 22, color: AppColors.red),
-        SizedBox(width: 30),
-        Icon(Icons.bookmark_border, size: 22, color: AppColors.lightGrey),
-      ],
+    return CustomText(
+      title: job["endDate"] ?? "End: TBD",
+      fontSize: 14,
+      textColor: AppColors.grey,
+      fontWeight: FontWeight.w500,
     );
   }
 }

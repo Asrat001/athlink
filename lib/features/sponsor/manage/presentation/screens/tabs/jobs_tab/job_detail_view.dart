@@ -25,8 +25,6 @@ class JobDetailView extends ConsumerWidget {
     }
 
     final selectedJob = apiJobs[selectedJobIndex!];
-    final companyLogo = jobListState.companyLogo;
-    final companyName = jobListState.companyName ?? 'Company';
 
     // Calculate timeline duration
     String timelineDuration = 'N/A';
@@ -52,32 +50,17 @@ class JobDetailView extends ConsumerWidget {
           // header row: back + logo + agency name + location
           Row(
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: companyLogo != null && companyLogo.isNotEmpty
-                    ? NetworkImage(UrlHelper.getFullImageUrl(companyLogo))
-                    : null,
-                backgroundColor: AppColors.lightGrey,
-                child: companyLogo == null || companyLogo.isEmpty
-                    ? const Icon(Icons.business, color: AppColors.grey)
-                    : null,
+              const Icon(
+                Icons.location_on_outlined,
+                color: AppColors.grey,
+                size: 20,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      title: companyName,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                    CustomText(
-                      title: selectedJob.location,
-                      fontSize: 14,
-                      textColor: AppColors.grey,
-                    ),
-                  ],
+                child: CustomText(
+                  title: selectedJob.location,
+                  fontSize: 14,
+                  textColor: AppColors.grey,
                 ),
               ),
 

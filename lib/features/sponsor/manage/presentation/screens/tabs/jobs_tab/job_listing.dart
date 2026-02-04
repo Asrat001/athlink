@@ -17,7 +17,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class JobListing extends ConsumerWidget {
-  const JobListing({super.key});
+  const JobListing({super.key, this.searchQuery = ''});
+
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +55,21 @@ class JobListing extends ConsumerWidget {
     }
 
     // Convert API jobs to dummy format for display
-    final apiJobs = jobListState.jobPosts;
+    var apiJobs = jobListState.jobPosts;
+
+    // Filter jobs based on search query
+    if (searchQuery.isNotEmpty) {
+      final query = searchQuery.toLowerCase();
+      apiJobs = apiJobs.where((job) {
+        final title = job.title.toLowerCase();
+        final sport = job.sportId.name.toLowerCase();
+        final location = job.location.toLowerCase();
+        return title.contains(query) ||
+            sport.contains(query) ||
+            location.contains(query);
+      }).toList();
+    }
+
     final companyLogo = jobListState.companyLogo;
 
     final jobs = apiJobs.map((job) {
@@ -81,12 +97,15 @@ class JobListing extends ConsumerWidget {
         ],
         "notifications": job.applicantCount,
         "description": job.description,
+        "endDate": job.timeline.endDate != null
+            ? 'End: ${job.timeline.endDate!.day}/${job.timeline.endDate!.month}/${job.timeline.endDate!.year}'
+            : 'End: TBD',
       };
     }).toList();
     if (jobs.isEmpty) return NoJobsCard();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24, top: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -98,7 +117,7 @@ class JobListing extends ConsumerWidget {
               StatItem(label: "Funds Released", value: "\$0"),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Row(
             children: [
               const CustomText(

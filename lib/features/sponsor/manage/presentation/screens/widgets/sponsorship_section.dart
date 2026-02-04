@@ -13,12 +13,14 @@ class SponsorshipSection extends ConsumerStatefulWidget {
   final int activeCount;
   final int closedCount;
   final List<Map<String, dynamic>> sponsorships;
+  final String searchQuery;
 
   const SponsorshipSection({
     super.key,
     required this.activeCount,
     required this.closedCount,
     required this.sponsorships,
+    this.searchQuery = '',
   });
 
   @override
@@ -39,6 +41,20 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    // Filter sponsorships based on search query
+    var filteredSponsorships = widget.sponsorships;
+    if (widget.searchQuery.isNotEmpty) {
+      final query = widget.searchQuery.toLowerCase();
+      filteredSponsorships = widget.sponsorships.where((data) {
+        final name = (data['name'] ?? '').toString().toLowerCase();
+        final club = (data['club'] ?? '').toString().toLowerCase();
+        final jobTitle = (data['jobTitle'] ?? '').toString().toLowerCase();
+        return name.contains(query) ||
+            club.contains(query) ||
+            jobTitle.contains(query);
+      }).toList();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -55,14 +71,16 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
             ),
           ),
           const SizedBox(height: 16),
-          widget.sponsorships.isEmpty
+          filteredSponsorships.isEmpty
               ? SizedBox(
                   width: size.width,
                   height: size.height * 0.30,
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      "No Sponsorships Found",
-                      style: TextStyle(
+                      widget.searchQuery.isNotEmpty
+                          ? "No matching sponsorships"
+                          : "No Sponsorships Found",
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         color: Colors.grey,
@@ -75,9 +93,9 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) =>
-                        _buildCard(context, widget.sponsorships[index]),
+                        _buildCard(context, filteredSponsorships[index]),
                     separatorBuilder: (_, __) => const SizedBox(width: 16),
-                    itemCount: widget.sponsorships.length,
+                    itemCount: filteredSponsorships.length,
                   ),
                 ),
         ],
@@ -429,8 +447,12 @@ class _SponsorshipSectionState extends ConsumerState<SponsorshipSection> {
                   return {
                     'id': milestone.id,
                     'title': milestone.title,
-                    'startDate': DateFormatter.formatMedium(milestone.timeline.startDate),
-                    'endDate': DateFormatter.formatMedium(milestone.timeline.endDate),
+                    'startDate': DateFormatter.formatMedium(
+                      milestone.timeline.startDate,
+                    ),
+                    'endDate': DateFormatter.formatMedium(
+                      milestone.timeline.endDate,
+                    ),
                     'description': milestone.description,
                     'checklist': [
                       milestone.paymentStatus == 'released'

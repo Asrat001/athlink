@@ -156,15 +156,15 @@ class ApplicationView extends ConsumerWidget {
                     .read(manageNavigationProvider.notifier)
                     .setActiveApplicantTab(ApplicantTab.newApplicants),
               ),
-              const SizedBox(width: 16),
-              ApplicantTabButton(
-                tab: ApplicantTab.invitees,
-                activeTab: activeTab,
-                label: "Invitees",
-                onTap: () => ref
-                    .read(manageNavigationProvider.notifier)
-                    .setActiveApplicantTab(ApplicantTab.invitees),
-              ),
+              // const SizedBox(width: 16),
+              // ApplicantTabButton(
+              //   tab: ApplicantTab.invitees,
+              //   activeTab: activeTab,
+              //   label: "Invitees",
+              //   onTap: () => ref
+              //       .read(manageNavigationProvider.notifier)
+              //       .setActiveApplicantTab(ApplicantTab.invitees),
+              // ),
             ],
           ),
         ),

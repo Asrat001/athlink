@@ -12,30 +12,30 @@ class JobsTab extends ConsumerWidget {
   const JobsTab({
     super.key,
     required this.showAthleteDetailOverlay,
+    this.searchQuery = '',
   });
 
   final Function(JobApplication jobApplication, String jobId, bool isApplicant)
-      showAthleteDetailOverlay;
+  showAthleteDetailOverlay;
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navigationState = ref.watch(manageNavigationProvider);
 
     return switch (navigationState.jobsState) {
-      JobsSectionState.listing => const JobListing(),
+      JobsSectionState.listing => JobListing(searchQuery: searchQuery),
       JobsSectionState.applicants => ApplicationView(
-          showAthleteDetailOverlay: showAthleteDetailOverlay,
-        ),
+        showAthleteDetailOverlay: showAthleteDetailOverlay,
+      ),
       JobsSectionState.jobDetail => JobDetailView(
-          selectedJobIndex: navigationState.selectedJobIndex,
-          onJobBack: () =>
-              ref.read(manageNavigationProvider.notifier).jobsBack(),
-        ),
+        selectedJobIndex: navigationState.selectedJobIndex,
+        onJobBack: () => ref.read(manageNavigationProvider.notifier).jobsBack(),
+      ),
       JobsSectionState.baDetail => BrandAmbasadorDetailView(
-          selectedJobIndex: navigationState.selectedJobIndex,
-          onJobBack: () =>
-              ref.read(manageNavigationProvider.notifier).jobsBack(),
-        ),
+        selectedJobIndex: navigationState.selectedJobIndex,
+        onJobBack: () => ref.read(manageNavigationProvider.notifier).jobsBack(),
+      ),
     };
   }
 }
