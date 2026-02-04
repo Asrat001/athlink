@@ -88,6 +88,7 @@ class _AthleteCampaignsScreenState
                       label: "Add the title of your campaign",
                       controller: _titleController,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return "Please enter a campaign title";
@@ -318,6 +319,7 @@ class _AthleteCampaignsScreenState
                       label: "Enter new campaign title",
                       controller: _titleController,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return "Please enter a campaign title";

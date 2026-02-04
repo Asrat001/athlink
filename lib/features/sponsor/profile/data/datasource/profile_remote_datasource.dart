@@ -37,6 +37,8 @@ class ProfileRemoteDataSource extends BaseRepository {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   }) async {
     return await safeApiCall(
       apiCall: () async {
@@ -51,6 +53,16 @@ class ProfileRemoteDataSource extends BaseRepository {
         }
         if (address != null) {
           formData.fields.add(MapEntry('address', address));
+        }
+        if (websiteUrl != null) {
+          formData.fields.add(MapEntry('websiteUrl', websiteUrl));
+        }
+        if (socialLinks != null) {
+          socialLinks.forEach((key, value) {
+            if (value.isNotEmpty) {
+              formData.fields.add(MapEntry('socialLinks[$key]', value));
+            }
+          });
         }
 
         // Add image files only if provided

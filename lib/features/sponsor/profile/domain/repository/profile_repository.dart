@@ -12,5 +12,7 @@ abstract class ProfileRepository {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   });
 }

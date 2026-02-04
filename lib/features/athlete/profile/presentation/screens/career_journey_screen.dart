@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/di.dart';
 import 'package:athlink/features/athlete/profile/domain/models/career_record_ui.dart';
@@ -52,14 +53,18 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
 
     final localStorage = sl<LocalStorageService>();
     final user = localStorage.getUserData();
-    if (user == null) return;
+    if (user == null) {
+      debugPrint("User is null, cannot edit");
+      return;
+    }
+    debugPrint("Opening edit modal for ${record?.id}");
 
     final uiRecord = record != null
         ? CareerRecord(
             logoUrl: record.logo ?? '',
             position: record.position,
             team: record.teamName,
-            location: '',
+            location: record.location ?? '',
             duration: record.year,
             achievements: record.achievements,
             description: record.description,
@@ -82,6 +87,17 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
             'description': newRecord.description,
             'location': newRecord.location,
           };
+          File? logoFile;
+          // Check if logoUrl is a local file (not http) and different from existing/default
+          if (newRecord.logoUrl.isNotEmpty &&
+              !newRecord.logoUrl.startsWith('http')) {
+            bool isSameAsOld =
+                record != null && newRecord.logoUrl == record.logo;
+            if (!isSameAsOld) {
+              logoFile = File(newRecord.logoUrl);
+            }
+          }
+
           if (record != null) {
             ref
                 .read(careerJourneyProvider(user.id).notifier)
@@ -89,7 +105,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                   athleteId: user.id,
                   careerId: record.id,
                   data: data,
-                  logo: null,
+                  logo: logoFile,
                   onSuccess: () => Navigator.pop(context),
                 );
           } else {
@@ -98,7 +114,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                 .createCareer(
                   athleteId: user.id,
                   data: data,
-                  logo: null,
+                  logo: logoFile,
                   onSuccess: () => Navigator.pop(context),
                 );
           }
@@ -137,7 +153,11 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
               ),
               onTap: () {
                 Navigator.pop(context);
-                _showCareerModal(record: record);
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    _showCareerModal(record: record);
+                  }
+                });
               },
             ),
             ListTile(
@@ -244,7 +264,7 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                                     location:
                                         record.location != null &&
                                             record.location!.isNotEmpty
-                                        ? record.location!.split(',').last
+                                        ? record.location!.split('*').first
                                         : "",
                                     duration: record.year,
                                     achievements: record.achievements,

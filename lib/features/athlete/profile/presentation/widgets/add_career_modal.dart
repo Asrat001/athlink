@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
@@ -64,10 +65,11 @@ class _AddCareerModalState extends State<AddCareerModal> {
     );
 
     String initialDisplayName = widget.initialRecord?.location ?? '';
-    if (initialDisplayName.contains(',')) {
-      final parts = initialDisplayName.split(',');
-      if (parts.length >= 3) {
-        initialDisplayName = parts.sublist(2).join(',').trim();
+    // Expected format: Name*Lat*Lng
+    if (initialDisplayName.contains('*')) {
+      final parts = initialDisplayName.split('*');
+      if (parts.isNotEmpty) {
+        initialDisplayName = parts.first.trim();
       }
     }
     _locationNameController = TextEditingController(text: initialDisplayName);
@@ -123,8 +125,8 @@ class _AddCareerModalState extends State<AddCareerModal> {
       final lat = data['result']['geometry']['location']['lat'];
       final lng = data['result']['geometry']['location']['lng'];
 
-      // CONCATENATION LOGIC: lat,lng,name
-      final concatenatedLocation = "$lat,$lng,$description";
+      // CONCATENATION LOGIC: name*lat*lng
+      final concatenatedLocation = "$description*$lat*$lng";
 
       setState(() {
         _locationNameController.text = description;
@@ -183,6 +185,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       controller: _positionController,
                       borderRadius: 12,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                       validator: (v) => v!.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
@@ -192,6 +195,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       controller: _teamController,
                       borderRadius: 12,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                       validator: (v) => v!.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
@@ -207,6 +211,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       controller: _achievementsController,
                       borderRadius: 12,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                     ),
                     const SizedBox(height: 16),
                     _buildLabel("Add description"),
@@ -215,6 +220,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
                       controller: _descriptionController,
                       borderRadius: 12,
                       textColor: AppColors.white,
+                      cursorColor: AppColors.white,
                       maxLines: 3,
                     ),
                     const SizedBox(height: 32),
@@ -368,27 +374,62 @@ class _AddCareerModalState extends State<AddCareerModal> {
   Widget _buildImagePicker() => Center(
     child: GestureDetector(
       onTap: _pickImage,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          color: AppColors.darkGreyCard,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
-          image: _selectedImage != null
-              ? DecorationImage(
-                  image: FileImage(_selectedImage!),
-                  fit: BoxFit.cover,
-                )
-              : null,
-        ),
-        child: _selectedImage == null
-            ? const Icon(
-                Icons.image_outlined,
-                color: AppColors.lightGrey,
-                size: 30,
-              )
-            : null,
+      child: Stack(
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: AppColors.darkGreyCard,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.white.withValues(alpha: 0.1)),
+              image: _selectedImage != null
+                  ? DecorationImage(
+                      image: FileImage(_selectedImage!),
+                      fit: BoxFit.cover,
+                    )
+                  : widget.initialRecord?.logoUrl != null &&
+                        widget.initialRecord!.logoUrl.isNotEmpty
+                  ? DecorationImage(
+                      image: widget.initialRecord!.logoUrl.startsWith('http')
+                          ? NetworkImage(widget.initialRecord!.logoUrl)
+                          : NetworkImage(
+                                  '$fileBaseUrl${widget.initialRecord!.logoUrl}',
+                                )
+                                as ImageProvider,
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child:
+                _selectedImage == null &&
+                    (widget.initialRecord?.logoUrl == null ||
+                        widget.initialRecord!.logoUrl.isEmpty)
+                ? const Icon(
+                    Icons.image_outlined,
+                    color: AppColors.lightGrey,
+                    size: 30,
+                  )
+                : null,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                color: AppColors.white,
+                size: 16,
+              ),
+            ),
+          ),
+        ],
       ),
     ),
   );
@@ -400,6 +441,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
         controller: _yearController,
         borderRadius: 12,
         textColor: AppColors.white,
+        cursorColor: AppColors.white,
         validator: (v) => v!.isEmpty ? 'Required' : null,
       ),
     ),
@@ -407,16 +449,16 @@ class _AddCareerModalState extends State<AddCareerModal> {
   Widget _buildActionButtons() => Row(
     children: [
       Expanded(
-        child: _buildBtn("Save Journey", AppColors.darkGreyCard, _handleSave),
-      ),
-      const SizedBox(width: 15),
-      Expanded(
         child: _buildBtn(
           "Cancel",
           AppColors.transparent,
           () => Navigator.pop(context),
           isBordered: true,
         ),
+      ),
+      const SizedBox(width: 15),
+      Expanded(
+        child: _buildBtn("Save Journey", AppColors.darkGreyCard, _handleSave),
       ),
     ],
   );
@@ -484,6 +526,9 @@ class _AddCareerModalState extends State<AddCareerModal> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            // Create a local form key for the modal
+            final GlobalKey<FormState> modalFormKey = GlobalKey<FormState>();
+
             int currentYear = DateTime.now().year;
             List<int> allYears = List.generate(
               50,
@@ -494,72 +539,93 @@ class _AddCareerModalState extends State<AddCareerModal> {
                 : allYears.where((y) => y >= _startYear!).toList();
             return Container(
               padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CustomText(
-                    title: 'Select Duration',
-                    fontSize: 18,
-                    textColor: AppColors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildYearDropdown("Start", _startYear, (val) {
-                          setModalState(() {
-                            _startYear = val;
-                            if (_endYear != null && _endYear! < _startYear!)
-                              _endYear = null;
-                          });
-                        }, allYears),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _isCurrentlyThere
-                            ? _buildPresentBox()
-                            : _buildYearDropdown(
-                                "End",
-                                _endYear,
-                                (val) => setModalState(() => _endYear = val),
-                                filteredEndYears,
-                                enabled: _startYear != null,
-                              ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Theme(
-                    data: ThemeData(unselectedWidgetColor: AppColors.lightGrey),
-                    child: CheckboxListTile(
-                      title: const CustomText(
-                        title: "I currently play here",
-                        fontSize: 14,
-                        textColor: AppColors.white,
-                      ),
-                      value: _isCurrentlyThere,
-                      activeColor: AppColors.blue,
-                      side: const BorderSide(color: AppColors.lightGrey),
-                      contentPadding: EdgeInsets.zero,
-                      onChanged: (val) => setModalState(() {
-                        _isCurrentlyThere = val!;
-                        if (_isCurrentlyThere) _endYear = null;
-                      }),
+              child: Form(
+                key: modalFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CustomText(
+                      title: 'Select Duration',
+                      fontSize: 18,
+                      textColor: AppColors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildBtn("Confirm", AppColors.blue, () {
-                    if (_startYear != null) {
-                      setState(
-                        () => _yearController.text = _isCurrentlyThere
-                            ? "$_startYear - Present"
-                            : "$_startYear - ${_endYear ?? ''}",
-                      );
-                      Navigator.pop(context);
-                    }
-                  }),
-                ],
+                    const SizedBox(height: 24),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: _buildYearDropdown(
+                            "Start",
+                            _startYear,
+                            (val) {
+                              setModalState(() {
+                                _startYear = val;
+                                if (_endYear != null && _endYear! < _startYear!)
+                                  _endYear = null;
+                              });
+                            },
+                            allYears,
+                            validator: (val) {
+                              if (val == null) return 'Required';
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _isCurrentlyThere
+                              ? _buildPresentBox()
+                              : _buildYearDropdown(
+                                  "End",
+                                  _endYear,
+                                  (val) => setModalState(() => _endYear = val),
+                                  filteredEndYears,
+                                  enabled: _startYear != null,
+                                  validator: (val) {
+                                    if (!_isCurrentlyThere && val == null) {
+                                      return 'Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Theme(
+                      data: ThemeData(
+                        unselectedWidgetColor: AppColors.lightGrey,
+                      ),
+                      child: CheckboxListTile(
+                        title: const CustomText(
+                          title: "I currently play here",
+                          fontSize: 14,
+                          textColor: AppColors.white,
+                        ),
+                        value: _isCurrentlyThere,
+                        activeColor: AppColors.blue,
+                        side: const BorderSide(color: AppColors.lightGrey),
+                        contentPadding: EdgeInsets.zero,
+                        onChanged: (val) => setModalState(() {
+                          _isCurrentlyThere = val!;
+                          if (_isCurrentlyThere) _endYear = null;
+                        }),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildBtn("Confirm", AppColors.blue, () {
+                      if (modalFormKey.currentState!.validate()) {
+                        setState(
+                          () => _yearController.text = _isCurrentlyThere
+                              ? "$_startYear - Present"
+                              : "$_startYear - $_endYear",
+                        );
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
               ),
             );
           },
@@ -584,11 +650,13 @@ class _AddCareerModalState extends State<AddCareerModal> {
     Function(int?) onChanged,
     List<int> years, {
     bool enabled = true,
+    String? Function(int?)? validator,
   }) {
     return Opacity(
       opacity: enabled ? 1.0 : 0.4,
       child: DropdownButtonFormField<int>(
         value: value,
+        validator: validator,
         dropdownColor: AppColors.darkGreyCard,
         iconEnabledColor: AppColors.white,
         hint: Text(

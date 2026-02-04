@@ -4,7 +4,6 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileEditPage extends StatefulWidget {
   final SponsorProfile? sponsorProfile;
@@ -16,8 +15,11 @@ class ProfileEditPage extends StatefulWidget {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   )
   onSave;
+  final bool isLoading;
 
   const ProfileEditPage({
     super.key,
@@ -25,6 +27,7 @@ class ProfileEditPage extends StatefulWidget {
     this.profileImage,
     this.bannerImage,
     required this.onSave,
+    this.isLoading = false,
   });
 
   @override
@@ -36,6 +39,15 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
+
+  // Social Media Controllers
+  final TextEditingController _facebookController = TextEditingController();
+  final TextEditingController _twitterController = TextEditingController();
+  final TextEditingController _instagramController = TextEditingController();
+  final TextEditingController _linkedinController = TextEditingController();
+  final TextEditingController _youtubeController = TextEditingController();
+  final TextEditingController _tiktokController = TextEditingController();
 
   // Edit states
   bool _editAddress = false;
@@ -43,15 +55,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   // Focus nodes
   final FocusNode _addressFocus = FocusNode();
-  final FocusNode _campaignFocus = FocusNode();
-  final FocusNode _athletesFocus = FocusNode();
-  final FocusNode _partnersFocus = FocusNode();
   final FocusNode _companyNameFocus = FocusNode();
-
-  // Image
-  File? _selectedImage;
-
-  final ImagePicker _picker = ImagePicker();
 
   // Visual constants
   final Color _primaryDark = const Color(0xFF0C2031);
@@ -67,6 +71,15 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       _companyNameController.text = widget.sponsorProfile!.name;
       _addressController.text = widget.sponsorProfile!.address;
       _descriptionController.text = widget.sponsorProfile!.description;
+      _websiteController.text = widget.sponsorProfile!.websiteUrl;
+
+      final socialLinks = widget.sponsorProfile!.socialLinks;
+      _facebookController.text = socialLinks['facebook'] ?? '';
+      _twitterController.text = socialLinks['twitter'] ?? '';
+      _instagramController.text = socialLinks['instagram'] ?? '';
+      _linkedinController.text = socialLinks['linkedin'] ?? '';
+      _youtubeController.text = socialLinks['youtube'] ?? '';
+      _tiktokController.text = socialLinks['tiktok'] ?? '';
     }
 
     void revertIfEmpty(
@@ -98,21 +111,28 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _addressController.dispose();
     _descriptionController.dispose();
     _companyNameController.dispose();
+    _websiteController.dispose();
+    _facebookController.dispose();
+    _twitterController.dispose();
+    _instagramController.dispose();
+    _linkedinController.dispose();
+    _youtubeController.dispose();
+    _tiktokController.dispose();
+
     _addressFocus.dispose();
-    _campaignFocus.dispose();
-    _athletesFocus.dispose();
-    _partnersFocus.dispose();
     _companyNameFocus.dispose();
     super.dispose();
   }
 
-  InputDecoration _inputDecoration({String? hint}) {
+  InputDecoration _inputDecoration({String? hint, IconData? prefixIcon}) {
     return InputDecoration(
       hintText: hint,
       hintStyle: const TextStyle(color: Colors.grey),
       filled: true,
       fillColor: _lightGrey,
-
+      prefixIcon: prefixIcon != null
+          ? Icon(prefixIcon, color: Colors.grey, size: 20)
+          : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -152,8 +172,19 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 }
               },
             )
+          : _addressController.text.isNotEmpty
+          ? Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: CustomText(
+                title: _addressController.text,
+                textColor: AppColors.black,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                textAlign: TextAlign.center,
+              ),
+            )
           : Container(
-              // width: double.infinity,
               decoration: BoxDecoration(
                 color: _fillGrey,
                 borderRadius: BorderRadius.circular(6),
@@ -163,7 +194,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               child: const Center(
                 child: CustomText(
                   title: 'Add Address',
-
                   textColor: AppColors.black,
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -173,177 +203,205 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     );
   }
 
-  Widget _buildQuestionBox({
-    required String title,
-    required String subtitle,
-    required TextEditingController controller,
-    required bool editable,
-    required FocusNode focusNode,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        if (!editable) onTap();
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        // height: 100,
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: editable ? _lightGrey : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border: editable ? Border.all(color: Colors.grey.shade300) : null,
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: CustomText(
+          title: title,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          textColor: AppColors.black,
         ),
-        child: editable
-            ? TextFormField(
-                focusNode: focusNode,
-                controller: controller,
-                style: const TextStyle(fontSize: 14, color: AppColors.black),
-                decoration: InputDecoration(
-                  hintText: subtitle,
-                  hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 10,
-                  ),
-                ),
-                textInputAction: TextInputAction.done,
-                onSaved: (_) {
-                  if (controller.text.trim().isEmpty) {
-                    setState(() {
-                    
-                    });
-                  } else {
-                    focusNode.unfocus();
-                  }
-                },
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomText(
-                    title: title,
-                    textAlign: TextAlign.center,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    textColor: Colors.black87,
-                  ),
-                  const SizedBox(height: 6),
-                  CustomText(
-                    title: subtitle,
-                    textAlign: TextAlign.center,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    textColor: Colors.grey,
-                  ),
-                ],
-              ),
       ),
     );
   }
 
-  Future<void> _pickImage() async {
-    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() => _selectedImage = File(picked.path));
-    }
+  Widget _buildSocialInput(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        decoration: _inputDecoration(hint: label, prefixIcon: icon),
+        style: const TextStyle(fontSize: 14, color: AppColors.black),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-      child: Column(
-        children: [
-          SizedBox(height: 80),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 16.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (!_editCompanyName) {
-                      setState(() => _editCompanyName = true);
-                      Future.delayed(const Duration(milliseconds: 80), () {
-                        if (mounted) {
-                          FocusScope.of(
-                            context,
-                          ).requestFocus(_companyNameFocus);
-                        }
-                      });
-                    }
-                  },
-                  child: _editCompanyName
-                      ? TextFormField(
-                          focusNode: _companyNameFocus,
-                          controller: _companyNameController,
-                          decoration: _inputDecoration(
-                            hint: "Enter company name",
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 16.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+
+                  GestureDetector(
+                    onTap: () {
+                      if (!_editCompanyName) {
+                        setState(() => _editCompanyName = true);
+                        Future.delayed(const Duration(milliseconds: 80), () {
+                          if (mounted) {
+                            FocusScope.of(
+                              context,
+                            ).requestFocus(_companyNameFocus);
+                          }
+                        });
+                      }
+                    },
+                    child: _editCompanyName
+                        ? TextFormField(
+                            focusNode: _companyNameFocus,
+                            controller: _companyNameController,
+                            decoration: _inputDecoration(
+                              hint: "Enter company name",
+                            ),
+                            textInputAction: TextInputAction.done,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppColors.black,
+                            ),
+                            onSaved: (_) {
+                              if (_companyNameController.text.trim().isEmpty) {
+                                setState(() => _editCompanyName = false);
+                              } else {
+                                _companyNameFocus.unfocus();
+                              }
+                            },
+                          )
+                        : CustomText(
+                            title: _companyNameController.text.isEmpty
+                                ? 'SP Sport Agency'
+                                : _companyNameController.text,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            textColor: AppColors.black,
                           ),
-                          textInputAction: TextInputAction.done,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            // fontWeight: FontWeight.bold,
-                            color: AppColors.black,
-                          ),
-                          onSaved: (_) {
-                            if (_companyNameController.text.trim().isEmpty) {
-                              setState(() => _editCompanyName = false);
-                            } else {
-                              _companyNameFocus.unfocus();
-                            }
-                          },
-                        )
-                      : CustomText(
-                          title: _companyNameController.text.isEmpty
-                              ? 'SP Sport Agency'
-                              : _companyNameController.text,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          textColor: AppColors.black,
-                        ),
-                ),
-                const SizedBox(height: 12),
-                _addressWidget(),
-                const SizedBox(height: 30),
-                RoundedButton(
-                  label: "Save",
-                  onPressed: _handleSave,
-                  width: double.infinity,
-                  height: 60,
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  _addressWidget(),
+
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _descriptionController,
+                    maxLines: 4,
+                    decoration: _inputDecoration(hint: "Description..."),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.black,
+                    ),
+                  ),
+
+                  _buildSectionTitle("Website"),
+                  TextFormField(
+                    controller: _websiteController,
+                    decoration: _inputDecoration(
+                      hint: "https://example.com",
+                      prefixIcon: Icons.language,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.black,
+                    ),
+                  ),
+
+                  _buildSectionTitle("Social Media"),
+                  _buildSocialInput(
+                    "Facebook URL",
+                    _facebookController,
+                    Icons.facebook,
+                  ),
+                  _buildSocialInput(
+                    "X URL",
+                    _twitterController,
+                    Icons.alternate_email,
+                  ), // Using alternate_email as simple proxy for X/Twitter
+                  _buildSocialInput(
+                    "Instagram URL",
+                    _instagramController,
+                    Icons.camera_alt_outlined,
+                  ),
+                  _buildSocialInput(
+                    "LinkedIn URL",
+                    _linkedinController,
+                    Icons.work_outline,
+                  ),
+                  _buildSocialInput(
+                    "YouTube URL",
+                    _youtubeController,
+                    Icons.video_library_outlined,
+                  ),
+                  _buildSocialInput(
+                    "TikTok URL",
+                    _tiktokController,
+                    Icons.music_note,
+                  ),
+
+                  const SizedBox(height: 30),
+                  RoundedButton(
+                    label: "Save Changes",
+                    onPressed: _handleSave,
+                    width: double.infinity,
+                    height: 60,
+                    submitting: widget.isLoading,
+                  ),
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   void _handleSave() {
-    // Get the current values from controllers, or use existing profile data if unchanged
-    final String name = _companyNameController.text.trim().isNotEmpty
-        ? _companyNameController.text.trim()
-        : widget.sponsorProfile?.name ?? '';
+    final String name = _companyNameController.text.trim();
+    final String description = _descriptionController.text.trim();
+    final String address = _addressController.text.trim();
+    final String websiteUrl = _websiteController.text.trim();
 
-    final String? description = _descriptionController.text.trim().isNotEmpty
-        ? _descriptionController.text.trim()
-        : widget.sponsorProfile?.description;
+    final Map<String, String> socialLinks = {};
+    if (_facebookController.text.isNotEmpty)
+      socialLinks['facebook'] = _facebookController.text.trim();
+    if (_twitterController.text.isNotEmpty)
+      socialLinks['twitter'] = _twitterController.text.trim();
+    if (_instagramController.text.isNotEmpty)
+      socialLinks['instagram'] = _instagramController.text.trim();
+    if (_linkedinController.text.isNotEmpty)
+      socialLinks['linkedin'] = _linkedinController.text.trim();
+    if (_youtubeController.text.isNotEmpty)
+      socialLinks['youtube'] = _youtubeController.text.trim();
+    if (_tiktokController.text.isNotEmpty)
+      socialLinks['tiktok'] = _tiktokController.text.trim();
 
-    final String? address = _addressController.text.trim().isNotEmpty
-        ? _addressController.text.trim()
-        : widget.sponsorProfile?.address;
-
-    // Use selected image if available, otherwise use the image passed from ProfileScreen
-    final File? profileImage = _selectedImage ?? widget.profileImage;
+    final File? profileImage = widget.profileImage;
     final File? bannerImage = widget.bannerImage;
 
-    // Call the onSave callback with all the data
-    widget.onSave(name, description, address, profileImage, bannerImage);
+    widget.onSave(
+      name,
+      description,
+      address,
+      profileImage,
+      bannerImage,
+      websiteUrl,
+      socialLinks,
+    );
   }
 }

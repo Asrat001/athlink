@@ -3,10 +3,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'competition_result_model.freezed.dart';
 part 'competition_result_model.g.dart';
 
+Object? _idReader(Map json, String key) => json['_id'] ?? json['id'];
+
 @freezed
 abstract class CompetitionResultModel with _$CompetitionResultModel {
   const factory CompetitionResultModel({
-    @JsonKey(name: '_id') required String id,
+    @JsonKey(name: '_id', readValue: _idReader) required String id,
     @JsonKey(name: 'athlete') required String athleteId,
     required String competitionName,
     required String date,

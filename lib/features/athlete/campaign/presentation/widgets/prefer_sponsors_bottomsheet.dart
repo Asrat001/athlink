@@ -122,6 +122,7 @@ class _PreferredSponsorsBottomSheetState
             icon: const Icon(Icons.search, color: AppColors.grey),
             borderRadius: 12,
             textColor: AppColors.white,
+            cursorColor: AppColors.white,
           ),
 
           const SizedBox(height: 24),

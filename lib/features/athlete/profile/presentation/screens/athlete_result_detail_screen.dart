@@ -35,6 +35,7 @@ class _AthleteResultDetailScreenState
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<File> _uploadedMedia;
+  late List<File> _newlyAddedMedia; // Track only newly added files
   List<String> _mediaUrls = [];
   late TextEditingController _summaryController;
   String? _currentResultsLink;
@@ -48,6 +49,7 @@ class _AthleteResultDetailScreenState
 
     _tabController = TabController(length: 3, vsync: this);
     _uploadedMedia = List.from(widget.result.media);
+    _newlyAddedMedia = []; // Initialize empty list for new files
     _mediaUrls = List.from(widget.result.mediaUrls);
     _summaryController = TextEditingController(
       text: widget.result.competitionSummary,
@@ -65,23 +67,27 @@ class _AthleteResultDetailScreenState
   }
 
   void _saveAndExit() async {
-    final finalResult = widget.result.copyWith(
-      media: _uploadedMedia,
-      mediaUrls: _mediaUrls,
-      competitionSummary: _summaryController.text,
-      resultLink: _currentResultsLink,
-    );
     final localStorage = sl<LocalStorageService>();
     final loggedInUser = localStorage.getUserData();
     if (loggedInUser == null) return;
+
+    final data = {
+      'competitionSummary': _summaryController.text,
+      'resultLink': _currentResultsLink,
+      if (_mediaUrls.isNotEmpty) 'existingMedia': _mediaUrls,
+    };
+
+    logger("Updating result with data: $data");
+    logger("Existing media URLs: $_mediaUrls");
+    logger("Newly added media count: ${_newlyAddedMedia.length}");
 
     ref
         .read(competitionResultsProvider(loggedInUser.id).notifier)
         .updateResult(
           athleteId: loggedInUser.id,
           resultId: widget.result.id,
-          data: finalResult.toJson(),
-          media: _uploadedMedia,
+          data: data,
+          media: _newlyAddedMedia.isNotEmpty ? _newlyAddedMedia : null,
           onSuccess: () {
             if (!mounted) return;
             Navigator.pop(context);
@@ -94,7 +100,11 @@ class _AthleteResultDetailScreenState
 
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      setState(() => _uploadedMedia.add(File(image.path)));
+      final newFile = File(image.path);
+      setState(() {
+        _uploadedMedia.add(newFile);
+        _newlyAddedMedia.add(newFile); // Track as newly added
+      });
     }
   }
 
@@ -164,7 +174,10 @@ class _AthleteResultDetailScreenState
                 ? (index, isFile) {
                     setState(() {
                       if (isFile) {
+                        final fileToRemove = _uploadedMedia[index];
                         _uploadedMedia.removeAt(index);
+                        // Also remove from newly added if it exists there
+                        _newlyAddedMedia.remove(fileToRemove);
                       } else {
                         _mediaUrls.removeAt(index);
                       }

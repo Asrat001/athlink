@@ -143,6 +143,7 @@ class ResultFullDetailsTab extends StatelessWidget {
     if (!isSelf || onLinkUpdated == null) return;
 
     final controller = TextEditingController(text: currentLink);
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -152,90 +153,120 @@ class ResultFullDetailsTab extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.orangeGradientStart.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.link,
-                  color: AppColors.orangeGradientStart,
-                  size: 32,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const CustomText(
-                title: "Competition Link",
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                textColor: AppColors.white,
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                style: const TextStyle(color: AppColors.white, fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: "https://example.com/results",
-                  hintStyle: TextStyle(
-                    color: AppColors.white.withValues(alpha: 0.2),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.orangeGradientStart.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
                   ),
-                  filled: true,
-                  fillColor: AppColors.black.withValues(alpha: 0.3),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                  child: const Icon(
+                    Icons.link,
+                    color: AppColors.orangeGradientStart,
+                    size: 32,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.white.withValues(alpha: 0.1),
+                ),
+                const SizedBox(height: 16),
+                const CustomText(
+                  title: "Competition Link",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  textColor: AppColors.white,
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: controller,
+                  autofocus: true,
+                  style: const TextStyle(color: AppColors.white, fontSize: 14),
+                  decoration: InputDecoration(
+                    hintText: "https://example.com/results",
+                    hintStyle: TextStyle(
+                      color: AppColors.white.withValues(alpha: 0.2),
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: AppColors.orangeGradientStart,
+                    filled: true,
+                    fillColor: AppColors.black.withValues(alpha: 0.3),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: CustomText(
-                        title: "Cancel",
-                        textColor: AppColors.white.withValues(alpha: 0.5),
-                        fontWeight: FontWeight.w600,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: AppColors.white.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppColors.orangeGradientStart,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.error),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppColors.error,
+                        width: 1.5,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.orangeGradientStart,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter a URL';
+                    }
+                    // Basic URL validation
+                    final urlPattern = RegExp(
+                      r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$',
+                      caseSensitive: false,
+                    );
+                    if (!urlPattern.hasMatch(value.trim())) {
+                      return 'Please enter a valid URL';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: CustomText(
+                          title: "Cancel",
+                          textColor: AppColors.white.withValues(alpha: 0.5),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      onPressed: () {
-                        onLinkUpdated!(controller.text);
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Save"),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.orangeGradientStart,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            onLinkUpdated!(controller.text.trim());
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text("Save"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -256,7 +287,11 @@ class ResultFullDetailsTab extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: InfoTile(label: l2, value: DateFormatter.formatFromISO(v2), isOrange: isDateOrange),
+          child: InfoTile(
+            label: l2,
+            value: DateFormatter.formatFromISO(v2),
+            isOrange: isDateOrange,
+          ),
         ),
       ],
     );

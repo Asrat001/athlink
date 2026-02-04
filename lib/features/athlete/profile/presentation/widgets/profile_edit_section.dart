@@ -2,6 +2,7 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProfileEditSection extends StatelessWidget {
   final TextEditingController nameController;
@@ -33,6 +34,8 @@ class ProfileEditSection extends StatelessWidget {
           controller: nameController,
           borderRadius: 12,
           textColor: AppColors.white,
+          cursorColor: AppColors.white,
+          inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))],
         ),
         const SizedBox(height: 16),
         _buildLabel("Location"),
@@ -41,6 +44,7 @@ class ProfileEditSection extends StatelessWidget {
           controller: locationController,
           borderRadius: 12,
           textColor: AppColors.white,
+          cursorColor: AppColors.white,
         ),
         const SizedBox(height: 16),
         _buildLabel("Bio"),
@@ -49,6 +53,7 @@ class ProfileEditSection extends StatelessWidget {
           controller: bioController,
           borderRadius: 12,
           textColor: AppColors.white,
+          cursorColor: AppColors.white,
           maxLines: 4,
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 
@@ -12,7 +13,9 @@ class CustomTextField extends StatelessWidget {
   final double labelFontSize;
   final double? borderRadius;
   final Color? textColor;
+  final Color? cursorColor;
   final void Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     super.key,
@@ -25,7 +28,9 @@ class CustomTextField extends StatelessWidget {
     this.borderRadius = 50,
     this.maxLines = 1,
     this.textColor,
+    this.cursorColor,
     this.onChanged,
+    this.inputFormatters,
   });
 
   @override
@@ -36,6 +41,8 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      inputFormatters: inputFormatters,
+      cursorColor: cursorColor,
       style: GoogleFonts.inter(color: textColor ?? AppColors.black),
       decoration: InputDecoration(
         errorMaxLines: 5,

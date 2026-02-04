@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/forms/custom_text_field.dart';
+import 'package:athlink/shared/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,6 +32,7 @@ class _AddResultModalState extends State<AddResultModal> {
   late TextEditingController _divisionController;
   late TextEditingController _locationDataController;
   late TextEditingController _locationNameController;
+  DateTime? _selectedDate;
   final String _googleApiKey = dotenv.env['GOOGLE_MAP_API_KEY'] ?? "";
   List<dynamic> _placePredictions = [];
   String _sessionToken = const Uuid().v4();
@@ -44,8 +45,18 @@ class _AddResultModalState extends State<AddResultModal> {
     _competitionController = TextEditingController(
       text: widget.initialRecord?.competition ?? '',
     );
+
+    if (widget.initialRecord?.date != null &&
+        widget.initialRecord!.date.isNotEmpty) {
+      try {
+        _selectedDate = DateTime.parse(widget.initialRecord!.date);
+      } catch (_) {
+        // Fallback or log error
+      }
+    }
+
     _dateController = TextEditingController(
-      text: widget.initialRecord?.date ?? '',
+      text: DateFormatter.formatFromISO(widget.initialRecord?.date ?? ''),
     );
     _divisionController = TextEditingController(
       text: widget.initialRecord?.division ?? '',
@@ -68,7 +79,8 @@ class _AddResultModalState extends State<AddResultModal> {
     _positionController = TextEditingController(text: pos);
     _totalCompetitorsController = TextEditingController(text: total);
   }
-    void _onLocationChanged(String value) {
+
+  void _onLocationChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (value.isNotEmpty) {
@@ -132,9 +144,9 @@ class _AddResultModalState extends State<AddResultModal> {
   Future<void> _selectDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(), // Cannot select future dates
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark().copyWith(
@@ -149,9 +161,10 @@ class _AddResultModalState extends State<AddResultModal> {
       },
     );
     if (picked != null) {
-      setState(
-        () => _dateController.text = DateFormat('d/MMM/yyyy').format(picked),
-      );
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormatter.formatMedium(picked);
+      });
     }
   }
 
@@ -161,11 +174,16 @@ class _AddResultModalState extends State<AddResultModal> {
           "${_positionController.text}/${_totalCompetitorsController.text}";
       final newResult = ResultData(
         id: widget.initialRecord?.id ?? '',
-        date: _dateController.text,
+        date: _selectedDate != null
+            ? DateFormatter.formatISO(_selectedDate!)
+            : _dateController.text,
         position: positionString,
         competition: _competitionController.text,
         location: _locationNameController.text,
         division: _divisionController.text,
+        competitionSummary: widget.initialRecord?.competitionSummary ?? '',
+        resultLink: widget.initialRecord?.resultLink,
+        mediaUrls: widget.initialRecord?.mediaUrls ?? [],
         flagUrl:
             widget.initialRecord?.flagUrl ?? 'https://flagcdn.com/w40/un.png',
       );
@@ -213,6 +231,7 @@ class _AddResultModalState extends State<AddResultModal> {
                 controller: _competitionController,
                 borderRadius: 12,
                 textColor: AppColors.white,
+                cursorColor: AppColors.white,
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
@@ -229,7 +248,7 @@ class _AddResultModalState extends State<AddResultModal> {
                     controller: _dateController,
                     borderRadius: 12,
                     textColor: AppColors.white,
-
+                    cursorColor: AppColors.white,
                     validator: (v) => v!.isEmpty ? 'Required' : null,
                   ),
                 ),
@@ -241,8 +260,15 @@ class _AddResultModalState extends State<AddResultModal> {
                 controller: _positionController,
                 borderRadius: 12,
                 textColor: AppColors.white,
+                cursorColor: AppColors.white,
                 keyboardType: TextInputType.number,
-                validator: (v) => v!.isEmpty ? 'Required' : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  final num = int.tryParse(v);
+                  if (num == null) return 'Must be a number';
+                  if (num <= 0) return 'Must be greater than 0';
+                  return null;
+                },
               ),
               const SizedBox(width: 16),
               _buildLabel("Total Competitors"),
@@ -251,8 +277,15 @@ class _AddResultModalState extends State<AddResultModal> {
                 controller: _totalCompetitorsController,
                 borderRadius: 12,
                 textColor: AppColors.white,
+                cursorColor: AppColors.white,
                 keyboardType: TextInputType.number,
-                validator: (v) => v!.isEmpty ? 'Required' : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  final num = int.tryParse(v);
+                  if (num == null) return 'Must be a number';
+                  if (num <= 0) return 'Must be greater than 0';
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
 
@@ -262,6 +295,7 @@ class _AddResultModalState extends State<AddResultModal> {
                 controller: _divisionController,
                 borderRadius: 12,
                 textColor: AppColors.white,
+                cursorColor: AppColors.white,
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 32),
@@ -292,6 +326,7 @@ class _AddResultModalState extends State<AddResultModal> {
       ),
     );
   }
+
   Widget _buildPlacesField() {
     return Column(
       children: [

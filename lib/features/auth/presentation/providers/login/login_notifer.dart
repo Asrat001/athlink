@@ -84,7 +84,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> googleSignIn(BuildContext context) async {
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
       final response = await _authenticationRepository.googleSignIn();
       log(response.toString());

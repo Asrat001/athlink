@@ -10,6 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:athlink/routes/route_names.dart';
+import 'package:go_router/go_router.dart';
+
 /// Clean watchlist screen with ValueNotifier for performant UI updates
 class WatchListScreen extends ConsumerStatefulWidget {
   const WatchListScreen({super.key});
@@ -20,8 +23,9 @@ class WatchListScreen extends ConsumerStatefulWidget {
 
 class _WatchListScreenState extends ConsumerState<WatchListScreen>
     with SingleTickerProviderStateMixin {
-  // ✅ Simple UI state - keep setState (infrequent updates)
-  bool isFilterOpen = false;
+  // ✅ Simple UI state - keep setState (infrequent updates) (Removed filter state)
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   // ✅ ValueNotifier for action state - better performance for list
   final activeActionNotifier = ValueNotifier<({int? index, String? type})>((
@@ -32,6 +36,11 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(watchlistProvider.notifier).getWatchlist();
     });
@@ -39,6 +48,7 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
 
   @override
   void dispose() {
+    _searchController.dispose();
     activeActionNotifier.dispose();
     super.dispose();
   }
@@ -62,11 +72,19 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
       activeActionNotifier.value = (index: index, type: "deleting");
       await Future.delayed(const Duration(milliseconds: 300));
 
+      // Call delete API
+      final itemToDelete = watchlist[index];
+      if (itemToDelete.athlete?.id != null) {
+        await ref
+            .read(watchlistProvider.notifier)
+            .deleteAthleteFromWatchlist(athleteId: itemToDelete.athlete!.id!);
+      }
+
       // Reset state
       activeActionNotifier.value = (index: null, type: null);
 
       // Refresh the list after deletion
-      ref.read(watchlistProvider.notifier).getWatchlist();
+      // ref.read(watchlistProvider.notifier).getWatchlist(); // Already called in notifier
     } else {
       // Mute: just revert after delay
       activeActionNotifier.value = (index: index, type: "muting");
@@ -100,10 +118,46 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
         child: CircularProgressIndicator(color: AppColors.primary),
       ),
       success: (watchlistData) {
-        final watchlist = watchlistData.watchlist;
+        var watchlist = watchlistData.watchlist;
+
+        // Filter watchlist based on search query
+        if (_searchQuery.isNotEmpty) {
+          final query = _searchQuery.toLowerCase();
+          watchlist = watchlist.where((item) {
+            final athlete = item.athlete;
+            if (athlete == null) return false;
+
+            final name = (athlete.athleteProfile?.name ?? athlete.name ?? '')
+                .toLowerCase();
+            final sport = athlete.sport.isNotEmpty
+                ? (athlete.sport.first.name ?? '').toLowerCase()
+                : '';
+            final position = (athlete.athleteProfile?.position ?? '')
+                .toLowerCase();
+
+            return name.contains(query) ||
+                sport.contains(query) ||
+                position.contains(query);
+          }).toList();
+        }
 
         if (watchlist.isEmpty) {
-          return _buildEmptyState();
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.bookmark_border, color: AppColors.grey, size: 64),
+                const SizedBox(height: 16),
+                CustomText(
+                  title: _searchQuery.isNotEmpty
+                      ? 'No matching athletes found'
+                      : 'No athletes in your watchlist',
+                  textColor: AppColors.textGrey,
+                  fontSize: 16,
+                ),
+              ],
+            ),
+          );
         }
         // return SizedBox.shrink();
 
@@ -187,28 +241,13 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: TextField(
+                          controller: _searchController,
                           decoration: InputDecoration(
                             hintText: 'Search',
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: AppColors.grey),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            isFilterOpen = !isFilterOpen;
-                          });
-                        },
-                        child: SvgPicture.asset(
-                          isFilterOpen
-                              ? "assets/images/filter_filled.svg"
-                              : "assets/images/filter.svg",
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.primary,
-                            BlendMode.srcIn,
                           ),
                         ),
                       ),
@@ -228,24 +267,6 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                 textColor: AppColors.textPrimary,
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // MARK: - Empty State
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.bookmark_border, color: AppColors.grey, size: 64),
-          const SizedBox(height: 16),
-          CustomText(
-            title: 'No athletes in your watchlist',
-            textColor: AppColors.textGrey,
-            fontSize: 16,
           ),
         ],
       ),
@@ -425,6 +446,14 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
                 ? widget.athlete.sport.first.name
                 : null,
             highestSocialMediaPresence: '0 followers',
+            onTap: () {
+              if (widget.athlete.id != null) {
+                context.push(
+                  Routes.viewAthleteScreen,
+                  extra: {'athleteId': widget.athlete.id, 'isSelf': false},
+                );
+              }
+            },
           ),
         ),
       ),

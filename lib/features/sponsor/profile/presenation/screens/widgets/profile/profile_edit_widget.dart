@@ -13,7 +13,11 @@ class ProfileEditWidget extends StatelessWidget {
     String? address,
     File? profileImage,
     File? bannerImage,
-  ) onSave;
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
+  )
+  onSave;
+  final bool isLoading;
 
   const ProfileEditWidget({
     super.key,
@@ -21,6 +25,7 @@ class ProfileEditWidget extends StatelessWidget {
     this.profileImage,
     this.bannerImage,
     required this.onSave,
+    this.isLoading = false,
   });
 
   @override
@@ -30,6 +35,7 @@ class ProfileEditWidget extends StatelessWidget {
       profileImage: profileImage,
       bannerImage: bannerImage,
       onSave: onSave,
+      isLoading: isLoading,
     );
   }
 }

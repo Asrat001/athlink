@@ -8,7 +8,8 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'profile_stats_widget.dart';
+import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/profile/profile_stats_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileViewWidget extends ConsumerWidget {
   final SponsorProfile? sponsorProfile;
@@ -33,6 +34,7 @@ class ProfileViewWidget extends ConsumerWidget {
           textColor: AppColors.textGrey,
         ),
         const SizedBox(height: 30),
+        const SizedBox(height: 30),
         ProfileStatsWidget(
           sponsorshipCampaigns: sponsorProfile?.stats.sponsorshipCampaigns,
           athletesSponsored: sponsorProfile?.stats.athletesSponsored,
@@ -41,9 +43,80 @@ class ProfileViewWidget extends ConsumerWidget {
         const SizedBox(height: 30),
         _buildDescription(),
         const SizedBox(height: 20),
+        _buildWebsiteLink(),
+        _buildSocialMediaLinks(),
+        const SizedBox(height: 20),
         _buildAthletesSponsoredSection(ref),
         const SizedBox(height: 80),
       ],
+    );
+  }
+
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  Widget _buildWebsiteLink() {
+    if (sponsorProfile?.websiteUrl.isEmpty ?? true)
+      return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: GestureDetector(
+        onTap: () => _launchUrl(sponsorProfile!.websiteUrl),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.language, size: 16, color: AppColors.primary),
+            const SizedBox(width: 8),
+            CustomText(
+              title: sponsorProfile!.websiteUrl,
+              textColor: AppColors.primary,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialMediaLinks() {
+    if (sponsorProfile?.socialLinks.isEmpty ?? true)
+      return const SizedBox.shrink();
+
+    final socialIcons = <String, IconData>{
+      'facebook': Icons.facebook,
+      'twitter': Icons.alternate_email,
+      'instagram': Icons.camera_alt_outlined,
+      'linkedin': Icons.work_outline,
+      'youtube': Icons.video_library_outlined,
+      'tiktok': Icons.music_note,
+    };
+
+    final List<Widget> socialWidgets = [];
+    sponsorProfile!.socialLinks.forEach((key, value) {
+      if (value.isNotEmpty && socialIcons.containsKey(key)) {
+        socialWidgets.add(
+          IconButton(
+            icon: Icon(socialIcons[key], color: AppColors.grey),
+            onPressed: () => _launchUrl(value),
+          ),
+        );
+      }
+    });
+
+    if (socialWidgets.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: socialWidgets,
+      ),
     );
   }
 

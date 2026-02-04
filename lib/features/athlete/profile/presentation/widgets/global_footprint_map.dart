@@ -115,12 +115,14 @@ class _GlobalFootprintMapState extends ConsumerState<GlobalFootprintMap> {
         final List<LatLng> markerPoints = [];
 
         for (var career in careers) {
-          if (career.location != null && career.location!.contains(',')) {
+          if (career.location != null && career.location!.contains('*')) {
             try {
-              final parts = career.location!.split(',');
-              final double lat = double.parse(parts[0].trim());
-              final double lng = double.parse(parts[1].trim());
-              markerPoints.add(LatLng(lat, lng));
+              final parts = career.location!.split('*');
+              if (parts.length >= 3) {
+                final double lat = double.parse(parts[1].trim());
+                final double lng = double.parse(parts[2].trim());
+                markerPoints.add(LatLng(lat, lng));
+              }
             } catch (e) {
               debugPrint("Parsing error: $e");
             }

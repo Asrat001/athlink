@@ -60,6 +60,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   ) async {
     final success = await ref
         .read(profileProvider.notifier)
@@ -69,6 +71,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           address: address,
           profileImage: profileImage,
           bannerImage: bannerImage,
+          websiteUrl: websiteUrl,
+          socialLinks: socialLinks,
         );
 
     if (success) {
@@ -142,6 +146,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           profileImage: _profileImage,
                           bannerImage: _bannerImage,
                           onSave: _handleProfileSave,
+                          isLoading: profileState.isLoading,
                         )
                       : ProfileViewWidget(sponsorProfile: sponsorProfile),
                   PostFeedSection(

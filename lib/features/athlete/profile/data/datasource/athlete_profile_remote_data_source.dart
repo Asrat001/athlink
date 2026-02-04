@@ -220,18 +220,24 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
   }) async {
     return await safeApiCall(
       apiCall: () async {
-        dynamic requestData = competitionResult;
+        final formDataMap = Map<String, dynamic>.from(competitionResult);
+
+        // Rename 'media' in competitionResult to 'existingMedia' if it exists as URLs
+        // This aligns with what was observed in athlete_result_detail_screen.dart
+        if (formDataMap.containsKey('media') && formDataMap['media'] is List) {
+          final existingMedia = formDataMap.remove('media');
+          formDataMap['existingMedia'] = existingMedia;
+        }
 
         if (media != null && media.isNotEmpty) {
           final mediaFiles = <MultipartFile>[];
           for (var file in media) {
             mediaFiles.add(await MultipartFile.fromFile(file.path));
           }
-          requestData = FormData.fromMap({
-            ...competitionResult,
-            'media': mediaFiles,
-          });
+          formDataMap['media'] = mediaFiles;
         }
+
+        final requestData = FormData.fromMap(formDataMap);
 
         return await _httpClient
             .client(requireAuth: true)

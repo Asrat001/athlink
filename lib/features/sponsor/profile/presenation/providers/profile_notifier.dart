@@ -49,9 +49,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   }) async {
     print(
-      '📝 Updating profile with: name=$name, desc=$description, addr=$address',
+      '📝 Updating profile with: name=$name, desc=$description, addr=$address, website=$websiteUrl',
     );
     state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -61,6 +63,8 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       address: address,
       profileImage: profileImage,
       bannerImage: bannerImage,
+      websiteUrl: websiteUrl,
+      socialLinks: socialLinks,
     );
 
     return response.when(

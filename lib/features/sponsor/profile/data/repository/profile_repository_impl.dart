@@ -22,6 +22,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
     String? address,
     File? profileImage,
     File? bannerImage,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   }) async {
     return await _remoteDataSource.updateSponsorProfile(
       name: name,
@@ -29,6 +31,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       address: address,
       profileImage: profileImage,
       bannerImage: bannerImage,
+      websiteUrl: websiteUrl,
+      socialLinks: socialLinks,
     );
   }
 }

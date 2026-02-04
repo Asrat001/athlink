@@ -204,11 +204,7 @@ class ResultEmptyState extends StatelessWidget {
           ),
           if (isSelf && onAdd != null) ...[
             const SizedBox(height: 40),
-            ResultBottomActions(
-              label: 'Add Result',
-              onAdd: onAdd!,
-              showCircleButton: false,
-            ),
+            ResultBottomActions(label: 'Add Result', onAdd: onAdd!),
           ],
         ],
       ),
@@ -219,64 +215,45 @@ class ResultEmptyState extends StatelessWidget {
 class ResultBottomActions extends StatelessWidget {
   final String label;
   final VoidCallback onAdd;
-  final bool showCircleButton;
 
   const ResultBottomActions({
     super.key,
     required this.label,
     required this.onAdd,
-    this.showCircleButton = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      child: Column(
-        children: [
-          if (showCircleButton)
-            GestureDetector(
-              onTap: onAdd,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.white.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                ),
-                child: const Icon(Icons.add, color: AppColors.white, size: 28),
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: GestureDetector(
+          onTap: onAdd,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppColors.darkGreyCard,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: AppColors.white.withAlpha((0.1 * 255).round()),
               ),
             ),
-          GestureDetector(
-            onTap: onAdd,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              decoration: BoxDecoration(
-                color: AppColors.darkGreyCard,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: AppColors.white.withValues(alpha: 0.05),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.add, color: AppColors.white, size: 20),
+                const SizedBox(width: 8),
+                CustomText(
+                  title: label,
+                  textColor: AppColors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.add, color: AppColors.white, size: 18),
-                  const SizedBox(width: 8),
-                  CustomText(
-                    title: label,
-                    textColor: AppColors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

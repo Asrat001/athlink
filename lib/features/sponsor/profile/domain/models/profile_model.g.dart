@@ -91,6 +91,12 @@ _SponsorProfile _$SponsorProfileFromJson(Map<String, dynamic> json) =>
               ?.map((e) => JobPost.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      websiteUrl: json['websiteUrl'] as String? ?? '',
+      socialLinks:
+          (json['socialLinks'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$SponsorProfileToJson(_SponsorProfile instance) =>
@@ -102,6 +108,8 @@ Map<String, dynamic> _$SponsorProfileToJson(_SponsorProfile instance) =>
       'name': instance.name,
       'profileImageUrl': instance.profileImageUrl,
       'jobPosts': instance.jobPosts,
+      'websiteUrl': instance.websiteUrl,
+      'socialLinks': instance.socialLinks,
     };
 
 _Stats _$StatsFromJson(Map<String, dynamic> json) => _Stats(
@@ -129,7 +137,8 @@ _JobPost _$JobPostFromJson(Map<String, dynamic> json) => _JobPost(
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
   applicants: json['applicants'] as List<dynamic>? ?? const [],
-  budget: json['budget'] as String? ?? '',
+  price: json['price'] ?? 0,
+  currency: json['currency'] as String? ?? 'USD',
 );
 
 Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
@@ -143,7 +152,8 @@ Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
   'createdAt': instance.createdAt.toIso8601String(),
   'mediaUrls': instance.mediaUrls,
   'applicants': instance.applicants,
-  'budget': instance.budget,
+  'price': instance.price,
+  'currency': instance.currency,
 };
 
 _Timeline _$TimelineFromJson(Map<String, dynamic> json) => _Timeline(
@@ -181,11 +191,15 @@ Map<String, dynamic> _$UpdateSponsorProfileResponseToJson(
 _UpdatedSponsorProfile _$UpdatedSponsorProfileFromJson(
   Map<String, dynamic> json,
 ) => _UpdatedSponsorProfile(
-  name: json['name'] as String,
-  description: json['description'] as String,
-  address: json['address'] as String,
-  profileImageUrl: json['profileImageUrl'] as String,
-  bannerImageUrl: json['bannerImageUrl'] as String,
+  name: json['name'] as String?,
+  description: json['description'] as String?,
+  address: json['address'] as String?,
+  profileImageUrl: json['profileImageUrl'] as String?,
+  bannerImageUrl: json['bannerImageUrl'] as String?,
+  websiteUrl: json['websiteUrl'] as String?,
+  socialLinks: (json['socialLinks'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String),
+  ),
 );
 
 Map<String, dynamic> _$UpdatedSponsorProfileToJson(
@@ -196,4 +210,6 @@ Map<String, dynamic> _$UpdatedSponsorProfileToJson(
   'address': instance.address,
   'profileImageUrl': instance.profileImageUrl,
   'bannerImageUrl': instance.bannerImageUrl,
+  'websiteUrl': instance.websiteUrl,
+  'socialLinks': instance.socialLinks,
 };

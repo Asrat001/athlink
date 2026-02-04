@@ -226,6 +226,15 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
         children: [
           Expanded(
             child: ProfilePrimaryButton(
+              label: "Cancel",
+              isBordered: true,
+              color: AppColors.transparent,
+              onTap: _toggleEdit,
+            ),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: ProfilePrimaryButton(
               label: "Save Update",
               color: AppColors.darkGreyCard,
               onTap: () {
@@ -252,15 +261,6 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
                       );
                 }
               },
-            ),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: ProfilePrimaryButton(
-              label: "Cancel",
-              isBordered: true,
-              color: AppColors.transparent,
-              onTap: _toggleEdit,
             ),
           ),
         ],

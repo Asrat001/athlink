@@ -280,6 +280,7 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
               label: "Title",
               controller: _titleCtrls[i],
               textColor: AppColors.white,
+              cursorColor: AppColors.white,
               borderRadius: 8,
             ),
           ),
@@ -291,6 +292,7 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
               controller: _amountCtrls[i],
               keyboardType: TextInputType.number,
               textColor: AppColors.white,
+              cursorColor: AppColors.white,
               borderRadius: 8,
               onChanged: (v) => setState(() {}),
               validator: (val) {

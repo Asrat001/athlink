@@ -1,3 +1,4 @@
+import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/post/job_detail_modal.dart';
 import 'package:athlink/features/sponsor/profile/domain/models/profile_model.dart';
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/post/post_content.dart';
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/post/post_image_header.dart';
@@ -36,6 +37,27 @@ class PostCard extends StatelessWidget {
         : 'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800';
   }
 
+  void _showJobDetail(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: JobDetailModal(job: post),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -61,11 +83,11 @@ class PostCard extends StatelessWidget {
             PostContent(
               title: post.title,
               description: post.description,
-              price: post.budget,
+              price: post.price.toString(),
+              currency: post.currency,
               duration: _calculateDuration(),
-              agencyName: agencyName,
               location: post.location,
-              agencyImageUrl: agencyImageUrl,
+              onViewDetail: () => _showJobDetail(context),
             ),
           ],
         ),

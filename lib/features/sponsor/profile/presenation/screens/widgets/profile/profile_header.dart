@@ -63,8 +63,24 @@ class ProfileHeaderWidget extends StatelessWidget {
         // Logout Button
         Positioned(top: 50, right: 20, child: _buildLogoutButton()),
 
-        // Play Button (optional)
-        Positioned(bottom: 110, child: _buildPlayButton()),
+        // Banner Upload Icon (Edit Mode)
+        if (isEditMode)
+          Positioned(
+            bottom: 110,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
 
         // Profile Picture
         Positioned(
@@ -126,44 +142,55 @@ class ProfileHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayButton() {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(0.7),
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(Icons.play_arrow, color: AppColors.black, size: 20),
-    );
-  }
-
   Widget _buildProfilePicture(
     String fullProfileUrl,
     double logoCircleRadius,
     bool isEditMode,
   ) {
-    return Container(
-      width: logoCircleRadius * 2,
-      height: logoCircleRadius * 2,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.white,
-        border: Border.all(color: AppColors.white, width: 7),
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.textGrey,
-            blurRadius: 10,
-            offset: Offset(0, 4),
+    return Stack(
+      children: [
+        Container(
+          width: logoCircleRadius * 2,
+          height: logoCircleRadius * 2,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.white,
+            border: Border.all(color: AppColors.white, width: 7),
+            boxShadow: const [
+              BoxShadow(
+                color: AppColors.textGrey,
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(logoCircleRadius),
-        child: InkWell(
-          onTap: isEditMode ? onProfilePick : null,
-          child: _buildProfileImage(fullProfileUrl, logoCircleRadius),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(logoCircleRadius),
+            child: InkWell(
+              onTap: isEditMode ? onProfilePick : null,
+              child: _buildProfileImage(fullProfileUrl, logoCircleRadius),
+            ),
+          ),
         ),
-      ),
+        if (isEditMode)
+          Positioned(
+            bottom: 5,
+            right: 5,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
+          ),
+      ],
     );
   }
 

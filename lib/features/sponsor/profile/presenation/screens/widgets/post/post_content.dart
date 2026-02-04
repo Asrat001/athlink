@@ -1,5 +1,6 @@
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/post/agency_info.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:athlink/shared/widgets/info_item.dart';
@@ -9,20 +10,20 @@ class PostContent extends StatelessWidget {
   final String title;
   final String description;
   final String price;
+  final String currency;
   final String duration;
-  final String agencyName;
   final String location;
-  final String? agencyImageUrl;
+  final VoidCallback onViewDetail;
 
   const PostContent({
     super.key,
     required this.title,
     required this.description,
     required this.price,
+    required this.currency,
     required this.duration,
-    required this.agencyName,
     required this.location,
-    required this.agencyImageUrl,
+    required this.onViewDetail,
   });
 
   @override
@@ -38,17 +39,17 @@ class PostContent extends StatelessWidget {
           const SizedBox(height: 12),
           const Divider(color: AppColors.divider, thickness: 1),
           const SizedBox(height: 8),
-          PriceAndDurationRow(price: price, duration: duration),
+          PriceAndDurationRow(
+            price: price,
+            currency: currency,
+            duration: duration,
+          ),
           const SizedBox(height: 10),
           const Divider(color: AppColors.divider, thickness: 1),
           const SizedBox(height: 10),
-          AgencyInfo(
-            agencyName: agencyName,
-            location: location,
-            agencyImageUrl: agencyImageUrl,
-          ),
+          AgencyInfo(location: location),
           const SizedBox(height: 18),
-          const ViewDetailButton(),
+          ViewDetailButton(onPressed: onViewDetail),
         ],
       ),
     );
@@ -89,11 +90,13 @@ class PostDescription extends StatelessWidget {
 
 class PriceAndDurationRow extends StatelessWidget {
   final String price;
+  final String currency;
   final String duration;
 
   const PriceAndDurationRow({
     super.key,
     required this.price,
+    required this.currency,
     required this.duration,
   });
 
@@ -102,7 +105,14 @@ class PriceAndDurationRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        InfoItem(value: price, label: '\$/m'),
+        CustomText(
+          title: price.isNotEmpty
+              ? '${AppHelpers.getCurrencySymbol(currency)}$price'
+              : 'Not specified',
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+          textColor: AppColors.black,
+        ),
         const SizedBox(width: 10),
         const VerticalDivider(),
         const SizedBox(width: 10),
@@ -113,7 +123,9 @@ class PriceAndDurationRow extends StatelessWidget {
 }
 
 class ViewDetailButton extends StatelessWidget {
-  const ViewDetailButton({super.key});
+  final VoidCallback onPressed;
+
+  const ViewDetailButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +133,7 @@ class ViewDetailButton extends StatelessWidget {
       height: 50,
       width: double.infinity,
       label: "View Detail",
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 }

@@ -90,6 +90,7 @@ class _FundedPercentageBottomSheetState
               controller: _controller,
               keyboardType: TextInputType.number,
               textColor: Colors.white,
+              cursorColor: Colors.white,
             ),
             if (_error != null) ...[
               const SizedBox(height: 12),

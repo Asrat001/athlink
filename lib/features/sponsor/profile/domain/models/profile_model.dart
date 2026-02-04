@@ -19,7 +19,7 @@ abstract class ProfileUser with _$ProfileUser {
   const factory ProfileUser({
     @JsonKey(name: "_id") required String id,
     required String email,
-     String? role,
+    String? role,
     @Default('google') String authProvider,
     @Default(false) bool isEmailVerified,
     @Default([]) List<ProfileSport> sport,
@@ -69,6 +69,8 @@ abstract class SponsorProfile with _$SponsorProfile {
     @Default('') String name,
     @Default('') String profileImageUrl,
     @Default([]) List<JobPost> jobPosts,
+    @Default('') String websiteUrl,
+    @Default({}) Map<String, String> socialLinks,
   }) = _SponsorProfile;
 
   factory SponsorProfile.fromJson(Map<String, dynamic> json) =>
@@ -99,7 +101,8 @@ abstract class JobPost with _$JobPost {
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
     @Default([]) List<dynamic> applicants,
-    @Default('') String budget,
+    @JsonKey(name: "price") @Default(0) dynamic price,
+    @Default('USD') String currency,
   }) = _JobPost;
 
   factory JobPost.fromJson(Map<String, dynamic> json) =>
@@ -130,11 +133,13 @@ abstract class UpdateSponsorProfileResponse
 @freezed
 abstract class UpdatedSponsorProfile with _$UpdatedSponsorProfile {
   const factory UpdatedSponsorProfile({
-    required String name,
-    required String description,
-    required String address,
-    required String profileImageUrl,
-    required String bannerImageUrl,
+    String? name,
+    String? description,
+    String? address,
+    String? profileImageUrl,
+    String? bannerImageUrl,
+    String? websiteUrl,
+    Map<String, String>? socialLinks,
   }) = _UpdatedSponsorProfile;
 
   factory UpdatedSponsorProfile.fromJson(Map<String, dynamic> json) =>

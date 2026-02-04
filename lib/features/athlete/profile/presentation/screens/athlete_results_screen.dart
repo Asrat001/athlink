@@ -70,6 +70,7 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
             'location': newResult.location,
             'competitionSummary': newResult.competitionSummary,
             'resultLink': newResult.resultLink,
+            'media': newResult.mediaUrls,
           };
 
           if (record != null) {
@@ -77,8 +78,7 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                 .read(competitionResultsProvider(user.id).notifier)
                 .updateResult(
                   athleteId: user.id,
-                  resultId:
-                      "", // Ensure your provider/model handles ID correctly
+                  resultId: record.id,
                   data: data,
                   media: null,
                   onSuccess: () {
@@ -230,7 +230,6 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                                   return ResultBottomActions(
                                     label: "Add more Result",
                                     onAdd: () => _showAddResultModal(),
-                                    showCircleButton: true,
                                   );
                                 }
 

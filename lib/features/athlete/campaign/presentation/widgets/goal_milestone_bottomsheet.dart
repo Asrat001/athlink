@@ -58,6 +58,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     label: "Title",
                     controller: _titleController,
                     textColor: AppColors.white,
+                    cursorColor: AppColors.white,
                     validator: (val) =>
                         (val == null || val.isEmpty) ? "Required" : null,
                   ),
@@ -87,6 +88,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   label: "Date",
                   controller: _dateController,
                   textColor: AppColors.white,
+                  cursorColor: AppColors.white,
                 ),
               ),
             ),
