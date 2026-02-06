@@ -394,35 +394,89 @@ class _AthleteCampaignsScreenState
   void _handleDeleteCampaign(CampaignModel campaign) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => Dialog(
         backgroundColor: AppColors.darkGreyCard,
-        title: const CustomText(
-          title: "Delete Campaign",
-          fontSize: 18,
-          textColor: AppColors.white,
-          fontWeight: FontWeight.w600,
-        ),
-        content: CustomText(
-          title: "Are you sure you want to delete this campaign?",
-          fontSize: 14,
-          textColor: Colors.white70,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: AppColors.error,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const CustomText(
+                title: 'Delete Campaign',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textColor: Colors.white,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              const CustomText(
+                title:
+                    'Are you sure you want to delete this campaign? This action cannot be undone.',
+                fontSize: 14,
+                textColor: Colors.white60,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'Cancel',
+                        textColor: Colors.white70,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _deleteCampaign(campaign.id ?? '');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'Delete',
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _deleteCampaign(campaign.id ?? '');
-            },
-            child: const Text(
-              "Delete",
-              style: TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -653,7 +653,7 @@ class _AthleteCampaignDetailScreenState
         CampaignDetailTile(
           title: "Sponsorship Preferences",
           desc: "Define your sponsorship opportunities.",
-          btnLabel: "Add Preferences",
+          btnLabel: "Add Sponsor Preferences",
           isExpanded: _sections["Sponsorship Preferences"]!,
           onToggle: (v) =>
               setState(() => _sections["Sponsorship Preferences"] = v),
