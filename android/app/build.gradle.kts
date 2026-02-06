@@ -50,16 +50,13 @@ signingConfigs {
             storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
         }
     }
-
-
-
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            signingConfig = signingConfigs.getByName("release")
-            // ✅ Add these:
-            isMinifyEnabled = true
-            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
+            // ✅ Temporarily disable minification to debug hang
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

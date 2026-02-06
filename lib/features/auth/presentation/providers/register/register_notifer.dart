@@ -40,7 +40,7 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
     }
 
     final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
+    if (true) {
       state = state.copyWith(isLoading: true);
 
       final response = await _authenticationRepository

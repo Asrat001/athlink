@@ -89,6 +89,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
   }
 
   void _toggleEdit() {
+    FocusScope.of(context).unfocus();
     // SECURITY: Do not allow entering edit mode if not viewing own profile
     if (!widget.isSelf) return;
 
@@ -238,6 +239,7 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
               label: "Save Update",
               color: AppColors.darkGreyCard,
               onTap: () {
+                FocusScope.of(context).unfocus();
                 final id = _targetId;
                 if (id != null) {
                   ref

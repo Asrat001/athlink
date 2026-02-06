@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 import 'package:athlink/features/athlete/profile/domain/models/result_data.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -262,11 +263,29 @@ class _AddResultModalState extends State<AddResultModal> {
                 textColor: AppColors.white,
                 cursorColor: AppColors.white,
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                onChanged: (_) {
+                  if (_autovalidateMode == AutovalidateMode.onUserInteraction) {
+                    _formKey.currentState?.validate();
+                  }
+                },
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Required';
                   final num = int.tryParse(v);
                   if (num == null) return 'Must be a number';
                   if (num <= 0) return 'Must be greater than 0';
+
+                  if (_totalCompetitorsController.text.isNotEmpty) {
+                    final total = int.tryParse(
+                      _totalCompetitorsController.text,
+                    );
+                    if (total != null && num > total) {
+                      return 'Cannot exceed total';
+                    }
+                  }
                   return null;
                 },
               ),
@@ -279,11 +298,27 @@ class _AddResultModalState extends State<AddResultModal> {
                 textColor: AppColors.white,
                 cursorColor: AppColors.white,
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                onChanged: (_) {
+                  if (_autovalidateMode == AutovalidateMode.onUserInteraction) {
+                    _formKey.currentState?.validate();
+                  }
+                },
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Required';
                   final num = int.tryParse(v);
                   if (num == null) return 'Must be a number';
                   if (num <= 0) return 'Must be greater than 0';
+
+                  if (_positionController.text.isNotEmpty) {
+                    final pos = int.tryParse(_positionController.text);
+                    if (pos != null && num < pos) {
+                      return 'Cannot be less than position';
+                    }
+                  }
                   return null;
                 },
               ),

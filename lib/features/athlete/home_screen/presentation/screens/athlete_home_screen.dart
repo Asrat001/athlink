@@ -199,7 +199,7 @@ class _AthleteDashboardScreenState
               borderRadius: BorderRadius.circular(16),
             ),
             onSelected: (value) {
-              if (value == 0) StatefulNavigationShell.of(context).goBranch(4);
+              if (value == 0) StatefulNavigationShell.of(context).goBranch(3);
               if (value == 1) ref.read(loginProvider.notifier).signOut(context);
             },
             itemBuilder: (context) => [

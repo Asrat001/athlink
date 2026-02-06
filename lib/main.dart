@@ -11,7 +11,15 @@ import 'package:firebase_core/firebase_core.dart'; // Added import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+
+  // Add try-catch for .env loading to prevent hangs in release builds
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    // Log warning but continue - app should handle missing env vars gracefully
+    debugPrint("Warning: .env file not found or failed to load: $e");
+  }
+
   await Firebase.initializeApp(); // Added initialization
   await NotificationService.instance.initialize();
   await serviceLocator();
