@@ -16,6 +16,8 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
   final _amountCtrl = TextEditingController();
   final _dateCtrl = TextEditingController();
   DateTime? _selectedDate;
+  String? _amountError;
+  String? _dateError;
 
   @override
   void initState() {
@@ -40,67 +42,89 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
         color: AppColors.black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Add Financial Goal",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.initialGoal != null
+                  ? "Edit Financial Goal"
+                  : "Add Financial Goal",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          const Text(
-            "Total amount",
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(height: 8),
-          _buildField(
-            "Add how much total money the campaign needs.",
-            _amountCtrl,
-            isNum: true,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Date",
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(height: 8),
-          _buildDateField(),
-          const SizedBox(height: 32),
-          Row(
-            children: [
-              Expanded(
-                child: _ActionBtn(
-                  label: "Cancel",
-                  isOutlined: true,
-                  onTap: () => Navigator.pop(context),
+            const SizedBox(height: 32),
+            const Text(
+              "Total amount",
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            _buildField(
+              "Add how much total money the campaign needs.",
+              _amountCtrl,
+              isNum: true,
+              errorText: _amountError,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Date",
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            _buildDateField(),
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionBtn(
+                    label: "Cancel",
+                    isOutlined: true,
+                    onTap: () => Navigator.pop(context),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _ActionBtn(
-                  label: "Save",
-                  isOutlined: false,
-                  onTap: () {
-                    if (_amountCtrl.text.isNotEmpty && _selectedDate != null) {
-                      Navigator.pop(
-                        context,
-                        FinancialGoalData(
-                          amount: double.parse(_amountCtrl.text),
-                          deadline: _selectedDate!,
-                        ),
-                      );
-                    }
-                  },
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _ActionBtn(
+                    label: "Save",
+                    isOutlined: false,
+                    onTap: () {
+                      setState(() {
+                        _amountError = null;
+                        _dateError = null;
+                      });
+
+                      bool isValid = true;
+                      if (_amountCtrl.text.isEmpty) {
+                        _amountError = "Please enter an amount";
+                        isValid = false;
+                      }
+                      if (_selectedDate == null) {
+                        _dateError = "Please select a target date";
+                        isValid = false;
+                      }
+
+                      setState(() {});
+
+                      if (isValid) {
+                        Navigator.pop(
+                          context,
+                          FinancialGoalData(
+                            amount: double.parse(_amountCtrl.text),
+                            deadline: _selectedDate!,
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -109,6 +133,7 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
     String hint,
     TextEditingController ctrl, {
     bool isNum = false,
+    String? errorText,
   }) {
     return TextField(
       controller: ctrl,
@@ -119,6 +144,7 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
         hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
         filled: true,
         fillColor: const Color(0xFF121212),
+        errorText: errorText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
@@ -142,6 +168,7 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
           setState(() {
             _selectedDate = picked;
             _dateCtrl.text = DateFormat('yyyy-MM-dd').format(picked);
+            _dateError = null; // Clear error on selection
           });
         }
       },
@@ -151,6 +178,7 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
         hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
         filled: true,
         fillColor: const Color(0xFF121212),
+        errorText: _dateError,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,

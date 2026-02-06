@@ -70,7 +70,6 @@ class FinancialGoalSummaryCard extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              const Icon(Icons.more_vert, color: AppColors.textSecondary),
             ],
           ),
           const SizedBox(height: 12),

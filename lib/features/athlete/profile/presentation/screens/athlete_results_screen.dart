@@ -8,6 +8,7 @@ import 'package:athlink/routes/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/add_result_modal.dart';
@@ -141,13 +142,134 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
                 title: 'Delete Result',
                 textColor: AppColors.red,
               ),
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmationDialog(record);
+              },
             ),
             const SizedBox(height: 20),
           ],
         ),
       ),
     );
+  }
+
+  void _showDeleteConfirmationDialog(ResultData record) {
+    final localStorage = sl<LocalStorageService>();
+    final user = localStorage.getUserData();
+    if (user == null) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.darkGreyCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: AppColors.error,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const CustomText(
+                title: 'Delete Result',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textColor: Colors.white,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              const CustomText(
+                title:
+                    'Are you sure you want to delete this result? This action cannot be undone.',
+                fontSize: 14,
+                textColor: Colors.white60,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'Cancel',
+                        textColor: Colors.white70,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _deleteResult(user.id, record.id);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'delete',
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _deleteResult(String athleteId, String resultId) {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.orangeGradientStart),
+      ),
+    );
+
+    ref
+        .read(competitionResultsProvider(athleteId).notifier)
+        .deleteResult(
+          athleteId: athleteId,
+          resultId: resultId,
+          onSuccess: () {
+            // Close loading dialog
+            Navigator.pop(context);
+            // Show success snackbar
+            AppHelpers.showSuccessToast(context, 'Result deleted successfully');
+          },
+        );
   }
 
   @override

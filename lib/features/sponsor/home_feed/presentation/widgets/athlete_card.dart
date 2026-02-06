@@ -61,6 +61,9 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
       next.maybeWhen(
         success: (message) {
           if (_isConnecting) {
+            if (widget.athleteId != null) {
+              ref.invalidate(connectionStatusProvider(widget.athleteId!));
+            }
             setState(() => _isConnecting = false);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -308,18 +311,24 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
     double scale,
     String? connectionId,
   ) {
-    return GestureDetector(
-      onLongPress: connectionId != null
-          ? () => ref
-                .read(connectionProvider.notifier)
-                .cancelRequest(connectionId)
+    return CircularIconButton(
+      size: iconSize,
+      backgroundColor: Colors.orange.withValues(alpha: 0.7),
+      onPressed: connectionId != null
+          ? () => _showConfirmationDialog(
+              title: 'Cancel Request',
+              content:
+                  'Are you sure you want to cancel this connection request?',
+              confirmText: 'Cancel Request',
+              connectionId: connectionId,
+              onConfirm: () {
+                ref
+                    .read(connectionProvider.notifier)
+                    .cancelRequest(connectionId);
+              },
+            )
           : null,
-      child: CircularIconButton(
-        size: iconSize,
-        backgroundColor: Colors.orange.withValues(alpha: 0.7),
-        onPressed: null,
-        child: Icon(Icons.schedule, color: Colors.white, size: 20 * scale),
-      ),
+      child: Icon(Icons.schedule, color: Colors.white, size: 20 * scale),
     );
   }
 
@@ -332,9 +341,10 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
       size: iconSize,
       backgroundColor: AppColors.primary.withValues(alpha: 0.7),
       onPressed: connectionId != null
-          ? () => ref
-                .read(connectionProvider.notifier)
-                .acceptRequest(connectionId)
+          ? () {
+              setState(() => _isConnecting = true); // Set connecting state
+              ref.read(connectionProvider.notifier).acceptRequest(connectionId);
+            }
           : null,
       child: Icon(Icons.person_add, color: Colors.white, size: 20 * scale),
     );
@@ -345,55 +355,125 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
     double scale,
     String? connectionId,
   ) {
-    return GestureDetector(
-      onLongPress: connectionId != null
-          ? () => _showRemoveConnectionDialog(connectionId)
+    return CircularIconButton(
+      size: iconSize,
+      backgroundColor: Colors.green.withValues(alpha: 0.7),
+      onPressed: connectionId != null
+          ? () => _showConfirmationDialog(
+              title: 'Remove Connection',
+              content:
+                  'Are you sure you want to remove this connection? This action cannot be undone.',
+              confirmText: 'Remove',
+              connectionId: connectionId,
+              onConfirm: () {
+                ref
+                    .read(connectionProvider.notifier)
+                    .removeConnection(connectionId);
+              },
+            )
           : null,
-      child: CircularIconButton(
-        size: iconSize,
-        backgroundColor: Colors.green.withValues(alpha: 0.7),
-        onPressed: null,
-        child: Icon(
-          Icons.check_circle_rounded,
-          color: Colors.white,
-          size: 20 * scale,
-        ),
+      child: Icon(
+        Icons.check_circle_rounded,
+        color: Colors.white,
+        size: 20 * scale,
       ),
     );
   }
 
-  void _showRemoveConnectionDialog(String connectionId) {
+  void _showConfirmationDialog({
+    required String title,
+    required String content,
+    required String confirmText,
+    required String connectionId,
+    required VoidCallback onConfirm,
+  }) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => Dialog(
         backgroundColor: AppColors.darkGreyCard,
-        title: const CustomText(
-          title: 'Remove Connection',
-          textColor: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        content: const CustomText(
-          title: 'Are you sure you want to remove this connection?',
-          textColor: Colors.white70,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const CustomText(title: 'Cancel', textColor: Colors.white60),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.warning_rounded,
+                  color: AppColors.error,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              CustomText(
+                title: title,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textColor: Colors.white,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              CustomText(
+                title: content,
+                fontSize: 14,
+                textColor: Colors.white60,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'Back',
+                        textColor: Colors.white70,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        if (mounted) {
+                          setState(() => _isConnecting = true);
+                        }
+                        onConfirm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: CustomText(
+                        title: confirmText,
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ref
-                  .read(connectionProvider.notifier)
-                  .removeConnection(connectionId);
-            },
-            child: const CustomText(
-              title: 'Remove',
-              textColor: AppColors.error,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

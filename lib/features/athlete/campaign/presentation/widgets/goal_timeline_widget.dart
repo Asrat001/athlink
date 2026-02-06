@@ -93,41 +93,8 @@ class GoalTimelineSummary extends StatelessWidget {
             );
           },
         ),
+
         // Add New Goal Milestone Pill
-        GestureDetector(
-          onTap: onAdd,
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white24),
-                ),
-                child: const Icon(Icons.add, color: Colors.orange, size: 20),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 24,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: Colors.white12),
-                  ),
-                  child: const CustomText(
-                    title: "Add new goal milestone",
-                    textColor: AppColors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
         const SizedBox(height: 20),
       ],
     );

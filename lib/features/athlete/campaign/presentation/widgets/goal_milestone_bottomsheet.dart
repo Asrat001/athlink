@@ -63,33 +63,53 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         (val == null || val.isEmpty) ? "Required" : null,
                   ),
                   const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2030),
+                      );
+                      if (date != null) {
+                        setState(() {
+                          _selectedDate = date;
+                          _dateController.text = DateFormat(
+                            'dd/MM/yyyy',
+                          ).format(date);
+                          // Clear error if valid date is selected
+                          if (_errorMessage == "Please select a date") {
+                            _errorMessage = null;
+                          }
+                        });
+                      }
+                    },
+                    child: AbsorbPointer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextField(
+                            label: "Date",
+                            controller: _dateController,
+                            textColor: AppColors.white,
+                            cursorColor: AppColors.white,
+                          ),
+                          if (_errorMessage == "Please select a date")
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8, left: 12),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(
+                                  color: AppColors.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2030),
-                );
-                if (date != null) {
-                  setState(() {
-                    _selectedDate = date;
-                    _dateController.text = DateFormat(
-                      'dd/MM/yyyy',
-                    ).format(date);
-                  });
-                }
-              },
-              child: AbsorbPointer(
-                child: CustomTextField(
-                  label: "Date",
-                  controller: _dateController,
-                  textColor: AppColors.white,
-                  cursorColor: AppColors.white,
-                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -137,7 +157,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               onChanged: (v) => setState(() => _status = v!),
             ),
             const SizedBox(height: 32),
-            if (_errorMessage != null)
+            if (_errorMessage != null &&
+                _errorMessage != "Please select a date")
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Center(
@@ -176,8 +197,14 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     backgroundColor:
                         AppColors.primary, // Using primary for visibility
                     onPressed: () async {
-                      if (_formKey.currentState!.validate() &&
-                          _selectedDate != null) {
+                      if (_formKey.currentState!.validate()) {
+                        if (_selectedDate == null) {
+                          setState(() {
+                            _errorMessage = "Please select a date";
+                          });
+                          return;
+                        }
+
                         final goal = GoalMilestone(
                           title: _titleController.text,
                           date: _selectedDate!,
@@ -201,16 +228,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         } else {
                           Navigator.pop(context, goal);
                         }
-                      } else if (_selectedDate == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Please select a date",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
                       }
                     },
                   ),

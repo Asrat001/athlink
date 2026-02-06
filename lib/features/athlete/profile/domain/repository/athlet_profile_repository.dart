@@ -58,4 +58,9 @@ abstract class AthletProfileRepository {
     required Map<String, dynamic> competitionResult,
     List<File>? media,
   });
+
+  Future<ApiResponse<bool>> deleteCompetitionResult({
+    required String athleteId,
+    required String resultId,
+  });
 }

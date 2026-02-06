@@ -89,4 +89,28 @@ class CompetitionResultsNotifier
       },
     );
   }
+
+  Future<void> deleteResult({
+    required String athleteId,
+    required String resultId,
+    required void Function() onSuccess,
+  }) async {
+    final response = await _repository.deleteCompetitionResult(
+      athleteId: athleteId,
+      resultId: resultId,
+    );
+
+    response.when(
+      success: (_) {
+        // Reload the list after successful deletion
+        loadResults(athleteId);
+        onSuccess();
+      },
+      failure: (error) {
+        state = CompetitionResultsState.error(
+          message: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
 }

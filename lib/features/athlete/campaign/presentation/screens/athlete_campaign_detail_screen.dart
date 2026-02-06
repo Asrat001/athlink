@@ -595,8 +595,8 @@ class _AthleteCampaignDetailScreenState
           title: "Financial Goal",
           desc: "Set your financial goal and duration.",
           btnLabel: (_financialGoal == null || _financialGoal!.amount == 0)
-              ? "Add Goal"
-              : "Edit Goal",
+              ? "Add Financial Goal"
+              : "Edit Financial Goal",
           isExpanded: _sections["Financial Goal"]!,
           onToggle: (v) => setState(() => _sections["Financial Goal"] = v),
           onAction: _handleFinancialGoal,

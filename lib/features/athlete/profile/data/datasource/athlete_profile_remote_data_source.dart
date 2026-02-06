@@ -248,4 +248,20 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
       },
     );
   }
+
+  Future<ApiResponse<bool>> deleteCompetitionResult({
+    required String athleteId,
+    required String resultId,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .delete("/athletes/$resultId");
+      },
+      fromData: (data) {
+        return data['success'] as bool? ?? false;
+      },
+    );
+  }
 }
