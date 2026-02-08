@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:athlink/features/athlete/profile/domain/repository/athlet_profile_repository.dart';
 import 'package:athlink/features/athlete/profile/presentation/providers/state/career_journey_state.dart';
@@ -80,6 +79,36 @@ class CareerJourneyNotifier extends StateNotifier<CareerJourneyState> {
         // Reload the list after successful update
         loadCareerJourney(athleteId);
         onSuccess();
+      },
+      failure: (error) {
+        state = CareerJourneyState.error(
+          message: NetworkExceptions.getErrorMessage(error),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteCareer({
+    required String athleteId,
+    required String careerId,
+    required void Function() onSuccess,
+  }) async {
+    final response = await _repository.deleteCareerJourney(
+      athleteId: athleteId,
+      careerJourneyId: careerId,
+    );
+
+    response.when(
+      success: (deleted) {
+        if (deleted) {
+          // Reload the list after successful deletion
+          loadCareerJourney(athleteId);
+          onSuccess();
+        } else {
+          state = const CareerJourneyState.error(
+            message: "Failed to delete career record",
+          );
+        }
       },
       failure: (error) {
         state = CareerJourneyState.error(

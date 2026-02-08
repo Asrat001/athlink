@@ -128,4 +128,15 @@ class AthleteProfileRepositoryImpl implements AthletProfileRepository {
       resultId: resultId,
     );
   }
+
+  @override
+  Future<ApiResponse<bool>> deleteCareerJourney({
+    required String athleteId,
+    required String careerJourneyId,
+  }) async {
+    return await _remoteDataSource.deleteCareerJourney(
+      athleteId: athleteId,
+      careerJourneyId: careerJourneyId,
+    );
+  }
 }

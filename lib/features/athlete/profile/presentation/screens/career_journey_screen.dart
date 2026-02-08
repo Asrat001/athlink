@@ -166,13 +166,129 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
                 title: 'Delete Record',
                 textColor: AppColors.red,
               ),
-              onTap: () => Navigator.pop(context), // Add Delete API call here
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmation(record);
+              },
             ),
             const SizedBox(height: 20),
           ],
         ),
       ),
     );
+  }
+
+  void _showDeleteConfirmation(CareerJourneyModel record) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.darkGreyCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.red.withAlpha((0.1 * 255).round()),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: AppColors.red,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const CustomText(
+                title: 'Delete Career Record',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.white,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              CustomText(
+                title:
+                    'Are you sure you want to delete this career record? This action cannot be undone.',
+                fontSize: 14,
+                textColor: AppColors.white.withAlpha((0.6 * 255).round()),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: CustomText(
+                        title: 'Cancel',
+                        textColor: AppColors.white.withAlpha(
+                          (0.7 * 255).round(),
+                        ),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _deleteRecord(record);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.red,
+                        foregroundColor: AppColors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const CustomText(
+                        title: 'Delete',
+                        textColor: AppColors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _deleteRecord(CareerJourneyModel record) {
+    final localStorage = sl<LocalStorageService>();
+    final user = localStorage.getUserData();
+    if (user == null) return;
+
+    ref
+        .read(careerJourneyProvider(user.id).notifier)
+        .deleteCareer(
+          athleteId: user.id,
+          careerId: record.id,
+          onSuccess: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Career record deleted successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          },
+        );
   }
 
   @override

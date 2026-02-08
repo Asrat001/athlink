@@ -63,4 +63,9 @@ abstract class AthletProfileRepository {
     required String athleteId,
     required String resultId,
   });
+
+  Future<ApiResponse<bool>> deleteCareerJourney({
+    required String athleteId,
+    required String careerJourneyId,
+  });
 }

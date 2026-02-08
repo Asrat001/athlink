@@ -264,4 +264,20 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
       },
     );
   }
+
+  Future<ApiResponse<bool>> deleteCareerJourney({
+    required String athleteId,
+    required String careerJourneyId,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        return await _httpClient
+            .client(requireAuth: true)
+            .delete("/athletes/career/$careerJourneyId");
+      },
+      fromData: (data) {
+        return data['success'] as bool? ?? false;
+      },
+    );
+  }
 }
