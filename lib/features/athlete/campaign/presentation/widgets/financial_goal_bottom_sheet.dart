@@ -1,5 +1,6 @@
 import 'package:athlink/features/athlete/campaign/data/models/campaign_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 
@@ -68,6 +69,9 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
               _amountCtrl,
               isNum: true,
               errorText: _amountError,
+              formatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
             ),
             const SizedBox(height: 20),
             const Text(
@@ -134,10 +138,13 @@ class _FinancialGoalBottomSheetState extends State<FinancialGoalBottomSheet> {
     TextEditingController ctrl, {
     bool isNum = false,
     String? errorText,
+    List<TextInputFormatter>? formatters,
   }) {
     return TextField(
       controller: ctrl,
       keyboardType: isNum ? TextInputType.number : TextInputType.text,
+      inputFormatters: formatters,
+      cursorColor: Colors.white,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hint,

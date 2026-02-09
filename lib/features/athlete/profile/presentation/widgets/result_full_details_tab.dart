@@ -181,6 +181,7 @@ class ResultFullDetailsTab extends StatelessWidget {
                 TextFormField(
                   controller: controller,
                   autofocus: true,
+                  cursorColor: AppColors.white,
                   style: const TextStyle(color: AppColors.white, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: "https://example.com/results",

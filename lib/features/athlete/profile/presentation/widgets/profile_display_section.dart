@@ -83,7 +83,15 @@ class ProfileDisplaySection extends StatelessWidget {
               if (isSelf)
                 IconButton(
                   onPressed: () {
-                    context.push(Routes.selectSportScreen);
+                    context.push(
+                      Routes.selectSportScreen,
+                      extra: {
+                        'initialSportNames': profile!.sport
+                            ?.map((e) => e.name ?? '')
+                            .toList(),
+                        'isEditing': true,
+                      },
+                    );
                   },
                   icon: Icon(
                     Icons.edit,

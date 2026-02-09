@@ -97,11 +97,9 @@ class CareerJourneyNotifier extends StateNotifier<CareerJourneyState> {
       athleteId: athleteId,
       careerJourneyId: careerId,
     );
-
     response.when(
       success: (deleted) {
         if (deleted) {
-          // Reload the list after successful deletion
           loadCareerJourney(athleteId);
           onSuccess();
         } else {

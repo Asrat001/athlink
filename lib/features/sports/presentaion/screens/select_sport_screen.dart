@@ -20,7 +20,14 @@ import 'package:athlink/features/auth/presentation/providers/register/register_p
 import 'package:athlink/shared/extensions/account_type.dart';
 
 class SelectSportScreen extends ConsumerStatefulWidget {
-  const SelectSportScreen({super.key});
+  final List<String>? initialSportNames;
+  final bool isEditing;
+
+  const SelectSportScreen({
+    super.key,
+    this.initialSportNames,
+    this.isEditing = false,
+  });
 
   @override
   ConsumerState<SelectSportScreen> createState() => _SelectSportScreenState();
@@ -39,25 +46,44 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialSportNames != null) {
+      _selectedNames.addAll(widget.initialSportNames!);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sportsProvider.notifier).getSports();
 
       ref.read(sportSelectionProvider.notifier).setSuccessCallback(() {
         if (mounted) {
-          final user = sl<LocalStorageService>().getUserData();
-          if (user != null) {
-            if (user.role == 'athlete') {
-              context.go(Routes.athleteDashBoardRouteName);
+          if (widget.isEditing) {
+            context.pop();
+            // Refresh profile to show updated sports
+            final user = sl<LocalStorageService>().getUserData();
+            if (user != null) {
+              // Invalidate to force a fresh fetch
+              ref.invalidate(athleteProfileProvider(user.id));
+              // Then fetch again (optional if invalidate triggers a re-fetch due to autoDispose/watchers,
+              // but good for explicit reload)
               ref
                   .read(athleteProfileProvider(user.id).notifier)
                   .getProfile(user.id);
-            } else if (user.role == 'sponsor') {
-              context.go(Routes.dashBoardRouteName);
+            }
+          } else {
+            final user = sl<LocalStorageService>().getUserData();
+            if (user != null) {
+              if (user.role == 'athlete') {
+                context.go(Routes.athleteDashBoardRouteName);
+                ref
+                    .read(athleteProfileProvider(user.id).notifier)
+                    .getProfile(user.id);
+              } else if (user.role == 'sponsor') {
+                context.go(Routes.dashBoardRouteName);
+              } else {
+                context.go(Routes.loginRouteName);
+              }
             } else {
               context.go(Routes.loginRouteName);
             }
-          } else {
-            context.go(Routes.loginRouteName);
           }
         }
       });
@@ -69,7 +95,13 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
     return registerState.selectedAccountType;
   }
 
-  bool get _isAthlete => _accountType == AccountType.athlete;
+  bool get _isAthlete {
+    if (widget.isEditing) {
+      final user = sl<LocalStorageService>().getUserData();
+      return user?.role == "athlete";
+    }
+    return _accountType == AccountType.athlete;
+  }
 
   bool get _isSponsor => _accountType == AccountType.sponsor;
 
@@ -101,7 +133,9 @@ class _SelectSportScreenState extends ConsumerState<SelectSportScreen> {
   }
 
   String _getSubtitleMessage() {
-    if (_isAthlete) {
+    if (widget.isEditing) {
+      return "Update the sports you compete in.";
+    } else if (_isAthlete) {
       return "Choose the sport you compete in. You can change this later.";
     } else {
       return "Choose the sport categories you want to sponsor.";

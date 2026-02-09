@@ -123,7 +123,13 @@ class AppRouter {
 
       GoRoute(
         path: Routes.selectSportScreen,
-        builder: (context, state) => SelectSportScreen(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return SelectSportScreen(
+            initialSportNames: extra?['initialSportNames'] as List<String>?,
+            isEditing: extra?['isEditing'] as bool? ?? false,
+          );
+        },
       ),
       GoRoute(
         path: Routes.notificationScreen,

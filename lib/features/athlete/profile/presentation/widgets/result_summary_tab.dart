@@ -32,6 +32,7 @@ class ResultSummaryTab extends StatelessWidget {
             controller: controller,
             maxLines: 8,
             readOnly: !isSelf, // Disable editing if not self
+            cursorColor: AppColors.white,
             style: const TextStyle(color: AppColors.white),
             decoration: InputDecoration(
               hintText: isSelf

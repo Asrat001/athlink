@@ -36,6 +36,12 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfileState> {
     File? profileImage,
     File? coverImage,
   }) async {
+    // Capture current profile to preserve data not returned by update (like sports)
+    final currentProfile = state.maybeWhen(
+      loaded: (profile) => profile,
+      orElse: () => null,
+    );
+
     state = const AthleteProfileState.loading();
     final response = await _repository.updateAthleteProfile(
       athleteId: athleteId,
@@ -45,7 +51,16 @@ class AthleteProfileNotifier extends StateNotifier<AthleteProfileState> {
     );
     response.when(
       success: (data) {
-        state = AthleteProfileState.loaded(profile: data);
+        // If the backend returns a profile without sports, but we had them locally,
+        // preserve the local sports data.
+        var updatedProfile = data;
+        if ((updatedProfile.sport == null || updatedProfile.sport!.isEmpty) &&
+            currentProfile?.sport != null &&
+            currentProfile!.sport!.isNotEmpty) {
+          updatedProfile = updatedProfile.copyWith(sport: currentProfile.sport);
+        }
+
+        state = AthleteProfileState.loaded(profile: updatedProfile);
         onSuccess();
       },
       failure: (error) {

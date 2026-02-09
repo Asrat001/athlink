@@ -53,7 +53,7 @@ signingConfigs {
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
             // ✅ Temporarily disable minification to debug hang
             isMinifyEnabled = false
             isShrinkResources = false

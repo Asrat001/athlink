@@ -282,6 +282,10 @@ class _CostBreakdownBottomSheetState extends State<CostBreakdownBottomSheet> {
               textColor: AppColors.white,
               cursorColor: AppColors.white,
               borderRadius: 8,
+              validator: (val) {
+                if (val == null || val.trim().isEmpty) return "Required";
+                return null;
+              },
             ),
           ),
           const SizedBox(width: 12),
