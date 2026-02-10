@@ -265,7 +265,7 @@ class _AddResultModalState extends State<AddResultModal> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
+                  LengthLimitingTextInputFormatter(3),
                 ],
                 onChanged: (_) {
                   if (_autovalidateMode == AutovalidateMode.onUserInteraction) {
@@ -300,7 +300,7 @@ class _AddResultModalState extends State<AddResultModal> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
+                  LengthLimitingTextInputFormatter(3),
                 ],
                 onChanged: (_) {
                   if (_autovalidateMode == AutovalidateMode.onUserInteraction) {
@@ -373,6 +373,7 @@ class _AddResultModalState extends State<AddResultModal> {
           child: TextFormField(
             controller: _locationNameController,
             onChanged: _onLocationChanged,
+            cursorColor: AppColors.white,
             style: const TextStyle(color: AppColors.white, fontSize: 14),
 
             decoration: InputDecoration(

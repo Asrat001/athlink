@@ -94,6 +94,7 @@ class CompetitionResultsNotifier
     required String athleteId,
     required String resultId,
     required void Function() onSuccess,
+    void Function(String message)? onError,
   }) async {
     final response = await _repository.deleteCompetitionResult(
       athleteId: athleteId,
@@ -107,9 +108,9 @@ class CompetitionResultsNotifier
         onSuccess();
       },
       failure: (error) {
-        state = CompetitionResultsState.error(
-          message: NetworkExceptions.getErrorMessage(error),
-        );
+        final message = NetworkExceptions.getErrorMessage(error);
+        onError?.call(message);
+        loadResults(athleteId);
       },
     );
   }

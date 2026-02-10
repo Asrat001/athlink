@@ -269,6 +269,11 @@ class _AthleteResultsScreenState extends ConsumerState<AthleteResultsScreen> {
             // Show success snackbar
             AppHelpers.showSuccessToast(context, 'Result deleted successfully');
           },
+          onError: (message) {
+            // Close loading dialog
+            Navigator.pop(context);
+            AppHelpers.showErrorToast(context, message);
+          },
         );
   }
 

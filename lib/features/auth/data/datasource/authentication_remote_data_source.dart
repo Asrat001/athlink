@@ -41,6 +41,29 @@ class AuthenticationRemoteDataSource extends BaseRepository {
     );
   }
 
+  Future<ApiResponse<LoginResponse>> loginWithApple({
+    required String idToken,
+    String? firstName,
+    String? lastName,
+  }) async {
+    return await safeApiCall(
+      apiCall: () async {
+        final data = {
+          "idToken": idToken,
+          if (firstName != null) "firstName": firstName,
+          if (lastName != null) "lastName": lastName,
+        };
+        return await _httpClient
+            .client(requireAuth: false)
+            .post("/auth/sign-in-with-apple", data: data);
+      },
+      fromData: (data) {
+        log("Apple Login Response Data: $data");
+        return LoginResponse.fromJson(data);
+      },
+    );
+  }
+
   Future<ApiResponse<RegistrationResponse>> register({
     // required String name,
     required String email,

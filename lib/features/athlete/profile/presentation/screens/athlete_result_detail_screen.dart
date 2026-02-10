@@ -74,7 +74,7 @@ class _AthleteResultDetailScreenState
     final data = {
       'competitionSummary': _summaryController.text,
       'resultLink': _currentResultsLink,
-      if (_mediaUrls.isNotEmpty) 'existingMedia': _mediaUrls,
+      if (_mediaUrls.isNotEmpty) 'media': _mediaUrls,
     };
 
     logger("Updating result with data: $data");

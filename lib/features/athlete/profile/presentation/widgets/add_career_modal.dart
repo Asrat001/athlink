@@ -246,6 +246,7 @@ class _AddCareerModalState extends State<AddCareerModal> {
           child: TextFormField(
             controller: _locationNameController,
             onChanged: _onLocationChanged,
+            cursorColor: AppColors.white,
             style: const TextStyle(color: AppColors.white, fontSize: 14),
 
             decoration: InputDecoration(

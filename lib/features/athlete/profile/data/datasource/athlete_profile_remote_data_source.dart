@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:athlink/shared/utils/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
@@ -187,6 +188,7 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
     required Map<String, dynamic> competitionResult,
     List<File>? media,
   }) async {
+    logger(competitionResult);
     return await safeApiCall(
       apiCall: () async {
         dynamic requestData = competitionResult;
@@ -218,16 +220,12 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
     required Map<String, dynamic> competitionResult,
     List<File>? media,
   }) async {
+    logger(competitionResult);
     return await safeApiCall(
       apiCall: () async {
         final formDataMap = Map<String, dynamic>.from(competitionResult);
 
-        // Rename 'media' in competitionResult to 'existingMedia' if it exists as URLs
-        // This aligns with what was observed in athlete_result_detail_screen.dart
-        if (formDataMap.containsKey('media') && formDataMap['media'] is List) {
-          final existingMedia = formDataMap.remove('media');
-          formDataMap['existingMedia'] = existingMedia;
-        }
+        if (formDataMap.containsKey('media') && formDataMap['media'] is List) {}
 
         if (media != null && media.isNotEmpty) {
           final mediaFiles = <MultipartFile>[];

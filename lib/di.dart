@@ -34,6 +34,7 @@ import 'package:athlink/features/sponsor/watchlist/domain/repository/watchlist_r
 import 'package:athlink/routes/app_route.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/services/google_sign_in_service.dart';
+import 'package:athlink/core/services/apple_sign_in_service.dart';
 import 'package:athlink/core/services/internet_connection_service.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/core/services/token_refreshe_service.dart';
@@ -62,6 +63,9 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
   sl.registerSingleton<TokenRefreshService>(TokenRefreshService());
   sl.registerSingleton<GoogleAuthService>(
     GoogleAuthService(sl<AppConnectivity>()),
+  );
+  sl.registerSingleton<AppleAuthService>(
+    AppleAuthService(sl<AppConnectivity>()),
   );
   sl.registerSingleton<SocketIoService>(SocketIoService());
 
@@ -111,6 +115,7 @@ Future<void> serviceLocator({String prefixBox = ''}) async {
     AuthenticationRepositoryImpl(
       remoteDataSource: sl<AuthenticationRemoteDataSource>(),
       googleAuthService: sl<GoogleAuthService>(),
+      appleAuthService: sl<AppleAuthService>(),
     ),
   );
   sl.registerSingleton<ISportsRepository>(

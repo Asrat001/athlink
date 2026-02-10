@@ -228,7 +228,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             SizedBox(height: 10),
                             SocialLoginButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                ref
+                                    .read(loginProvider.notifier)
+                                    .appleSignIn(context);
+                              },
                               text: "Continue with Apple",
                               height: 48,
                               borderRadius: 10,

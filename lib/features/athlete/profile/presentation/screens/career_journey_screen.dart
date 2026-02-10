@@ -10,6 +10,7 @@ import 'package:athlink/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/add_career_modal.dart';
 
@@ -281,12 +282,13 @@ class _CareerJourneyScreenState extends ConsumerState<CareerJourneyScreen> {
           athleteId: user.id,
           careerId: record.id,
           onSuccess: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Career record deleted successfully'),
-                backgroundColor: Colors.green,
-              ),
+            AppHelpers.showSuccessToast(
+              context,
+              'Career record deleted successfully',
             );
+          },
+          onError: (message) {
+            AppHelpers.showErrorToast(context, message);
           },
         );
   }

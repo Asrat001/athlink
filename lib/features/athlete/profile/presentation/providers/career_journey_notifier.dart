@@ -92,6 +92,7 @@ class CareerJourneyNotifier extends StateNotifier<CareerJourneyState> {
     required String athleteId,
     required String careerId,
     required void Function() onSuccess,
+    void Function(String message)? onError,
   }) async {
     final response = await _repository.deleteCareerJourney(
       athleteId: athleteId,
@@ -103,15 +104,14 @@ class CareerJourneyNotifier extends StateNotifier<CareerJourneyState> {
           loadCareerJourney(athleteId);
           onSuccess();
         } else {
-          state = const CareerJourneyState.error(
-            message: "Failed to delete career record",
-          );
+          onError?.call('Failed to delete career record');
+          loadCareerJourney(athleteId);
         }
       },
       failure: (error) {
-        state = CareerJourneyState.error(
-          message: NetworkExceptions.getErrorMessage(error),
-        );
+        final message = NetworkExceptions.getErrorMessage(error);
+        onError?.call(message);
+        loadCareerJourney(athleteId);
       },
     );
   }

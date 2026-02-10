@@ -17,6 +17,7 @@ abstract class IAuthenticationRepository {
   });
 
   Future<ApiResponse<LoginResponse>> googleSignIn();
+  Future<ApiResponse<LoginResponse>> appleSignIn();
 
   Future<ApiResponse<User>> changeRole({required String role});
 

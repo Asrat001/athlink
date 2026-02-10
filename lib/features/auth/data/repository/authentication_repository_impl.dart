@@ -8,13 +8,16 @@ import 'package:athlink/core/services/google_sign_in_service.dart';
 import 'package:athlink/features/auth/domain/models/registration_response.dart'
     hide User;
 import 'package:athlink/features/auth/data/datasource/authentication_remote_data_source.dart';
+import 'package:athlink/core/services/apple_sign_in_service.dart';
 
 class AuthenticationRepositoryImpl implements IAuthenticationRepository {
   final AuthenticationRemoteDataSource remoteDataSource;
   final GoogleAuthService googleAuthService;
+  final AppleAuthService appleAuthService;
   AuthenticationRepositoryImpl({
     required this.remoteDataSource,
     required this.googleAuthService,
+    required this.appleAuthService,
   });
 
   @override
@@ -83,6 +86,39 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
       );
     } catch (e) {
       // Outer failure (Google sign-in threw exception)
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResponse<LoginResponse>> appleSignIn() async {
+    try {
+      final result = await appleAuthService.signInWithApple();
+
+      return await result.when(
+        success: (credential) async {
+          final idToken = credential.identityToken;
+          if (idToken == null) {
+            return const ApiResponse.failure(
+              error: NetworkExceptions.defaultError("Missing Apple ID token"),
+            );
+          }
+
+          return await remoteDataSource.loginWithApple(
+            idToken: idToken,
+            firstName: credential.givenName,
+            lastName: credential.familyName,
+          );
+        },
+        failure: (error) {
+          return ApiResponse.failure(error: error);
+        },
+      );
+    } catch (e) {
+      print("AuthenticationRepositoryImpl Apple Sign-In Error: $e");
+      print(
+        "AuthenticationRepositoryImpl Apple Sign-In Error Type: ${e.runtimeType}",
+      );
       return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
     }
   }
