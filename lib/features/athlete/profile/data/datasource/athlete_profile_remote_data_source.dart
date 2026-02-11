@@ -2,6 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:athlink/shared/utils/logger.dart';
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:athlink/shared/constant/constants.dart';
+
 import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/dio_client.dart';
 import 'package:athlink/core/repository/base_repository.dart';
@@ -224,15 +227,48 @@ class AthleteProfileRemoteDataSource extends BaseRepository {
     return await safeApiCall(
       apiCall: () async {
         final formDataMap = Map<String, dynamic>.from(competitionResult);
+        final allMediaFiles = <MultipartFile>[];
 
-        if (formDataMap.containsKey('media') && formDataMap['media'] is List) {}
+        // Download existing media URLs to temp files and add as MultipartFile
+        if (formDataMap.containsKey('media') && formDataMap['media'] is List) {
+          final existingUrls = List<String>.from(formDataMap['media']);
+          final tempDir = await getTemporaryDirectory();
 
-        if (media != null && media.isNotEmpty) {
-          final mediaFiles = <MultipartFile>[];
-          for (var file in media) {
-            mediaFiles.add(await MultipartFile.fromFile(file.path));
+          for (int i = 0; i < existingUrls.length; i++) {
+            try {
+              final url = existingUrls[i].startsWith('http')
+                  ? existingUrls[i]
+                  : '$fileBaseUrl${existingUrls[i]}';
+              final response = await Dio().get<List<int>>(
+                url,
+                options: Options(responseType: ResponseType.bytes),
+              );
+              if (response.statusCode == 200 && response.data != null) {
+                final extension = url.split('.').last.split('?').first;
+                final tempFile = File(
+                  '${tempDir.path}/existing_media_${i}_${DateTime.now().millisecondsSinceEpoch}.$extension',
+                );
+                await tempFile.writeAsBytes(response.data!);
+                allMediaFiles.add(await MultipartFile.fromFile(tempFile.path));
+              }
+            } catch (e) {
+              logger('Failed to download existing media: $e');
+            }
           }
-          formDataMap['media'] = mediaFiles;
+          // Remove the string URLs from the map
+          formDataMap.remove('media');
+        }
+
+        // Add newly picked media files
+        if (media != null && media.isNotEmpty) {
+          for (var file in media) {
+            allMediaFiles.add(await MultipartFile.fromFile(file.path));
+          }
+        }
+
+        // Set all media files on the form data
+        if (allMediaFiles.isNotEmpty) {
+          formDataMap['media'] = allMediaFiles;
         }
 
         final requestData = FormData.fromMap(formDataMap);

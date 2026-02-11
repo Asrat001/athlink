@@ -75,8 +75,10 @@ class DateFormatter {
   }
 
   /// Format date to "2025-01-15T00:00:00.000Z" format (ISO 8601 UTC)
+  /// Uses date components only (year, month, day) to avoid timezone offset
+  /// shifting the date when converting to UTC.
   static String formatFullISO(DateTime date) {
-    return date.toUtc().toIso8601String();
+    return DateTime.utc(date.year, date.month, date.day).toIso8601String();
   }
 
   /// Parse ISO 8601 string and format to "Jan 15, 2025"
@@ -124,7 +126,11 @@ class DateFormatter {
     final localDate = date.toLocal();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final messageDate = DateTime(localDate.year, localDate.month, localDate.day);
+    final messageDate = DateTime(
+      localDate.year,
+      localDate.month,
+      localDate.day,
+    );
     final difference = today.difference(messageDate).inDays;
 
     final timeStr = formatTime(localDate);

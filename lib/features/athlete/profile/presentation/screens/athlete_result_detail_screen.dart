@@ -41,6 +41,11 @@ class _AthleteResultDetailScreenState
   String? _currentResultsLink;
   final ImagePicker _picker = ImagePicker();
 
+  // Original values to detect changes
+  late String _originalSummary;
+  late String? _originalResultsLink;
+  late List<String> _originalMediaUrls;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +60,22 @@ class _AthleteResultDetailScreenState
       text: widget.result.competitionSummary,
     );
     _currentResultsLink = widget.result.resultLink;
+
+    // Store original values
+    _originalSummary = widget.result.competitionSummary;
+    _originalResultsLink = widget.result.resultLink;
+    _originalMediaUrls = List.from(widget.result.mediaUrls);
+  }
+
+  bool get _hasChanges {
+    if (_summaryController.text != _originalSummary) return true;
+    if (_currentResultsLink != _originalResultsLink) return true;
+    if (_newlyAddedMedia.isNotEmpty) return true;
+    if (_mediaUrls.length != _originalMediaUrls.length) return true;
+    for (int i = 0; i < _mediaUrls.length; i++) {
+      if (_mediaUrls[i] != _originalMediaUrls[i]) return true;
+    }
+    return false;
   }
 
   void _handleBack() {
@@ -66,10 +87,67 @@ class _AthleteResultDetailScreenState
     }
   }
 
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.black.withValues(alpha: 0.7),
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.darkGreyCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.orangeGradientStart.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: CircularProgressIndicator(
+                    color: AppColors.orangeGradientStart,
+                    strokeWidth: 3,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const CustomText(
+                title: 'Saving Changes',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.white,
+              ),
+              const SizedBox(height: 8),
+              CustomText(
+                title: 'Please wait while we update your result...',
+                fontSize: 13,
+                textColor: AppColors.white.withValues(alpha: 0.6),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _saveAndExit() async {
+    // If nothing changed, just go back
+    if (!_hasChanges) {
+      Navigator.pop(context);
+      return;
+    }
+
     final localStorage = sl<LocalStorageService>();
     final loggedInUser = localStorage.getUserData();
     if (loggedInUser == null) return;
+
+    _showLoadingDialog();
 
     final data = {
       'competitionSummary': _summaryController.text,
@@ -90,7 +168,8 @@ class _AthleteResultDetailScreenState
           media: _newlyAddedMedia.isNotEmpty ? _newlyAddedMedia : null,
           onSuccess: () {
             if (!mounted) return;
-            Navigator.pop(context);
+            Navigator.pop(context); // Close loading dialog
+            Navigator.pop(context); // Go back
           },
         );
   }

@@ -176,7 +176,7 @@ class _AddResultModalState extends State<AddResultModal> {
       final newResult = ResultData(
         id: widget.initialRecord?.id ?? '',
         date: _selectedDate != null
-            ? DateFormatter.formatISO(_selectedDate!)
+            ? DateFormatter.formatFullISO(_selectedDate!)
             : _dateController.text,
         position: positionString,
         competition: _competitionController.text,
