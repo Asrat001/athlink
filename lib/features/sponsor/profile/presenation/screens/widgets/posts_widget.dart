@@ -12,6 +12,7 @@ class PostFeedSection extends ConsumerWidget {
   final SponsorProfile? sponsorProfile;
   final ProfileUser? profileUser;
   final bool isSelf;
+  final bool isDarkMode;
 
   const PostFeedSection({
     super.key,
@@ -19,6 +20,7 @@ class PostFeedSection extends ConsumerWidget {
     this.sponsorProfile,
     this.profileUser,
     this.isSelf = true,
+    this.isDarkMode = false,
   });
 
   @override
@@ -28,20 +30,24 @@ class PostFeedSection extends ConsumerWidget {
     final agencyImageUrl = sponsorProfile?.profileImageUrl;
 
     return Container(
-      color: AppColors.lightGrey.withValues(alpha: .2),
+      color: isDarkMode
+          ? AppColors.black
+          : AppColors.lightGrey.withValues(alpha: .2),
       child: Column(
         children: [
           PostsHeader(
-            isSelf: isSelf,
             onAddPressed: () =>
                 _openCreateJobModal(context, profileUser?.sport ?? []),
+            isSelf: isSelf,
+            isDarkMode: isDarkMode,
           ),
           sortedPosts.isEmpty
-              ? const EmptyPostsState()
+              ? EmptyPostsState(isDarkMode: isDarkMode)
               : PostsList(
                   posts: sortedPosts,
                   agencyName: agencyName,
                   agencyImageUrl: agencyImageUrl,
+                  isDarkMode: isDarkMode,
                 ),
         ],
       ),

@@ -67,6 +67,7 @@ class AppRouter {
           final extra = state.extra as Map<String, dynamic>;
           return ViewSponsorProfileScreen(
             sponsorId: extra['sponsorId'] as String,
+            isDarkMode: extra['isDarkMode'] as bool? ?? false,
           );
         },
       ),

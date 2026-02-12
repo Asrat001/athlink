@@ -14,11 +14,13 @@ import 'package:url_launcher/url_launcher.dart';
 class ProfileViewWidget extends ConsumerWidget {
   final SponsorProfile? sponsorProfile;
   final String? displayName;
+  final bool isDarkMode;
 
   const ProfileViewWidget({
     super.key,
     required this.sponsorProfile,
     this.displayName,
+    this.isDarkMode = false,
   });
 
   @override
@@ -30,13 +32,13 @@ class ProfileViewWidget extends ConsumerWidget {
           title: displayName ?? sponsorProfile?.name ?? "No name set",
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          textColor: AppColors.black,
+          textColor: isDarkMode ? Colors.white : AppColors.black,
         ),
         CustomText(
           title: sponsorProfile?.address ?? "No address set",
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          textColor: AppColors.textGrey,
+          textColor: isDarkMode ? Colors.white70 : AppColors.textGrey,
         ),
         const SizedBox(height: 30),
         const SizedBox(height: 30),
@@ -44,6 +46,7 @@ class ProfileViewWidget extends ConsumerWidget {
           sponsorshipCampaigns: sponsorProfile?.stats.sponsorshipCampaigns,
           athletesSponsored: sponsorProfile?.stats.athletesSponsored,
           globalPartners: sponsorProfile?.stats.globalPartners,
+          isDarkMode: isDarkMode,
         ),
         const SizedBox(height: 30),
         _buildDescription(),
@@ -75,11 +78,15 @@ class ProfileViewWidget extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.language, size: 16, color: AppColors.primary),
+            Icon(
+              Icons.language,
+              size: 16,
+              color: isDarkMode ? Colors.white : AppColors.primary,
+            ),
             const SizedBox(width: 8),
             CustomText(
               title: sponsorProfile!.websiteUrl,
-              textColor: AppColors.primary,
+              textColor: isDarkMode ? Colors.white : AppColors.primary,
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -107,7 +114,10 @@ class ProfileViewWidget extends ConsumerWidget {
       if (value.isNotEmpty && socialIcons.containsKey(key)) {
         socialWidgets.add(
           IconButton(
-            icon: Icon(socialIcons[key], color: AppColors.grey),
+            icon: Icon(
+              socialIcons[key],
+              color: isDarkMode ? Colors.white70 : AppColors.grey,
+            ),
             onPressed: () => _launchUrl(value),
           ),
         );
@@ -131,7 +141,7 @@ class ProfileViewWidget extends ConsumerWidget {
       child: CustomText(
         title: sponsorProfile?.description ?? "No description set",
         textAlign: TextAlign.center,
-        textColor: AppColors.textSecondary,
+        textColor: isDarkMode ? Colors.white70 : AppColors.textSecondary,
         fontWeight: FontWeight.w300,
         fontSize: 12,
       ),
@@ -143,13 +153,13 @@ class ProfileViewWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
-        const Padding(
-          padding: EdgeInsets.only(left: 24),
+        Padding(
+          padding: const EdgeInsets.only(left: 24),
           child: CustomText(
             title: "Athletes Sponsored",
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            textColor: AppColors.textPrimary,
+            textColor: isDarkMode ? Colors.white : AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 10),

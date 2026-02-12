@@ -12,6 +12,7 @@ class ProfileHeaderWidget extends StatelessWidget {
   final File? profileImage;
   final bool isSelf;
   final bool isEditMode;
+  final bool isDarkMode;
   final VoidCallback onEditToggle;
   final VoidCallback onLogout;
   final VoidCallback onBannerPick;
@@ -25,7 +26,8 @@ class ProfileHeaderWidget extends StatelessWidget {
     this.bannerImage,
     this.profileImage,
     this.isSelf = true,
-    required this.isEditMode,
+    this.isEditMode = false,
+    this.isDarkMode = false,
     required this.onEditToggle,
     required this.onLogout,
     required this.onBannerPick,
@@ -141,8 +143,11 @@ class ProfileHeaderWidget extends StatelessWidget {
     return InkWell(
       onTap: onLogout,
       child: CircleAvatar(
-        backgroundColor: AppColors.white,
-        child: Icon(Icons.logout, color: AppColors.black),
+        backgroundColor: isDarkMode ? Colors.white12 : AppColors.white,
+        child: Icon(
+          Icons.logout,
+          color: isDarkMode ? Colors.white : AppColors.black,
+        ),
       ),
     );
   }
@@ -160,21 +165,32 @@ class ProfileHeaderWidget extends StatelessWidget {
           height: logoCircleRadius * 2,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.white,
-            border: Border.all(color: AppColors.white, width: 7),
-            boxShadow: const [
+            color: isDarkMode ? AppColors.black : AppColors.white,
+            border: Border.all(
+              color: isDarkMode ? AppColors.black : AppColors.white,
+              width: 3,
+            ),
+            boxShadow: [
               BoxShadow(
-                color: AppColors.textGrey,
-                blurRadius: 10,
-                offset: Offset(0, 4),
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(logoCircleRadius),
+          child: ClipOval(
             child: InkWell(
               onTap: (isSelf && isEditMode) ? onProfilePick : null,
-              child: _buildProfileImage(fullProfileUrl, logoCircleRadius),
+              child: profileImage != null
+                  ? Image.file(profileImage!, fit: BoxFit.cover)
+                  : fullProfileUrl.isNotEmpty
+                  ? Image.network(
+                      fullProfileUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          _buildInitialPlaceholder(),
+                    )
+                  : _buildInitialPlaceholder(),
             ),
           ),
         ),
@@ -198,30 +214,6 @@ class ProfileHeaderWidget extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  Widget _buildProfileImage(String fullProfileUrl, double logoCircleRadius) {
-    if (profileImage != null) {
-      return Image.file(
-        profileImage!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildInitialPlaceholder();
-        },
-      );
-    }
-
-    if (fullProfileUrl.isNotEmpty) {
-      return Image.network(
-        fullProfileUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildInitialPlaceholder();
-        },
-      );
-    }
-
-    return _buildInitialPlaceholder();
   }
 
   Widget _buildInitialPlaceholder() {

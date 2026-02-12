@@ -6,12 +6,14 @@ class ProfileStatsWidget extends StatelessWidget {
   final int? sponsorshipCampaigns;
   final int? athletesSponsored;
   final int? globalPartners;
+  final bool isDarkMode;
 
   const ProfileStatsWidget({
     super.key,
     this.sponsorshipCampaigns,
     this.athletesSponsored,
     this.globalPartners,
+    this.isDarkMode = false,
   });
 
   @override
@@ -24,10 +26,11 @@ class ProfileStatsWidget extends StatelessWidget {
             child: StatItem(
               value: "${sponsorshipCampaigns ?? 0}",
               label: "Sponsorship Campaigns",
+              isDarkMode: isDarkMode,
             ),
           ),
-          const VerticalDivider(
-            color: AppColors.divider,
+          VerticalDivider(
+            color: isDarkMode ? Colors.white24 : AppColors.divider,
             thickness: 1,
             indent: 10,
             endIndent: 10,
@@ -36,10 +39,11 @@ class ProfileStatsWidget extends StatelessWidget {
             child: StatItem(
               value: "${athletesSponsored ?? 0}",
               label: "Athletes Represented",
+              isDarkMode: isDarkMode,
             ),
           ),
-          const VerticalDivider(
-            color: AppColors.divider,
+          VerticalDivider(
+            color: isDarkMode ? Colors.white24 : AppColors.divider,
             thickness: 1,
             indent: 10,
             endIndent: 10,
@@ -48,6 +52,7 @@ class ProfileStatsWidget extends StatelessWidget {
             child: StatItem(
               value: "${globalPartners ?? 0}",
               label: "Global Partners",
+              isDarkMode: isDarkMode,
             ),
           ),
         ],
@@ -59,8 +64,14 @@ class ProfileStatsWidget extends StatelessWidget {
 class StatItem extends StatelessWidget {
   final String value;
   final String label;
+  final bool isDarkMode;
 
-  const StatItem({super.key, required this.value, required this.label});
+  const StatItem({
+    super.key,
+    required this.value,
+    required this.label,
+    this.isDarkMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,14 +85,14 @@ class StatItem extends StatelessWidget {
             textAlign: TextAlign.center,
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            textColor: AppColors.black,
+            textColor: isDarkMode ? Colors.white : AppColors.black,
           ),
           const SizedBox(height: 4),
           CustomText(
             title: label,
             textAlign: TextAlign.center,
             fontSize: 13,
-            textColor: AppColors.grey,
+            textColor: isDarkMode ? Colors.white54 : AppColors.grey,
             fontWeight: FontWeight.w300,
           ),
         ],

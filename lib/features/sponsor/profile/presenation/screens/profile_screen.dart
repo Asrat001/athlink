@@ -19,8 +19,14 @@ import 'package:image_picker/image_picker.dart';
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? sponsorId;
   final bool isSelf;
+  final bool isDarkMode;
 
-  const ProfileScreen({super.key, this.sponsorId, this.isSelf = true});
+  const ProfileScreen({
+    super.key,
+    this.sponsorId,
+    this.isSelf = true,
+    this.isDarkMode = false,
+  });
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -156,11 +162,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: widget.isDarkMode ? AppColors.black : Colors.grey[100],
       appBar: !widget.isSelf
           ? AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              iconTheme: IconThemeData(
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              ),
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
@@ -192,6 +201,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     profileImage: _profileImage,
                     isSelf: widget.isSelf,
                     isEditMode: isEditMode,
+                    isDarkMode: widget.isDarkMode,
                     onEditToggle: _toggleEditMode,
                     onLogout: _handleLogout,
                     onBannerPick: _pickBannerImage,
@@ -208,12 +218,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : ProfileViewWidget(
                           sponsorProfile: sponsorProfile,
                           displayName: sponsorName,
+                          isDarkMode: widget.isDarkMode,
                         ),
                   PostFeedSection(
                     jobPosts: sponsorProfile?.jobPosts,
                     sponsorProfile: sponsorProfile,
                     profileUser: profileUser,
                     isSelf: widget.isSelf,
+                    isDarkMode: widget.isDarkMode,
                   ),
                 ],
               ),

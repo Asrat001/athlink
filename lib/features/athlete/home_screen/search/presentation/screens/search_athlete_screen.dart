@@ -244,7 +244,11 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
             profileImageUrl: profileUrl,
             onTap: () => context.push(
               Routes.viewSponsorProfileRouteName,
-              extra: {'sponsorId': sponsor.id},
+              extra: {
+                'sponsorId': sponsor.id,
+                'isSelf': false,
+                'isDarkMode': true,
+              },
             ),
           );
         },

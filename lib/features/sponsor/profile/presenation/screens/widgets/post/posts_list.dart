@@ -6,12 +6,14 @@ class PostsList extends StatelessWidget {
   final List<JobPost> posts;
   final String agencyName;
   final String? agencyImageUrl;
+  final bool isDarkMode;
 
   const PostsList({
     super.key,
     required this.posts,
     required this.agencyName,
     required this.agencyImageUrl,
+    this.isDarkMode = false,
   });
 
   @override
@@ -27,6 +29,7 @@ class PostsList extends StatelessWidget {
           post: post,
           agencyName: agencyName,
           agencyImageUrl: agencyImageUrl,
+          isDarkMode: isDarkMode,
         );
       },
     );

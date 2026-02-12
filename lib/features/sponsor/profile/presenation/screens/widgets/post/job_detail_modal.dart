@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 
 class JobDetailModal extends StatelessWidget {
   final JobPost job;
+  final bool isDarkMode;
 
-  const JobDetailModal({super.key, required this.job});
+  const JobDetailModal({super.key, required this.job, this.isDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,9 @@ class JobDetailModal extends StatelessWidget {
               width: 48,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.grey.withValues(alpha: 0.3),
+                color: isDarkMode
+                    ? Colors.white24
+                    : AppColors.grey.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -52,7 +55,7 @@ class JobDetailModal extends StatelessWidget {
                   title: job.title,
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  textColor: AppColors.black,
+                  textColor: isDarkMode ? Colors.white : AppColors.black,
                 ),
               ),
             ],
@@ -78,8 +81,13 @@ class JobDetailModal extends StatelessWidget {
                       errorBuilder: (_, __, ___) => Container(
                         height: 180,
                         width: 280,
-                        color: AppColors.lightGrey,
-                        child: const Icon(Icons.image_not_supported),
+                        color: isDarkMode
+                            ? Colors.white10
+                            : AppColors.lightGrey,
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: isDarkMode ? Colors.white38 : null,
+                        ),
                       ),
                     ),
                   );
@@ -93,12 +101,13 @@ class JobDetailModal extends StatelessWidget {
             title: 'Description',
             fontSize: 16,
             fontWeight: FontWeight.w700,
+            textColor: isDarkMode ? Colors.white : AppColors.black,
           ),
           const SizedBox(height: 6),
           CustomText(
             title: job.description,
             fontSize: 14,
-            textColor: AppColors.grey,
+            textColor: isDarkMode ? Colors.white70 : AppColors.grey,
           ),
           const SizedBox(height: 18),
 
@@ -107,12 +116,13 @@ class JobDetailModal extends StatelessWidget {
               title: 'Requirements',
               fontSize: 16,
               fontWeight: FontWeight.w700,
+              textColor: isDarkMode ? Colors.white : AppColors.black,
             ),
             const SizedBox(height: 6),
             CustomText(
               title: job.requirements,
               fontSize: 14,
-              textColor: AppColors.grey,
+              textColor: isDarkMode ? Colors.white70 : AppColors.grey,
             ),
             const SizedBox(height: 18),
           ],
@@ -122,7 +132,7 @@ class JobDetailModal extends StatelessWidget {
               CustomText(
                 title: 'Payment',
                 fontSize: 14,
-                textColor: AppColors.grey,
+                textColor: isDarkMode ? Colors.white70 : AppColors.grey,
               ),
               const SizedBox(width: 12),
               CustomText(
@@ -131,6 +141,7 @@ class JobDetailModal extends StatelessWidget {
                     : 'Not specified',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
+                textColor: isDarkMode ? Colors.white : AppColors.black,
               ),
             ],
           ),
@@ -141,15 +152,15 @@ class JobDetailModal extends StatelessWidget {
               CustomText(
                 title: 'Timeline',
                 fontSize: 14,
-                textColor: AppColors.grey,
+                textColor: isDarkMode ? Colors.white70 : AppColors.grey,
               ),
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.calendar_today,
                     size: 16,
-                    color: AppColors.grey,
+                    color: isDarkMode ? Colors.white70 : AppColors.grey,
                   ),
                   const SizedBox(width: 8),
                   CustomText(
@@ -158,14 +169,20 @@ class JobDetailModal extends StatelessWidget {
                         : 'N/A',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    textColor: isDarkMode ? Colors.white : AppColors.black,
                   ),
-                  const CustomText(title: '  →  ', fontSize: 14),
+                  CustomText(
+                    title: '  →  ',
+                    fontSize: 14,
+                    textColor: isDarkMode ? Colors.white70 : AppColors.black,
+                  ),
                   CustomText(
                     title: job.timeline.endDate != null
                         ? '${job.timeline.endDate!.day}/${job.timeline.endDate!.month}/${job.timeline.endDate!.year}'
                         : 'N/A',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    textColor: isDarkMode ? Colors.white : AppColors.black,
                   ),
                   if (timelineDuration != 'N/A')
                     CustomText(

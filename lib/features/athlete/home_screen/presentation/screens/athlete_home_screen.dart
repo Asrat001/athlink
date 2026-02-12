@@ -387,7 +387,11 @@ class _AthleteDashboardScreenState
               if (sponsor.id != null) {
                 context.push(
                   Routes.viewSponsorProfileRouteName,
-                  extra: {'sponsorId': sponsor.id},
+                  extra: {
+                    'sponsorId': sponsor.id,
+                    'isSelf': false,
+                    'isDarkMode': true,
+                  },
                 );
               }
             },

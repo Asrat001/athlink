@@ -4,18 +4,27 @@ import 'package:flutter/material.dart';
 
 class AgencyInfo extends StatelessWidget {
   final String location;
+  final bool isDarkMode;
 
-  const AgencyInfo({super.key, required this.location});
+  const AgencyInfo({
+    super.key,
+    required this.location,
+    this.isDarkMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.location_on_outlined, size: 14, color: AppColors.grey),
+        Icon(
+          Icons.location_on_outlined,
+          size: 14,
+          color: isDarkMode ? Colors.white70 : AppColors.grey,
+        ),
         const SizedBox(width: 4),
         CustomText(
           title: location,
-          textColor: AppColors.grey,
+          textColor: isDarkMode ? Colors.white70 : AppColors.grey,
           fontWeight: FontWeight.w300,
           fontSize: 12,
         ),

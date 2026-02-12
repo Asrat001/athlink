@@ -10,12 +10,14 @@ class PostCard extends StatelessWidget {
   final JobPost post;
   final String agencyName;
   final String? agencyImageUrl;
+  final bool isDarkMode;
 
   const PostCard({
     super.key,
     required this.post,
     required this.agencyName,
     required this.agencyImageUrl,
+    this.isDarkMode = false,
   });
 
   String _calculateDuration() {
@@ -41,7 +43,7 @@ class PostCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.white,
+      backgroundColor: isDarkMode ? AppColors.black : AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -52,7 +54,7 @@ class PostCard extends StatelessWidget {
         expand: false,
         builder: (context, scrollController) => SingleChildScrollView(
           controller: scrollController,
-          child: JobDetailModal(job: post),
+          child: JobDetailModal(job: post, isDarkMode: isDarkMode),
         ),
       ),
     );
@@ -65,12 +67,16 @@ class PostCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: isDarkMode
+              ? Colors.white.withValues(alpha: 0.1)
+              : AppColors.white,
           borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: AppColors.grey.withValues(alpha: 0.8),
-              blurRadius: 25,
+              color: isDarkMode
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : AppColors.grey.withValues(alpha: 0.8),
+              blurRadius: isDarkMode ? 10 : 25,
               spreadRadius: 2,
               offset: const Offset(0, 0),
             ),
@@ -87,6 +93,7 @@ class PostCard extends StatelessWidget {
               currency: post.currency,
               duration: _calculateDuration(),
               location: post.location,
+              isDarkMode: isDarkMode,
               onViewDetail: () => _showJobDetail(context),
             ),
           ],

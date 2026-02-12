@@ -13,6 +13,7 @@ class PostContent extends StatelessWidget {
   final String currency;
   final String duration;
   final String location;
+  final bool isDarkMode;
   final VoidCallback onViewDetail;
 
   const PostContent({
@@ -24,6 +25,7 @@ class PostContent extends StatelessWidget {
     required this.duration,
     required this.location,
     required this.onViewDetail,
+    this.isDarkMode = false,
   });
 
   @override
@@ -33,21 +35,28 @@ class PostContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PostTitle(title: title),
+          PostTitle(title: title, isDarkMode: isDarkMode),
           const SizedBox(height: 6),
-          PostDescription(description: description),
+          PostDescription(description: description, isDarkMode: isDarkMode),
           const SizedBox(height: 12),
-          const Divider(color: AppColors.divider, thickness: 1),
+          Divider(
+            color: isDarkMode ? Colors.white24 : AppColors.divider,
+            thickness: 1,
+          ),
           const SizedBox(height: 8),
           PriceAndDurationRow(
             price: price,
             currency: currency,
             duration: duration,
+            isDarkMode: isDarkMode,
           ),
           const SizedBox(height: 10),
-          const Divider(color: AppColors.divider, thickness: 1),
+          Divider(
+            color: isDarkMode ? Colors.white24 : AppColors.divider,
+            thickness: 1,
+          ),
           const SizedBox(height: 10),
-          AgencyInfo(location: location),
+          AgencyInfo(location: location, isDarkMode: isDarkMode),
           const SizedBox(height: 18),
           ViewDetailButton(onPressed: onViewDetail),
         ],
@@ -58,8 +67,9 @@ class PostContent extends StatelessWidget {
 
 class PostTitle extends StatelessWidget {
   final String title;
+  final bool isDarkMode;
 
-  const PostTitle({super.key, required this.title});
+  const PostTitle({super.key, required this.title, this.isDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -67,15 +77,20 @@ class PostTitle extends StatelessWidget {
       title: title,
       fontSize: 17,
       fontWeight: FontWeight.w700,
-      textColor: AppColors.black,
+      textColor: isDarkMode ? Colors.white : AppColors.black,
     );
   }
 }
 
 class PostDescription extends StatelessWidget {
   final String description;
+  final bool isDarkMode;
 
-  const PostDescription({super.key, required this.description});
+  const PostDescription({
+    super.key,
+    required this.description,
+    this.isDarkMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +98,7 @@ class PostDescription extends StatelessWidget {
       title: description,
       fontSize: 13,
       fontWeight: FontWeight.w400,
-      textColor: AppColors.grey,
+      textColor: isDarkMode ? Colors.white70 : AppColors.grey,
     );
   }
 }
@@ -92,12 +107,14 @@ class PriceAndDurationRow extends StatelessWidget {
   final String price;
   final String currency;
   final String duration;
+  final bool isDarkMode;
 
   const PriceAndDurationRow({
     super.key,
     required this.price,
     required this.currency,
     required this.duration,
+    this.isDarkMode = false,
   });
 
   @override
@@ -111,12 +128,16 @@ class PriceAndDurationRow extends StatelessWidget {
               : 'Not specified',
           fontWeight: FontWeight.w700,
           fontSize: 18,
-          textColor: AppColors.black,
+          textColor: isDarkMode ? Colors.white : AppColors.black,
         ),
         const SizedBox(width: 10),
-        const VerticalDivider(),
+        VerticalDivider(color: isDarkMode ? Colors.white24 : null),
         const SizedBox(width: 10),
-        InfoItem(value: duration, label: 'months.'),
+        InfoItem(
+          value: duration,
+          label: 'months.',
+          textColor: isDarkMode ? Colors.white60 : null,
+        ),
       ],
     );
   }

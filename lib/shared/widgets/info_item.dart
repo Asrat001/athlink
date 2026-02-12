@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 class InfoItem extends StatelessWidget {
   final String value;
   final String label;
+  final Color? textColor;
 
   const InfoItem({
     super.key,
     required this.value,
     required this.label,
+    this.textColor,
   });
 
   @override
@@ -20,13 +22,13 @@ class InfoItem extends StatelessWidget {
           title: value,
           fontSize: 16,
           fontWeight: FontWeight.w700,
-          textColor: AppColors.primary,
+          textColor: textColor ?? AppColors.primary,
         ),
         const SizedBox(height: 4),
         CustomText(
           title: label,
           fontSize: 12,
-          textColor: AppColors.grey,
+          textColor: textColor ?? AppColors.grey,
           fontWeight: FontWeight.w300,
         ),
       ],
