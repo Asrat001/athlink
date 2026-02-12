@@ -33,7 +33,13 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(conversationProvider.notifier).getConversations();
-      ref.read(profileProvider.notifier).getProfile();
+      final user = sl<LocalStorageService>().getUserData();
+      if (user?.role?.contains("sponsor") ?? false) {
+        final sponsorId = user?.id;
+        if (sponsorId != null) {
+          ref.read(profileProvider(sponsorId).notifier).getProfile(sponsorId);
+        }
+      }
     });
   }
 

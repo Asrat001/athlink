@@ -11,10 +11,12 @@ class ProfileRemoteDataSource extends BaseRepository {
 
   ProfileRemoteDataSource(this._httpClient);
 
-  Future<ApiResponse<ProfileResponse>> getProfile() async {
+  Future<ApiResponse<ProfileResponse>> getProfile(String sponsorId) async {
     return await safeApiCall(
       apiCall: () async {
-        return await _httpClient.client(requireAuth: true).get("/auth/profile");
+        return await _httpClient
+            .client(requireAuth: true)
+            .get("/sponsors/$sponsorId");
       },
       fromData: (data) {
         // print("📦 Raw profile API data: $data");

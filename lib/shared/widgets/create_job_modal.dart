@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/sponsor/profile/domain/models/job_post_request.dart';
 import 'package:athlink/features/sponsor/profile/domain/models/profile_model.dart';
 import 'package:athlink/features/sponsor/profile/presenation/providers/job_post_provider.dart';
@@ -217,7 +219,10 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
                 ? 'Job post updated successfully!'
                 : 'Job post created successfully!'),
       );
-      ref.read(profileProvider.notifier).getProfile();
+      final sponsorId = sl<LocalStorageService>().getUserData()?.id;
+      if (sponsorId != null) {
+        ref.read(profileProvider(sponsorId).notifier).getProfile(sponsorId);
+      }
       Navigator.pop(context);
     } else if (jobPostState.errorMessage != null) {
       _showErrorSnackbar(jobPostState.errorMessage!);

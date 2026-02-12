@@ -4,8 +4,10 @@ import 'package:athlink/features/sponsor/home_feed/presentation/widgets/sponsor_
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/utils/name_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class AthleteSearchScreen extends StatefulWidget {
   final List<Athlete> initialAthletes;
@@ -207,7 +209,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
 
   Widget _buildSponsorRow() {
     return SizedBox(
-      height: 220,
+      height: 280,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -215,18 +217,35 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final sponsor = _filteredSponsors[index];
-          final imageUrl =
-              sponsor.sport.isNotEmpty && sponsor.sport.first.icon != null
-              ? '$fileBaseUrl${sponsor.sport.first.icon}'
-              : 'https://picsum.photos/400/300';
+          final sponsorProfile = sponsor.sponsorProfile;
+          final sponsorName = NameHelper.getSponsorDisplayName(
+            topLevelName: sponsor.name,
+            profileName: sponsorProfile?.name,
+            email: sponsor.email,
+          );
+
+          final bannerUrl =
+              (sponsorProfile?.bannerImageUrl?.isNotEmpty ?? false)
+              ? '$fileBaseUrl${sponsorProfile!.bannerImageUrl}'
+              : null;
+
+          final profileUrl =
+              (sponsorProfile?.profileImageUrl?.isNotEmpty ?? false)
+              ? '$fileBaseUrl${sponsorProfile!.profileImageUrl}'
+              : null;
 
           return SponsorCard(
-            name: sponsor.name ?? 'Brand',
+            name: sponsorName,
             isDarkMode: widget.isDarkMode,
             category: sponsor.sport.isNotEmpty
                 ? sponsor.sport.first.name ?? "Sponsor"
                 : "Partner",
-            imageUrl: imageUrl,
+            bannerImageUrl: bannerUrl,
+            profileImageUrl: profileUrl,
+            onTap: () => context.push(
+              Routes.viewSponsorProfileRouteName,
+              extra: {'sponsorId': sponsor.id},
+            ),
           );
         },
       ),

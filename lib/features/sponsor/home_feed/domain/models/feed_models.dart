@@ -46,6 +46,7 @@ abstract class SponsorProfile with _$SponsorProfile {
     SponsorStats? stats,
     String? name,
     String? profileImageUrl,
+    String? bannerImageUrl,
     @Default([]) List<dynamic> jobPosts,
   }) = _SponsorProfile;
 

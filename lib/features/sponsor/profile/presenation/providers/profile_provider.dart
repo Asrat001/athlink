@@ -4,8 +4,10 @@ import 'package:athlink/features/sponsor/profile/presenation/providers/profile_n
 import 'package:athlink/features/sponsor/profile/presenation/providers/state/profile_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>((
-  ref,
-) {
-  return ProfileNotifier(sl<ProfileRepository>());
-});
+final profileProvider =
+    StateNotifierProvider.family<ProfileNotifier, ProfileState, String>((
+      ref,
+      sponsorId,
+    ) {
+      return ProfileNotifier(sl<ProfileRepository>());
+    });

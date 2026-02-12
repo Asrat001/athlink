@@ -32,6 +32,7 @@ import 'main_screen.dart';
 import '../features/sponsor/manage/presentation/screens/manage_screen.dart';
 import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/sponsor/profile/presenation/screens/profile_screen.dart';
+import '../features/sponsor/profile/presenation/screens/view_sponsor_profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 import '../core/handlers/app_router_observer.dart';
@@ -59,6 +60,15 @@ class AppRouter {
       GoRoute(
         path: Routes.splashRouteName,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: Routes.viewSponsorProfileRouteName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return ViewSponsorProfileScreen(
+            sponsorId: extra['sponsorId'] as String,
+          );
+        },
       ),
       GoRoute(
         path: Routes.onBoardingRouteName,

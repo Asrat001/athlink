@@ -19,6 +19,7 @@ abstract class ProfileUser with _$ProfileUser {
   const factory ProfileUser({
     @JsonKey(name: "_id") required String id,
     required String email,
+    String? name,
     String? role,
     @Default('google') String authProvider,
     @Default(false) bool isEmailVerified,

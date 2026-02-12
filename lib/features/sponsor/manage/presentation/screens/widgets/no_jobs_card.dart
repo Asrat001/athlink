@@ -1,4 +1,7 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/sponsor/manage/presentation/providers/job_list_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/state/profile_state.dart';
 import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
 import 'package:athlink/shared/widgets/create_job_modal.dart';
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/posts_widget.dart';
@@ -13,7 +16,10 @@ class NoJobsCard extends ConsumerWidget {
   const NoJobsCard({super.key});
 
   void _openCreateJobModal(BuildContext context, WidgetRef ref) {
-    final profileState = ref.read(profileProvider);
+    final sponsorId = sl<LocalStorageService>().getUserData()?.id;
+    final profileState = sponsorId != null
+        ? ref.read(profileProvider(sponsorId))
+        : const ProfileState();
     final sports = profileState.profileUser?.sport ?? [];
 
     // Save the current status bar style to restore later

@@ -1,3 +1,5 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart'
     as manage_models;
@@ -35,8 +37,10 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobListProvider.notifier).fetchJobPosts();
       ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
-      ref.read(jobListProvider.notifier).getSponsorInvitations();
-      ref.read(profileProvider.notifier).getProfile();
+      final sponsorId = sl<LocalStorageService>().getUserData()?.id;
+      if (sponsorId != null) {
+        ref.read(profileProvider(sponsorId).notifier).getProfile(sponsorId);
+      }
       ref.read(feedProvider.notifier).getFeed();
     });
   }

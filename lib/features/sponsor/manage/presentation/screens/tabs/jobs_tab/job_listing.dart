@@ -1,3 +1,5 @@
+import 'package:athlink/core/services/local_storage_service.dart';
+import 'package:athlink/di.dart';
 import 'package:athlink/features/sponsor/manage/presentation/providers/job_list_provider.dart';
 import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart'
     as manage_models;
@@ -6,6 +8,7 @@ import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/job
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/no_jobs_card.dart';
 import 'package:athlink/features/sponsor/manage/presentation/screens/widgets/stat_item.dart';
 import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/state/profile_state.dart';
 import 'package:athlink/shared/widgets/create_job_modal.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/constant/constants.dart';
@@ -208,7 +211,10 @@ class JobListing extends ConsumerWidget {
     WidgetRef ref, {
     manage_models.JobPostItem? initialJob,
   }) {
-    final profileState = ref.read(profileProvider);
+    final sponsorId = sl<LocalStorageService>().getUserData()?.id;
+    final profileState = sponsorId != null
+        ? ref.read(profileProvider(sponsorId))
+        : const ProfileState(); // Fallback to initial state if no ID
     final sports = profileState.profileUser?.sport ?? [];
 
     // Save the current status bar style to restore later

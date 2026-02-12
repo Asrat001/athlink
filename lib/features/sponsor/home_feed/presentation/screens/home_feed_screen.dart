@@ -6,6 +6,7 @@ import 'package:athlink/features/sponsor/home_feed/presentation/providers/state/
 import 'package:athlink/features/sponsor/home_feed/presentation/widgets/athlete_card.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/widgets/sponsor_card.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/utils/name_helper.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -227,7 +228,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
 
     return SliverToBoxAdapter(
       child: SizedBox(
-        height: 250,
+        height: 280,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: sponsors.length,
@@ -235,9 +236,13 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
           itemBuilder: (context, index) {
             final sponsor = sponsors[index];
 
-            final sponsorName = (sponsor.name?.trim().isNotEmpty ?? false)
-                ? sponsor.name!
-                : RandomDataHelper.randomSponsorName();
+            final sponsorProfile = sponsor.sponsorProfile;
+
+            final sponsorName = NameHelper.getSponsorDisplayName(
+              topLevelName: sponsor.name,
+              profileName: sponsorProfile?.name,
+              email: sponsor.email,
+            );
 
             final category = sponsor.sport.isNotEmpty
                 ? sponsor.sport.length == 1
@@ -245,15 +250,25 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
                       : '${sponsor.sport.length} Sports'
                 : 'No Sports';
 
-            final imageUrl =
-                sponsor.sport.isNotEmpty && sponsor.sport.first.icon != null
-                ? '$fileBaseUrl${sponsor.sport.first.icon}'
-                : 'https://picsum.photos/400/300';
+            final bannerUrl =
+                (sponsorProfile?.bannerImageUrl?.isNotEmpty ?? false)
+                ? '$fileBaseUrl${sponsorProfile!.bannerImageUrl}'
+                : null;
+
+            final profileUrl =
+                (sponsorProfile?.profileImageUrl?.isNotEmpty ?? false)
+                ? '$fileBaseUrl${sponsorProfile!.profileImageUrl}'
+                : null;
 
             return SponsorCard(
               name: sponsorName,
               category: category,
-              imageUrl: imageUrl,
+              bannerImageUrl: bannerUrl,
+              profileImageUrl: profileUrl,
+              onTap: () => context.push(
+                Routes.viewSponsorProfileRouteName,
+                extra: {'sponsorId': sponsor.id},
+              ),
             );
           },
         ),

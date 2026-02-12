@@ -50,6 +50,7 @@ _SponsorProfile _$SponsorProfileFromJson(Map<String, dynamic> json) =>
           : SponsorStats.fromJson(json['stats'] as Map<String, dynamic>),
       name: json['name'] as String?,
       profileImageUrl: json['profileImageUrl'] as String?,
+      bannerImageUrl: json['bannerImageUrl'] as String?,
       jobPosts: json['jobPosts'] as List<dynamic>? ?? const [],
     );
 
@@ -58,6 +59,7 @@ Map<String, dynamic> _$SponsorProfileToJson(_SponsorProfile instance) =>
       'stats': instance.stats,
       'name': instance.name,
       'profileImageUrl': instance.profileImageUrl,
+      'bannerImageUrl': instance.bannerImageUrl,
       'jobPosts': instance.jobPosts,
     };
 

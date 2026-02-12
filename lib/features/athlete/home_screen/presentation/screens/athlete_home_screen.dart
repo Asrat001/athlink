@@ -9,6 +9,7 @@ import 'package:athlink/features/sponsor/home_feed/presentation/widgets/sponsor_
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/utils/name_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -347,7 +348,7 @@ class _AthleteDashboardScreenState
 
   Widget _buildSponsorSliver(List<Sponsor> sponsors) => SliverToBoxAdapter(
     child: SizedBox(
-      height: 220,
+      height: 280,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -355,15 +356,41 @@ class _AthleteDashboardScreenState
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final sponsor = sponsors[index];
+          final sponsorProfile = sponsor.sponsorProfile;
+
+          final sponsorName = NameHelper.getSponsorDisplayName(
+            topLevelName: sponsor.name,
+            profileName: sponsorProfile?.name,
+            email: sponsor.email,
+          );
+          final category = sponsor.sport.isNotEmpty
+              ? sponsor.sport.first.name ?? "Sponsor"
+              : "Partner";
+
+          final bannerUrl =
+              (sponsorProfile?.bannerImageUrl?.isNotEmpty ?? false)
+              ? '$fileBaseUrl${sponsorProfile!.bannerImageUrl}'
+              : null;
+
+          final profileUrl =
+              (sponsorProfile?.profileImageUrl?.isNotEmpty ?? false)
+              ? '$fileBaseUrl${sponsorProfile!.profileImageUrl}'
+              : null;
+
           return SponsorCard(
-            name: sponsor.sponsorProfile?.name ?? 'Brand',
+            name: sponsorName,
             isDarkMode: true,
-            category: sponsor.sport.isNotEmpty
-                ? sponsor.sport.first.name ?? "Sponsor"
-                : "Partner",
-            imageUrl: sponsor.sponsorProfile?.profileImageUrl != null
-                ? "$fileBaseUrl${sponsor.sponsorProfile?.profileImageUrl}"
-                : 'https://picsum.photos/400/300',
+            category: category,
+            bannerImageUrl: bannerUrl,
+            profileImageUrl: profileUrl,
+            onTap: () {
+              if (sponsor.id != null) {
+                context.push(
+                  Routes.viewSponsorProfileRouteName,
+                  extra: {'sponsorId': sponsor.id},
+                );
+              }
+            },
           );
         },
       ),

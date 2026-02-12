@@ -32,4 +32,7 @@ class Routes {
   static String athleteCampaignsScreen = '/athlete-campaign';
   static String athleteCampaignDetailScreen = '/athlete-campaign-detail';
   static String connectionRequestsScreen = '/connection-requests';
+
+  //sponsor view
+  static String viewSponsorProfileRouteName = '/view-sponsor-profile';
 }

@@ -11,8 +11,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<ApiResponse<ProfileResponse>> getProfile() async {
-    return await _remoteDataSource.getProfile();
+  Future<ApiResponse<ProfileResponse>> getProfile(String sponsorId) async {
+    return await _remoteDataSource.getProfile(sponsorId);
   }
 
   @override

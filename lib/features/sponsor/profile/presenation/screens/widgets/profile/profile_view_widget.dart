@@ -13,8 +13,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProfileViewWidget extends ConsumerWidget {
   final SponsorProfile? sponsorProfile;
+  final String? displayName;
 
-  const ProfileViewWidget({super.key, required this.sponsorProfile});
+  const ProfileViewWidget({
+    super.key,
+    required this.sponsorProfile,
+    this.displayName,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +27,7 @@ class ProfileViewWidget extends ConsumerWidget {
       children: [
         const SizedBox(height: 80),
         CustomText(
-          title: sponsorProfile?.name ?? "No name set",
+          title: displayName ?? sponsorProfile?.name ?? "No name set",
           fontSize: 24,
           fontWeight: FontWeight.bold,
           textColor: AppColors.black,

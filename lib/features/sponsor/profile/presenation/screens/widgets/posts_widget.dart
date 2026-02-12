@@ -11,12 +11,14 @@ class PostFeedSection extends ConsumerWidget {
   final List<JobPost>? jobPosts;
   final SponsorProfile? sponsorProfile;
   final ProfileUser? profileUser;
+  final bool isSelf;
 
   const PostFeedSection({
     super.key,
     this.jobPosts,
     this.sponsorProfile,
     this.profileUser,
+    this.isSelf = true,
   });
 
   @override
@@ -30,6 +32,7 @@ class PostFeedSection extends ConsumerWidget {
       child: Column(
         children: [
           PostsHeader(
+            isSelf: isSelf,
             onAddPressed: () =>
                 _openCreateJobModal(context, profileUser?.sport ?? []),
           ),

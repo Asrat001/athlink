@@ -299,7 +299,7 @@ $ProfileUserCopyWith<$Res> get user {
 /// @nodoc
 mixin _$ProfileUser {
 
-@JsonKey(name: "_id") String get id; String get email; String? get role; String get authProvider; bool get isEmailVerified; List<ProfileSport> get sport; DateTime get createdAt; DateTime get updatedAt;@JsonKey(name: "__v") int get version; String? get googleId; SponsorProfile? get sponsorProfile; List<dynamic> get sponsoredBy;
+@JsonKey(name: "_id") String get id; String get email; String? get name; String? get role; String get authProvider; bool get isEmailVerified; List<ProfileSport> get sport; DateTime get createdAt; DateTime get updatedAt;@JsonKey(name: "__v") int get version; String? get googleId; SponsorProfile? get sponsorProfile; List<dynamic> get sponsoredBy;
 /// Create a copy of ProfileUser
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -312,16 +312,16 @@ $ProfileUserCopyWith<ProfileUser> get copyWith => _$ProfileUserCopyWithImpl<Prof
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileUser&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.authProvider, authProvider) || other.authProvider == authProvider)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&const DeepCollectionEquality().equals(other.sport, sport)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version)&&(identical(other.googleId, googleId) || other.googleId == googleId)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile)&&const DeepCollectionEquality().equals(other.sponsoredBy, sponsoredBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileUser&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.authProvider, authProvider) || other.authProvider == authProvider)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&const DeepCollectionEquality().equals(other.sport, sport)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version)&&(identical(other.googleId, googleId) || other.googleId == googleId)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile)&&const DeepCollectionEquality().equals(other.sponsoredBy, sponsoredBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,role,authProvider,isEmailVerified,const DeepCollectionEquality().hash(sport),createdAt,updatedAt,version,googleId,sponsorProfile,const DeepCollectionEquality().hash(sponsoredBy));
+int get hashCode => Object.hash(runtimeType,id,email,name,role,authProvider,isEmailVerified,const DeepCollectionEquality().hash(sport),createdAt,updatedAt,version,googleId,sponsorProfile,const DeepCollectionEquality().hash(sponsoredBy));
 
 @override
 String toString() {
-  return 'ProfileUser(id: $id, email: $email, role: $role, authProvider: $authProvider, isEmailVerified: $isEmailVerified, sport: $sport, createdAt: $createdAt, updatedAt: $updatedAt, version: $version, googleId: $googleId, sponsorProfile: $sponsorProfile, sponsoredBy: $sponsoredBy)';
+  return 'ProfileUser(id: $id, email: $email, name: $name, role: $role, authProvider: $authProvider, isEmailVerified: $isEmailVerified, sport: $sport, createdAt: $createdAt, updatedAt: $updatedAt, version: $version, googleId: $googleId, sponsorProfile: $sponsorProfile, sponsoredBy: $sponsoredBy)';
 }
 
 
@@ -332,7 +332,7 @@ abstract mixin class $ProfileUserCopyWith<$Res>  {
   factory $ProfileUserCopyWith(ProfileUser value, $Res Function(ProfileUser) _then) = _$ProfileUserCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String email, String? role, String authProvider, bool isEmailVerified, List<ProfileSport> sport, DateTime createdAt, DateTime updatedAt,@JsonKey(name: "__v") int version, String? googleId, SponsorProfile? sponsorProfile, List<dynamic> sponsoredBy
+@JsonKey(name: "_id") String id, String email, String? name, String? role, String authProvider, bool isEmailVerified, List<ProfileSport> sport, DateTime createdAt, DateTime updatedAt,@JsonKey(name: "__v") int version, String? googleId, SponsorProfile? sponsorProfile, List<dynamic> sponsoredBy
 });
 
 
@@ -349,11 +349,12 @@ class _$ProfileUserCopyWithImpl<$Res>
 
 /// Create a copy of ProfileUser
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? role = freezed,Object? authProvider = null,Object? isEmailVerified = null,Object? sport = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,Object? googleId = freezed,Object? sponsorProfile = freezed,Object? sponsoredBy = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? name = freezed,Object? role = freezed,Object? authProvider = null,Object? isEmailVerified = null,Object? sport = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,Object? googleId = freezed,Object? sponsorProfile = freezed,Object? sponsoredBy = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,authProvider: null == authProvider ? _self.authProvider : authProvider // ignore: cast_nullable_to_non_nullable
 as String,isEmailVerified: null == isEmailVerified ? _self.isEmailVerified : isEmailVerified // ignore: cast_nullable_to_non_nullable
 as bool,sport: null == sport ? _self.sport : sport // ignore: cast_nullable_to_non_nullable
@@ -460,10 +461,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String email,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String email,  String? name,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileUser() when $default != null:
-return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
+return $default(_that.id,_that.email,_that.name,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
   return orElse();
 
 }
@@ -481,10 +482,10 @@ return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmail
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String email,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "_id")  String id,  String email,  String? name,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileUser():
-return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
+return $default(_that.id,_that.email,_that.name,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -501,10 +502,10 @@ return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmail
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String email,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "_id")  String id,  String email,  String? name,  String? role,  String authProvider,  bool isEmailVerified,  List<ProfileSport> sport,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: "__v")  int version,  String? googleId,  SponsorProfile? sponsorProfile,  List<dynamic> sponsoredBy)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileUser() when $default != null:
-return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
+return $default(_that.id,_that.email,_that.name,_that.role,_that.authProvider,_that.isEmailVerified,_that.sport,_that.createdAt,_that.updatedAt,_that.version,_that.googleId,_that.sponsorProfile,_that.sponsoredBy);case _:
   return null;
 
 }
@@ -516,11 +517,12 @@ return $default(_that.id,_that.email,_that.role,_that.authProvider,_that.isEmail
 @JsonSerializable()
 
 class _ProfileUser implements ProfileUser {
-  const _ProfileUser({@JsonKey(name: "_id") required this.id, required this.email, this.role, this.authProvider = 'google', this.isEmailVerified = false, final  List<ProfileSport> sport = const [], required this.createdAt, required this.updatedAt, @JsonKey(name: "__v") this.version = 0, this.googleId, this.sponsorProfile, final  List<dynamic> sponsoredBy = const []}): _sport = sport,_sponsoredBy = sponsoredBy;
+  const _ProfileUser({@JsonKey(name: "_id") required this.id, required this.email, this.name, this.role, this.authProvider = 'google', this.isEmailVerified = false, final  List<ProfileSport> sport = const [], required this.createdAt, required this.updatedAt, @JsonKey(name: "__v") this.version = 0, this.googleId, this.sponsorProfile, final  List<dynamic> sponsoredBy = const []}): _sport = sport,_sponsoredBy = sponsoredBy;
   factory _ProfileUser.fromJson(Map<String, dynamic> json) => _$ProfileUserFromJson(json);
 
 @override@JsonKey(name: "_id") final  String id;
 @override final  String email;
+@override final  String? name;
 @override final  String? role;
 @override@JsonKey() final  String authProvider;
 @override@JsonKey() final  bool isEmailVerified;
@@ -557,16 +559,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileUser&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.authProvider, authProvider) || other.authProvider == authProvider)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&const DeepCollectionEquality().equals(other._sport, _sport)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version)&&(identical(other.googleId, googleId) || other.googleId == googleId)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile)&&const DeepCollectionEquality().equals(other._sponsoredBy, _sponsoredBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileUser&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.authProvider, authProvider) || other.authProvider == authProvider)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&const DeepCollectionEquality().equals(other._sport, _sport)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.version, version) || other.version == version)&&(identical(other.googleId, googleId) || other.googleId == googleId)&&(identical(other.sponsorProfile, sponsorProfile) || other.sponsorProfile == sponsorProfile)&&const DeepCollectionEquality().equals(other._sponsoredBy, _sponsoredBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,role,authProvider,isEmailVerified,const DeepCollectionEquality().hash(_sport),createdAt,updatedAt,version,googleId,sponsorProfile,const DeepCollectionEquality().hash(_sponsoredBy));
+int get hashCode => Object.hash(runtimeType,id,email,name,role,authProvider,isEmailVerified,const DeepCollectionEquality().hash(_sport),createdAt,updatedAt,version,googleId,sponsorProfile,const DeepCollectionEquality().hash(_sponsoredBy));
 
 @override
 String toString() {
-  return 'ProfileUser(id: $id, email: $email, role: $role, authProvider: $authProvider, isEmailVerified: $isEmailVerified, sport: $sport, createdAt: $createdAt, updatedAt: $updatedAt, version: $version, googleId: $googleId, sponsorProfile: $sponsorProfile, sponsoredBy: $sponsoredBy)';
+  return 'ProfileUser(id: $id, email: $email, name: $name, role: $role, authProvider: $authProvider, isEmailVerified: $isEmailVerified, sport: $sport, createdAt: $createdAt, updatedAt: $updatedAt, version: $version, googleId: $googleId, sponsorProfile: $sponsorProfile, sponsoredBy: $sponsoredBy)';
 }
 
 
@@ -577,7 +579,7 @@ abstract mixin class _$ProfileUserCopyWith<$Res> implements $ProfileUserCopyWith
   factory _$ProfileUserCopyWith(_ProfileUser value, $Res Function(_ProfileUser) _then) = __$ProfileUserCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "_id") String id, String email, String? role, String authProvider, bool isEmailVerified, List<ProfileSport> sport, DateTime createdAt, DateTime updatedAt,@JsonKey(name: "__v") int version, String? googleId, SponsorProfile? sponsorProfile, List<dynamic> sponsoredBy
+@JsonKey(name: "_id") String id, String email, String? name, String? role, String authProvider, bool isEmailVerified, List<ProfileSport> sport, DateTime createdAt, DateTime updatedAt,@JsonKey(name: "__v") int version, String? googleId, SponsorProfile? sponsorProfile, List<dynamic> sponsoredBy
 });
 
 
@@ -594,11 +596,12 @@ class __$ProfileUserCopyWithImpl<$Res>
 
 /// Create a copy of ProfileUser
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? role = freezed,Object? authProvider = null,Object? isEmailVerified = null,Object? sport = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,Object? googleId = freezed,Object? sponsorProfile = freezed,Object? sponsoredBy = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? name = freezed,Object? role = freezed,Object? authProvider = null,Object? isEmailVerified = null,Object? sport = null,Object? createdAt = null,Object? updatedAt = null,Object? version = null,Object? googleId = freezed,Object? sponsorProfile = freezed,Object? sponsoredBy = null,}) {
   return _then(_ProfileUser(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,authProvider: null == authProvider ? _self.authProvider : authProvider // ignore: cast_nullable_to_non_nullable
 as String,isEmailVerified: null == isEmailVerified ? _self.isEmailVerified : isEmailVerified // ignore: cast_nullable_to_non_nullable
 as bool,sport: null == sport ? _self._sport : sport // ignore: cast_nullable_to_non_nullable

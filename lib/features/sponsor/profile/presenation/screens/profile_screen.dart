@@ -7,7 +7,9 @@ import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/pos
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/profile/profile_edit_widget.dart';
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/profile/profile_header.dart';
 import 'package:athlink/features/sponsor/profile/presenation/screens/widgets/profile/profile_view_widget.dart';
+import 'package:athlink/shared/utils/name_helper.dart';
 import 'package:athlink/routes/route_names.dart';
+import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +17,10 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key});
+  final String? sponsorId;
+  final bool isSelf;
+
+  const ProfileScreen({super.key, this.sponsorId, this.isSelf = true});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -33,9 +38,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _loadProfileData();
   }
 
+  String? get _targetId {
+    final loggedInUser = sl<LocalStorageService>().getUserData();
+    return widget.sponsorId ?? loggedInUser?.id;
+  }
+
   void _loadProfileData() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(profileProvider.notifier).getProfile();
+      final id = _targetId;
+      if (id != null) {
+        ref.read(profileProvider(id).notifier).getProfile(id);
+      }
       ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
     });
   }
@@ -63,9 +76,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     String? websiteUrl,
     Map<String, String>? socialLinks,
   ) async {
+    final id = _targetId;
+    if (id == null) return;
+
     final success = await ref
-        .read(profileProvider.notifier)
+        .read(profileProvider(id).notifier)
         .updateSponsorProfile(
+          sponsorId: id,
           name: name,
           description: description,
           address: address,
@@ -92,8 +109,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       }
     } else {
       if (mounted) {
+        final id = _targetId;
         final errorMessage =
-            ref.read(profileProvider).errorMessage ??
+            (id != null
+                ? ref.read(profileProvider(id)).errorMessage
+                : 'Failed to update profile') ??
             'Failed to update profile';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
@@ -117,12 +137,47 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profileState = ref.watch(profileProvider);
+    final id = _targetId;
+    if (id == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: Text("Profile not found")),
+      );
+    }
+
+    final profileState = ref.watch(profileProvider(id));
     final profileUser = profileState.profileUser;
     final sponsorProfile = profileUser?.sponsorProfile;
 
+    final sponsorName = NameHelper.getSponsorDisplayName(
+      topLevelName: profileUser?.name,
+      profileName: sponsorProfile?.name,
+      email: profileUser?.email,
+    );
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
+      appBar: !widget.isSelf
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.primary,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    onPressed: () => context.pop(),
+                  ),
+                ),
+              ),
+            )
+          : null,
+      extendBodyBehindAppBar: !widget.isSelf,
       body: profileState.isLoading && profileUser == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -130,10 +185,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Column(
                 children: [
                   ProfileHeaderWidget(
+                    name: sponsorName,
                     bannerImageUrl: sponsorProfile?.bannerImageUrl,
                     profileImageUrl: sponsorProfile?.profileImageUrl,
                     bannerImage: _bannerImage,
                     profileImage: _profileImage,
+                    isSelf: widget.isSelf,
                     isEditMode: isEditMode,
                     onEditToggle: _toggleEditMode,
                     onLogout: _handleLogout,
@@ -148,11 +205,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           onSave: _handleProfileSave,
                           isLoading: profileState.isLoading,
                         )
-                      : ProfileViewWidget(sponsorProfile: sponsorProfile),
+                      : ProfileViewWidget(
+                          sponsorProfile: sponsorProfile,
+                          displayName: sponsorName,
+                        ),
                   PostFeedSection(
                     jobPosts: sponsorProfile?.jobPosts,
                     sponsorProfile: sponsorProfile,
                     profileUser: profileUser,
+                    isSelf: widget.isSelf,
                   ),
                 ],
               ),

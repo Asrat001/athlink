@@ -5,127 +5,191 @@ import 'package:flutter/material.dart';
 class SponsorCard extends StatelessWidget {
   final String name;
   final String category;
-  final String imageUrl;
+  final String? bannerImageUrl;
+  final String? profileImageUrl;
   final bool isDarkMode;
+  final VoidCallback? onTap;
 
   const SponsorCard({
     super.key,
     required this.name,
     required this.category,
-    required this.imageUrl,
+    this.bannerImageUrl,
+    this.profileImageUrl,
     this.isDarkMode = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 220,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: isDarkMode ? AppColors.black : AppColors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: isDarkMode ? Border.all(color: Colors.white12) : null,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 80,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        width: 220,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: isDarkMode ? AppColors.black : AppColors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: isDarkMode ? Border.all(color: Colors.white12) : null,
+          boxShadow: [
+            if (!isDarkMode)
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 100,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Banner Image
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                    child: bannerImageUrl != null && bannerImageUrl!.isNotEmpty
+                        ? Image.network(
+                            bannerImageUrl!,
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(color: AppColors.grey),
+                          )
+                        : Container(
+                            height: 100,
+                            width: double.infinity,
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            child: const Icon(
+                              Icons.business,
+                              color: AppColors.primary,
+                              size: 40,
+                            ),
+                          ),
                   ),
-                  child: Image.network(
-                    imageUrl,
-                    height: 110,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
 
-                Positioned(
-                  bottom: -30,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 70,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.black,
-                      border: Border.all(
-                        color: isDarkMode ? AppColors.black : AppColors.white,
-                        width: 3,
+                  // Profile Image / Avatar
+                  Positioned(
+                    bottom: -30,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isDarkMode ? AppColors.black : AppColors.white,
+                          border: Border.all(
+                            color: isDarkMode
+                                ? AppColors.black
+                                : AppColors.white,
+                            width: 3,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child:
+                              profileImageUrl != null &&
+                                  profileImageUrl!.isNotEmpty
+                              ? Image.network(
+                                  profileImageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildDefaultAvatar(),
+                                )
+                              : _buildDefaultAvatar(),
+                        ),
                       ),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "P",
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 30),
-          // Name
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Text(
-              name,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: isDarkMode ? Colors.white : AppColors.textPrimary,
+                ],
               ),
             ),
-          ),
 
-          const SizedBox(height: 4),
-
-          // Category
-          Text(
-            category,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              color: isDarkMode ? Colors.white60 : AppColors.grey,
+            const SizedBox(height: 35),
+            // Name
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: isDarkMode ? Colors.white : AppColors.textPrimary,
+                ),
+              ),
             ),
-          ),
 
-          const SizedBox(height: 10),
+            const SizedBox(height: 4),
 
-          // Buttons Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _iconButton(Icons.share_outlined),
-              const SizedBox(width: 12),
-              _iconButton(Icons.chat_bubble_outline),
-              const SizedBox(width: 12),
-              _iconButton(Icons.favorite_border),
-            ],
-          ),
-        ],
+            // Category
+            Text(
+              category,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: isDarkMode ? Colors.white60 : AppColors.primary,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Buttons Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _iconButton(Icons.share_outlined),
+                const SizedBox(width: 12),
+                _iconButton(Icons.chat_bubble_outline),
+                const SizedBox(width: 12),
+                _iconButton(Icons.favorite_border),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      color: AppColors.primary,
+      alignment: Alignment.center,
+      child: Text(
+        name.isNotEmpty ? name[0].toUpperCase() : 'P',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
   Widget _iconButton(IconData icon) {
     return CircularIconButton(
-      size: 34,
-      backgroundColor: AppColors.grey600,
-      child: Icon(icon, color: AppColors.white, size: 18),
+      size: 32,
+      backgroundColor: AppColors.extraLightGrey,
+      child: Icon(icon, color: AppColors.textPrimary, size: 16),
     );
   }
 }

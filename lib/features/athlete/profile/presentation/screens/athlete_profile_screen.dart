@@ -127,9 +127,19 @@ class _AthleteProfileScreenState extends ConsumerState<AthleteProfileScreen> {
         // Show back button only if viewing someone else's profile (pushed onto stack)
         leading: widget.isSelf
             ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                onPressed: () => context.pop(),
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.primary,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    onPressed: () => context.pop(),
+                  ),
+                ),
               ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),

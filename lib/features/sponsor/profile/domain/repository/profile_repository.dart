@@ -4,7 +4,7 @@ import 'package:athlink/features/sponsor/profile/domain/models/profile_model.dar
 import 'package:athlink/core/handlers/api_response.dart';
 
 abstract class ProfileRepository {
-  Future<ApiResponse<ProfileResponse>> getProfile();
+  Future<ApiResponse<ProfileResponse>> getProfile(String sponsorId);
 
   Future<ApiResponse<UpdateSponsorProfileResponse>> updateSponsorProfile({
     String name,

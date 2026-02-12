@@ -9,7 +9,7 @@ part of 'competition_result_model.dart';
 _CompetitionResultModel _$CompetitionResultModelFromJson(
   Map<String, dynamic> json,
 ) => _CompetitionResultModel(
-  id: json['_id'] as String,
+  id: _idReader(json, '_id') as String,
   athleteId: json['athlete'] as String,
   competitionName: json['competitionName'] as String,
   date: json['date'] as String,

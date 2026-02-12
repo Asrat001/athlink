@@ -7,6 +7,7 @@ import 'package:athlink/features/message/presentation/providers/conversation_fil
 import 'package:athlink/features/message/presentation/providers/providers.dart';
 import 'package:athlink/features/message/presentation/providers/states/conversation_state.dart';
 import 'package:athlink/features/sponsor/profile/presenation/providers/profile_provider.dart';
+import 'package:athlink/features/sponsor/profile/presenation/providers/state/profile_state.dart';
 import 'package:athlink/routes/route_names.dart';
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
@@ -47,7 +48,10 @@ class ChatListWidget extends ConsumerWidget {
     });
     final user = sl<LocalStorageService>().getUserData();
     final isAthlet = user?.role?.contains("athlet") ?? false;
-    final sponserProfileState = ref.watch(profileProvider);
+    final sponsorId = user?.id ?? '';
+    final sponserProfileState = !isAthlet
+        ? ref.watch(profileProvider(sponsorId))
+        : const ProfileState();
     final athletProfileSate = ref.watch(athleteProfileProvider(user?.id ?? ''));
     final currentUserImg = isAthlet
         ? athletProfileSate.whenOrNull(
@@ -65,7 +69,11 @@ class ChatListWidget extends ConsumerWidget {
         return RefreshIndicator(
           onRefresh: () async {
             ref.read(conversationProvider.notifier).getConversations();
-            ref.read(profileProvider.notifier).getProfile();
+            if (!isAthlet && sponsorId.isNotEmpty) {
+              ref
+                  .read(profileProvider(sponsorId).notifier)
+                  .getProfile(sponsorId);
+            }
           },
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -93,7 +101,8 @@ class ChatListWidget extends ConsumerWidget {
                     Routes.chatDetailRouteName,
                     extra: {
                       "name": conversation.participant.name,
-                      "logo":fileBaseUrl+ conversation.participant.profileImage,
+                      "logo":
+                          fileBaseUrl + conversation.participant.profileImage,
                       "isOnline": isOnline,
                       "conversationId": conversation.id,
                       "userId": conversation.participant.id,

@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
+  final String? name;
   final String? bannerImageUrl;
   final String? profileImageUrl;
   final File? bannerImage;
   final File? profileImage;
+  final bool isSelf;
   final bool isEditMode;
   final VoidCallback onEditToggle;
   final VoidCallback onLogout;
@@ -17,10 +19,12 @@ class ProfileHeaderWidget extends StatelessWidget {
 
   const ProfileHeaderWidget({
     super.key,
+    this.name,
     this.bannerImageUrl,
     this.profileImageUrl,
     this.bannerImage,
     this.profileImage,
+    this.isSelf = true,
     required this.isEditMode,
     required this.onEditToggle,
     required this.onLogout,
@@ -51,17 +55,17 @@ class ProfileHeaderWidget extends StatelessWidget {
           child: Opacity(
             opacity: 0.9,
             child: InkWell(
-              onTap: isEditMode ? onBannerPick : null,
+              onTap: (isSelf && isEditMode) ? onBannerPick : null,
               child: _buildBannerImage(fullBannerUrl),
             ),
           ),
         ),
 
         // Edit Button
-        Positioned(bottom: 5, right: 20, child: _buildEditButton()),
+        if (isSelf) Positioned(bottom: 5, right: 20, child: _buildEditButton()),
 
         // Logout Button
-        Positioned(top: 50, right: 20, child: _buildLogoutButton()),
+        if (isSelf) Positioned(top: 50, right: 20, child: _buildLogoutButton()),
 
         // Banner Upload Icon (Edit Mode)
         if (isEditMode)
@@ -89,6 +93,7 @@ class ProfileHeaderWidget extends StatelessWidget {
             fullProfileUrl,
             logoCircleRadius,
             isEditMode,
+            isSelf,
           ),
         ),
       ],
@@ -146,6 +151,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     String fullProfileUrl,
     double logoCircleRadius,
     bool isEditMode,
+    bool isSelf,
   ) {
     return Stack(
       children: [
@@ -167,12 +173,12 @@ class ProfileHeaderWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(logoCircleRadius),
             child: InkWell(
-              onTap: isEditMode ? onProfilePick : null,
+              onTap: (isSelf && isEditMode) ? onProfilePick : null,
               child: _buildProfileImage(fullProfileUrl, logoCircleRadius),
             ),
           ),
         ),
-        if (isEditMode)
+        if (isSelf && isEditMode)
           Positioned(
             bottom: 5,
             right: 5,
@@ -200,7 +206,7 @@ class ProfileHeaderWidget extends StatelessWidget {
         profileImage!,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholderImage(logoCircleRadius);
+          return _buildInitialPlaceholder();
         },
       );
     }
@@ -210,18 +216,30 @@ class ProfileHeaderWidget extends StatelessWidget {
         fullProfileUrl,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholderImage(logoCircleRadius);
+          return _buildInitialPlaceholder();
         },
       );
     }
 
-    return Image.asset('assets/images/on1.jpg', fit: BoxFit.cover);
+    return _buildInitialPlaceholder();
   }
 
-  Widget _buildPlaceholderImage(double logoCircleRadius) {
+  Widget _buildInitialPlaceholder() {
+    final String initial = (name != null && name!.isNotEmpty)
+        ? name![0].toUpperCase()
+        : 'P';
+
     return Container(
-      color: AppColors.extraLightGrey,
-      child: Icon(Icons.person, size: 40, color: AppColors.grey),
+      color: AppColors.primary,
+      alignment: Alignment.center,
+      child: Text(
+        initial,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

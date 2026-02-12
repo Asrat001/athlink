@@ -11,18 +11,13 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
   ProfileNotifier(this._profileRepository) : super(ProfileState.initial());
 
-  Future<void> getProfile() async {
+  Future<void> getProfile(String sponsorId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final response = await _profileRepository.getProfile();
+    final response = await _profileRepository.getProfile(sponsorId);
 
     response.when(
       success: (data) {
-        print('✅ Profile loaded successfully');
-        print('   Name: ${data.user.sponsorProfile?.name}');
-        print('   Description: ${data.user.sponsorProfile?.description}');
-        print('   Address: ${data.user.sponsorProfile?.address}');
-        // print('   user: ${data.user}');
         state = state.copyWith(
           isLoading: false,
           isSuccess: true,
@@ -31,9 +26,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         );
       },
       failure: (error) {
-        print(
-          '❌ Profile load failed: ${NetworkExceptions.getErrorMessage(error)}',
-        );
         state = state.copyWith(
           isLoading: false,
           isSuccess: false,
@@ -44,6 +36,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   }
 
   Future<bool> updateSponsorProfile({
+    required String sponsorId,
     required String name,
     String? description,
     String? address,
@@ -52,9 +45,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     String? websiteUrl,
     Map<String, String>? socialLinks,
   }) async {
-    print(
-      '📝 Updating profile with: name=$name, desc=$description, addr=$address, website=$websiteUrl',
-    );
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final response = await _profileRepository.updateSponsorProfile(
@@ -69,17 +59,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     return response.when(
       success: (data) async {
-        print('✅ Profile update successful: ${data.message}');
         // Refresh profile data after successful update
-        await getProfile();
-        // Don't overwrite state here - getProfile() already sets it correctly
-        print('✅ Profile refresh completed');
+        await getProfile(sponsorId);
         return true;
       },
       failure: (error) {
-        print(
-          '❌ Profile update failed: ${NetworkExceptions.getErrorMessage(error)}',
-        );
         state = state.copyWith(
           isLoading: false,
           isSuccess: false,
