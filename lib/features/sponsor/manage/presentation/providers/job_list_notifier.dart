@@ -34,6 +34,7 @@ class JobListNotifier extends StateNotifier<JobListState> {
   Future<ApiResponse<dynamic>> acceptApplicant({
     required String jobId,
     required String applicationId,
+    required String sponsorId,
   }) async {
     final response = await _jobListRepository.acceptApplicant(
       jobId: jobId,
@@ -45,7 +46,7 @@ class JobListNotifier extends StateNotifier<JobListState> {
         debugPrint("Applicant accepted: ${data.message}");
         // Refresh the job posts and sponsored athletes
         fetchJobPosts();
-        fetchSponsoredAthletes();
+        fetchSponsoredAthletes(sponsorId);
         return ApiResponse.success(data: data);
       },
       failure: (error) {
@@ -57,13 +58,13 @@ class JobListNotifier extends StateNotifier<JobListState> {
     );
   }
 
-  Future<void> fetchSponsoredAthletes() async {
+  Future<void> fetchSponsoredAthletes(String sponsorId) async {
     state = state.copyWith(
       isSponsorshipsLoading: true,
       sponsorshipsErrorMessage: null,
     );
 
-    final response = await _jobListRepository.getSponsoredAthletes();
+    final response = await _jobListRepository.getSponsoredAthletes(sponsorId);
     debugPrint("sponsored athletes===== $response");
     response.when(
       success: (data) {

@@ -36,9 +36,9 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(jobListProvider.notifier).fetchJobPosts();
-      ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
       final sponsorId = sl<LocalStorageService>().getUserData()?.id;
       if (sponsorId != null) {
+        ref.read(jobListProvider.notifier).fetchSponsoredAthletes(sponsorId);
         ref.read(profileProvider(sponsorId).notifier).getProfile(sponsorId);
       }
       ref.read(feedProvider.notifier).getFeed();
@@ -287,11 +287,17 @@ class _ManageScreenState extends ConsumerState<ManageScreen> {
               : (isApplicant && application.id.isNotEmpty
                     ? () async {
                         // Accept the applicant
+                        final sponsorId = sl<LocalStorageService>()
+                            .getUserData()
+                            ?.id;
+                        if (sponsorId == null) return;
+
                         final result = await ref
                             .read(jobListProvider.notifier)
                             .acceptApplicant(
                               jobId: jobId,
                               applicationId: application.id,
+                              sponsorId: sponsorId,
                             );
 
                         if (context.mounted) {

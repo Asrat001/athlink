@@ -29,8 +29,10 @@ class JobListRepositoryImpl implements JobListRepository {
   }
 
   @override
-  Future<ApiResponse<SponsoredAthletesResponse>> getSponsoredAthletes() async {
-    return await _remoteDataSource.getSponsoredAthletes();
+  Future<ApiResponse<SponsoredAthletesResponse>> getSponsoredAthletes(
+    String sponsorId,
+  ) async {
+    return await _remoteDataSource.getSponsoredAthletes(sponsorId);
   }
 
   @override

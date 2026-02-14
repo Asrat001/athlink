@@ -46,12 +46,12 @@ class JobListRemoteDataSource extends BaseRepository {
   }
 
   Future<ApiResponse<manage_models.SponsoredAthletesResponse>>
-  getSponsoredAthletes() async {
+  getSponsoredAthletes(String sponsorId) async {
     return await safeApiCall(
       apiCall: () async {
         return await _httpClient
             .client(requireAuth: true)
-            .get("/sponsorship/sponsored-athletes");
+            .get("/sponsorship/sponsored-athletes/$sponsorId");
       },
       fromData: (data) {
         return manage_models.SponsoredAthletesResponse.fromJson(data);

@@ -54,8 +54,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final id = _targetId;
       if (id != null) {
         ref.read(profileProvider(id).notifier).getProfile(id);
+        ref.read(jobListProvider.notifier).fetchSponsoredAthletes(id);
       }
-      ref.read(jobListProvider.notifier).fetchSponsoredAthletes();
     });
   }
 
