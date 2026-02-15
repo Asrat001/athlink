@@ -8,6 +8,7 @@ import 'package:athlink/shared/widgets/custom_text.dart';
 import 'package:athlink/shared/widgets/circular_icon_button.dart';
 import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AthleteCard extends ConsumerStatefulWidget {
   final String? athleteId;
@@ -26,6 +27,7 @@ class AthleteCard extends ConsumerStatefulWidget {
   final String highestSocialMediaPresence;
   final double size;
   final bool isAthlete; // Changed to final for best practice
+  final ActionPane? endActionPane;
 
   const AthleteCard({
     super.key,
@@ -45,6 +47,7 @@ class AthleteCard extends ConsumerStatefulWidget {
     this.onTap,
     required this.highestSocialMediaPresence,
     this.size = 240.0,
+    this.endActionPane,
   });
 
   @override
@@ -102,35 +105,17 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
                 SizedBox(
                   height: mainCardHeight,
                   width: cardWidth,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(20 * scale),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20 * scale),
-                      child: Stack(
-                        children: [
-                          _buildAthleteImage(mainCardHeight),
-                          _buildDarkOverlay(),
-
-                          // Info Overlay
-                          Padding(
-                            padding: EdgeInsets.all(16 * scale),
-                            child: _buildTopInfo(scale),
+                  child: widget.endActionPane != null
+                      ? Slidable(
+                          key: ValueKey(widget.athleteId ?? widget.name),
+                          endActionPane: widget.endActionPane,
+                          child: _buildMainCard(
+                            scale,
+                            mainCardHeight,
+                            cardWidth,
                           ),
-
-                          // Dynamic Action Buttons
-                          Positioned(
-                            right: 12 * scale,
-                            top: 0,
-                            bottom: 0,
-                            child: _buildActionButtons(scale),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        )
+                      : _buildMainCard(scale, mainCardHeight, cardWidth),
                 ),
                 SizedBox(
                   height: footerHeight,
@@ -142,6 +127,38 @@ class _AthleteCardState extends ConsumerState<AthleteCard> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildMainCard(double scale, double height, double width) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(20 * scale),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20 * scale),
+        child: Stack(
+          children: [
+            _buildAthleteImage(height),
+            _buildDarkOverlay(),
+
+            // Info Overlay
+            Padding(
+              padding: EdgeInsets.all(16 * scale),
+              child: _buildTopInfo(scale),
+            ),
+
+            // Dynamic Action Buttons
+            Positioned(
+              right: 12 * scale,
+              top: 0,
+              bottom: 0,
+              child: _buildActionButtons(scale),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

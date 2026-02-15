@@ -33,6 +33,7 @@ class FundingProgressCard extends StatelessWidget {
       symbol: '\$',
       decimalDigits: 0,
     );
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(

@@ -15,12 +15,14 @@ class ProfileViewWidget extends ConsumerWidget {
   final SponsorProfile? sponsorProfile;
   final String? displayName;
   final bool isDarkMode;
+  final bool isSelf;
 
   const ProfileViewWidget({
     super.key,
     required this.sponsorProfile,
     this.displayName,
     this.isDarkMode = false,
+    this.isSelf = true,
   });
 
   @override
@@ -206,23 +208,25 @@ class ProfileViewWidget extends ConsumerWidget {
     // Check if sponsored athletes list is empty
     if (jobListState.sponsoredAthletes.isEmpty) {
       return SizedBox(
-        height: 400,
+        height: 200,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomText(
                 title: 'No sponsored athletes yet',
-                textColor: AppColors.grey,
+                textColor: isDarkMode ? Colors.white54 : AppColors.grey,
                 fontSize: 16,
               ),
-              const SizedBox(height: 8),
-              CustomText(
-                title: 'Accept applicants in the Manage tab to see them here',
-                textColor: AppColors.grey,
-                fontSize: 12,
-                textAlign: TextAlign.center,
-              ),
+              if (isSelf) ...[
+                const SizedBox(height: 8),
+                CustomText(
+                  title: 'Accept applicants in the Manage tab to see them here',
+                  textColor: isDarkMode ? Colors.white38 : AppColors.grey,
+                  fontSize: 12,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ],
           ),
         ),

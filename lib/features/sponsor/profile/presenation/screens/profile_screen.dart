@@ -219,6 +219,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           sponsorProfile: sponsorProfile,
                           displayName: sponsorName,
                           isDarkMode: widget.isDarkMode,
+                          isSelf: widget.isSelf,
                         ),
                   PostFeedSection(
                     jobPosts: sponsorProfile?.jobPosts,

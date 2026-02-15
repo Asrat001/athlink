@@ -82,14 +82,6 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
 
       // Reset state
       activeActionNotifier.value = (index: null, type: null);
-
-      // Refresh the list after deletion
-      // ref.read(watchlistProvider.notifier).getWatchlist(); // Already called in notifier
-    } else {
-      // Mute: just revert after delay
-      activeActionNotifier.value = (index: index, type: "muting");
-      await Future.delayed(const Duration(milliseconds: 300));
-      activeActionNotifier.value = (index: null, type: null);
     }
   }
 
@@ -400,60 +392,52 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
     return Padding(
       key: ValueKey("card_${widget.index}"),
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Slidable(
-        key: ValueKey(widget.index),
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          extentRatio: 0.5,
-          children: [
-            SlidableAction(
-              onPressed: (_) => widget.onAction(widget.index, "mute"),
-              icon: Icons.notifications_off_outlined,
-            ),
-            SlidableAction(
-              onPressed: (_) => widget.onAction(widget.index, "delete"),
-              backgroundColor: AppColors.lightError,
-              foregroundColor: AppColors.error,
-              icon: Icons.delete_outline,
-            ),
-          ],
-        ),
-        child: Align(
-          alignment: Alignment.center,
-          child: AthleteCard(
-            key: ValueKey(widget.athlete.id),
-            size: MediaQuery.of(context).size.width * 0.89,
-            athleteId: widget.athlete.id,
-            name:
-                widget.athlete.athleteProfile?.name ??
-                widget.athlete.name ??
-                'Unknown',
-            club: widget.athlete.sport.isNotEmpty
-                ? widget.athlete.sport.first.name ?? 'Unknown Sport'
-                : 'Unknown Sport',
-            age: widget.athlete.athleteProfile?.age.toString() ?? 'N/A',
-            flag: widget.athlete.sport.isNotEmpty
-                ? '$fileBaseUrl${widget.athlete.sport.first.icon}'
-                : '',
-            image: widget.athlete.athleteProfile?.profileImageUrl != null
-                ? '$fileBaseUrl${widget.athlete.athleteProfile?.profileImageUrl}'
-                : '',
-            // rating: widget.athlete.athleteProfile?.rating ?? 0.0,
-            achievements: widget.athlete.athleteProfile?.achievements ?? [],
-            position: widget.athlete.athleteProfile?.position,
-            level: widget.athlete.athleteProfile?.level,
-            sportCategory: widget.athlete.sport.isNotEmpty
-                ? widget.athlete.sport.first.name
-                : null,
-            highestSocialMediaPresence: '0 followers',
-            onTap: () {
-              if (widget.athlete.id != null) {
-                context.push(
-                  Routes.viewAthleteScreen,
-                  extra: {'athleteId': widget.athlete.id, 'isSelf': false},
-                );
-              }
-            },
+      child: Align(
+        alignment: Alignment.center,
+        child: AthleteCard(
+          key: ValueKey(widget.athlete.id),
+          size: MediaQuery.of(context).size.width * 0.89,
+          athleteId: widget.athlete.id,
+          name:
+              widget.athlete.athleteProfile?.name ??
+              widget.athlete.name ??
+              'Unknown',
+          club: widget.athlete.sport.isNotEmpty
+              ? widget.athlete.sport.first.name ?? 'Unknown Sport'
+              : 'Unknown Sport',
+          age: widget.athlete.athleteProfile?.age.toString() ?? 'N/A',
+          flag: widget.athlete.sport.isNotEmpty
+              ? '$fileBaseUrl${widget.athlete.sport.first.icon}'
+              : '',
+          image: widget.athlete.athleteProfile?.profileImageUrl != null
+              ? '$fileBaseUrl${widget.athlete.athleteProfile?.profileImageUrl}'
+              : '',
+          achievements: widget.athlete.athleteProfile?.achievements ?? [],
+          position: widget.athlete.athleteProfile?.position,
+          level: widget.athlete.athleteProfile?.level,
+          sportCategory: widget.athlete.sport.isNotEmpty
+              ? widget.athlete.sport.first.name
+              : null,
+          highestSocialMediaPresence: '0 followers',
+          onTap: () {
+            if (widget.athlete.id != null) {
+              context.push(
+                Routes.viewAthleteScreen,
+                extra: {'athleteId': widget.athlete.id, 'isSelf': false},
+              );
+            }
+          },
+          endActionPane: ActionPane(
+            motion: const ScrollMotion(),
+            extentRatio: 0.25,
+            children: [
+              SlidableAction(
+                onPressed: (_) => widget.onAction(widget.index, "delete"),
+                backgroundColor: AppColors.lightError,
+                foregroundColor: AppColors.error,
+                icon: Icons.delete_outline,
+              ),
+            ],
           ),
         ),
       ),
@@ -461,17 +445,11 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
   }
 
   Widget _buildConfirmationCard() {
-    final isDelete = _actionType == "delete" || _actionType == "deleting";
+    final isDeleting = _actionType == "deleting";
     final athleteName =
         widget.item.athlete?.athleteProfile?.name ??
         widget.item.athlete?.name ??
         'Unknown';
-
-    final bgColor = isDelete ? AppColors.lightError : AppColors.lightMute;
-    final textColor = isDelete ? AppColors.red : AppColors.muteAction;
-    final icon = isDelete
-        ? Icons.delete_outline
-        : Icons.notifications_off_outlined;
 
     return AnimatedContainer(
       key: ValueKey("confirm_${widget.index}"),
@@ -480,54 +458,52 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: AppColors.lightError,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
-          Icon(icon, size: 38, color: textColor),
+          const Icon(Icons.delete_outline, size: 38, color: AppColors.red),
           const SizedBox(height: 10),
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(
-                  text: isDelete ? "Remove " : "Mute notifications from ",
+                const TextSpan(
+                  text: "Remove ",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: textColor,
+                    color: AppColors.red,
                   ),
                 ),
                 TextSpan(
                   text: athleteName,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: textColor,
+                    color: AppColors.red,
                   ),
                 ),
-                TextSpan(
-                  text: isDelete ? " from watchlist?" : "?",
+                const TextSpan(
+                  text: " from watchlist?",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: textColor,
+                    color: AppColors.red,
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 6),
-          CustomText(
-            title: isDelete
-                ? "You won't receive any updates about this athlete."
-                : "You can unmute anytime from their profile.",
+          const CustomText(
+            title: "You won't receive any updates about this athlete.",
             fontSize: 13,
             fontWeight: FontWeight.w400,
             textColor: AppColors.textGrey,
           ),
           const SizedBox(height: 20),
-          if (_actionType != "deleting" && _actionType != "muting")
+          if (!isDeleting)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -535,7 +511,7 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
                   onPressed: () =>
                       widget.onConfirm(widget.index, widget.watchlist),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: textColor,
+                    backgroundColor: AppColors.red,
                     foregroundColor: AppColors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 28,
@@ -546,7 +522,7 @@ class _WatchlistItemWidgetState extends State<_WatchlistItemWidget> {
                     ),
                     elevation: 0,
                   ),
-                  child: Text(isDelete ? "Remove" : "Mute"),
+                  child: const Text("Remove"),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
