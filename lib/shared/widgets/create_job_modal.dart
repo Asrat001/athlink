@@ -171,6 +171,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
       return;
     }
 
+    // ONLY send new files if updated in media, as per user requirement.
     final List<String> mediaFiles = [];
     if (_selectedImage != null) {
       mediaFiles.add(_selectedImage!.path);
