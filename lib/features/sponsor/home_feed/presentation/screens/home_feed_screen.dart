@@ -4,9 +4,9 @@ import 'package:athlink/features/sponsor/home_feed/domain/models/feed_models.dar
 import 'package:athlink/features/sponsor/home_feed/presentation/providers/feed_provider.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/providers/state/feed_state.dart';
 import 'package:athlink/features/sponsor/home_feed/presentation/widgets/athlete_card.dart';
-import 'package:athlink/features/sponsor/home_feed/presentation/widgets/sponsor_card.dart';
+
 import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/utils/name_helper.dart';
+
 import 'package:athlink/shared/constant/constants.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -162,8 +162,7 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
                 );
               }, childCount: sportEntries.length),
             ),
-            _buildSponsorsHeaderSliver(),
-            _buildSponsorsListSliver(feedData.sponsors),
+
             const SliverPadding(padding: EdgeInsets.only(bottom: 20)),
           ],
         );
@@ -221,60 +220,6 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
   /// ------------------------------------------------------------
   /// SPONSORS (WITH RANDOM NAME FALLBACK)
   /// ------------------------------------------------------------
-  Widget _buildSponsorsListSliver(List<dynamic> sponsors) {
-    if (sponsors.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
-    }
-
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: 280,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: sponsors.length,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-          itemBuilder: (context, index) {
-            final sponsor = sponsors[index];
-
-            final sponsorProfile = sponsor.sponsorProfile;
-
-            final sponsorName = NameHelper.getSponsorDisplayName(
-              topLevelName: sponsor.name,
-              profileName: sponsorProfile?.name,
-              email: sponsor.email,
-            );
-
-            final category = sponsor.sport.isNotEmpty
-                ? sponsor.sport.length == 1
-                      ? sponsor.sport.first.name ?? 'Sport'
-                      : '${sponsor.sport.length} Sports'
-                : 'No Sports';
-
-            final bannerUrl =
-                (sponsorProfile?.bannerImageUrl?.isNotEmpty ?? false)
-                ? '$fileBaseUrl${sponsorProfile!.bannerImageUrl}'
-                : null;
-
-            final profileUrl =
-                (sponsorProfile?.profileImageUrl?.isNotEmpty ?? false)
-                ? '$fileBaseUrl${sponsorProfile!.profileImageUrl}'
-                : null;
-
-            return SponsorCard(
-              name: sponsorName,
-              category: category,
-              bannerImageUrl: bannerUrl,
-              profileImageUrl: profileUrl,
-              onTap: () => context.push(
-                Routes.viewSponsorProfileRouteName,
-                extra: {'sponsorId': sponsor.id},
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
 
   /// ------------------------------------------------------------
   /// UI HELPERS
@@ -314,18 +259,6 @@ class _HomeFeedScreenState extends ConsumerState<HomeFeedScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSponsorsHeaderSliver() {
-    return const SliverPadding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
-      sliver: SliverToBoxAdapter(
-        child: Text(
-          "Sponsors",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
       ),
     );
   }

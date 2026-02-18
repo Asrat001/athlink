@@ -161,82 +161,84 @@ class LoginNotifier extends StateNotifier<LoginState> {
   }
 
   Future<void> appleSignIn(BuildContext context) async {
-    final connected = await sl<AppConnectivity>().connectivity();
-    if (connected) {
-      state = state.copyWith(isLoading: true);
-      log("LoginNotifier: Starting Apple Sign-In...");
-      final response = await _authenticationRepository.appleSignIn();
-      log("LoginNotifier: Apple Sign-In Response: $response");
-      final storageService = sl<LocalStorageService>();
-      response.when(
-        success: (data) async {
-          state = state.copyWith(
-            isLoading: false,
-            isError: false,
-            isSuccess: true,
-          );
-
-          await storageService.setAccessToken(data.accessToken);
-          await storageService.setRefreshToken(data.refreshToken);
-          await storageService.setUserData(data.user);
-          state = state.copyWith(
-            isLoading: false,
-            isError: false,
-            isSuccess: true,
-          );
-          if (context.mounted) {
-            // Update FCM Token
-            try {
-              final notificationRepo = sl<NotificationRepository>();
-              final token = await NotificationService.instance.getFcmToken();
-              if (token != null) {
-                await notificationRepo.updateFcmToken(
-                  token: token,
-                  device: AppHelpers.getDeviceType(),
-                );
-              }
-            } catch (e) {
-              log("Failed to update FCM token on apple login: $e");
-            }
-
-            AppHelpers.showSuccessToast(context, "Login Successful");
-            Future.delayed(const Duration(milliseconds: 1000), () {
-              if (data.user.isNewUser ||
-                  data.user.role == "" ||
-                  data.user.role == null) {
-                context.push(Routes.accountTypeSelectionRouteName, extra: true);
-              } else {
-                if (data.user.role == 'athlete') {
-                  context.go(Routes.athleteDashBoardRouteName);
-                } else {
-                  context.go(Routes.dashBoardRouteName);
-                }
-              }
-            });
-          }
-        },
-        failure: (error) {
-          state = state.copyWith(
-            isLoading: false,
-            isError: true,
-            isSuccess: false,
-          );
-          if (context.mounted) {
-            AppHelpers.showErrorFlash(
-              context,
-              NetworkExceptions.getErrorMessage(error),
-            );
-          }
-        },
-      );
-    } else {
-      if (context.mounted) {
-        AppHelpers.showErrorFlash(
-          context,
-          "No internet connection. Please check your network settings.",
-        );
-      }
-    }
+    // Apple Sign-In disabled for now
+    return;
+    // final connected = await sl<AppConnectivity>().connectivity();
+    // if (connected) {
+    //   state = state.copyWith(isLoading: true);
+    //   log("LoginNotifier: Starting Apple Sign-In...");
+    //   final response = await _authenticationRepository.appleSignIn();
+    //   log("LoginNotifier: Apple Sign-In Response: $response");
+    //   final storageService = sl<LocalStorageService>();
+    //   response.when(
+    //     success: (data) async {
+    //       state = state.copyWith(
+    //         isLoading: false,
+    //         isError: false,
+    //         isSuccess: true,
+    //       );
+    //
+    //       await storageService.setAccessToken(data.accessToken);
+    //       await storageService.setRefreshToken(data.refreshToken);
+    //       await storageService.setUserData(data.user);
+    //       state = state.copyWith(
+    //         isLoading: false,
+    //         isError: false,
+    //         isSuccess: true,
+    //       );
+    //       if (context.mounted) {
+    //         // Update FCM Token
+    //         try {
+    //           final notificationRepo = sl<NotificationRepository>();
+    //           final token = await NotificationService.instance.getFcmToken();
+    //           if (token != null) {
+    //             await notificationRepo.updateFcmToken(
+    //               token: token,
+    //               device: AppHelpers.getDeviceType(),
+    //             );
+    //           }
+    //         } catch (e) {
+    //           log("Failed to update FCM token on apple login: $e");
+    //         }
+    //
+    //         AppHelpers.showSuccessToast(context, "Login Successful");
+    //         Future.delayed(const Duration(milliseconds: 1000), () {
+    //           if (data.user.isNewUser ||
+    //               data.user.role == "" ||
+    //               data.user.role == null) {
+    //             context.push(Routes.accountTypeSelectionRouteName, extra: true);
+    //           } else {
+    //             if (data.user.role == 'athlete') {
+    //               context.go(Routes.athleteDashBoardRouteName);
+    //             } else {
+    //               context.go(Routes.dashBoardRouteName);
+    //             }
+    //           }
+    //         });
+    //       }
+    //     },
+    //     failure: (error) {
+    //       state = state.copyWith(
+    //         isLoading: false,
+    //         isError: true,
+    //         isSuccess: false,
+    //       );
+    //       if (context.mounted) {
+    //         AppHelpers.showErrorFlash(
+    //           context,
+    //           NetworkExceptions.getErrorMessage(error),
+    //         );
+    //       }
+    //     },
+    //   );
+    // } else {
+    //   if (context.mounted) {
+    //     AppHelpers.showErrorFlash(
+    //       context,
+    //       "No internet connection. Please check your network settings.",
+    //     );
+    //   }
+    // }
   }
 
   Future<void> signOut(BuildContext context) async {

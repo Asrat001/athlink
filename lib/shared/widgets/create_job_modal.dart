@@ -11,6 +11,7 @@ import 'package:athlink/shared/widgets/create_job_modal_layout.dart';
 import 'package:athlink/shared/widgets/create_job_step_one.dart';
 import 'package:athlink/shared/widgets/create_job_step_two.dart';
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/constant/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/features/sponsor/manage/domain/models/job_list_model.dart'
@@ -46,6 +47,8 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
   final _endDateController = TextEditingController();
   File? _selectedImage;
   File? _selectedVideo;
+  String? _initialImageUrl;
+  String? _initialVideoUrl;
   Uint8List? _imageBytes;
   Uint8List? _videoThumbnail;
   DateTime? _startDate;
@@ -76,6 +79,23 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
         _endDate = job.timeline.endDate;
         _endDateController.text =
             '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}';
+      }
+
+      if (job.mediaUrls.isNotEmpty) {
+        for (var url in job.mediaUrls) {
+          final lowercaseUrl = url.toLowerCase();
+          if (lowercaseUrl.endsWith('.jpg') ||
+              lowercaseUrl.endsWith('.jpeg') ||
+              lowercaseUrl.endsWith('.png') ||
+              lowercaseUrl.endsWith('.webp')) {
+            _initialImageUrl = '$fileBaseUrl$url';
+          } else if (lowercaseUrl.endsWith('.mp4') ||
+              lowercaseUrl.endsWith('.mov') ||
+              lowercaseUrl.endsWith('.avi') ||
+              lowercaseUrl.endsWith('.mkv')) {
+            _initialVideoUrl = '$fileBaseUrl$url';
+          }
+        }
       }
     }
   }
@@ -270,6 +290,8 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
           endDateController: _endDateController,
           selectedImage: _selectedImage,
           selectedVideo: _selectedVideo,
+          initialImageUrl: _initialImageUrl,
+          initialVideoUrl: _initialVideoUrl,
           imageBytes: _imageBytes,
           videoThumbnail: _videoThumbnail,
           startDate: _startDate,
@@ -290,12 +312,14 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
             setState(() {
               _selectedImage = null;
               _imageBytes = null;
+              _initialImageUrl = null;
             });
           },
           onVideoRemoved: () {
             setState(() {
               _selectedVideo = null;
               _videoThumbnail = null;
+              _initialVideoUrl = null;
             });
           },
           onStartDateSelected: (date) {

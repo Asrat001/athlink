@@ -84,12 +84,32 @@ class JobListing extends ConsumerWidget {
         jobImage = '$fileBaseUrl${job.sportId.icon}';
       }
 
+      // Find the first image URL for thumbnail display
+      String? mediaImageUrl;
+      String? mediaVideoUrl;
+      for (var url in job.mediaUrls) {
+        final lower = url.toLowerCase();
+        if (lower.endsWith('.jpg') ||
+            lower.endsWith('.jpeg') ||
+            lower.endsWith('.png') ||
+            lower.endsWith('.webp')) {
+          mediaImageUrl ??= '$fileBaseUrl$url';
+        } else if (lower.endsWith('.mp4') ||
+            lower.endsWith('.mov') ||
+            lower.endsWith('.avi') ||
+            lower.endsWith('.mkv')) {
+          mediaVideoUrl ??= '$fileBaseUrl$url';
+        }
+      }
+
       return {
         "id": job.id,
         "type": "hiring",
         "agencyLogo": jobImage,
         "agencyName": job.title,
         "location": job.location,
+        "mediaUrl": mediaImageUrl ?? '',
+        "videoUrl": mediaVideoUrl ?? '',
         "price": job.price.isNotEmpty
             ? "${AppHelpers.getCurrencySymbol(job.currency)}${job.price}"
             : "${AppHelpers.getCurrencySymbol(job.currency)}0",

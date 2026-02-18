@@ -6,8 +6,16 @@ import 'package:flutter/material.dart';
 class SelectedFilesInfo extends StatelessWidget {
   final File? image;
   final File? video;
+  final String? initialImageUrl;
+  final String? initialVideoUrl;
 
-  const SelectedFilesInfo({super.key, this.image, this.video});
+  const SelectedFilesInfo({
+    super.key,
+    this.image,
+    this.video,
+    this.initialImageUrl,
+    this.initialVideoUrl,
+  });
 
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
@@ -25,6 +33,13 @@ class SelectedFilesInfo extends StatelessWidget {
             icon: Icons.image,
             name: image!.path.split('/').last,
             size: _formatFileSize(image!.lengthSync()),
+            type: 'New Image',
+          ),
+        if (image == null && initialImageUrl != null)
+          const FileInfoItem(
+            icon: Icons.image,
+            name: 'Existing Image',
+            size: '',
             type: 'Image',
           ),
         if (video != null)
@@ -32,6 +47,13 @@ class SelectedFilesInfo extends StatelessWidget {
             icon: Icons.videocam,
             name: video!.path.split('/').last,
             size: _formatFileSize(video!.lengthSync()),
+            type: 'New Video',
+          ),
+        if (video == null && initialVideoUrl != null)
+          const FileInfoItem(
+            icon: Icons.videocam,
+            name: 'Existing Video',
+            size: '',
             type: 'Video',
           ),
       ],

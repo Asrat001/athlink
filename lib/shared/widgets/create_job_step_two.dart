@@ -7,7 +7,6 @@ import 'package:athlink/shared/widgets/forms/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-
 import '../../features/sponsor/profile/presenation/screens/widgets/post/media_selection_row.dart';
 import '../../features/sponsor/profile/presenation/screens/widgets/post/selected_files_info.dart';
 
@@ -17,6 +16,8 @@ class StepTwo extends StatefulWidget {
   final TextEditingController endDateController;
   final File? selectedImage;
   final File? selectedVideo;
+  final String? initialImageUrl;
+  final String? initialVideoUrl;
   final Uint8List? imageBytes;
   final Uint8List? videoThumbnail;
   final DateTime? startDate;
@@ -25,6 +26,7 @@ class StepTwo extends StatefulWidget {
   final Function(File video, Uint8List? thumbnail) onVideoSelected;
   final VoidCallback onImageRemoved;
   final VoidCallback onVideoRemoved;
+
   final Function(DateTime date) onStartDateSelected;
   final Function(DateTime date) onEndDateSelected;
   final VoidCallback onPost;
@@ -38,6 +40,8 @@ class StepTwo extends StatefulWidget {
     required this.endDateController,
     required this.selectedImage,
     required this.selectedVideo,
+    required this.initialImageUrl,
+    required this.initialVideoUrl,
     required this.imageBytes,
     required this.videoThumbnail,
     required this.startDate,
@@ -159,7 +163,7 @@ class _StepTwoState extends State<StepTwo> {
         return await thumbnailFile.readAsBytes();
       }
     } catch (e) {
-      print('Error generating thumbnail: $e');
+      debugPrint('Error generating thumbnail: $e');
     }
     return null;
   }
@@ -188,14 +192,21 @@ class _StepTwoState extends State<StepTwo> {
           videoThumbnail: widget.videoThumbnail,
           selectedImage: widget.selectedImage,
           selectedVideo: widget.selectedVideo,
+          initialImageUrl: widget.initialImageUrl,
+          initialVideoUrl: widget.initialVideoUrl,
           onImageRemoved: widget.onImageRemoved,
           onVideoRemoved: widget.onVideoRemoved,
         ),
-        if (widget.selectedImage != null || widget.selectedVideo != null) ...[
+        if (widget.selectedImage != null ||
+            widget.selectedVideo != null ||
+            widget.initialImageUrl != null ||
+            widget.initialVideoUrl != null) ...[
           const SizedBox(height: 12),
           SelectedFilesInfo(
             image: widget.selectedImage,
             video: widget.selectedVideo,
+            initialImageUrl: widget.initialImageUrl,
+            initialVideoUrl: widget.initialVideoUrl,
           ),
         ],
         const SizedBox(height: 16),

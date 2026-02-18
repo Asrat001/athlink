@@ -42,16 +42,18 @@ class AuthenticationRemoteDataSource extends BaseRepository {
   }
 
   Future<ApiResponse<LoginResponse>> loginWithApple({
-    required String idToken,
+    required String identityToken,
     String? firstName,
     String? lastName,
   }) async {
     return await safeApiCall(
       apiCall: () async {
         final data = {
-          "idToken": idToken,
-          if (firstName != null) "firstName": firstName,
-          if (lastName != null) "lastName": lastName,
+          "identityToken": identityToken,
+          "fullName": {
+            "givenName": firstName ?? "",
+            "familyName": lastName ?? "",
+          },
         };
         return await _httpClient
             .client(requireAuth: false)
