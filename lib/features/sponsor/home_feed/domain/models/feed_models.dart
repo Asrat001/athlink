@@ -48,6 +48,7 @@ abstract class SponsorProfile with _$SponsorProfile {
     String? profileImageUrl,
     String? bannerImageUrl,
     @Default([]) List<dynamic> jobPosts,
+    @Default({}) Map<String, String> socialLinks,
   }) = _SponsorProfile;
 
   factory SponsorProfile.fromJson(Map<String, dynamic> json) =>

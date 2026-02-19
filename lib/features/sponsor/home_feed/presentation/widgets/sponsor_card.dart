@@ -1,6 +1,7 @@
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/circular_icon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SponsorCard extends StatelessWidget {
   final String name;
@@ -9,6 +10,7 @@ class SponsorCard extends StatelessWidget {
   final String? profileImageUrl;
   final bool isDarkMode;
   final VoidCallback? onTap;
+  final Map<String, String> socialLinks;
 
   const SponsorCard({
     super.key,
@@ -18,6 +20,7 @@ class SponsorCard extends StatelessWidget {
     this.profileImageUrl,
     this.isDarkMode = false,
     this.onTap,
+    this.socialLinks = const {},
   });
 
   @override
@@ -152,22 +155,54 @@ class SponsorCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Buttons Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconButton(Icons.share_outlined),
-                const SizedBox(width: 12),
-                _iconButton(Icons.chat_bubble_outline),
-                const SizedBox(width: 12),
-                _iconButton(Icons.favorite_border),
-              ],
-            ),
+            // Social Media Links
+            if (socialLinks.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12, // Gap between icons
+                  children: _buildSocialIcons(),
+                ),
+              )
+            else
+              const SizedBox(height: 32), // Placeholder height if no links
+
             const SizedBox(height: 12),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _buildSocialIcons() {
+    final socialIcons = <String, IconData>{
+      'facebook': Icons.facebook,
+      'twitter': Icons.alternate_email,
+      'instagram': Icons.camera_alt_outlined,
+      'linkedin': Icons.work_outline,
+      'youtube': Icons.video_library_outlined,
+      'tiktok': Icons.music_note,
+    };
+
+    final socialColors = <String, Color>{
+      'facebook': const Color(0xFF1877F2),
+      'twitter': const Color(0xFF1DA1F2),
+      'instagram': const Color(0xFFE1306C),
+      'linkedin': const Color(0xFF0077B5),
+      'youtube': const Color(0xFFFF0000),
+      'tiktok': Colors.black,
+    };
+
+    final List<Widget> widgets = [];
+    socialLinks.forEach((key, value) {
+      if (value.isNotEmpty && socialIcons.containsKey(key)) {
+        widgets.add(
+          _socialIconButton(socialIcons[key]!, value, color: socialColors[key]),
+        );
+      }
+    });
+    return widgets.take(3).toList();
   }
 
   Widget _buildDefaultAvatar() {
@@ -185,11 +220,21 @@ class SponsorCard extends StatelessWidget {
     );
   }
 
-  Widget _iconButton(IconData icon) {
-    return CircularIconButton(
-      size: 32,
-      backgroundColor: AppColors.extraLightGrey,
-      child: Icon(icon, color: AppColors.textPrimary, size: 16),
+  Widget _socialIconButton(IconData icon, String url, {Color? color}) {
+    return InkWell(
+      onTap: () => _launchUrl(url),
+      child: CircularIconButton(
+        size: 32,
+        backgroundColor: AppColors.extraLightGrey,
+        child: Icon(icon, color: color ?? AppColors.textPrimary, size: 16),
+      ),
     );
+  }
+
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 }

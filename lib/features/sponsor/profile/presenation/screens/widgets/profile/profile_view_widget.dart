@@ -111,6 +111,15 @@ class ProfileViewWidget extends ConsumerWidget {
       'tiktok': Icons.music_note,
     };
 
+    final socialColors = <String, Color>{
+      'facebook': const Color(0xFF1877F2),
+      'twitter': const Color(0xFF1DA1F2),
+      'instagram': const Color(0xFFE1306C),
+      'linkedin': const Color(0xFF0077B5),
+      'youtube': const Color(0xFFFF0000),
+      'tiktok': Colors.black,
+    };
+
     final List<Widget> socialWidgets = [];
     sponsorProfile!.socialLinks.forEach((key, value) {
       if (value.isNotEmpty && socialIcons.containsKey(key)) {
@@ -118,7 +127,9 @@ class ProfileViewWidget extends ConsumerWidget {
           IconButton(
             icon: Icon(
               socialIcons[key],
-              color: isDarkMode ? Colors.white70 : AppColors.grey,
+              color: isDarkMode
+                  ? (socialColors[key] ?? Colors.white70)
+                  : (socialColors[key] ?? AppColors.grey),
             ),
             onPressed: () => _launchUrl(value),
           ),

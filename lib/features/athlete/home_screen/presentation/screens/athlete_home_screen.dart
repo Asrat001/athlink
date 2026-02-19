@@ -383,6 +383,7 @@ class _AthleteDashboardScreenState
             category: category,
             bannerImageUrl: bannerUrl,
             profileImageUrl: profileUrl,
+            socialLinks: sponsorProfile?.socialLinks ?? {},
             onTap: () {
               if (sponsor.id != null) {
                 context.push(

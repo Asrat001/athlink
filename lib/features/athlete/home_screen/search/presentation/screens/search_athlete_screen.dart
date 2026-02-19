@@ -242,6 +242,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
                 : "Partner",
             bannerImageUrl: bannerUrl,
             profileImageUrl: profileUrl,
+            socialLinks: sponsorProfile?.socialLinks ?? {},
             onTap: () => context.push(
               Routes.viewSponsorProfileRouteName,
               extra: {

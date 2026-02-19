@@ -102,6 +102,54 @@ class RegisterStateNotifier extends StateNotifier<RegisterState> {
             isSuccess: true,
             isSocialSignIn: true,
             isNewUser: data.user.isNewUser,
+            user: data.user,
+          );
+          if (context.mounted) {
+            AppHelpers.showSuccessToast(context, "Login Successful");
+          }
+        },
+        failure: (error) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: NetworkExceptions.getErrorMessage(error),
+            isSuccess: false,
+          );
+          if (context.mounted) {
+            AppHelpers.showErrorFlash(
+              context,
+              "Login Failed ${NetworkExceptions.getErrorMessage(error)}",
+            );
+          }
+        },
+      );
+    } else {
+      if (context.mounted) {
+        AppHelpers.showErrorFlash(
+          context,
+          "No internet connection. Please check your network settings.",
+        );
+      }
+    }
+  }
+
+  Future<void> appleSignIn(BuildContext context) async {
+    final connected = await sl<AppConnectivity>().connectivity();
+    if (connected) {
+      state = state.copyWith(isLoading: true);
+      final response = await _authenticationRepository.appleSignIn();
+      final storageService = sl<LocalStorageService>();
+      response.when(
+        success: (data) async {
+          await storageService.setAccessToken(data.accessToken);
+          await storageService.setRefreshToken(data.refreshToken);
+          await storageService.setUserData(data.user);
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: null,
+            isSuccess: true,
+            isSocialSignIn: true,
+            isNewUser: data.user.isNewUser,
+            user: data.user,
           );
           if (context.mounted) {
             AppHelpers.showSuccessToast(context, "Login Successful");

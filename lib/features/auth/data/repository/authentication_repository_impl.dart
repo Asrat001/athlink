@@ -92,40 +92,35 @@ class AuthenticationRepositoryImpl implements IAuthenticationRepository {
 
   @override
   Future<ApiResponse<LoginResponse>> appleSignIn() async {
-    // try {
-    //   final result = await appleAuthService.signInWithApple();
-    //
-    //   return await result.when(
-    //     success: (credential) async {
-    //       final idToken = credential.identityToken;
-    //       if (idToken == null) {
-    //         return const ApiResponse.failure(
-    //           error: NetworkExceptions.defaultError("Missing Apple ID token"),
-    //         );
-    //       }
-    //
-    //       return await remoteDataSource.loginWithApple(
-    //         identityToken: idToken,
-    //         firstName: credential.givenName,
-    //         lastName: credential.familyName,
-    //       );
-    //     },
-    //     failure: (error) {
-    //       return ApiResponse.failure(error: error);
-    //     },
-    //   );
-    // } catch (e) {
-    //   print("AuthenticationRepositoryImpl Apple Sign-In Error: $e");
-    //   print(
-    //     "AuthenticationRepositoryImpl Apple Sign-In Error Type: ${e.runtimeType}",
-    //   );
-    //   return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
-    // }
-    return const ApiResponse.failure(
-      error: NetworkExceptions.defaultError(
-        "Apple Sign-In is temporarily disabled",
-      ),
-    );
+    try {
+      final result = await appleAuthService.signInWithApple();
+
+      return await result.when(
+        success: (credential) async {
+          final idToken = credential.identityToken;
+          if (idToken == null) {
+            return const ApiResponse.failure(
+              error: NetworkExceptions.defaultError("Missing Apple ID token"),
+            );
+          }
+
+          return await remoteDataSource.loginWithApple(
+            identityToken: idToken,
+            firstName: credential.givenName,
+            lastName: credential.familyName,
+          );
+        },
+        failure: (error) {
+          return ApiResponse.failure(error: error);
+        },
+      );
+    } catch (e) {
+      print("AuthenticationRepositoryImpl Apple Sign-In Error: $e");
+      print(
+        "AuthenticationRepositoryImpl Apple Sign-In Error Type: ${e.runtimeType}",
+      );
+      return ApiResponse.failure(error: NetworkExceptions.getDioException(e));
+    }
   }
 
   @override

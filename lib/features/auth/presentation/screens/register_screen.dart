@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../shared/utils/app_helpers.dart';
+
 import '../../../../shared/widgets/forms/input_field.dart';
 import '../providers/register/state/register_state.dart';
 
@@ -65,6 +65,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     await provider.googleSignIn(context);
   }
 
+  void appleSignIn(WidgetRef ref, BuildContext context) async {
+    final provider = ref.read(registrationProvider.notifier);
+    await provider.appleSignIn(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,7 +119,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               if (current.isNewUser) {
                 context.push(Routes.accountTypeSelectionRouteName, extra: true);
               } else {
-                context.push(Routes.dashBoardRouteName);
+                if (current.user?.role == 'athlete') {
+                  context.go(Routes.athleteDashBoardRouteName);
+                } else {
+                  context.go(Routes.dashBoardRouteName);
+                }
               }
             }
           });
@@ -284,10 +293,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             SizedBox(height: 7),
                             SocialLoginButton(
                               onPressed: () {
-                                AppHelpers.showInfoToast(
-                                  context,
-                                  "Coming Soon",
-                                );
+                                appleSignIn(ref, context);
                               },
                               text: "Continue with Apple",
                               height: 48,

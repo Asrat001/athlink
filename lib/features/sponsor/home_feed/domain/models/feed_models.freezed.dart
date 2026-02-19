@@ -846,7 +846,7 @@ as int,
 /// @nodoc
 mixin _$SponsorProfile {
 
- SponsorStats? get stats; String? get name; String? get profileImageUrl; String? get bannerImageUrl; List<dynamic> get jobPosts;
+ SponsorStats? get stats; String? get name; String? get profileImageUrl; String? get bannerImageUrl; List<dynamic> get jobPosts; Map<String, String> get socialLinks;
 /// Create a copy of SponsorProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -859,16 +859,16 @@ $SponsorProfileCopyWith<SponsorProfile> get copyWith => _$SponsorProfileCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsorProfile&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.bannerImageUrl, bannerImageUrl) || other.bannerImageUrl == bannerImageUrl)&&const DeepCollectionEquality().equals(other.jobPosts, jobPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SponsorProfile&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.bannerImageUrl, bannerImageUrl) || other.bannerImageUrl == bannerImageUrl)&&const DeepCollectionEquality().equals(other.jobPosts, jobPosts)&&const DeepCollectionEquality().equals(other.socialLinks, socialLinks));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,stats,name,profileImageUrl,bannerImageUrl,const DeepCollectionEquality().hash(jobPosts));
+int get hashCode => Object.hash(runtimeType,stats,name,profileImageUrl,bannerImageUrl,const DeepCollectionEquality().hash(jobPosts),const DeepCollectionEquality().hash(socialLinks));
 
 @override
 String toString() {
-  return 'SponsorProfile(stats: $stats, name: $name, profileImageUrl: $profileImageUrl, bannerImageUrl: $bannerImageUrl, jobPosts: $jobPosts)';
+  return 'SponsorProfile(stats: $stats, name: $name, profileImageUrl: $profileImageUrl, bannerImageUrl: $bannerImageUrl, jobPosts: $jobPosts, socialLinks: $socialLinks)';
 }
 
 
@@ -879,7 +879,7 @@ abstract mixin class $SponsorProfileCopyWith<$Res>  {
   factory $SponsorProfileCopyWith(SponsorProfile value, $Res Function(SponsorProfile) _then) = _$SponsorProfileCopyWithImpl;
 @useResult
 $Res call({
- SponsorStats? stats, String? name, String? profileImageUrl, String? bannerImageUrl, List<dynamic> jobPosts
+ SponsorStats? stats, String? name, String? profileImageUrl, String? bannerImageUrl, List<dynamic> jobPosts, Map<String, String> socialLinks
 });
 
 
@@ -896,14 +896,15 @@ class _$SponsorProfileCopyWithImpl<$Res>
 
 /// Create a copy of SponsorProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? stats = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? bannerImageUrl = freezed,Object? jobPosts = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? stats = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? bannerImageUrl = freezed,Object? jobPosts = null,Object? socialLinks = null,}) {
   return _then(_self.copyWith(
 stats: freezed == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as SponsorStats?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,bannerImageUrl: freezed == bannerImageUrl ? _self.bannerImageUrl : bannerImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,jobPosts: null == jobPosts ? _self.jobPosts : jobPosts // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,
+as List<dynamic>,socialLinks: null == socialLinks ? _self.socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,
   ));
 }
 /// Create a copy of SponsorProfile
@@ -1000,10 +1001,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts,  Map<String, String> socialLinks)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SponsorProfile() when $default != null:
-return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts);case _:
+return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts,_that.socialLinks);case _:
   return orElse();
 
 }
@@ -1021,10 +1022,10 @@ return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts,  Map<String, String> socialLinks)  $default,) {final _that = this;
 switch (_that) {
 case _SponsorProfile():
-return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts);case _:
+return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts,_that.socialLinks);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1041,10 +1042,10 @@ return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SponsorStats? stats,  String? name,  String? profileImageUrl,  String? bannerImageUrl,  List<dynamic> jobPosts,  Map<String, String> socialLinks)?  $default,) {final _that = this;
 switch (_that) {
 case _SponsorProfile() when $default != null:
-return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts);case _:
+return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUrl,_that.jobPosts,_that.socialLinks);case _:
   return null;
 
 }
@@ -1056,7 +1057,7 @@ return $default(_that.stats,_that.name,_that.profileImageUrl,_that.bannerImageUr
 @JsonSerializable()
 
 class _SponsorProfile implements SponsorProfile {
-  const _SponsorProfile({this.stats, this.name, this.profileImageUrl, this.bannerImageUrl, final  List<dynamic> jobPosts = const []}): _jobPosts = jobPosts;
+  const _SponsorProfile({this.stats, this.name, this.profileImageUrl, this.bannerImageUrl, final  List<dynamic> jobPosts = const [], final  Map<String, String> socialLinks = const {}}): _jobPosts = jobPosts,_socialLinks = socialLinks;
   factory _SponsorProfile.fromJson(Map<String, dynamic> json) => _$SponsorProfileFromJson(json);
 
 @override final  SponsorStats? stats;
@@ -1068,6 +1069,13 @@ class _SponsorProfile implements SponsorProfile {
   if (_jobPosts is EqualUnmodifiableListView) return _jobPosts;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_jobPosts);
+}
+
+ final  Map<String, String> _socialLinks;
+@override@JsonKey() Map<String, String> get socialLinks {
+  if (_socialLinks is EqualUnmodifiableMapView) return _socialLinks;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_socialLinks);
 }
 
 
@@ -1084,16 +1092,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsorProfile&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.bannerImageUrl, bannerImageUrl) || other.bannerImageUrl == bannerImageUrl)&&const DeepCollectionEquality().equals(other._jobPosts, _jobPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SponsorProfile&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.name, name) || other.name == name)&&(identical(other.profileImageUrl, profileImageUrl) || other.profileImageUrl == profileImageUrl)&&(identical(other.bannerImageUrl, bannerImageUrl) || other.bannerImageUrl == bannerImageUrl)&&const DeepCollectionEquality().equals(other._jobPosts, _jobPosts)&&const DeepCollectionEquality().equals(other._socialLinks, _socialLinks));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,stats,name,profileImageUrl,bannerImageUrl,const DeepCollectionEquality().hash(_jobPosts));
+int get hashCode => Object.hash(runtimeType,stats,name,profileImageUrl,bannerImageUrl,const DeepCollectionEquality().hash(_jobPosts),const DeepCollectionEquality().hash(_socialLinks));
 
 @override
 String toString() {
-  return 'SponsorProfile(stats: $stats, name: $name, profileImageUrl: $profileImageUrl, bannerImageUrl: $bannerImageUrl, jobPosts: $jobPosts)';
+  return 'SponsorProfile(stats: $stats, name: $name, profileImageUrl: $profileImageUrl, bannerImageUrl: $bannerImageUrl, jobPosts: $jobPosts, socialLinks: $socialLinks)';
 }
 
 
@@ -1104,7 +1112,7 @@ abstract mixin class _$SponsorProfileCopyWith<$Res> implements $SponsorProfileCo
   factory _$SponsorProfileCopyWith(_SponsorProfile value, $Res Function(_SponsorProfile) _then) = __$SponsorProfileCopyWithImpl;
 @override @useResult
 $Res call({
- SponsorStats? stats, String? name, String? profileImageUrl, String? bannerImageUrl, List<dynamic> jobPosts
+ SponsorStats? stats, String? name, String? profileImageUrl, String? bannerImageUrl, List<dynamic> jobPosts, Map<String, String> socialLinks
 });
 
 
@@ -1121,14 +1129,15 @@ class __$SponsorProfileCopyWithImpl<$Res>
 
 /// Create a copy of SponsorProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? stats = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? bannerImageUrl = freezed,Object? jobPosts = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? stats = freezed,Object? name = freezed,Object? profileImageUrl = freezed,Object? bannerImageUrl = freezed,Object? jobPosts = null,Object? socialLinks = null,}) {
   return _then(_SponsorProfile(
 stats: freezed == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as SponsorStats?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,profileImageUrl: freezed == profileImageUrl ? _self.profileImageUrl : profileImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,bannerImageUrl: freezed == bannerImageUrl ? _self.bannerImageUrl : bannerImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,jobPosts: null == jobPosts ? _self._jobPosts : jobPosts // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,
+as List<dynamic>,socialLinks: null == socialLinks ? _self._socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,
   ));
 }
 

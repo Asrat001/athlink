@@ -124,14 +124,18 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     super.dispose();
   }
 
-  InputDecoration _inputDecoration({String? hint, IconData? prefixIcon}) {
+  InputDecoration _inputDecoration({
+    String? hint,
+    IconData? prefixIcon,
+    Color? prefixIconColor,
+  }) {
     return InputDecoration(
       hintText: hint,
       hintStyle: const TextStyle(color: Colors.grey),
       filled: true,
       fillColor: _lightGrey,
       prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, color: Colors.grey, size: 20)
+          ? Icon(prefixIcon, color: prefixIconColor ?? Colors.grey, size: 20)
           : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       enabledBorder: OutlineInputBorder(
@@ -221,13 +225,18 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _buildSocialInput(
     String label,
     TextEditingController controller,
-    IconData icon,
-  ) {
+    IconData icon, {
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: controller,
-        decoration: _inputDecoration(hint: label, prefixIcon: icon),
+        decoration: _inputDecoration(
+          hint: label,
+          prefixIcon: icon,
+          prefixIconColor: color,
+        ),
         style: const TextStyle(fontSize: 14, color: AppColors.black),
       ),
     );
@@ -326,31 +335,37 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     "Facebook URL",
                     _facebookController,
                     Icons.facebook,
+                    color: const Color(0xFF1877F2),
                   ),
                   _buildSocialInput(
                     "X URL",
                     _twitterController,
                     Icons.alternate_email,
+                    color: const Color(0xFF1DA1F2),
                   ), // Using alternate_email as simple proxy for X/Twitter
                   _buildSocialInput(
                     "Instagram URL",
                     _instagramController,
                     Icons.camera_alt_outlined,
+                    color: const Color(0xFFE1306C),
                   ),
                   _buildSocialInput(
                     "LinkedIn URL",
                     _linkedinController,
                     Icons.work_outline,
+                    color: const Color(0xFF0077B5),
                   ),
                   _buildSocialInput(
                     "YouTube URL",
                     _youtubeController,
                     Icons.video_library_outlined,
+                    color: const Color(0xFFFF0000),
                   ),
                   _buildSocialInput(
                     "TikTok URL",
                     _tiktokController,
                     Icons.music_note,
+                    color: Colors.black,
                   ),
 
                   const SizedBox(height: 30),
