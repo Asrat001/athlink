@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/services/local_storage_service.dart';
 import 'package:athlink/core/services/socket_service.dart';
 import 'package:athlink/features/message/domain/models/chat_attachment.dart';
@@ -9,6 +8,7 @@ import 'package:athlink/features/message/presentation/providers/states/chat_stat
 import 'package:athlink/features/message/presentation/providers/states/uploading_state-provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/di.dart';
+import 'package:athlink/features/message/presentation/providers/providers.dart';
 
 class ChatNotifier extends StateNotifier<ChatState> {
   final ChatRepository _repository;
@@ -278,6 +278,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
                   orElse: () => 1,
                 ),
               );
+
+              // Update global conversation list
+              _ref
+                  .read(conversationProvider.notifier)
+                  .updateConversationWithNewMessage(newMessage);
             }
           } catch (e) {
             print('Error parsing sent message response: $e');

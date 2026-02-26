@@ -1,4 +1,3 @@
-import 'package:athlink/core/handlers/api_response.dart';
 import 'package:athlink/core/handlers/network_exceptions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:athlink/features/message/domain/models/chat_message.dart';
@@ -7,10 +6,58 @@ import 'package:athlink/features/message/domain/repository/chat_repository.dart'
 import 'package:athlink/features/message/domain/models/contact.dart';
 import 'package:athlink/features/message/presentation/providers/states/conversation_state.dart';
 
+import 'package:athlink/di.dart';
+import 'package:athlink/core/services/socket_service.dart';
+
 class ConversationNotifier extends StateNotifier<ConversationState> {
   final ChatRepository _chatRepository;
+  final SocketIoService _socketService;
+
   ConversationNotifier(this._chatRepository)
-    : super(const ConversationState.initial());
+    : _socketService = sl<SocketIoService>(),
+      super(const ConversationState.initial()) {
+    _init();
+  }
+
+  void updateConversationWithNewMessage(ChatMessage message) {
+    state.mapOrNull(
+      loaded: (s) {
+        final conversations = List<Conversation>.from(s.conversations);
+        final index = conversations.indexWhere(
+          (c) => c.id == message.conversationId,
+        );
+
+        if (index != -1) {
+          // Update existing conversation
+          final updatedConv = conversations[index].copyWith(
+            lastMessage: LastMessage(
+              id: message.id,
+              content: message.content,
+              type: message.type,
+              mediaUrl: message.media?.isNotEmpty == true
+                  ? message.media!.first.url
+                  : null,
+              sender: message.sender.id,
+              createdAt: message.createdAt,
+            ),
+            updatedAt: message.createdAt,
+          );
+          conversations.removeAt(index);
+          conversations.insert(0, updatedConv);
+          state = s.copyWith(conversations: conversations);
+        } else {
+          // If conversation doesn't exist in list, fetch all to get the new one
+          getConversations();
+        }
+      },
+    );
+  }
+
+  void _init() {
+    _socketService.onMessageReceived((message) {
+      updateConversationWithNewMessage(message);
+    });
+  }
 
   Future<void> getMessages({
     required String conversationId,

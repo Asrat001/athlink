@@ -181,25 +181,34 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
     }
 
     if (widget.initialJob != null) {
+      final job = widget.initialJob!;
+      final newTitle = _titleController.text.trim();
+      final newLocation = _locationController.text.trim();
+      final newDescription = _descriptionController.text.trim();
+      final newRequirements = _requirementsController.text.trim();
+      final newPrice = _budgetController.text.trim();
+      final newStartDate = _formatDateForApi(_startDate);
+      final newEndDate = _formatDateForApi(_endDate);
+
       final request = UpdateJobPostRequest(
-        title: _titleController.text.trim(),
-        sportId: _selectedSportId,
-        location: _locationController.text.trim().isNotEmpty
-            ? _locationController.text.trim()
+        title: newTitle != job.title ? newTitle : null,
+        sportId: _selectedSportId != job.sportId.id ? _selectedSportId : null,
+        location: newLocation != job.location ? newLocation : null,
+        description: newDescription != job.description ? newDescription : null,
+        timelineStart: newStartDate != _formatDateForApi(job.timeline.startDate)
+            ? newStartDate
             : null,
-        description: _descriptionController.text.trim().isNotEmpty
-            ? _descriptionController.text.trim()
+        timelineEnd: newEndDate != _formatDateForApi(job.timeline.endDate)
+            ? newEndDate
             : null,
-        timelineStart: _formatDateForApi(_startDate),
-        timelineEnd: _formatDateForApi(_endDate),
-        requirements: _requirementsController.text.trim().isNotEmpty
-            ? _requirementsController.text.trim()
+        requirements: newRequirements != job.requirements
+            ? newRequirements
             : null,
         media: mediaFiles.isNotEmpty ? mediaFiles : null,
-        price: _budgetController.text.trim().isNotEmpty
-            ? double.parse(_budgetController.text.trim())
+        price: newPrice != job.price && newPrice.isNotEmpty
+            ? double.parse(newPrice)
             : null,
-        currency: _selectedCurrency,
+        currency: _selectedCurrency != job.currency ? _selectedCurrency : null,
       );
 
       await ref

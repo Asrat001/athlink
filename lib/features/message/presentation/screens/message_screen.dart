@@ -29,7 +29,7 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(conversationProvider.notifier).getConversations();
@@ -66,8 +66,10 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
           maxChildSize: 0.9,
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
+            final user = sl<LocalStorageService>().getUserData();
+            final isAthlet = user?.role?.contains("athlet") ?? false;
             return SelectAthletsSheet(
-              isAthlet: true,
+              isAthlet: isAthlet,
               scrollController: scrollController,
             );
           },
@@ -189,10 +191,12 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                               ),
                               dividerColor: AppColors.transparent,
                               tabAlignment: TabAlignment.start,
-                              tabs: const [
-                                Tab(text: "All"),
-                                Tab(text: "Sponsors"),
-                                Tab(text: "Athletes"),
+                              tabs: [
+                                const Tab(text: "All"),
+                                if (isAthlet)
+                                  const Tab(text: "Sponsors")
+                                else
+                                  const Tab(text: "Athletes"),
                               ],
                             ),
                           ),
@@ -235,14 +239,16 @@ class _MessageScreenState extends ConsumerState<MessageScreen>
                             filter: ConversationFilter.all,
                             searchQuery: searchQuery,
                           ),
-                          ChatListWidget(
-                            filter: ConversationFilter.sponsors,
-                            searchQuery: searchQuery,
-                          ),
-                          ChatListWidget(
-                            filter: ConversationFilter.athletes,
-                            searchQuery: searchQuery,
-                          ),
+                          if (isAthlet)
+                            ChatListWidget(
+                              filter: ConversationFilter.sponsors,
+                              searchQuery: searchQuery,
+                            )
+                          else
+                            ChatListWidget(
+                              filter: ConversationFilter.athletes,
+                              searchQuery: searchQuery,
+                            ),
                         ],
                       ),
                     ),
