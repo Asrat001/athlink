@@ -87,7 +87,6 @@ class JobPostRemoteDataSource extends BaseRepository {
             );
           }
         }
-
         print(
           'Calling PUT /sponsors/job-post/$jobId with fields: ${formData.fields} and ${formData.files.length} files',
         );
