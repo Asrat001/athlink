@@ -29,7 +29,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   List<Sponsor> _filteredSponsors = [];
-  Map<String, List<Athlete>> _groupedAthletes = {};
+  List<Athlete> _filteredAthletes = [];
 
   @override
   void initState() {
@@ -45,25 +45,14 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
     }).toList();
 
     final filteredAthletes = widget.initialAthletes.where((a) {
-      final name = a.athleteProfile?.name?.toLowerCase() ?? '';
-      final club = a.athleteProfile?.club?.toLowerCase() ?? '';
+      final name = (a.athleteProfile?.name ?? '').toLowerCase();
+      final club = (a.athleteProfile?.club ?? '').toLowerCase();
       return name.contains(q) || club.contains(q);
     }).toList();
 
-    final Map<String, List<Athlete>> grouped = {};
-    for (var athlete in filteredAthletes) {
-      for (var sport in athlete.sport) {
-        final sportName = sport.name ?? "Other Sports";
-        if (!grouped.containsKey(sportName)) {
-          grouped[sportName] = [];
-        }
-        grouped[sportName]!.add(athlete);
-      }
-    }
-
     setState(() {
       _filteredSponsors = filteredSponsors;
-      _groupedAthletes = grouped;
+      _filteredAthletes = filteredAthletes;
     });
   }
 
@@ -76,7 +65,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
           children: [
             _buildSearchHeader(),
             Expanded(
-              child: (_filteredSponsors.isEmpty && _groupedAthletes.isEmpty)
+              child: _filteredAthletes.isEmpty && _filteredSponsors.isEmpty
                   ? _buildNoResults()
                   : _buildScrollableContent(),
             ),
@@ -159,28 +148,23 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
   }
 
   Widget _buildScrollableContent() {
-    final sportEntries = _groupedAthletes.entries.toList();
-
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          if (_filteredSponsors.isNotEmpty) ...[
+    if (widget.isDarkMode && _filteredSponsors.isNotEmpty) {
+      return SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
             _buildSectionHeader("Brands & Sponsors", "Top matching partners"),
             _buildSponsorRow(),
             const SizedBox(height: 24),
+            _buildSectionHeader("Athletes", "Top matching athletes"),
+            _buildAthleteGrid(_filteredAthletes, isShrinkWrapped: true),
           ],
-          for (var entry in sportEntries) ...[
-            _buildSectionHeader(entry.key, "Athletes in this category"),
-            _buildAthleteRow(entry.value),
-            const SizedBox(height: 24),
-          ],
-          const SizedBox(height: 30),
-        ],
-      ),
-    );
+        ),
+      );
+    }
+    return _buildAthleteGrid(_filteredAthletes);
   }
 
   Widget _buildSectionHeader(String title, String subtitle) {
@@ -191,16 +175,14 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
         children: [
           CustomText(
             title: title,
-            fontSize: 18, // Slightly larger for better hierarchy
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             textColor: widget.isDarkMode ? Colors.white : AppColors.black,
           ),
           CustomText(
             title: subtitle,
             fontSize: 12,
-            textColor: widget.isDarkMode
-                ? Colors.white38
-                : Colors.grey, // Dimmed secondary text
+            textColor: widget.isDarkMode ? Colors.white38 : Colors.grey,
           ),
         ],
       ),
@@ -214,7 +196,7 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         itemCount: _filteredSponsors.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final sponsor = _filteredSponsors[index];
           final sponsorProfile = sponsor.sponsorProfile;
@@ -257,36 +239,50 @@ class _AthleteSearchScreenState extends State<AthleteSearchScreen> {
     );
   }
 
-  Widget _buildAthleteRow(List<Athlete> athletes) {
-    return SizedBox(
-      height: 350, // Matched Dashboard height adjustment
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemCount: athletes.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 14),
-        itemBuilder: (context, index) {
-          final athlete = athletes[index];
-          final profile = athlete.athleteProfile;
-          final imageUrl = profile?.profileImageUrl != null
-              ? '$fileBaseUrl${profile!.profileImageUrl}'
-              : 'https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-5652137.png';
-
-          return AthleteCard(
-            athleteId: athlete.id,
-            name: profile?.name ?? 'Athlete',
-            club: profile?.club ?? 'Independent',
-            isAthlete: widget.isDarkMode,
-            age: profile?.age?.toString() ?? '20',
-            flag: 'assets/images/flag.png',
-            image: imageUrl,
-            highestSocialMediaPresence:
-                profile?.highestSocialMediaPresence ?? "0",
-            sponsorshipDone: (profile?.sponsorshipDone ?? 0).toString(),
-            achievements: profile?.achievements ?? [],
-          );
-        },
+  Widget _buildAthleteGrid(
+    List<Athlete> athletes, {
+    bool isShrinkWrapped = false,
+  }) {
+    return GridView.builder(
+      shrinkWrap: isShrinkWrapped,
+      physics: isShrinkWrapped
+          ? const NeverScrollableScrollPhysics()
+          : const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.65,
       ),
+      itemCount: athletes.length,
+      itemBuilder: (context, index) {
+        final athlete = athletes[index];
+        final profile = athlete.athleteProfile;
+        final imageUrl = profile?.profileImageUrl != null
+            ? '$fileBaseUrl${profile!.profileImageUrl}'
+            : 'https://cdn3d.iconscout.com/3d/premium/thumb/fitness-man-5652137.png';
+
+        return AthleteCard(
+          athleteId: athlete.id,
+          name: profile?.name ?? 'Athlete',
+          club: profile?.club ?? 'Independent',
+          isAthlete: widget.isDarkMode,
+          age: profile?.age?.toString() ?? '20',
+          flag: 'assets/images/flag.png',
+          image: imageUrl,
+          highestSocialMediaPresence:
+              profile?.highestSocialMediaPresence ?? "0",
+          sponsorshipDone: (profile?.sponsorshipDone ?? 0).toString(),
+          achievements: profile?.achievements ?? [],
+          onTap: () {
+            context.push(
+              Routes.viewAthleteScreen,
+              extra: {'athleteId': athlete.id, 'isSelf': false},
+            );
+          },
+        );
+      },
     );
   }
 

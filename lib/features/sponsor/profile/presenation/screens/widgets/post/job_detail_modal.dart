@@ -3,6 +3,7 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/widgets/video_thumbnail_widget.dart';
 import 'package:flutter/material.dart';
 
 class JobDetailModal extends StatelessWidget {
@@ -66,32 +67,42 @@ class JobDetailModal extends StatelessWidget {
           if (job.mediaUrls.isNotEmpty) ...[
             SizedBox(
               height: 180,
-              child: ListView.separated(
+              child: ListView(
                 scrollDirection: Axis.horizontal,
-                itemCount: job.mediaUrls.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      UrlHelper.getFullImageUrl(job.mediaUrls[index]),
-                      height: 180,
-                      width: 280,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        height: 180,
-                        width: 280,
-                        color: isDarkMode
-                            ? Colors.white10
-                            : AppColors.lightGrey,
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: isDarkMode ? Colors.white38 : null,
+                children: [
+                  for (final url in job.mediaUrls) ...[
+                    if (url.toLowerCase().endsWith('.mp4') ||
+                        url.toLowerCase().endsWith('.mov') ||
+                        url.toLowerCase().endsWith('.webm'))
+                      VideoThumbnailWidget(
+                        videoUrl: UrlHelper.getFullImageUrl(url),
+                        isDarkMode: isDarkMode,
+                      )
+                    else
+                      // Rendering images
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          UrlHelper.getFullImageUrl(url),
+                          height: 180,
+                          width: 280,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 180,
+                            width: 280,
+                            color: isDarkMode
+                                ? Colors.white10
+                                : AppColors.lightGrey,
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: isDarkMode ? Colors.white38 : null,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    const SizedBox(width: 12),
+                  ],
+                ],
               ),
             ),
             const SizedBox(height: 18),

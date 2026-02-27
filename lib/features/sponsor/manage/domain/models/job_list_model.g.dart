@@ -58,6 +58,7 @@ _JobPostItem _$JobPostItemFromJson(Map<String, dynamic> json) => _JobPostItem(
   mediaUrls:
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
+  videoUrl: json['videoUrl'] as String?,
   applications:
       (json['applicants'] as List<dynamic>?)
           ?.map((e) => JobApplication.fromJson(e as Map<String, dynamic>))
@@ -79,6 +80,7 @@ Map<String, dynamic> _$JobPostItemToJson(_JobPostItem instance) =>
       'requirements': instance.requirements,
       'createdAt': instance.createdAt.toIso8601String(),
       'mediaUrls': instance.mediaUrls,
+      'videoUrl': instance.videoUrl,
       'applicants': instance.applications,
       'applicantCount': instance.applicantCount,
       'price': instance.price,

@@ -1,8 +1,6 @@
 import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
-import 'package:athlink/shared/widgets/video_preview_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 /// Job card widget displaying job information
 class JobCard extends StatefulWidget {
@@ -24,41 +22,6 @@ class JobCard extends StatefulWidget {
 }
 
 class _JobCardState extends State<JobCard> {
-  VideoPlayerController? _videoController;
-  bool _videoInitialized = false;
-
-  String get _mediaUrl => widget.job["mediaUrl"] as String? ?? '';
-  String get _videoUrl => widget.job["videoUrl"] as String? ?? '';
-  bool get _hasImage => _mediaUrl.isNotEmpty;
-  bool get _hasVideo => _videoUrl.isNotEmpty;
-
-  @override
-  void initState() {
-    super.initState();
-    if (_hasVideo) {
-      _initVideo();
-    }
-  }
-
-  Future<void> _initVideo() async {
-    try {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(_videoUrl));
-      await _videoController!.initialize();
-      _videoController!.setLooping(true);
-      _videoController!.setVolume(0);
-      _videoController!.play();
-      if (mounted) setState(() => _videoInitialized = true);
-    } catch (e) {
-      debugPrint('Job card video error: $e');
-    }
-  }
-
-  @override
-  void dispose() {
-    _videoController?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -81,15 +44,6 @@ class _JobCardState extends State<JobCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Media section: video or image
-            if (_hasVideo) ...[
-              _buildVideoPreview(),
-              const SizedBox(height: 16),
-            ] else if (_hasImage) ...[
-              _buildImageThumbnail(),
-              const SizedBox(height: 16),
-            ],
-
             // Header row
             _buildHeader(context),
             const SizedBox(height: 16),
@@ -110,75 +64,6 @@ class _JobCardState extends State<JobCard> {
             _buildActionIcons(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildVideoPreview() {
-    return GestureDetector(
-      onTap: () {
-        VideoPreviewDialog.show(context, videoUrl: _videoUrl);
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: SizedBox(
-          width: double.infinity,
-          height: 180,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // Video or placeholder
-              if (_videoInitialized && _videoController != null)
-                FittedBox(
-                  fit: BoxFit.cover,
-                  clipBehavior: Clip.hardEdge,
-                  child: SizedBox(
-                    width: _videoController!.value.size.width,
-                    height: _videoController!.value.size.height,
-                    child: VideoPlayer(_videoController!),
-                  ),
-                )
-              else
-                Container(
-                  color: AppColors.black.withValues(alpha: 0.05),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-              // Play button overlay
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.45),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.play_arrow_rounded,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageThumbnail() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Image.network(
-        _mediaUrl,
-        width: double.infinity,
-        height: 160,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
       ),
     );
   }
@@ -224,23 +109,29 @@ class _JobCardState extends State<JobCard> {
         ),
         const SizedBox(width: 12),
 
-        // Title + subtitle
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              title: widget.job["agencyName"],
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
-            CustomText(
-              title: widget.job["location"],
-              fontSize: 14,
-              textColor: AppColors.grey,
-            ),
-          ],
+        // Title + subtitle (wrapped in Expanded to prevent overflow)
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                title: widget.job["agencyName"],
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                maxLines: 1,
+                textOverflow: TextOverflow.ellipsis,
+              ),
+              CustomText(
+                title: widget.job["location"],
+                fontSize: 14,
+                textColor: AppColors.grey,
+                maxLines: 1,
+                textOverflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
-        const Spacer(),
+        const SizedBox(width: 8),
 
         // More icon with PopupMenu
         PopupMenuButton<String>(

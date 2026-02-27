@@ -205,7 +205,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
             ? newRequirements
             : null,
         media: mediaFiles.isNotEmpty ? mediaFiles : null,
-        price: newPrice != job.price && newPrice.isNotEmpty
+        price: newPrice != job.price.toString() && newPrice.isNotEmpty
             ? double.parse(newPrice)
             : null,
         currency: _selectedCurrency != job.currency ? _selectedCurrency : null,

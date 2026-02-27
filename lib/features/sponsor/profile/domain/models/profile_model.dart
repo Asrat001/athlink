@@ -101,6 +101,7 @@ abstract class JobPost with _$JobPost {
     @Default('') String requirements,
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
+    String? videoUrl,
     @Default([]) List<dynamic> applicants,
     @JsonKey(name: "price") @Default(0) dynamic price,
     @Default('USD') String currency,

@@ -138,6 +138,7 @@ _JobPost _$JobPostFromJson(Map<String, dynamic> json) => _JobPost(
   mediaUrls:
       (json['mediaUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
+  videoUrl: json['videoUrl'] as String?,
   applicants: json['applicants'] as List<dynamic>? ?? const [],
   price: json['price'] ?? 0,
   currency: json['currency'] as String? ?? 'USD',
@@ -153,6 +154,7 @@ Map<String, dynamic> _$JobPostToJson(_JobPost instance) => <String, dynamic>{
   'requirements': instance.requirements,
   'createdAt': instance.createdAt.toIso8601String(),
   'mediaUrls': instance.mediaUrls,
+  'videoUrl': instance.videoUrl,
   'applicants': instance.applicants,
   'price': instance.price,
   'currency': instance.currency,

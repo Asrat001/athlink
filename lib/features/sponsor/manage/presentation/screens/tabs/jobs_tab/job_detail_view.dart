@@ -3,6 +3,7 @@ import 'package:athlink/shared/theme/app_colors.dart';
 import 'package:athlink/shared/utils/url_helper.dart';
 import 'package:athlink/shared/utils/app_helpers.dart';
 import 'package:athlink/shared/widgets/custom_text.dart';
+import 'package:athlink/shared/widgets/video_thumbnail_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -98,31 +99,39 @@ class JobDetailView extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
 
-          // Media Gallery
+          // Media Gallery (Images + Video)
           if (selectedJob.mediaUrls.isNotEmpty) ...[
             SizedBox(
               height: 180,
-              child: ListView.separated(
+              child: ListView(
                 scrollDirection: Axis.horizontal,
-                itemCount: selectedJob.mediaUrls.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      UrlHelper.getFullImageUrl(selectedJob.mediaUrls[index]),
-                      height: 180,
-                      width: 280,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        height: 180,
-                        width: 280,
-                        color: AppColors.lightGrey,
-                        child: const Icon(Icons.image_not_supported),
+                children: [
+                  for (final url in selectedJob.mediaUrls) ...[
+                    if (url.toLowerCase().endsWith('.mp4') ||
+                        url.toLowerCase().endsWith('.mov') ||
+                        url.toLowerCase().endsWith('.webm'))
+                      VideoThumbnailWidget(
+                        videoUrl: UrlHelper.getFullImageUrl(url),
+                      )
+                    else
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          UrlHelper.getFullImageUrl(url),
+                          height: 180,
+                          width: 280,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 180,
+                            width: 280,
+                            color: AppColors.lightGrey,
+                            child: const Icon(Icons.image_not_supported),
+                          ),
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    const SizedBox(width: 12),
+                  ],
+                ],
               ),
             ),
             const SizedBox(height: 18),

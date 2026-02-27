@@ -24,13 +24,11 @@ import 'package:athlink/features/sports/presentaion/screens/select_sport_screen.
 import 'package:athlink/features/sponsor/watchlist/presentation/screens/watch_list_screen.dart';
 import 'package:athlink/routes/athlete_main_screen.dart';
 import 'package:athlink/routes/route_names.dart';
-import 'package:athlink/shared/widgets/coming_soon.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'error_screen.dart';
 import 'main_screen.dart';
 import '../features/sponsor/manage/presentation/screens/manage_screen.dart';
-import '../features/onboarding/presentation/screens/on_boarding_screen.dart';
 import '../features/sponsor/profile/presenation/screens/profile_screen.dart';
 import '../features/sponsor/profile/presenation/screens/view_sponsor_profile_screen.dart';
 import '../features/splash/presentation/screens/logo_screen.dart';
@@ -71,10 +69,7 @@ class AppRouter {
           );
         },
       ),
-      GoRoute(
-        path: Routes.onBoardingRouteName,
-        builder: (context, state) => const OnboardingScreen(),
-      ),
+
       GoRoute(path: "/logo", builder: (context, state) => const LogoScreen()),
       GoRoute(
         path: Routes.registerRouteName,

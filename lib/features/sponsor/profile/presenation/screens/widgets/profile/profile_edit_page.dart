@@ -57,10 +57,25 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final FocusNode _addressFocus = FocusNode();
   final FocusNode _companyNameFocus = FocusNode();
 
+  // Form Key for validation
+  final _formKey = GlobalKey<FormState>();
+
   // Visual constants
   final Color _primaryDark = const Color(0xFF0C2031);
   final Color _fillGrey = Colors.grey.shade200;
   final Color _lightGrey = Colors.grey.shade100;
+
+  String? _urlValidator(String? value) {
+    if (value == null || value.trim().isEmpty) return null; // Optional fields
+    // Basic regex for typical URLs
+    final urlRegex = RegExp(
+      r"^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$",
+    );
+    if (!urlRegex.hasMatch(value.trim())) {
+      return "Please enter a valid URL";
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -232,6 +247,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: controller,
+        validator: _urlValidator,
         decoration: _inputDecoration(
           hint: label,
           prefixIcon: icon,
@@ -246,147 +262,157 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 80),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 80),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
 
-                  GestureDetector(
-                    onTap: () {
-                      if (!_editCompanyName) {
-                        setState(() => _editCompanyName = true);
-                        Future.delayed(const Duration(milliseconds: 80), () {
-                          if (mounted) {
-                            FocusScope.of(
-                              context,
-                            ).requestFocus(_companyNameFocus);
-                          }
-                        });
-                      }
-                    },
-                    child: _editCompanyName
-                        ? TextFormField(
-                            focusNode: _companyNameFocus,
-                            controller: _companyNameController,
-                            decoration: _inputDecoration(
-                              hint: "Enter company name",
+                    GestureDetector(
+                      onTap: () {
+                        if (!_editCompanyName) {
+                          setState(() => _editCompanyName = true);
+                          Future.delayed(const Duration(milliseconds: 80), () {
+                            if (mounted) {
+                              FocusScope.of(
+                                context,
+                              ).requestFocus(_companyNameFocus);
+                            }
+                          });
+                        }
+                      },
+                      child: _editCompanyName
+                          ? TextFormField(
+                              focusNode: _companyNameFocus,
+                              controller: _companyNameController,
+                              decoration: _inputDecoration(
+                                hint: "Enter company name",
+                              ),
+                              textInputAction: TextInputAction.done,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: AppColors.black,
+                              ),
+                              onSaved: (_) {
+                                if (_companyNameController.text
+                                    .trim()
+                                    .isEmpty) {
+                                  setState(() => _editCompanyName = false);
+                                } else {
+                                  _companyNameFocus.unfocus();
+                                }
+                              },
+                            )
+                          : CustomText(
+                              title: _companyNameController.text.isEmpty
+                                  ? 'SP Sport Agency'
+                                  : _companyNameController.text,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              textColor: AppColors.black,
                             ),
-                            textInputAction: TextInputAction.done,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: AppColors.black,
-                            ),
-                            onSaved: (_) {
-                              if (_companyNameController.text.trim().isEmpty) {
-                                setState(() => _editCompanyName = false);
-                              } else {
-                                _companyNameFocus.unfocus();
-                              }
-                            },
-                          )
-                        : CustomText(
-                            title: _companyNameController.text.isEmpty
-                                ? 'SP Sport Agency'
-                                : _companyNameController.text,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            textColor: AppColors.black,
-                          ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  _addressWidget(),
-
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _descriptionController,
-                    maxLines: 4,
-                    decoration: _inputDecoration(hint: "Description..."),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.black,
                     ),
-                  ),
+                    const SizedBox(height: 12),
 
-                  _buildSectionTitle("Website"),
-                  TextFormField(
-                    controller: _websiteController,
-                    decoration: _inputDecoration(
-                      hint: "https://example.com",
-                      prefixIcon: Icons.language,
+                    _addressWidget(),
+
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _descriptionController,
+                      maxLines: 4,
+                      decoration: _inputDecoration(hint: "Description..."),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.black,
+                      ),
                     ),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.black,
+
+                    _buildSectionTitle("Website"),
+                    TextFormField(
+                      controller: _websiteController,
+                      validator: _urlValidator,
+                      decoration: _inputDecoration(
+                        hint: "https://example.com",
+                        prefixIcon: Icons.language,
+                      ),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.black,
+                      ),
                     ),
-                  ),
 
-                  _buildSectionTitle("Social Media"),
-                  _buildSocialInput(
-                    "Facebook URL",
-                    _facebookController,
-                    Icons.facebook,
-                    color: const Color(0xFF1877F2),
-                  ),
-                  _buildSocialInput(
-                    "X URL",
-                    _twitterController,
-                    Icons.alternate_email,
-                    color: const Color(0xFF1DA1F2),
-                  ), // Using alternate_email as simple proxy for X/Twitter
-                  _buildSocialInput(
-                    "Instagram URL",
-                    _instagramController,
-                    Icons.camera_alt_outlined,
-                    color: const Color(0xFFE1306C),
-                  ),
-                  _buildSocialInput(
-                    "LinkedIn URL",
-                    _linkedinController,
-                    Icons.work_outline,
-                    color: const Color(0xFF0077B5),
-                  ),
-                  _buildSocialInput(
-                    "YouTube URL",
-                    _youtubeController,
-                    Icons.video_library_outlined,
-                    color: const Color(0xFFFF0000),
-                  ),
-                  _buildSocialInput(
-                    "TikTok URL",
-                    _tiktokController,
-                    Icons.music_note,
-                    color: Colors.black,
-                  ),
+                    _buildSectionTitle("Social Media"),
+                    _buildSocialInput(
+                      "Facebook URL",
+                      _facebookController,
+                      Icons.facebook,
+                      color: const Color(0xFF1877F2),
+                    ),
+                    _buildSocialInput(
+                      "X URL",
+                      _twitterController,
+                      Icons.alternate_email,
+                      color: const Color(0xFF1DA1F2),
+                    ), // Using alternate_email as simple proxy for X/Twitter
+                    _buildSocialInput(
+                      "Instagram URL",
+                      _instagramController,
+                      Icons.camera_alt_outlined,
+                      color: const Color(0xFFE1306C),
+                    ),
+                    _buildSocialInput(
+                      "LinkedIn URL",
+                      _linkedinController,
+                      Icons.work_outline,
+                      color: const Color(0xFF0077B5),
+                    ),
+                    _buildSocialInput(
+                      "YouTube URL",
+                      _youtubeController,
+                      Icons.video_library_outlined,
+                      color: const Color(0xFFFF0000),
+                    ),
+                    _buildSocialInput(
+                      "TikTok URL",
+                      _tiktokController,
+                      Icons.music_note,
+                      color: Colors.black,
+                    ),
 
-                  const SizedBox(height: 30),
-                  RoundedButton(
-                    label: "Save Changes",
-                    onPressed: _handleSave,
-                    width: double.infinity,
-                    height: 60,
-                    submitting: widget.isLoading,
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                    const SizedBox(height: 30),
+                    RoundedButton(
+                      label: "Save Changes",
+                      onPressed: _handleSave,
+                      width: double.infinity,
+                      height: 60,
+                      submitting: widget.isLoading,
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _handleSave() {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
     final String name = _companyNameController.text.trim();
     final String description = _descriptionController.text.trim();
     final String address = _addressController.text.trim();
@@ -408,6 +434,50 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
     final File? profileImage = widget.profileImage;
     final File? bannerImage = widget.bannerImage;
+
+    bool hasChanges = false;
+
+    if (widget.sponsorProfile != null) {
+      final initial = widget.sponsorProfile!;
+      final initialSocials = initial.socialLinks;
+
+      // Check text fields
+      if (name != initial.name ||
+          description != initial.description ||
+          address != initial.address ||
+          websiteUrl != initial.websiteUrl) {
+        hasChanges = true;
+      }
+      // Check if new social links differ
+      else if (socialLinks.length != initialSocials.length) {
+        hasChanges = true;
+      } else {
+        for (final key in socialLinks.keys) {
+          if (socialLinks[key] != initialSocials[key]) {
+            hasChanges = true;
+            break;
+          }
+        }
+      }
+    } else {
+      // If no initial profile exists, any data is a change
+      hasChanges = true;
+    }
+
+    // Checking if new media files were picked
+    if (profileImage != null || bannerImage != null) {
+      hasChanges = true;
+    }
+
+    if (!hasChanges) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No changes detected.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
 
     widget.onSave(
       name,

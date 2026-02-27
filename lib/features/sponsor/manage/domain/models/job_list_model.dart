@@ -52,6 +52,7 @@ abstract class JobPostItem with _$JobPostItem {
     @Default('') String requirements,
     required DateTime createdAt,
     @Default([]) List<String> mediaUrls,
+    String? videoUrl,
     @JsonKey(name: "applicants") @Default([]) List<JobApplication> applications,
     @Default(0) int applicantCount,
     @JsonKey(fromJson: _priceToString) @Default('') String price,

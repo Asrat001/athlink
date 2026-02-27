@@ -26,7 +26,6 @@ class JobPostRemoteDataSource extends BaseRepository {
           if (request.requirements != null)
             'requirements': request.requirements,
           if (request.price != null) 'price': request.price,
-          if (request.currency != null) 'currency': request.currency,
         });
 
         // Add media files if present
@@ -71,7 +70,6 @@ class JobPostRemoteDataSource extends BaseRepository {
           if (request.requirements != null)
             'requirements': request.requirements,
           if (request.price != null) 'price': request.price,
-          if (request.currency != null) 'currency': request.currency,
         });
 
         // Add media files if present
@@ -90,6 +88,9 @@ class JobPostRemoteDataSource extends BaseRepository {
           }
         }
 
+        print(
+          'Calling PUT /sponsors/job-post/$jobId with fields: ${formData.fields} and ${formData.files.length} files',
+        );
         return await _httpClient
             .client(requireAuth: true)
             .put("/sponsors/job-post/$jobId", data: formData);

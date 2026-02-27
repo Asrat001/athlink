@@ -209,11 +209,40 @@ class JobListing extends ConsumerWidget {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                ref
+
+                final scaffoldContext = context;
+
+                // Show loading toast (optional, but good UX)
+                AppHelpers.showLoadingToast(
+                  scaffoldContext,
+                  'Deleting job post...',
+                );
+
+                final result = await ref
                     .read(jobListProvider.notifier)
                     .deleteJobPost(jobId: job["id"]);
+
+                if (!context.mounted) return;
+
+                // Hide current snackbars to clear the loading toast
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                result.when(
+                  success: (_) {
+                    AppHelpers.showSuccessToast(
+                      context,
+                      'Job post deleted successfully',
+                    );
+                  },
+                  failure: (error) {
+                    AppHelpers.showErrorToast(
+                      context,
+                      'Failed to delete job post',
+                    );
+                  },
+                );
               },
               child: const CustomText(
                 title: 'Delete',
