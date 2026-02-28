@@ -349,6 +349,7 @@ class _CreateJobModalState extends ConsumerState<CreateJobModal> {
           onPost: _submitJobPost,
           onCancel: () => Navigator.pop(context),
           isLoading: jobPostState.isLoading,
+          isEditMode: widget.initialJob != null,
         ),
       ),
     );

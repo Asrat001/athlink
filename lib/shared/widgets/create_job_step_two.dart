@@ -32,6 +32,7 @@ class StepTwo extends StatefulWidget {
   final VoidCallback onPost;
   final VoidCallback onCancel;
   final bool isLoading;
+  final bool isEditMode;
 
   const StepTwo({
     super.key,
@@ -55,6 +56,7 @@ class StepTwo extends StatefulWidget {
     required this.onPost,
     required this.onCancel,
     required this.isLoading,
+    this.isEditMode = false,
   });
 
   @override
@@ -183,24 +185,27 @@ class _StepTwoState extends State<StepTwo> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const SectionTitle(title: "Add Media"),
-        const SizedBox(height: 8),
-        MediaSelectionRow(
-          onImageSelected: _pickImage,
-          onVideoSelected: _pickVideo,
-          imageBytes: widget.imageBytes,
-          videoThumbnail: widget.videoThumbnail,
-          selectedImage: widget.selectedImage,
-          selectedVideo: widget.selectedVideo,
-          initialImageUrl: widget.initialImageUrl,
-          initialVideoUrl: widget.initialVideoUrl,
-          onImageRemoved: widget.onImageRemoved,
-          onVideoRemoved: widget.onVideoRemoved,
-        ),
+        if (!widget.isEditMode) ...[
+          const SectionTitle(title: "Add Media"),
+          const SizedBox(height: 8),
+          MediaSelectionRow(
+            onImageSelected: _pickImage,
+            onVideoSelected: _pickVideo,
+            imageBytes: widget.imageBytes,
+            videoThumbnail: widget.videoThumbnail,
+            selectedImage: widget.selectedImage,
+            selectedVideo: widget.selectedVideo,
+            initialImageUrl: widget.initialImageUrl,
+            initialVideoUrl: widget.initialVideoUrl,
+            onImageRemoved: widget.onImageRemoved,
+            onVideoRemoved: widget.onVideoRemoved,
+          ),
+        ],
         if (widget.selectedImage != null ||
             widget.selectedVideo != null ||
             widget.initialImageUrl != null ||
             widget.initialVideoUrl != null) ...[
+          if (widget.isEditMode) const SectionTitle(title: "Job Media"),
           const SizedBox(height: 12),
           SelectedFilesInfo(
             image: widget.selectedImage,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:athlink/shared/theme/app_colors.dart';
+import 'package:athlink/shared/widgets/video_preview_dialog.dart';
 import 'package:flutter/material.dart';
 
 class SelectedFilesInfo extends StatelessWidget {
@@ -23,6 +24,38 @@ class SelectedFilesInfo extends StatelessWidget {
     return '${(bytes / 1048576).toStringAsFixed(1)} MB';
   }
 
+  void _showImagePreview(
+    BuildContext context, {
+    File? imageFile,
+    String? imageUrl,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(16),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            InteractiveViewer(
+              child: imageFile != null
+                  ? Image.file(imageFile, fit: BoxFit.contain)
+                  : Image.network(imageUrl!, fit: BoxFit.contain),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,13 +67,15 @@ class SelectedFilesInfo extends StatelessWidget {
             name: image!.path.split('/').last,
             size: _formatFileSize(image!.lengthSync()),
             type: 'New Image',
+            onView: () => _showImagePreview(context, imageFile: image),
           ),
         if (image == null && initialImageUrl != null)
-          const FileInfoItem(
+          FileInfoItem(
             icon: Icons.image,
             name: 'Existing Image',
             size: '',
             type: 'Image',
+            onView: () => _showImagePreview(context, imageUrl: initialImageUrl),
           ),
         if (video != null)
           FileInfoItem(
@@ -48,13 +83,16 @@ class SelectedFilesInfo extends StatelessWidget {
             name: video!.path.split('/').last,
             size: _formatFileSize(video!.lengthSync()),
             type: 'New Video',
+            onView: () => VideoPreviewDialog.show(context, videoFile: video),
           ),
         if (video == null && initialVideoUrl != null)
-          const FileInfoItem(
+          FileInfoItem(
             icon: Icons.videocam,
             name: 'Existing Video',
             size: '',
             type: 'Video',
+            onView: () =>
+                VideoPreviewDialog.show(context, videoUrl: initialVideoUrl),
           ),
       ],
     );
@@ -66,6 +104,7 @@ class FileInfoItem extends StatelessWidget {
   final String name;
   final String size;
   final String type;
+  final VoidCallback? onView;
 
   const FileInfoItem({
     super.key,
@@ -73,6 +112,7 @@ class FileInfoItem extends StatelessWidget {
     required this.name,
     required this.size,
     required this.type,
+    this.onView,
   });
 
   @override
@@ -112,6 +152,15 @@ class FileInfoItem extends StatelessWidget {
               ],
             ),
           ),
+          if (onView != null)
+            IconButton(
+              icon: const Icon(
+                Icons.remove_red_eye_outlined,
+                color: AppColors.primary,
+              ),
+              onPressed: onView,
+              tooltip: 'View Media',
+            ),
         ],
       ),
     );
